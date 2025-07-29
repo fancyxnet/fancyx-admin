@@ -150,11 +150,12 @@ export const useMqtt = (
       const token = await getOrRefreshToken();
 
       const wsUrl = import.meta.env.VITE_MQTT_SERVER;
+      const envMode = import.meta.env.MODE;
       const clientId = `mqtt_web_${Math.random().toString(16).substring(2, 10)}`;
 
       const client = mqtt.connect(wsUrl, {
         clientId,
-        protocol: 'ws',
+        protocol: envMode === 'production' ? 'wss' : 'ws',
         reconnectPeriod: 5000,
         connectTimeout: 3000,
         username: token,
