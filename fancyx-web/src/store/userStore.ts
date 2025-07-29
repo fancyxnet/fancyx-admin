@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import type { FrontendMenu } from '@/api/auth';
+import { refreshToken } from '@/api/auth.ts';
 import { makeAutoObservable, runInAction } from 'mobx';
 
 export type TokenInfo = {
@@ -33,6 +34,8 @@ class UserStore {
 
   userInfo: UserAuthInfo | null = null;
   menuList: FrontendMenu[] = [];
+  private readonly CHECK_INTERVAL = 5 * 60 * 1000;
+  private timer: NodeJS.Timeout | null = null;
 
   private initState() {
     const userInfoStorage = localStorage.getItem(USER_INFO_KEY);
@@ -122,6 +125,50 @@ class UserStore {
       traverse(item);
     });
     return result;
+  }
+
+  startTokenChecker() {
+    this.stopTokenChecker();
+    this.scheduleNextTokenCheck();
+  }
+
+  stopTokenChecker() {
+    if (this.timer) {
+      clearTimeout(this.timer);
+      this.timer = null;
+    }
+  }
+
+  private scheduleNextTokenCheck() {
+    this.timer = setTimeout(() => {
+      this.checkTokenIsExpired().finally(() => {
+        this.scheduleNextTokenCheck();
+      });
+    }, this.CHECK_INTERVAL);
+  }
+
+  private async checkTokenIsExpired() {
+    const token = this.token?.accessToken;
+    const expired = this.token?.expiredTime;
+
+    if (token && expired) {
+      //过期时间小于10分钟进行刷新token
+      const isAboutToExpire = dayjs(expired).subtract(10, 'minute').isBefore(new Date());
+      if (isAboutToExpire) {
+        const refreshTokenValue = this.token?.refreshToken;
+        if (refreshTokenValue) {
+          const refreshTokenRes = await refreshToken(refreshTokenValue);
+          if (refreshTokenRes.data) {
+            const refreshTokenData = refreshTokenRes.data;
+            this.refreshToken(
+              refreshTokenData.accessToken,
+              refreshTokenData.refreshToken,
+              refreshTokenData.expiredTime,
+            );
+          }
+        }
+      }
+    }
   }
 }
 

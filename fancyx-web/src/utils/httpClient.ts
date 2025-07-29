@@ -3,12 +3,10 @@ import UserStore from '@/store/userStore';
 import { ErrorCode, StaticRoutes } from '@/utils/globalValue.ts';
 import { message } from 'antd';
 import dayjs from 'dayjs';
-import { refreshToken } from '@/api/auth.ts';
 
 class HttpClient {
   private readonly instance: AxiosInstance;
   allowAnonymousApis: string[] = ['/api/account/login']; //允许匿名访问接口
-  refreshTokenWhiteApis: string[] = ['/api/account/refreshtoken', '/api/account/signout']; //不需要刷新token接口
 
   constructor(config?: AxiosRequestConfig) {
     this.instance = axios.create(config);
@@ -25,27 +23,6 @@ class HttpClient {
         const now = new Date();
         if (token && expired && dayjs(expired).isAfter(now)) {
           config.headers.Authorization = `Bearer ${token}`;
-          //过期时间小于10分钟进行刷新token
-          if (dayjs(expired).subtract(10, 'minute').isBefore(now)) {
-            //如果当前是刷新token接口就不调用，避免循环调用
-            const refreshTokenValue = UserStore.token?.refreshToken;
-            if (
-              !this.refreshTokenWhiteApis.some(
-                (x) => config.url !== null && config.url!.toLowerCase().indexOf(x) >= 0,
-              ) &&
-              refreshTokenValue
-            ) {
-              const refreshTokenRes = await refreshToken(refreshTokenValue);
-              if (refreshTokenRes.data) {
-                const refreshTokenData = refreshTokenRes.data;
-                UserStore.refreshToken(
-                  refreshTokenData.accessToken,
-                  refreshTokenData.refreshToken,
-                  refreshTokenData.expiredTime,
-                );
-              }
-            }
-          }
         }
         return config;
       },

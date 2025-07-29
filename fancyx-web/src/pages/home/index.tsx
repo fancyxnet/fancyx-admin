@@ -20,7 +20,7 @@ const HomePage = () => {
   const changelog = [
     {
       date: '2025-07-29',
-      items: ['增加富文本组件'],
+      items: ['token定时检查、刷新'],
     },
     {
       date: '2025-07-18',
