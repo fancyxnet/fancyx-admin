@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.ObjectStorage", "Fan
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Job", "Fancyx.Job\Fancyx.Job.csproj", "{5B435F27-8148-4F3D-8D27-01D199178C08}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Payment", "Fancyx.Payment\Fancyx.Payment.csproj", "{A9561E75-5F1E-C830-F40E-68BFAF8249EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +70,10 @@ Global
 		{5B435F27-8148-4F3D-8D27-01D199178C08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B435F27-8148-4F3D-8D27-01D199178C08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B435F27-8148-4F3D-8D27-01D199178C08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9561E75-5F1E-C830-F40E-68BFAF8249EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9561E75-5F1E-C830-F40E-68BFAF8249EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9561E75-5F1E-C830-F40E-68BFAF8249EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9561E75-5F1E-C830-F40E-68BFAF8249EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

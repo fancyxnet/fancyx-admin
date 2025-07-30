@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AlipaySDKNet.Standard" Version="4.9.627" />
+		<PackageReference Include="Enums.NET" Version="5.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Fancyx.Core\Fancyx.Core.csproj" />
+	  <ProjectReference Include="..\Fancyx.Job\Fancyx.Job.csproj" />
+	  <ProjectReference Include="..\Fancyx.Logger\Fancyx.Logger.csproj" />
+	  <ProjectReference Include="..\Fancyx.Redis\Fancyx.Redis.csproj" />
+	  <ProjectReference Include="..\Fancyx.Repository\Fancyx.Repository.csproj" />
+	</ItemGroup>
+</Project>
