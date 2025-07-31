@@ -1,5 +1,6 @@
 ﻿using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
+using Fancyx.Admin.SharedService;
 using Fancyx.Core.Attributes;
 using Fancyx.Logger;
 using Fancyx.Shared.Consts;
@@ -16,10 +17,12 @@ namespace Fancyx.Admin.Controllers.System
     public class ConfigController : ControllerBase
     {
         private readonly IConfigService _configService;
+        private readonly ConfigSharedService _configSharedService;
 
-        public ConfigController(IConfigService configService)
+        public ConfigController(IConfigService configService, ConfigSharedService configSharedService)
         {
             _configService = configService;
+            _configSharedService = configSharedService;
         }
 
         [HttpPost("Add")]
@@ -55,6 +58,21 @@ namespace Fancyx.Admin.Controllers.System
         {
             await _configService.DeleteConfigAsync(id);
             return Result.Data(true);
+        }
+
+
+        [HttpGet("One")]
+        public async Task<AppResponse<string>> GetConfigAsync(string key)
+        {
+            var value = await _configSharedService.GetAsync(key);
+            return Result.Data(value);
+        }
+
+        [HttpGet("Group")]
+        public async Task<AppResponse<Dictionary<string, string>>> GetConfigByGroupAsync(string group)
+        {
+            Dictionary<string, string> dictionary = await _configSharedService.GetGroupAsync(group);
+            return Result.Data(dictionary);
         }
     }
 }

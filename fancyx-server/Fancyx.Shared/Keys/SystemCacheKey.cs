@@ -79,6 +79,6 @@
         /// </summary>
         /// <param name="phone"></param>
         /// <returns></returns>
-        public static string LoginSmsCode(string phone) => $"Admin:LoginSmsCode:{phone}";
+        public static string LoginSmsCode(string phone) => $"admin:login_sms_code:{phone}";
     }
 }
