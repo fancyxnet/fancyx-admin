@@ -30,8 +30,10 @@ namespace Fancyx.Core.Middlewares
                     {
                         if (!await checker.ExistTenantAsync(tenantId))
                         {
-                            logger.LogWarning("租户{tenantId}不存在", tenantId);
-                            await next(context);
+                            var errMsg = $"租户{tenantId}不存在";
+                            logger.LogWarning(errMsg);
+                            context.Response.StatusCode = 403;
+                            await context.Response.WriteAsJsonAsync(errMsg);
                             return;
                         }
                     }

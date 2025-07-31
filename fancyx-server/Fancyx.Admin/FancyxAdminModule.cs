@@ -92,11 +92,25 @@ namespace Fancyx.Admin
                         Type = ReferenceType.SecurityScheme
                     }
                 };
+                var tenantScheme = new OpenApiSecurityScheme
+                {
+                    Name = "X-Tenant",
+                    Description = "租户ID",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Reference = new OpenApiReference
+                    {
+                        Id = "X-Tenant",
+                        Type = ReferenceType.SecurityScheme,
+                    },
+                };
 
                 c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+                c.AddSecurityDefinition(tenantScheme.Reference.Id, tenantScheme);
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
-                    {securityScheme, Array.Empty<string>()}
+                    {securityScheme, Array.Empty<string>()},
+                    {tenantScheme, Array.Empty<string>()},
                 });
 
                 // 设置Swagger读取XML注释
