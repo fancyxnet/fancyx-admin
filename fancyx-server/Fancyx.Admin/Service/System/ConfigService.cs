@@ -42,7 +42,8 @@ namespace Fancyx.Admin.Service.System
             var rows = await _configRepository.Select
                 .WhereIf(!string.IsNullOrEmpty(dto.Name), x => x.Name.ToLower().Contains(dto.Name!.ToLower()))
                 .WhereIf(!string.IsNullOrEmpty(dto.Key), x => x.Key.ToLower().Contains(dto.Key!.ToLower()))
-                .OrderByDescending(x => x.CreationTime)
+                .OrderByDescending(string.IsNullOrEmpty(dto.SortProperty), x => x.CreationTime)
+                .OrderByPropertyName(dto.SortProperty, dto.IsAsecending)
                 .Count(out var total)
                 .Page(dto.Current, dto.PageSize)
                 .ToListAsync<ConfigListDto>();
