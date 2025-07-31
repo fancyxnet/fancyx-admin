@@ -25,6 +25,7 @@
 		<PackageReference Include="MQTTnet" Version="5.0.1.1416" />
 		<PackageReference Include="MQTTnet.Server" Version="5.0.1.1416" />
 		<PackageReference Include="MQTTnet.AspNetCore" Version="5.0.1.1416" />
+		<PackageReference Include="MiniExcel" Version="1.41.3" />
 	</ItemGroup>
 
 	<ItemGroup>

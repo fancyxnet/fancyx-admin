@@ -1,12 +1,15 @@
 using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Core.Attributes;
+using Fancyx.Core.Helpers;
 using Fancyx.Logger;
 using Fancyx.Shared.Consts;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+
+using MiniExcelLibs;
 
 namespace Fancyx.Admin.Controllers.System
 {
@@ -128,6 +131,23 @@ namespace Fancyx.Admin.Controllers.System
         {
             var data = await _userService.GetUserSimpleInfosAsync(keyword);
             return Result.Data(data);
+        }
+
+        /// <summary>
+        /// 导出用户列表
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpGet("export")]
+        [HasPermission("Sys.User.Export")]
+        [ApiAccessLog(operateName: "导出用户列表")]
+        public async Task<IActionResult> ExportUserListAsync([FromQuery] UserQueryDto dto)
+        {
+            var data = await _userService.ExportUserListAsync(dto);
+            var memoryStream = new MemoryStream();
+            memoryStream.SaveAs(data);
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            return File(memoryStream, MimeTypesHelper.Instance.GetMimeTypeByExtension("xlsx"), "用户列表.xlsx");
         }
     }
 }

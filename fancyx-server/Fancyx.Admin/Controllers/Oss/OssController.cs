@@ -54,7 +54,7 @@ namespace Fancyx.Admin.Controllers.Oss
                 IObjectStorageService objectStorageService = _objectStorageFactory.GetService(type);
                 var stream = await objectStorageService.DownloadAsync(fileName);
                 var name = Path.GetFileName(fileName);
-                var mimeType = MimeTypesMapHelper.Instance.GetMimeType(name);
+                var mimeType = MimeTypesHelper.Instance.GetMimeType(name);
                 return File(stream, mimeType, name);
             }
             catch (Exception)

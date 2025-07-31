@@ -1,10 +1,10 @@
 namespace Fancyx.Core.Helpers
 {
-    public class MimeTypesMapHelper
+    public class MimeTypesHelper
     {
-        private static readonly Lazy<MimeTypesMapHelper> lazyInstance = new(() => new MimeTypesMapHelper());
+        private static readonly Lazy<MimeTypesHelper> lazyInstance = new(() => new MimeTypesHelper());
 
-        public static MimeTypesMapHelper Instance => lazyInstance.Value;
+        public static MimeTypesHelper Instance => lazyInstance.Value;
 
         private readonly string _defaultExtension = "bin";
         private static readonly string _defaultMimeType = "application/octet-stream";
@@ -1032,6 +1032,11 @@ namespace Fancyx.Core.Helpers
             var index = mime.IndexOf('/');
             if (index == -1) return "other";
             return mime[..(index + 1)];
+        }
+
+        public string GetMimeTypeByExtension(string key)
+        {
+            return _mimeTypeMap.Value[key];
         }
     }
 }

@@ -147,5 +147,13 @@ namespace Fancyx.Admin.Service.System
                 .OrderBy(x => x.NickName)
                 .ToListAsync<UserSimpleInfoDto>();
         }
+
+        public Task<List<UserListDto>> ExportUserListAsync(UserQueryDto dto)
+        {
+            return _userRepository.Select
+                .WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.UserName.Contains(dto.UserName!))
+                .OrderByDescending(x => x.CreationTime)
+                .ToListAsync<UserListDto>();
+        }
     }
 }

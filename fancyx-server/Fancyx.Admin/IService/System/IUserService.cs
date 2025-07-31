@@ -60,5 +60,12 @@ namespace Fancyx.Admin.IService.System
         /// <param name="keyword">账号/昵称</param>
         /// <returns></returns>
         Task<List<UserSimpleInfoDto>> GetUserSimpleInfosAsync(string? keyword);
+
+        /// <summary>
+        /// 导出用户列表
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        Task<List<UserListDto>> ExportUserListAsync(UserQueryDto dto);
     }
 }
