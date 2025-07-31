@@ -10,6 +10,7 @@ using Fancyx.Job;
 using Fancyx.Logger;
 using Fancyx.Logger.Options;
 using Fancyx.ObjectStorage;
+using Fancyx.Payment;
 using Fancyx.Redis;
 using Fancyx.Repository;
 using Fancyx.Shared.Consts;
@@ -31,7 +32,8 @@ namespace Fancyx.Admin
         typeof(FancyxCapModule),
         typeof(FancyxLoggerModule),
         typeof(FancyxObjectStorageModule),
-        typeof(FancyxJobModule)
+        typeof(FancyxJobModule),
+        typeof(FancyxPaymentModule)
         )]
     public class FancyxAdminModule : ModuleBase
     {
