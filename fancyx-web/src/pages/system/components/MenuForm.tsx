@@ -137,7 +137,7 @@ const MenuForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
         <Form.Item label="菜单名称" name="title" rules={[{ required: true }, { max: 32 }]}>
           <Input placeholder="请输入菜单名称" />
         </Form.Item>
-        <Form.Item label="菜单类型" name="menuType" rules={[{ required: true }, { max: 64 }]}>
+        <Form.Item label="菜单类型" name="menuType" rules={[{ required: true }]}>
           <Radio.Group
             buttonStyle="solid"
             onChange={(e) => {

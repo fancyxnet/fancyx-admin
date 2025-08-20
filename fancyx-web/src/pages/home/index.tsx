@@ -1,4 +1,4 @@
-import { Card, Row, Col, Typography, Timeline, Button, Space, Tooltip, Tag, Divider, Image, Alert } from 'antd';
+import { Card, Row, Col, Typography, Timeline, Button, Space, Tooltip, Tag, Divider, Image } from 'antd';
 import {
   GithubOutlined,
   BookOutlined,
@@ -95,27 +95,6 @@ const HomePage = () => {
 
   return (
     <div className="home-page">
-      <div style={{ marginBottom: '20px' }}>
-        <Alert
-          message="作者正在找工作，有用人需求的老板与我联系，我的QQ：3805712581"
-          type="info"
-          showIcon
-          action={
-            <Space direction="vertical">
-              <Button
-                size="small"
-                danger
-                ghost
-                onClick={() => {
-                  window.open('https://gitee.com/fancyxnet/job-infomation.git');
-                }}
-              >
-                一键查看求职信息
-              </Button>
-            </Space>
-          }
-        />
-      </div>
       {/* 主要内容区域 */}
       <Row gutter={[24, 24]} className="main-content">
         {/* 左侧列 - 项目介绍和技术栈 */}
