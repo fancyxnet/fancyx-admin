@@ -60,7 +60,6 @@ namespace Fancyx.Admin.Controllers.System
             return Result.Data(true);
         }
 
-
         [HttpGet("One")]
         public async Task<AppResponse<string>> GetConfigAsync(string key)
         {

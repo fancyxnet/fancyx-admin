@@ -2,7 +2,6 @@
 using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Core.Attributes;
 using Fancyx.Logger;
-using Fancyx.Shared.Interfaces;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

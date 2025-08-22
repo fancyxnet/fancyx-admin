@@ -10,7 +10,7 @@ namespace Fancyx.Admin.Controllers.Monitor
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class MonitorLogController: ControllerBase
+    public class MonitorLogController : ControllerBase
     {
         private readonly IMonitorLogService _monitorLogService;
 

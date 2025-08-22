@@ -1,9 +1,11 @@
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
+
 using Fancyx.Core.Interfaces;
 using Fancyx.Repository.BaseEntity;
 using Fancyx.Shared.Enums;
+
 using FreeSql.DataAnnotations;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Fancyx.Admin.Entities.System
 {

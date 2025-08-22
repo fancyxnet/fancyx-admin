@@ -1,8 +1,10 @@
-using Fancyx.Repository.BaseEntity;
-using Fancyx.Core.Interfaces;
-using FreeSql.DataAnnotations;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+
+using Fancyx.Core.Interfaces;
+using Fancyx.Repository.BaseEntity;
+
+using FreeSql.DataAnnotations;
 
 namespace Fancyx.Admin.Entities.Organization
 {

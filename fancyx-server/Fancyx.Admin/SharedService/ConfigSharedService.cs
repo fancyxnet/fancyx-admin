@@ -2,16 +2,17 @@
 using Fancyx.Core.Interfaces;
 using Fancyx.Repository;
 using Fancyx.Shared.Keys;
-using FreeRedis;
+
+using StackExchange.Redis;
 
 namespace Fancyx.Admin.SharedService
 {
     public class ConfigSharedService : IScopedDependency
     {
         private readonly IRepository<ConfigDO> _configRepository;
-        private readonly IRedisClient _redisClient;
+        private readonly IDatabase _redisClient;
 
-        public ConfigSharedService(IRepository<ConfigDO> configRepository, IRedisClient redisClient)
+        public ConfigSharedService(IRepository<ConfigDO> configRepository, IDatabase redisClient)
         {
             _configRepository = configRepository;
             _redisClient = redisClient;
@@ -19,15 +20,15 @@ namespace Fancyx.Admin.SharedService
 
         public async Task<string?> GetAsync(string key)
         {
-            if (_redisClient.HExists(SystemCacheKey.SystemConfig, key))
+            if (await _redisClient.HashExistsAsync(SystemCacheKey.SystemConfig, key))
             {
-                return _redisClient.HGet(SystemCacheKey.SystemConfig, key);
+                return (string?)await _redisClient.HashGetAsync(SystemCacheKey.SystemConfig, key);
             }
 
             string? value = await _configRepository.Select.Where(x => x.Key.ToLower() == key.ToLower()).ToOneAsync(e => e.Value);
             if (value != null)
             {
-                await _redisClient.HSetAsync(SystemCacheKey.SystemConfig, key, value);
+                await _redisClient.HashSetAsync(SystemCacheKey.SystemConfig, key, value);
             }
             return value;
         }
@@ -35,16 +36,21 @@ namespace Fancyx.Admin.SharedService
         public async Task<Dictionary<string, string>> GetGroupAsync(string group)
         {
             string key = SystemCacheKey.SystemConfigGroup(group);
-            if (_redisClient.Exists(key))
+            if (await _redisClient.KeyExistsAsync(key))
             {
-                return await _redisClient.HGetAllAsync<string>(key);
+                var groups = await _redisClient.HashGetAllAsync(key);
+                var map = new Dictionary<string, string>();
+                foreach (var item in groups)
+                {
+                    map.Add((string)item.Name!, item.Value!);
+                }
             }
 
             var groupKeys = _configRepository.Select.Where(x => !string.IsNullOrEmpty(x.GroupKey) && x.GroupKey.ToLower() == group.ToLower())
                 .ToDictionary(k => k.Key, v => v.Value);
             if (groupKeys.Count > 0)
             {
-                await _redisClient.HSetAsync(key, groupKeys);
+                await _redisClient.HashSetAsync(key, groupKeys.Select(x => new HashEntry(x.Key, x.Value)).ToArray());
                 return groupKeys;
             }
             return groupKeys;
@@ -52,13 +58,13 @@ namespace Fancyx.Admin.SharedService
 
         public void ClearCache(string key)
         {
-            _redisClient.HDel(SystemCacheKey.SystemConfig, key);
+            _redisClient.HashDelete(SystemCacheKey.SystemConfig, key);
         }
 
         public void ClearGroupCache(string group)
         {
             string key = SystemCacheKey.SystemConfigGroup(group);
-            _redisClient.Del(key);
+            _redisClient.KeyDelete(key);
         }
     }
 }

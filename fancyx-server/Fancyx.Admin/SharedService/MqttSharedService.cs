@@ -1,10 +1,13 @@
 ﻿using Fancyx.Core.Interfaces;
+
+using MQTTnet;
 using MQTTnet.Protocol;
 using MQTTnet.Server;
-using MQTTnet;
-using Newtonsoft.Json.Serialization;
+
 using Newtonsoft.Json;
-using FreeRedis;
+using Newtonsoft.Json.Serialization;
+
+using StackExchange.Redis;
 
 namespace Fancyx.Admin.SharedService
 {
@@ -12,10 +15,10 @@ namespace Fancyx.Admin.SharedService
     {
         private readonly MqttServer mqttServer;
         private readonly IConfiguration configuration;
-        private readonly IRedisClient redisDb;
+        private readonly IDatabase redisDb;
         private readonly string clientId = "fancyx_admin_";
 
-        public MqttSharedService(MqttServer mqttServer, IConfiguration configuration, IRedisClient redisDb)
+        public MqttSharedService(MqttServer mqttServer, IConfiguration configuration, IDatabase redisDb)
         {
             this.mqttServer = mqttServer;
             this.configuration = configuration;
@@ -25,7 +28,7 @@ namespace Fancyx.Admin.SharedService
 
         public async Task ValidatingConnectionAsync(ValidatingConnectionEventArgs e)
         {
-            var isValidToken = await redisDb.ExistsAsync($"MqttToken:{e.UserName}"); //此处将userName作为token使用
+            var isValidToken = await redisDb.KeyExistsAsync($"MqttToken:{e.UserName}"); //此处将userName作为token使用
             var isValidAccount = e.UserName == configuration["Mqtt:UserName"] && e.Password == configuration["Mqtt:Password"];
             if (!(isValidToken || isValidAccount))
             {

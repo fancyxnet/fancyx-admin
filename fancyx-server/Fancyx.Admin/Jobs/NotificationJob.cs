@@ -3,9 +3,12 @@ using Fancyx.Admin.SharedService;
 using Fancyx.Core.AutoInject;
 using Fancyx.Job;
 using Fancyx.Repository;
-using FreeRedis;
+
 using Quartz;
+
 using RedLockNet.SERedis;
+
+using StackExchange.Redis;
 
 namespace Fancyx.Admin.Jobs
 {
@@ -16,10 +19,10 @@ namespace Fancyx.Admin.Jobs
         private readonly ILogger<NotificationJob> _logger;
         private readonly IRepository<NotificationDO> _repository;
         private readonly MqttSharedService _mqttService;
-        private readonly IRedisClient _database;
+        private readonly IDatabase _database;
         private readonly RedLockFactory redLockFactory;
 
-        public NotificationJob(ILogger<NotificationJob> logger, IRepository<NotificationDO> repository, MqttSharedService mqttService, IRedisClient database
+        public NotificationJob(ILogger<NotificationJob> logger, IRepository<NotificationDO> repository, MqttSharedService mqttService, IDatabase database
             , RedLockFactory redLockFactory)
         {
             _logger = logger;
@@ -51,9 +54,9 @@ namespace Fancyx.Admin.Jobs
                             var index = random.Next(0, curEmployeeNotis.Count);
                             var item = curEmployeeNotis[index];
                             var lastNotiKey = "LastNotification" + item.EmployeeId;
-                            if (await _database.ExistsAsync(lastNotiKey))
+                            if (await _database.KeyExistsAsync(lastNotiKey))
                             {
-                                var lastNotiId = await _database.GetAsync<string>(lastNotiKey);
+                                var lastNotiId = await _database.StringGetAsync(lastNotiKey);
                                 //随机取到了上条通知，就往后取一条
                                 if (lastNotiId == item.Id.ToString() && curEmployeeNotis.Count > 1)
                                 {
@@ -66,7 +69,7 @@ namespace Fancyx.Admin.Jobs
                             var isSuc = await _mqttService.PushAsync("Notification:" + item.EmployeeId, new { title = item.Title, content = item.Content, NoReadedCount = g.Value });
                             if (!isSuc) continue;
                             //上条通知的ID
-                            await _database.SetAsync("LastNotification" + item.EmployeeId, item.Id.ToString(), TimeSpan.FromMinutes(1));
+                            await _database.StringSetAsync("LastNotification" + item.EmployeeId, item.Id.ToString(), TimeSpan.FromMinutes(1));
                         }
                     }
                 }

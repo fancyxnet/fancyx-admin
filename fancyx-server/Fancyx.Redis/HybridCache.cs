@@ -1,24 +1,23 @@
-﻿
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
-using FreeRedis;
-
 using Microsoft.Extensions.Caching.Memory;
+
+using StackExchange.Redis;
 
 namespace Fancyx.Redis
 {
     internal class HybridCache : IHybridCache
     {
         private readonly IMemoryCache _memoryCache;
-        private readonly IRedisClient _redisClient;
+        private readonly IDatabase _redisClient;
         private readonly TimeSpan _defaultExpiration;
         private readonly ConcurrentDictionary<string, byte> _cacheKeys = new();
 
         public HybridCache(
             IMemoryCache memoryCache,
-            IRedisClient redisClient,
+            IDatabase redisClient,
             TimeSpan? defaultExpiration = null)
         {
             _memoryCache = memoryCache;
@@ -57,7 +56,7 @@ namespace Fancyx.Redis
             // 如果内存缓存没有，尝试从Redis获取
             if (mode == HybridCacheMode.RedisOnly || mode == HybridCacheMode.Both)
             {
-                var redisValue = await _redisClient.GetAsync(key);
+                var redisValue = (string?)await _redisClient.StringGetAsync(key);
                 if (redisValue != null)
                 {
                     var value = JsonSerializer.Deserialize<T>(redisValue);
@@ -87,7 +86,7 @@ namespace Fancyx.Redis
             if (mode == HybridCacheMode.RedisOnly || mode == HybridCacheMode.Both)
             {
                 var redisValue = JsonSerializer.Serialize(value);
-                await _redisClient.SetExAsync(key, (int)actualExpiration.TotalSeconds, redisValue);
+                await _redisClient.StringSetAsync(key, redisValue, actualExpiration);
             }
 
             if (mode == HybridCacheMode.MemoryOnly || mode == HybridCacheMode.Both)
@@ -111,7 +110,7 @@ namespace Fancyx.Redis
 
             if (mode == HybridCacheMode.RedisOnly || mode == HybridCacheMode.Both)
             {
-                await _redisClient.DelAsync(key);
+                await _redisClient.KeyDeleteAsync(key);
             }
 
             _cacheKeys.Remove(key, out var _);
@@ -140,7 +139,7 @@ namespace Fancyx.Redis
 
             if (mode == HybridCacheMode.RedisOnly || mode == HybridCacheMode.Both)
             {
-                return await _redisClient.ExistsAsync(key);
+                return await _redisClient.KeyExistsAsync(key);
             }
 
             return false;

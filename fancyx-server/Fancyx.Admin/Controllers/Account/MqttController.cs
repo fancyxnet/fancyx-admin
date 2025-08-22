@@ -1,7 +1,9 @@
 ﻿using Fancyx.Core.Helpers;
-using FreeRedis;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
+using StackExchange.Redis;
 
 namespace Fancyx.Admin.Controllers.Account
 {
@@ -10,9 +12,9 @@ namespace Fancyx.Admin.Controllers.Account
     [Route("api/[controller]/[action]")]
     public class MqttController : ControllerBase
     {
-        private readonly IRedisClient redisDb;
+        private readonly IDatabase redisDb;
 
-        public MqttController(IRedisClient redisDb)
+        public MqttController(IDatabase redisDb)
         {
             this.redisDb = redisDb;
         }
@@ -24,19 +26,20 @@ namespace Fancyx.Admin.Controllers.Account
 
             var codeKey = $"MqttTokenCode:{code}";
 
-            if (await redisDb.ExistsAsync(codeKey))
+            if (await redisDb.KeyExistsAsync(codeKey))
             {
-                var ttl = await redisDb.TtlAsync(codeKey);
-                if (ttl > 60)
+                var ttl = await redisDb.KeyTimeToLiveAsync(codeKey);
+                var ttlValue = ttl.HasValue ? ttl.Value.Seconds : 0;
+                if (ttlValue > 60)
                 {
-                    return Result.Data(new MqttToken { Token = redisDb.Get<string>(codeKey), Expired = TimeHelper.Instance.GetCurrentTimestamp() + ttl });
+                    return Result.Data(new MqttToken { Token = redisDb.StringGet(codeKey), Expired = ttlValue });
                 }
             }
 
             var token = Guid.NewGuid().ToString();
             var expired = TimeHelper.Instance.GetCurrentTimestamp() + 3600;
-            await redisDb.SetAsync($"MqttToken:{token}", expired, TimeSpan.FromHours(1));
-            await redisDb.SetAsync(codeKey, token, TimeSpan.FromHours(1));
+            await redisDb.StringSetAsync($"MqttToken:{token}", expired, TimeSpan.FromHours(1));
+            await redisDb.StringSetAsync(codeKey, token, TimeSpan.FromHours(1));
             return Result.Data(new MqttToken { Expired = expired, Token = token });
         }
     }

@@ -1,11 +1,14 @@
-﻿using Fancyx.Core.AutoInject;
-using FreeRedis;
-using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using RedLockNet.SERedis.Configuration;
-using RedLockNet.SERedis;
-using StackExchange.Redis;
+﻿using Fancyx.Core.Authorization;
+using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
+
+using Microsoft.Extensions.DependencyInjection;
+
+using RedLockNet.SERedis;
+using RedLockNet.SERedis.Configuration;
+
+using StackExchange.Redis;
+using StackExchange.Redis.KeyspaceIsolation;
 
 namespace Fancyx.Redis
 {
@@ -19,14 +22,18 @@ namespace Fancyx.Redis
         {
             context.Services.AddMemoryCache();
 
-            //FreeRedis
-            var redisClient = new RedisClient((ConnectionStringBuilder)context.Configuration["Redis:Connection"])
+            //StackExchange.Redis
+            var connection = ConnectionMultiplexer.Connect(context.Configuration["Redis:Connection"]!);
+            context.Services.AddSingleton<ConnectionMultiplexer>(r => connection);
+            context.Services.AddSingleton<IDatabase>(r =>
             {
-                Serialize = obj => JsonConvert.SerializeObject(obj),
-                Deserialize = (json, type) => JsonConvert.DeserializeObject(json, type)
-            };
-            redisClient.Interceptors.Add(() => new RedisClientInterceptor());
-            context.Services.AddSingleton<IRedisClient>(sp => redisClient);
+                var db = connection.GetDatabase(0);
+                if (!string.IsNullOrEmpty(TenantManager.Current))
+                {
+                    return db.WithKeyPrefix(TenantManager.Current);
+                }
+                return db;
+            });
             context.Services.AddSingleton<IHybridCache, HybridCache>();
 
             //RedLock

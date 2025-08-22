@@ -1,6 +1,7 @@
 ﻿using Fancyx.Admin.IService.Payment;
 using Fancyx.Admin.IService.Payment.Dtos;
 using Fancyx.Core.Attributes;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fancyx.Admin.Controllers.Payment

@@ -5,22 +5,22 @@ using Fancyx.Repository;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Keys;
 
-using FreeRedis;
-
 using FreeSql;
 
 using Microsoft.Extensions.Caching.Memory;
+
+using StackExchange.Redis;
 
 namespace Fancyx.Admin.Service.Monitor
 {
     public class OnlineUserService : IOnlineUserService
     {
         private readonly IRepository<LoginLogDO> _loginLogRepository;
-        private readonly IRedisClient _redisDb;
+        private readonly IDatabase _redisDb;
         private readonly IRepository<UserDO> _userRepository;
         private readonly IMemoryCache _memoryCache;
 
-        public OnlineUserService(IRepository<LoginLogDO> loginLogRepository, IRedisClient redisDb, IRepository<UserDO> userRepository, IMemoryCache memoryCache)
+        public OnlineUserService(IRepository<LoginLogDO> loginLogRepository, IDatabase redisDb, IRepository<UserDO> userRepository, IMemoryCache memoryCache)
         {
             _loginLogRepository = loginLogRepository;
             _redisDb = redisDb;
@@ -46,7 +46,7 @@ namespace Fancyx.Admin.Service.Monitor
                 var user = users.FirstOrDefault(x => x.UserName == loginLog.UserName);
                 if (user == null) continue;
 
-                if (!string.IsNullOrEmpty(loginLog.SessionId) && await _redisDb.ExistsAsync(SystemCacheKey.AccessToken(user.Id, loginLog.SessionId)))
+                if (!string.IsNullOrEmpty(loginLog.SessionId) && await _redisDb.KeyExistsAsync(SystemCacheKey.AccessToken(user.Id, loginLog.SessionId)))
                 {
                     list.Add(new OnlineUserResultDto
                     {
@@ -72,10 +72,10 @@ namespace Fancyx.Admin.Service.Monitor
         public async Task LogoutAsync(string key)
         {
             //移除访问token
-            await _redisDb.DelAsync(SystemCacheKey.AccessToken(key));
+            await _redisDb.KeyDeleteAsync(SystemCacheKey.AccessToken(key));
             _memoryCache.Remove(SystemCacheKey.AccessToken(key));
             //移除刷新token
-            await _redisDb.DelAsync(SystemCacheKey.RefreshToken(key));
+            await _redisDb.KeyDeleteAsync(SystemCacheKey.RefreshToken(key));
         }
     }
 }

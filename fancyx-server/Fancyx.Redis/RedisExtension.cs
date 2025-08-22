@@ -1,22 +1,23 @@
-﻿using FreeRedis;
+﻿using StackExchange.Redis;
 
 namespace Fancyx.Redis
 {
     public static class RedisExtension
     {
-        public static async Task<string[]?> KeyPatternAsync(this IRedisClient database, string pattern)
+        public static async Task<string[]?> KeyPatternAsync(this IDatabase database, string pattern)
         {
-            return (string[])await database.EvalAsync("local res = redis.call('KEYS', @keypattern) return res");
+            var redisResult = await database.ScriptEvaluateAsync("local res = redis.call('KEYS', @keypattern) return res");
+            return ((string[]?)redisResult);
         }
 
-        public static async Task KeyDeleteByPatternAsync(this IRedisClient database, string pattern)
+        public static async Task KeyDeleteByPatternAsync(this IDatabase database, string pattern)
         {
             var keys = await database.KeyPatternAsync(pattern);
             if (keys != null)
             {
                 foreach (var key in keys)
                 {
-                    await database.DelAsync(key);
+                    await database.KeyDeleteAsync(key);
                 }
             }
         }
