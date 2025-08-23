@@ -1,5 +1,4 @@
-﻿using Fancyx.Core.Authorization;
-using Fancyx.Core.AutoInject;
+﻿using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -8,7 +7,6 @@ using RedLockNet.SERedis;
 using RedLockNet.SERedis.Configuration;
 
 using StackExchange.Redis;
-using StackExchange.Redis.KeyspaceIsolation;
 
 namespace Fancyx.Redis
 {
@@ -23,16 +21,10 @@ namespace Fancyx.Redis
             context.Services.AddMemoryCache();
 
             //StackExchange.Redis
-            var connection = ConnectionMultiplexer.Connect(context.Configuration["Redis:Connection"]!);
-            context.Services.AddSingleton<ConnectionMultiplexer>(r => connection);
             context.Services.AddSingleton<IDatabase>(r =>
             {
-                var db = connection.GetDatabase(0);
-                if (!string.IsNullOrEmpty(TenantManager.Current))
-                {
-                    return db.WithKeyPrefix(TenantManager.Current);
-                }
-                return db;
+                var connection = ConnectionMultiplexer.Connect(context.Configuration["Redis:Connection"]!);
+                return connection.GetDatabase(0);
             });
             context.Services.AddSingleton<IHybridCache, HybridCache>();
 

@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Fancyx.Core\Fancyx.Core.csproj" />
+  </ItemGroup>
+
 </Project>
