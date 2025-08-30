@@ -14,6 +14,7 @@ import { getPositionOptions } from '@/api/organization/position.ts';
 import { Patterns } from '@/utils/globalValue.ts';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import useApp from 'antd/es/app/useApp';
+import dayjs from 'dayjs';
 
 interface ModalProps {
   refresh?: () => void;
@@ -63,7 +64,14 @@ const EmployeeForm = forwardRef<EmployeeModalRef, ModalProps>((props, ref) => {
       getEmployeeInfo(row.id).then((res) => {
         setLoading(false);
         setRow(res.data);
+        setEmployeeStatus(res.data.status);
         form.setFieldsValue(res.data);
+        if (res.data.inTime) {
+          form.setFieldValue('inTime', dayjs(res.data.inTime));
+        }
+        if (res.data.outTime) {
+          form.setFieldValue('outTime', dayjs(res.data.outTime));
+        }
       });
     } else {
       setRow(null);
@@ -126,6 +134,11 @@ const EmployeeForm = forwardRef<EmployeeModalRef, ModalProps>((props, ref) => {
         wrapperCol={{ flex: 1 }}
         colon={false}
         onFinish={onFinish}
+        onValuesChange={(changedValues) => {
+          if (changedValues.status) {
+            setEmployeeStatus(changedValues.status);
+          }
+        }}
       >
         <Row>
           <Col span={12}>
@@ -164,9 +177,6 @@ const EmployeeForm = forwardRef<EmployeeModalRef, ModalProps>((props, ref) => {
                   { label: '在职', value: 1 },
                   { label: '离职', value: 2 },
                 ]}
-                onChange={(e) => {
-                  setEmployeeStatus(e.target.value);
-                }}
               />
             </Form.Item>
           </Col>

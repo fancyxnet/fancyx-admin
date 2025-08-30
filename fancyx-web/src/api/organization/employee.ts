@@ -118,6 +118,7 @@ export interface EmployeeListDto {
   address: string | null;
   email: string | null;
   inTime: string | null;
+  outTime: string | null;
   status: number;
   userId: string;
   deptId: string;
