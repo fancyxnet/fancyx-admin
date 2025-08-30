@@ -1,0 +1,10 @@
+@use '../../../index.scss' as vars;
+
+.dept-list .ant-list-item {
+  padding: 6px 0 !important;
+  
+  .dept-text:hover {
+    cursor: pointer;
+    color: vars.$fancyx-primary-color;
+  }
+}

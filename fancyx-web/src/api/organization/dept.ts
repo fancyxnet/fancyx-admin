@@ -33,6 +33,15 @@ export function deleteDept(id: string) {
   return httpClient.delete<string, AppResponse<boolean>>('/api/dept/delete/' + id);
 }
 
+/**
+ * 获取部门简单信息
+ * @param keyword 部门名称/编码
+ * @returns
+ */
+export function getDeptSimpleInfos(keyword?: string) {
+  return httpClient.get<string, AppResponse<DeptSimpleInfoDto[]>>('/api/dept/getDeptSimpleInfos', { params: { keyword } });
+}
+
 export interface DeptDto {
   id?: string | null;
   name: string;
@@ -66,4 +75,10 @@ export interface DeptListDto {
   phone: string | null;
   parentId: string | null;
   children?: DeptListDto[];
+}
+
+export interface DeptSimpleInfoDto {
+  id: string;
+  name: string;
+  code: string;
 }

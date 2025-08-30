@@ -32,5 +32,12 @@ namespace Fancyx.Admin.IService.Organization
         /// <param name="id"></param>
         /// <returns></returns>
         Task<bool> DeleteDeptAsync(Guid id);
+
+        /// <summary>
+        /// 获取部门简单信息列表
+        /// </summary>
+        /// <param name="keyword"></param>
+        /// <returns></returns>
+        Task<List<DeptSimpleInfoDto>> GetDeptSimpleInfosAsync(string? keyword);
     }
 }

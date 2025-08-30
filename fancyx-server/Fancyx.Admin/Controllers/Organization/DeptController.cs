@@ -75,5 +75,13 @@ namespace Fancyx.Admin.Controllers.Organization
             await _deptService.DeleteDeptAsync(id);
             return Result.Ok();
         }
+
+        [HttpGet("GetDeptSimpleInfos")]
+        [HasPermission("Org.Dept.GetDeptSimpleInfos")]
+        public async Task<AppResponse<List<DeptSimpleInfoDto>>> GetDeptSimpleInfosAsync([FromQuery] string? keyword)
+        {
+            var data = await _deptService.GetDeptSimpleInfosAsync(keyword);
+            return Result.Data(data);
+        }
     }
 }

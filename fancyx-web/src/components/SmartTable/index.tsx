@@ -1,6 +1,6 @@
 import { Button, Card, Dropdown, Form, type MenuProps, Space, Table, type TablePaginationConfig, Tooltip } from 'antd';
 import React, { type ForwardedRef, forwardRef, useEffect, useImperativeHandle, useState } from 'react';
-import type { SmartTableProps, SmartTableRef } from './type';
+import type { SmartTableColumnType, SmartTableProps, SmartTableRef } from './type';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import { ColumnHeightOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
@@ -103,6 +103,33 @@ const SmartTable = forwardRef<SmartTableRef, SmartTableProps<any>>(
       selectedRowKeys,
       onChange: onSelectChange,
     };
+    const withEmptyValue = (columns: SmartTableColumnType[]) => {
+      return columns.map((column) => {
+        const originalRender = column.render;
+
+        return {
+          ...column,
+          render: (value: any, record: any, index: number) => {
+            // 如果没有值，显示默认占位符
+            if (value === null || value === undefined || value === '') {
+              value = '--';
+            }
+
+            // 如果原本有自定义渲染函数，先执行它
+            if (originalRender) {
+              const renderedValue = originalRender(value, record, index);
+              // 如果渲染结果是假值，也显示占位符
+              if (renderedValue === null || renderedValue === undefined || renderedValue === '') {
+                return <span>--</span>;
+              }
+              return renderedValue;
+            }
+
+            return <span>{value}</span>;
+          },
+        };
+      });
+    };
 
     return (
       <div className="fancyx-table-wrapper">
@@ -167,7 +194,7 @@ const SmartTable = forwardRef<SmartTableRef, SmartTableProps<any>>(
           <Table
             {...restProps}
             dataSource={dataSource}
-            columns={columns}
+            columns={withEmptyValue(columns)}
             rowKey={props.rowKey ?? 'id'}
             size={tableSize}
             pagination={{

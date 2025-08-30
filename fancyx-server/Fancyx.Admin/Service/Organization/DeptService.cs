@@ -3,7 +3,6 @@ using Fancyx.Admin.IService.Organization;
 using Fancyx.Admin.IService.Organization.Dtos;
 using Fancyx.Core.Helpers;
 using Fancyx.Repository;
-using Fancyx.Shared.Models;
 
 namespace Fancyx.Admin.Service.Organization
 {
@@ -108,7 +107,8 @@ namespace Fancyx.Admin.Service.Organization
             var curatorIds = depts.Select(d => d.CuratorId).Where(id => id.HasValue).Distinct().ToList();
 
             if (curatorIds.Any())
-            {                var employees = await _employeeRepository
+            {
+                var employees = await _employeeRepository
                     .Where(e => curatorIds.Contains(e.Id))
                     .ToListAsync(e => new { e.Id, e.Name });
 
@@ -162,6 +162,25 @@ namespace Fancyx.Admin.Service.Organization
             }
             await _deptRepository.UpdateAsync(entity);
             return true;
+        }
+
+        public async Task<List<DeptSimpleInfoDto>> GetDeptSimpleInfosAsync(string? keyword)
+        {
+            var depts = await _deptRepository.WhereIf(!string.IsNullOrEmpty(keyword), x => x.Name.StartsWith(keyword!) || x.Code.StartsWith(keyword!))
+                .ToListAsync(x => new { x.Id, x.Name, x.Code, x.ParentId, x.Sort });
+            var list = new List<DeptSimpleInfoDto>();
+            //顶级部门放前面
+            var topDepts = depts.Where(x => !x.ParentId.HasValue || x.ParentId == Guid.Empty).OrderBy(x => x.Sort).ThenBy(x => x.Name).ToList();
+            topDepts.ForEach(x =>
+            {
+                list.Add(new DeptSimpleInfoDto { Id = x.Id, Name = x.Name, Code = x.Code });
+            });
+            //子部门放后面
+            depts.Where(x => x.ParentId.HasValue).OrderBy(x => x.Sort).ThenBy(x => x.Name).ToList().ForEach(x =>
+            {
+                list.Add(new DeptSimpleInfoDto { Id = x.Id, Name = x.Name, Code = x.Code });
+            });
+            return list;
         }
     }
 }
