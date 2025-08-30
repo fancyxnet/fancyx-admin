@@ -20,6 +20,7 @@ const AssignMenuForm = forwardRef<AssignMenuModalRef, ModalProps>((_, ref) => {
   const [allKeys, setAllKeys] = useState<string[]>();
   const [expandKeys, setExpandKeys] = useState<string[]>();
   const { message } = useApp();
+  const [checkStrictly, setCheckStrictly] = useState<boolean>(true);
 
   useImperativeHandle(ref, () => ({
     openModal,
@@ -55,7 +56,11 @@ const AssignMenuForm = forwardRef<AssignMenuModalRef, ModalProps>((_, ref) => {
       form.resetFields();
     });
   };
-  const treeCheck = (checkKeys: string[]) => {
+  const treeCheck = (checkKeys: string[], info: any) => {
+    if (!checkStrictly) {
+      setRoleMenuIds(info.checkedNodes.map((node: any) => node.key));
+      return;
+    }
     setRoleMenuIds(checkKeys);
   };
 
@@ -89,6 +94,16 @@ const AssignMenuForm = forwardRef<AssignMenuModalRef, ModalProps>((_, ref) => {
                   }}
                 />
               </div>
+              <div className="ml-20 mr-5">父子关联</div>
+              <div>
+                <Switch
+                  checkedChildren="是"
+                  unCheckedChildren="否"
+                  onClick={(checked: boolean) => {
+                    setCheckStrictly(!checked);
+                  }}
+                />
+              </div>
             </div>
             <Divider />
             <div
@@ -100,10 +115,10 @@ const AssignMenuForm = forwardRef<AssignMenuModalRef, ModalProps>((_, ref) => {
               <Tree
                 checkable
                 treeData={menuOptions}
-                checkStrictly={true}
+                checkStrictly={checkStrictly}
                 expandedKeys={expandKeys}
                 checkedKeys={roleMenuIds ?? []}
-                onCheck={({ checked }: any) => treeCheck(checked as string[])}
+                onCheck={({ checked }: any, info) => treeCheck(checked, info)}
                 onExpand={(expandKeys) => setExpandKeys(expandKeys as string[])}
               />
             </div>
