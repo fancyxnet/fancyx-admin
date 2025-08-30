@@ -110,11 +110,6 @@ const SmartTable = forwardRef<SmartTableRef, SmartTableProps<any>>(
         return {
           ...column,
           render: (value: any, record: any, index: number) => {
-            // 如果没有值，显示默认占位符
-            if (value === null || value === undefined || value === '') {
-              value = '--';
-            }
-
             // 如果原本有自定义渲染函数，先执行它
             if (originalRender) {
               const renderedValue = originalRender(value, record, index);
@@ -123,6 +118,10 @@ const SmartTable = forwardRef<SmartTableRef, SmartTableProps<any>>(
                 return <span>--</span>;
               }
               return renderedValue;
+            }
+            // 如果没有值，显示默认占位符
+            if (value === null || value === undefined || value === '') {
+              value = '--';
             }
 
             return <span>{value}</span>;
