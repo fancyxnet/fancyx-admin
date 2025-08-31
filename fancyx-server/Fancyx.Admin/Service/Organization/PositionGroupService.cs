@@ -11,7 +11,8 @@ namespace Fancyx.Admin.Service.Organization
         private readonly IRepository<PositionGroupDO> _positionGroupRepository;
         private readonly IRepository<PositionDO> _positionRepository;
 
-        public PositionGroupService(IRepository<PositionGroupDO> positionGroupRepository, IRepository<PositionDO> positionRepository)
+        public PositionGroupService(IRepository<PositionGroupDO> positionGroupRepository,
+            IRepository<PositionDO> positionRepository)
         {
             _positionGroupRepository = positionGroupRepository;
             _positionRepository = positionRepository;
@@ -26,6 +27,7 @@ namespace Fancyx.Admin.Service.Organization
                 var all = await _positionGroupRepository.Select.ToListAsync();
                 entity.ParentIds = GetParentIds(all, entity.ParentId.Value);
             }
+
             await _positionGroupRepository.InsertAsync(entity);
             return true;
         }
@@ -39,11 +41,18 @@ namespace Fancyx.Admin.Service.Organization
 
         public async Task<bool> DeletePositionGroupAsync(Guid id)
         {
+            var hasChildren = await _positionGroupRepository.Select.AnyAsync(x => x.ParentId == id);
+            if (hasChildren)
+            {
+                throw new BusinessException("存在子分组，不能删除");
+            }
+
             var hasPositions = await _positionRepository.Select.AnyAsync(x => x.GroupId == id);
             if (hasPositions)
             {
                 throw new BusinessException(message: "分组下有职位，不能删除");
             }
+
             await _positionGroupRepository.DeleteAsync(x => x.Id == id);
             return true;
         }
@@ -76,6 +85,7 @@ namespace Fancyx.Admin.Service.Organization
                 var all = await _positionGroupRepository.Select.ToListAsync();
                 entity.ParentIds = GetParentIds(all, entity.ParentId.Value);
             }
+
             await _positionGroupRepository.UpdateAsync(entity);
             return true;
         }

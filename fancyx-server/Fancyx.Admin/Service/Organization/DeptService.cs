@@ -34,6 +34,7 @@ namespace Fancyx.Admin.Service.Organization
                 entity.ParentIds = GetParentIds(all, entity.ParentId.Value, ref layer);
                 entity.Layer = layer;
             }
+
             await _deptRepository.InsertAsync(entity);
             return true;
         }
@@ -48,6 +49,12 @@ namespace Fancyx.Admin.Service.Organization
 
         public async Task<bool> DeleteDeptAsync(Guid id)
         {
+            var hasChildren = await _deptRepository.Where(x => x.ParentId == id).AnyAsync();
+            if (hasChildren)
+            {
+                throw new BusinessException("存在子部门，无法删除");
+            }
+
             var hasEmployees = await _employeeRepository.Select.AnyAsync(x => x.DeptId == id);
             if (hasEmployees) throw new BusinessException(message: "部门下存在员工，不能删除");
             await _deptRepository.DeleteAsync(x => id == x.Id);
@@ -57,7 +64,7 @@ namespace Fancyx.Admin.Service.Organization
         public async Task<List<DeptListDto>> GetDeptListAsync(DeptQueryDto dto)
         {
             bool hasFilter = !string.IsNullOrEmpty(dto.Name) || !string.IsNullOrEmpty(dto.Code)
-                || dto.Status > 0;
+                                                             || dto.Status > 0;
             if (hasFilter)
             {
                 var filter = await _deptRepository
@@ -72,8 +79,10 @@ namespace Fancyx.Admin.Service.Organization
 
                 return result;
             }
+
             var all = await _deptRepository.Select.OrderBy(x => x.ParentIds).ToListAsync();
-            var tree = AutoMapperHelper.Instance.Map<List<DeptDO>, List<DeptListDto>>(all.Where(x => x.ParentId == null).OrderBy(t => t.Sort).ToList());
+            var tree = AutoMapperHelper.Instance.Map<List<DeptDO>, List<DeptListDto>>(all.Where(x => x.ParentId == null)
+                .OrderBy(t => t.Sort).ToList());
 
             // Add curator names for all departments
             await AddCuratorNames(tree); // ++
@@ -85,7 +94,9 @@ namespace Fancyx.Admin.Service.Organization
 
             List<DeptListDto>? getChildren(Guid id)
             {
-                var children = AutoMapperHelper.Instance.Map<List<DeptDO>, List<DeptListDto>>(all.Where(x => x.ParentId == id).ToList());
+                var children =
+                    AutoMapperHelper.Instance.Map<List<DeptDO>, List<DeptListDto>>(all.Where(x => x.ParentId == id)
+                        .ToList());
                 if (children.Count <= 0) return null;
 
                 // Add curator names for child departments
@@ -129,10 +140,12 @@ namespace Fancyx.Admin.Service.Organization
             if (!dto.Id.HasValue) throw new ArgumentNullException(nameof(dto.Id));
 
             var entity = await _deptRepository.Where(x => x.Id == dto.Id).FirstAsync();
-            if (!entity.Code.Equals(dto.Code, StringComparison.CurrentCultureIgnoreCase) && await _deptRepository.Select.AnyAsync(x => x.Code.ToLower() == dto.Code!.ToLower()))
+            if (!entity.Code.Equals(dto.Code, StringComparison.CurrentCultureIgnoreCase) &&
+                await _deptRepository.Select.AnyAsync(x => x.Code.ToLower() == dto.Code!.ToLower()))
             {
                 throw new BusinessException(message: "部门编号已存在");
             }
+
             if (dto.ParentId == entity.Id)
             {
                 throw new BusinessException(message: "不能选择自己为上级部门");
@@ -149,7 +162,8 @@ namespace Fancyx.Admin.Service.Organization
             entity.ParentId = dto.ParentId;
             if (entity.ParentId.HasValue)
             {
-                var parentIsSub = await _deptRepository.Where(x => x.Id == entity.ParentId.Value && x.ParentId == entity.Id).AnyAsync();
+                var parentIsSub = await _deptRepository
+                    .Where(x => x.Id == entity.ParentId.Value && x.ParentId == entity.Id).AnyAsync();
                 if (parentIsSub)
                 {
                     throw new BusinessException("不能选择子部门作为上级部门");
@@ -160,21 +174,21 @@ namespace Fancyx.Admin.Service.Organization
                 entity.ParentIds = GetParentIds(all, entity.ParentId.Value, ref layer);
                 entity.Layer = layer;
             }
+
             await _deptRepository.UpdateAsync(entity);
             return true;
         }
 
         public async Task<List<DeptSimpleInfoDto>> GetDeptSimpleInfosAsync(string? keyword)
         {
-            var depts = await _deptRepository.WhereIf(!string.IsNullOrEmpty(keyword), x => x.Name.StartsWith(keyword!) || x.Code.StartsWith(keyword!))
+            var depts = await _deptRepository.WhereIf(!string.IsNullOrEmpty(keyword),
+                    x => x.Name.StartsWith(keyword!) || x.Code.StartsWith(keyword!))
                 .ToListAsync(x => new { x.Id, x.Name, x.Code, x.ParentId, x.Sort });
             var list = new List<DeptSimpleInfoDto>();
             //顶级部门放前面
-            var topDepts = depts.Where(x => !x.ParentId.HasValue || x.ParentId == Guid.Empty).OrderBy(x => x.Sort).ThenBy(x => x.Name).ToList();
-            topDepts.ForEach(x =>
-            {
-                list.Add(new DeptSimpleInfoDto { Id = x.Id, Name = x.Name, Code = x.Code });
-            });
+            var topDepts = depts.Where(x => !x.ParentId.HasValue || x.ParentId == Guid.Empty).OrderBy(x => x.Sort)
+                .ThenBy(x => x.Name).ToList();
+            topDepts.ForEach(x => { list.Add(new DeptSimpleInfoDto { Id = x.Id, Name = x.Name, Code = x.Code }); });
             //子部门放后面
             depts.Where(x => x.ParentId.HasValue).OrderBy(x => x.Sort).ThenBy(x => x.Name).ToList().ForEach(x =>
             {

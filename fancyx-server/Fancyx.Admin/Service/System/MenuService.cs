@@ -6,7 +6,6 @@ using Fancyx.Core.Helpers;
 using Fancyx.Core.Utils;
 using Fancyx.Repository;
 using Fancyx.Shared.Enums;
-
 using FreeSql;
 
 namespace Fancyx.Admin.Service.System
@@ -26,10 +25,12 @@ namespace Fancyx.Admin.Service.System
             {
                 throw new BusinessException("菜单的路由不能为空");
             }
+
             if (dto.IsExternal && !StringUtils.IsValidUrlStrict(dto.Path))
             {
                 throw new BusinessException("外链地址不合法");
             }
+
             if (dto.ParentId.HasValue)
             {
                 var parentMenu = await _menuRepository.Where(x => x.Id == dto.ParentId).FirstAsync();
@@ -38,11 +39,14 @@ namespace Fancyx.Admin.Service.System
                     throw new BusinessException(message: "菜单父级不能是按钮");
                 }
             }
-            var isExist = await _menuRepository.Select.AnyAsync(x => x.Path != null && dto.Path != null && x.Path.ToLower() == dto.Path.ToLower());
+
+            var isExist = await _menuRepository.Select.AnyAsync(x =>
+                x.Path != null && dto.Path != null && x.Path.ToLower() == dto.Path.ToLower());
             if (isExist)
             {
                 throw new BusinessException(message: $"已存在【{dto.Path}】菜单路由");
             }
+
             var entity = AutoMapperHelper.Instance.Map<MenuDto, MenuDO>(dto);
             await _menuRepository.InsertAsync(entity);
             return true;
@@ -50,6 +54,13 @@ namespace Fancyx.Admin.Service.System
 
         public async Task<bool> DeleteMenusAsync(Guid[] ids)
         {
+            var hasChildren =
+                await _menuRepository.Select.AnyAsync(x => x.ParentId.HasValue && ids.Contains(x.ParentId.Value));
+            if (hasChildren)
+            {
+                throw new BusinessException("存在子菜单，无法删除");
+            }
+
             await _menuRepository.DeleteAsync(x => ids.Contains(x.Id));
             return true;
         }
@@ -59,10 +70,13 @@ namespace Fancyx.Admin.Service.System
             //是否过滤
             var isFilter = !string.IsNullOrEmpty(dto.Title) || !string.IsNullOrEmpty(dto.Path);
             var all = await _menuRepository
-                .WhereIf(!string.IsNullOrEmpty(dto.Title), x => !string.IsNullOrEmpty(x.Title) && x.Title.Contains(dto.Title!))
-                .WhereIf(!string.IsNullOrEmpty(dto.Path), x => !string.IsNullOrEmpty(x.Path) && x.Path.Contains(dto.Path!))
+                .WhereIf(!string.IsNullOrEmpty(dto.Title),
+                    x => !string.IsNullOrEmpty(x.Title) && x.Title.Contains(dto.Title!))
+                .WhereIf(!string.IsNullOrEmpty(dto.Path),
+                    x => !string.IsNullOrEmpty(x.Path) && x.Path.Contains(dto.Path!))
                 .ToListAsync();
-            var top = all.Where(x => isFilter || !x.ParentId.HasValue || x.ParentId == Guid.Empty).OrderBy(x => x.Sort).ToList();
+            var top = all.Where(x => isFilter || !x.ParentId.HasValue || x.ParentId == Guid.Empty).OrderBy(x => x.Sort)
+                .ToList();
             var topMap = AutoMapperHelper.Instance.Map<List<MenuDO>, List<MenuListDto>>(top);
             if (isFilter) return topMap;
             foreach (var item in topMap)
@@ -79,22 +93,26 @@ namespace Fancyx.Admin.Service.System
                 {
                     item.Children = getChildren(item.Id);
                 }
+
                 return childrenMap;
             }
 
             return topMap;
         }
 
-        public async Task<(string[] keys, List<MenuOptionTreeDto> tree)> GetMenuOptionsAsync(bool onlyMenu, string? keyword)
+        public async Task<(string[] keys, List<MenuOptionTreeDto> tree)> GetMenuOptionsAsync(bool onlyMenu,
+            string? keyword)
         {
             var isKeywordSearch = !string.IsNullOrEmpty(keyword);
-            var all = await _menuRepository.WhereIf(onlyMenu, x => x.MenuType == MenuType.Folder || x.MenuType == MenuType.Menu)
+            var all = await _menuRepository
+                .WhereIf(onlyMenu, x => x.MenuType == MenuType.Folder || x.MenuType == MenuType.Menu)
                 .WhereIf(isKeywordSearch, x => x.Title != null && x.Title.Contains(keyword!)).ToListAsync();
             var keys = all.Select(x => x.Id.ToString()).ToArray();
 
             if (isKeywordSearch)
             {
-                var list = all.Select(x => new MenuOptionTreeDto() { Key = x.Id.ToString(), Title = x.Title, MenuType = (int)x.MenuType }).ToList();
+                var list = all.Select(x => new MenuOptionTreeDto()
+                    { Key = x.Id.ToString(), Title = x.Title, MenuType = (int)x.MenuType }).ToList();
                 return (keys, list);
             }
 
@@ -127,6 +145,7 @@ namespace Fancyx.Admin.Service.System
                         MenuType = (int)item.MenuType
                     });
                 }
+
                 return childrenMap;
             }
 
@@ -139,24 +158,30 @@ namespace Fancyx.Admin.Service.System
             {
                 throw new BusinessException("菜单的路由不能为空");
             }
+
             if (dto.IsExternal && !StringUtils.IsValidUrlStrict(dto.Path))
             {
                 throw new BusinessException("外链地址不合法");
             }
+
             if (dto.ParentId.HasValue)
             {
-                var parentMenu = await _menuRepository.Where(x => x.ParentId == dto.ParentId).FirstAsync();
+                var parentMenu = await _menuRepository.OneAsync(x => x.Id == dto.ParentId);
                 if (parentMenu.MenuType == MenuType.Button)
                 {
                     throw new BusinessException(message: "菜单父级不能是按钮");
                 }
             }
-            var isExist = await _menuRepository.Select.AnyAsync(x => x.Path != null && dto.Path != null && x.Path.ToLower() == dto.Path.ToLower());
-            var entity = await _menuRepository.Where(x => x.Id == dto.Id).FirstAsync() ?? throw new BusinessException("数据不存在");
+
+            var isExist = await _menuRepository.Select.AnyAsync(x =>
+                x.Path != null && dto.Path != null && x.Path.ToLower() == dto.Path.ToLower());
+            var entity = await _menuRepository.Where(x => x.Id == dto.Id).FirstAsync() ??
+                         throw new BusinessException("数据不存在");
             if (isExist && entity.Path != null && dto.Path!.ToLower() != entity.Path.ToLower())
             {
                 throw new BusinessException(message: $"已存在【{dto.Path}】菜单路由");
             }
+
             if (dto.ParentId == entity.Id)
             {
                 throw new BusinessException(message: "不能选择自己为父级");

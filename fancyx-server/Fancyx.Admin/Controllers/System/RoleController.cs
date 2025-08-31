@@ -3,7 +3,6 @@ using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Core.Attributes;
 using Fancyx.Logger;
 using Fancyx.Shared.Consts;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -112,6 +111,31 @@ namespace Fancyx.Admin.Controllers.System
         {
             var data = await _roleService.GetRoleMenuIdsAsync(id);
             return Result.Data(data);
+        }
+
+        /// <summary>
+        /// 获取角色部门权限编码
+        /// </summary>
+        /// <param name="roleId">角色ID</param>
+        /// <returns></returns>
+        [HttpGet("GetRoleDeptPowerInfo")]
+        public async Task<AppResponse<dynamic>> GetRoleDeptPowerInfoAsync(Guid roleId)
+        {
+            var data = await _roleService.GetRoleDeptPowerInfoAsync(roleId);
+            return Result.Data<dynamic>(new { powerInfo = data.Item1, deptOptions = data.Item2 });
+        }
+
+        /// <summary>
+        /// 分配角色数据权限
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPost("AssignDataScope")]
+        [HasPermission("Sys.Role.AssignDataScope")]
+        public async Task<AppResponse<bool>> AssignDataScopeAsync([FromBody] AssignDataScopeDto dto)
+        {
+            await _roleService.AssignDataScopeAsync(dto);
+            return Result.Ok();
         }
     }
 }

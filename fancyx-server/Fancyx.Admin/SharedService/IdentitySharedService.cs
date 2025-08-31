@@ -225,7 +225,7 @@ namespace Fancyx.Admin.SharedService
                     {
                         new DynamicFilterInfo
                         {
-                            Logic = DynamicFilterLogic.And,
+                            Logic = DynamicFilterLogic.Or,
                             Field = nameof(EmployeeDO.DeptId),
                             Operator = DynamicFilterOperator.Any,
                             Value = deptIds
@@ -270,6 +270,8 @@ namespace Fancyx.Admin.SharedService
                 {
                     //所有部门
                     deptIds.AddRange(await _deptRepository.Select.ToListAsync(x => x.Id));
+                    //所有员工
+                    employeeIds.AddRange(await _employeeRepository.Select.ToListAsync(x => x.Id));
                     break;
                 }
                 switch (powerType)
