@@ -1,10 +1,12 @@
 using AutoMapper;
+
 using Fancyx.Admin.Entities.Organization;
 using Fancyx.Admin.Entities.System;
 using Fancyx.Admin.IService.Organization;
 using Fancyx.Admin.IService.Organization.Dtos;
 using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
+using Fancyx.Admin.SharedService;
 using Fancyx.Core.Interfaces;
 using Fancyx.Core.Utils;
 using Fancyx.Repository;
@@ -20,9 +22,10 @@ namespace Fancyx.Admin.Service.Organization
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
         private readonly IRepository<UserDO> _userRepository;
+        private readonly IdentitySharedService _identitySharedService;
 
         public EmployeeService(IRepository<EmployeeDO> employeeRepository, IRepository<DeptDO> deptRepository, IRepository<PositionDO> orgPositionRepository
-            , IFreeSql freeSql, IMapper mapper, IUserService userService, IRepository<UserDO> userRepository)
+            , IFreeSql freeSql, IMapper mapper, IUserService userService, IRepository<UserDO> userRepository, IdentitySharedService identitySharedService)
         {
             _employeeRepository = employeeRepository;
             _deptRepository = deptRepository;
@@ -30,6 +33,7 @@ namespace Fancyx.Admin.Service.Organization
             _mapper = mapper;
             _userService = userService;
             _userRepository = userRepository;
+            _identitySharedService = identitySharedService;
         }
 
         [AsyncTransactional]
@@ -84,9 +88,11 @@ namespace Fancyx.Admin.Service.Organization
 
         public async Task<PagedResult<EmployeeListDto>> GetEmployeePagedListAsync(EmployeeQueryDto dto)
         {
+            var dynamicFilter = await _identitySharedService.GetDataFilterAsync(nameof(EmployeeDO));
             var list = await _freeSql.Select<EmployeeDO>().From<DeptDO, PositionDO>((e, d, p) => e.LeftJoin(e1 => e1.DeptId == d.Id).LeftJoin(e2 => e2.PositionId == p.Id))
                 .WhereIf(!string.IsNullOrEmpty(dto.Keyword), (x, d, p) => x.Code!.Contains(dto.Keyword!) || x.Name!.Contains(dto.Keyword!) || x.Phone!.Contains(dto.Keyword!))
                 .WhereIf(dto.DeptId.HasValue, (x, d, p) => x.DeptId == dto.DeptId!.Value)
+                .WhereDynamicFilter(dynamicFilter)
                 .Count(out var total)
                 .Page(dto.Current, dto.PageSize)
                 .ToListAsync((e, d, p) => new EmployeeListDto

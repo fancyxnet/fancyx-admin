@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using Fancyx.Core.Interfaces;
 using Fancyx.Repository.BaseEntity;
+using Fancyx.Shared.Enums;
 
 using FreeSql.DataAnnotations;
 
@@ -40,7 +41,7 @@ namespace Fancyx.Admin.Entities.System
         public virtual ICollection<RoleMenuDO>? RoleMenus { get; set; }
 
         /// <summary>
-        /// 角色查看部门（数据权限类型=1时，指定部门时才存入）
+        /// 角色查看部门（数据权限类型=<see cref="DeptPowerType.Specify"/>时，指定部门时才存入）
         /// </summary>
         public virtual ICollection<RoleDeptDO>? RoleDepts { get; set; }
 
@@ -55,5 +56,11 @@ namespace Fancyx.Admin.Entities.System
         /// </summary>
         [Column(IsNullable = false)]
         public bool IsEnabled { get; set; } = false;
+
+        /// <summary>
+        /// 部门权限类型
+        /// </summary>
+        [Column(IsNullable = false)]
+        public DeptPowerType DeptPowerType { get; set; } = DeptPowerType.All;
     }
 }

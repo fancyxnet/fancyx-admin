@@ -39,19 +39,22 @@ const SmartTable = forwardRef<SmartTableRef, SmartTableProps<any>>(
     const fetchData = async () => {
       if (props.request) {
         setLoading(true);
-        const result = await props.request(queryParams);
-        //判断当前页是否有数据，无数据设置第1页
-        if (result.items === null || result.items.length === 0) {
-          if (result.totalCount > 0) {
-            setQueryParams({
-              ...queryParams,
-              current: 1,
-            });
+        try {
+          const result = await props.request(queryParams);
+          //判断当前页是否有数据，无数据设置第1页
+          if (result.items === null || result.items.length === 0) {
+            if (result.totalCount > 0) {
+              setQueryParams({
+                ...queryParams,
+                current: 1,
+              });
+            }
           }
+          setTotal(result.totalCount);
+          setDataSource(result.items);
+        } finally {
+          setLoading(false);
         }
-        setTotal(result.totalCount);
-        setDataSource(result.items);
-        setLoading(false);
       } else {
         if (Array.isArray(props.dataSource)) {
           setDataSource(props.dataSource);

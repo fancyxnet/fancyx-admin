@@ -80,5 +80,12 @@
         /// <param name="phone"></param>
         /// <returns></returns>
         public static string LoginSmsCode(string phone) => WithTenantPrefix($"admin:login_sms_code:{phone}");
+    
+        /// <summary>
+        /// 部门权限KEY
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <returns></returns>
+        public static string EmployeeDeptPower(Guid employeeId) => WithTenantPrefix($"employee_dept_power:{employeeId}");
     }
 }

@@ -1,5 +1,9 @@
+using System.Security.Claims;
+
 using AutoMapper;
+
 using DotNetCore.CAP;
+
 using Fancyx.Admin.Entities.Organization;
 using Fancyx.Admin.Entities.System;
 using Fancyx.Admin.IService.Account;
@@ -13,8 +17,8 @@ using Fancyx.Repository;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Enums;
 using Fancyx.Shared.Keys;
+
 using FreeSql;
-using System.Security.Claims;
 
 namespace Fancyx.Admin.Service.Account
 {
@@ -58,7 +62,6 @@ namespace Fancyx.Admin.Service.Account
         private async Task<(TokenResultDto tokenRes, string sessionId)> GenerateTokenAsync(Guid userId, string userName, string? sessionId = null)
         {
             var time = DateTime.Now;
-
             var refreshToken = Guid.NewGuid().ToString("N").ToLower();
             sessionId ??= SnowflakeHelper.Instance.NextId().ToString();
             var claims = new List<Claim> {
@@ -66,6 +69,21 @@ namespace Fancyx.Admin.Service.Account
                 new(ClaimTypes.Name, userName),
                 new(AdminConsts.SessionId, sessionId)
             };
+            //查询用户员工、部门、职位信息
+            var employee = await _employeeRepository.OneAsync(x => x.UserId == userId);
+            if (employee != null)
+            {
+                claims.Add(new Claim(AdminConsts.EmployeeId, employee.Id.ToString()));
+                if (employee.DeptId.HasValue)
+                {
+                    claims.Add(new Claim(AdminConsts.DeptId, employee.DeptId.ToString()!));
+                }
+                if (employee.PositionId.HasValue)
+                {
+                    claims.Add(new Claim(AdminConsts.PositionId, employee.PositionId.ToString()!));
+                }
+            }
+
             var tokenExpired = time.AddHours(AdminConsts.TokenExpiredHour);
             var rs = new LoginResultDto
             {
@@ -297,6 +315,7 @@ namespace Fancyx.Admin.Service.Account
             await _hybridCache.RemoveAsync(SystemCacheKey.RefreshToken(uid.Value, sessionId));
             //移除权限缓存
             await _hybridCache.RemoveAsync(SystemCacheKey.UserPermission(uid.Value));
+            await _identitySharedService.ClearCurrentUserDeptPower();
             return true;
         }
 
