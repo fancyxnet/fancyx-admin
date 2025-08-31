@@ -9,6 +9,7 @@ export interface AuthProviderType {
   smsLogin?: (values: SmsLoginDto) => Promise<void>;
   clearToken: () => void;
   refreshUserAuthInfo?: () => Promise<void>;
+  hasPermission?: (permission: string | string[], mode?: string) => boolean;
 }
 
 const AuthContext = createContext<AuthProviderType>({
@@ -65,6 +66,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       UserStore.setUserInfo(_authInfo);
     }
   };
+  const hasPermission = (permissions: string | string[], mode = 'every'): boolean => {
+    const powers: string[] = UserStore.userInfo?.permissions ?? [];
+
+    // 检查操作权限
+    const permissionList: string[] = Array.isArray(permissions) ? permissions : [permissions];
+    if (mode === 'every') {
+      return permissionList.every((p) => powers.includes(p));
+    }
+    return permissionList.some((p) => powers.includes(p));
+  };
 
   return (
     <AuthContext.Provider
@@ -73,6 +84,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         smsLogin: _smsLogin,
         clearToken,
         refreshUserAuthInfo: setOrRefreshUserAuthInfo,
+        hasPermission: hasPermission,
       }}
     >
       {children}

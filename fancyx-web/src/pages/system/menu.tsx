@@ -62,7 +62,7 @@ const MenuTable = () => {
           {(record.menuType === MenuType.Folder || record.menuType === MenuType.Menu) && (
             <Permission permissions={'Sys.Menu.Add'}>
               <Button type="link" icon={<PlusOutlined />} onClick={() => addSubItem(record)}>
-                新增
+                子级
               </Button>
             </Permission>
           )}

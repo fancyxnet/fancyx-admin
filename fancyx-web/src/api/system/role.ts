@@ -64,6 +64,24 @@ export function assignData(dto: AssignDataDto) {
   return httpClient.post<AssignDataDto, AppResponse<boolean>>('/api/role/assignData', dto);
 }
 
+/**
+ * 获取角色部门权限编码
+ * @param roleId
+ * @returns
+ */
+export function getRoleDeptPowerInfo(roleId: string) {
+  return httpClient.get<string, AppResponse<RoleDeptPowerInfo>>('/api/role/GetRoleDeptPowerInfo?roleId=' + roleId);
+}
+
+/**
+ * 分配角色数据权限
+ * @param dto
+ * @returns
+ */
+export function assignDataScope(dto: AssignDataScopeDto) {
+  return httpClient.post<AssignDataScopeDto, AppResponse<boolean>>('/api/role/assignDataScope', dto);
+}
+
 export interface RoleDto {
   id?: string | null;
   roleName: string;
@@ -91,5 +109,27 @@ export interface AssignMenuDto {
 export interface AssignDataDto {
   roleId: string;
   powerDataType: number;
+  deptIds: string[] | null;
+}
+
+export interface RolePowerInfoDto {
+  deptIds: string[];
+  deptPowerType: number;
+  allDeptIds: string[];
+}
+
+export interface DeptTreeOptionDto {
+  key: string;
+  title: string;
+  children?: DeptTreeOptionDto[];
+}
+export interface RoleDeptPowerInfo {
+  powerInfo: RolePowerInfoDto;
+  deptOptions: DeptTreeOptionDto[];
+}
+
+export interface AssignDataScopeDto {
+  roleId: string;
+  deptPowerType: number;
   deptIds: string[] | null;
 }

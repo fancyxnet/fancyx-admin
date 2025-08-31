@@ -1,6 +1,14 @@
-import { Space, Form, Input, Button, Tag } from 'antd';
+import { Space, Form, Input, Button, Tag, Dropdown } from 'antd';
 import { useRef } from 'react';
-import { PlusOutlined, ExclamationCircleFilled, EditOutlined, HddOutlined, DeleteOutlined } from '@ant-design/icons';
+import {
+  PlusOutlined,
+  ExclamationCircleFilled,
+  EditOutlined,
+  HddOutlined,
+  DeleteOutlined,
+  DoubleRightOutlined,
+  PieChartOutlined,
+} from '@ant-design/icons';
 import { deleteRole, getRoleList, type RoleListDto } from '@/api/system/role';
 import RoleForm, { type ModalRef } from '@/pages/system/components/RoleForm.tsx';
 import AssignMenuForm, { type AssignMenuModalRef } from '@/pages/system/components/AssignMenuForm.tsx';
@@ -9,12 +17,16 @@ import type { SmartTableColumnType, SmartTableRef } from '@/components/SmartTabl
 import { PermissionConstant } from '@/utils/globalValue.ts';
 import useApp from 'antd/es/app/useApp';
 import Permission from '@/components/Permission';
+import { useAuthProvider } from '@/components/AuthProvider';
+import AssignDataScopeForm, { type AssignDataScopeModalRef } from './components/AssignDataScopeForm';
 
 const Role = () => {
   const modalRef = useRef<ModalRef>(null);
   const assignMenuForRef = useRef<AssignMenuModalRef>(null);
+  const assignDataScopeForRef = useRef<AssignDataScopeModalRef>(null);
   const tableRef = useRef<SmartTableRef>(null);
   const { message, modal } = useApp();
+  const { hasPermission } = useAuthProvider();
   const columns: SmartTableColumnType[] = [
     {
       title: '角色名',
@@ -47,6 +59,35 @@ const Role = () => {
       fixed: 'right',
       render: (_: any, record: RoleListDto) => {
         if (record.roleName === PermissionConstant.SuperAdmin) return <></>;
+        const curDropdownItems = [];
+        if (hasPermission!('Sys.Role.AssignMenu')) {
+          curDropdownItems.push({
+            key: 'assignMenu',
+            label: (
+              <Permission permissions={'Sys.Role.AssignMenu'}>
+                <a onClick={() => openAssignModal(record)}>
+                  <HddOutlined className="mr-4" />
+                  功能权限
+                </a>
+              </Permission>
+            ),
+            onClick: () => {},
+          });
+        }
+        if (hasPermission!('Sys.Role.AssignDataScope')) {
+          curDropdownItems.push({
+            key: 'assignDataScope',
+            label: (
+              <Permission permissions={'Sys.Role.AssignDataScope'}>
+                <a onClick={() => openAssignDataScopeModal(record)}>
+                  <PieChartOutlined className="mr-4" />
+                  数据权限
+                </a>
+              </Permission>
+            ),
+            onClick: () => {},
+          });
+        }
         return (
           <Space>
             <Permission permissions={'Sys.Role.Update'}>
@@ -54,15 +95,22 @@ const Role = () => {
                 编辑
               </Button>
             </Permission>
-            <Permission permissions={'Sys.Role.AssignMenu'}>
-              <Button type="link" icon={<HddOutlined />} onClick={() => openAssignModal(record)}>
-                菜单权限
-              </Button>
-            </Permission>
             <Permission permissions={'Sys.Role.Delete'}>
               <Button type="link" icon={<DeleteOutlined />} danger onClick={() => rowDelete(record.id)}>
                 删除
               </Button>
+            </Permission>
+            <Permission permissions={['Sys.Role.AssignMenu', 'Sys.Role.DataScope']} mode="some">
+              <Dropdown
+                placement="bottom"
+                menu={{
+                  items: curDropdownItems,
+                }}
+              >
+                <Button type="link" icon={<DoubleRightOutlined />}>
+                  更多
+                </Button>
+              </Dropdown>
             </Permission>
           </Space>
         );
@@ -72,6 +120,9 @@ const Role = () => {
 
   const openAssignModal = (row: RoleListDto) => {
     assignMenuForRef?.current?.openModal(row);
+  };
+  const openAssignDataScopeModal = (row: RoleListDto) => {
+    assignDataScopeForRef?.current?.openModal(row);
   };
 
   const handleOpenModal = () => {
@@ -121,8 +172,10 @@ const Role = () => {
       />
       {/* 角色新增/编辑弹窗 */}
       <RoleForm ref={modalRef} refresh={() => tableRef?.current?.reload()} />
-      {/* 分配菜单 */}
+      {/* 分配功能权限 */}
       <AssignMenuForm ref={assignMenuForRef} />
+      {/* 分配数据权限 */}
+      <AssignDataScopeForm ref={assignDataScopeForRef} />
     </>
   );
 };
