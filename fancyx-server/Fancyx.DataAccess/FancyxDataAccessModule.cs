@@ -11,7 +11,7 @@ namespace Fancyx.DataAccess
         {
             context.Services.AddNpgsql<FancyxDbContext>(context.Configuration.GetConnectionString("Default"));
             //context.Services.AddScoped<UnitOfWorkManager>(r => new UnitOfWorkManager(createFreeSql()));
-            context.Services.AddScoped(typeof(IRepository<>), typeof(RepositoryBase<>));
+            context.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         }
 
         public override void Configure(ApplicationInitializationContext context)
