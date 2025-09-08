@@ -2,7 +2,7 @@
 using Fancyx.Admin.IService.Monitor.Dtos;
 using Fancyx.Core.Attributes;
 using Fancyx.Logger;
-
+using Fancyx.Repository.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

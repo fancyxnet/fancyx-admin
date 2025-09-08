@@ -1,10 +1,10 @@
-using Fancyx.Admin.Entities.System;
 using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Core.Helpers;
 using Fancyx.Core.Utils;
 using Fancyx.Repository;
-using Fancyx.Shared.Enums;
+using Fancyx.Repository.Entities.System;
+using Fancyx.Repository.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.Service.System

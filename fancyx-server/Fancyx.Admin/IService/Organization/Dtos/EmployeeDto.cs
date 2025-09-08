@@ -1,4 +1,4 @@
-using Fancyx.Shared.Enums;
+using Fancyx.Repository.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 

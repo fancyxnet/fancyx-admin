@@ -1,7 +1,4 @@
 using AutoMapper;
-
-using Fancyx.Admin.Entities.Organization;
-using Fancyx.Admin.Entities.System;
 using Fancyx.Admin.IService.Organization;
 using Fancyx.Admin.IService.Organization.Dtos;
 using Fancyx.Admin.IService.System;
@@ -11,6 +8,8 @@ using Fancyx.Core.Interfaces;
 using Fancyx.Core.Utils;
 using Fancyx.Repository;
 using Fancyx.Repository.Aop;
+using Fancyx.Repository.Entities.Organization;
+using Fancyx.Repository.Entities.System;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.Service.Organization

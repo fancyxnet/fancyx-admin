@@ -2,8 +2,8 @@
 using Fancyx.Admin.IService.Monitor.Dtos;
 using Fancyx.Core.Extensions;
 using Fancyx.Core.Interfaces;
-using Fancyx.Logger.Entities;
 using Fancyx.Repository;
+using Fancyx.Repository.Entities.Log;
 
 namespace Fancyx.Admin.Service.Monitor
 {

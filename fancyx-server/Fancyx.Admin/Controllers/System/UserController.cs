@@ -3,6 +3,7 @@ using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Core.Attributes;
 using Fancyx.Core.Helpers;
 using Fancyx.Logger;
+using Fancyx.Repository.Enums;
 using Fancyx.Shared.Consts;
 
 using Microsoft.AspNetCore.Authorization;

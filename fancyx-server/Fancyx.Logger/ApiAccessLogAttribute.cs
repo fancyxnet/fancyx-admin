@@ -2,6 +2,7 @@
 using Fancyx.Core.Utils;
 using Fancyx.Logger.Consts;
 using Fancyx.Logger.Message;
+using Fancyx.Repository.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,10 +1,10 @@
-using Fancyx.Admin.Entities.System;
 using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Core.Extensions;
 using Fancyx.Core.Helpers;
 using Fancyx.Logger;
 using Fancyx.Repository;
+using Fancyx.Repository.Entities.System;
 using Fancyx.Shared.Consts;
 
 namespace Fancyx.Admin.Service.System

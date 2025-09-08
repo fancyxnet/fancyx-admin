@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-
-using Fancyx.Admin.Entities.Organization;
 using Fancyx.Admin.IService.Organization.Dtos;
+using Fancyx.Repository.Entities.Organization;
 
 namespace Fancyx.Admin.Profiles
 {

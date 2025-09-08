@@ -1,4 +1,6 @@
-﻿namespace Fancyx.Logger.Message
+﻿using Fancyx.Repository.Enums;
+
+namespace Fancyx.Logger.Message
 {
     public class ApiAccessLogMessage
     {

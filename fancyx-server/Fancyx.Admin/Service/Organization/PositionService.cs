@@ -1,9 +1,9 @@
-using Fancyx.Admin.Entities.Organization;
 using Fancyx.Admin.IService.Organization;
 using Fancyx.Admin.IService.Organization.Dtos;
 using Fancyx.Admin.Service.Organization.Models;
 using Fancyx.Core.Helpers;
 using Fancyx.Repository;
+using Fancyx.Repository.Entities.Organization;
 using System.Data;
 
 namespace Fancyx.Admin.Service.Organization

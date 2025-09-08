@@ -1,8 +1,8 @@
-using Fancyx.Admin.Entities.System;
 using Fancyx.Admin.IService.System.LogManagement;
 using Fancyx.Admin.IService.System.LogManagement.Dtos;
 using Fancyx.Core.Extensions;
 using Fancyx.Repository;
+using Fancyx.Repository.Entities.Log;
 
 namespace Fancyx.Admin.Service.System.LogManagement
 {

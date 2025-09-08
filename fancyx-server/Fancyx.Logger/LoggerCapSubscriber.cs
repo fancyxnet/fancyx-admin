@@ -1,9 +1,9 @@
 ﻿using DotNetCore.CAP;
 using Fancyx.Core.Utils;
 using Fancyx.Logger.Consts;
-using Fancyx.Logger.Entities;
 using Fancyx.Logger.Message;
 using Fancyx.Repository;
+using Fancyx.Repository.Entities.Log;
 
 namespace Fancyx.Logger
 {

@@ -3,10 +3,10 @@ using Fancyx.Admin.IService.Payment.Dtos;
 using Fancyx.Core.Extensions;
 using Fancyx.Core.Interfaces;
 using Fancyx.Payment;
-using Fancyx.Payment.Entities;
 using Fancyx.Payment.Enums;
 using Fancyx.Payment.Models;
 using Fancyx.Repository;
+using Fancyx.Repository.Entities.Payment;
 
 namespace Fancyx.Admin.Service.Payment
 {

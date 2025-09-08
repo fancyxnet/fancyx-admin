@@ -1,6 +1,6 @@
-﻿using Fancyx.Admin.Entities.System;
-using Fancyx.Core.Interfaces;
+﻿using Fancyx.Core.Interfaces;
 using Fancyx.Repository;
+using Fancyx.Repository.Entities.System;
 using Fancyx.Shared.Keys;
 
 using StackExchange.Redis;

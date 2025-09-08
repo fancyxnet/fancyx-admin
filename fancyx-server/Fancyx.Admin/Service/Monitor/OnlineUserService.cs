@@ -1,7 +1,8 @@
-﻿using Fancyx.Admin.Entities.System;
-using Fancyx.Admin.IService.Monitor;
+﻿using Fancyx.Admin.IService.Monitor;
 using Fancyx.Admin.IService.Monitor.Dtos;
 using Fancyx.Repository;
+using Fancyx.Repository.Entities.Log;
+using Fancyx.Repository.Entities.System;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Keys;
 using Microsoft.EntityFrameworkCore;

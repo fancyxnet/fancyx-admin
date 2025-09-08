@@ -1,12 +1,12 @@
-using Fancyx.Admin.Entities.Organization;
-using Fancyx.Admin.Entities.System;
 using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Admin.SharedService;
 using Fancyx.Repository;
 using Fancyx.Repository.Aop;
+using Fancyx.Repository.Entities.Organization;
+using Fancyx.Repository.Entities.System;
+using Fancyx.Repository.Enums;
 using Fancyx.Shared.Consts;
-using Fancyx.Shared.Enums;
 
 namespace Fancyx.Admin.Service.System
 {

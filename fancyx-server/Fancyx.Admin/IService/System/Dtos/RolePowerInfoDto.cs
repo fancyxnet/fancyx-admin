@@ -1,4 +1,4 @@
-﻿using Fancyx.Shared.Enums;
+﻿using Fancyx.Repository.Enums;
 
 namespace Fancyx.Admin.IService.System.Dtos
 {

@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-
-using Fancyx.Logger;
+using Fancyx.Repository.Enums;
 
 namespace Fancyx.Admin.IService.Monitor.Dtos
 {

@@ -1,4 +1,3 @@
-using Fancyx.Admin.Entities.System;
 using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Admin.SharedService;
@@ -6,8 +5,9 @@ using Fancyx.Core.Interfaces;
 using Fancyx.Core.Utils;
 using Fancyx.Logger;
 using Fancyx.Repository;
+using Fancyx.Repository.Entities.System;
+using Fancyx.Repository.Enums;
 using Fancyx.Shared.Consts;
-using Fancyx.Shared.Enums;
 using Fancyx.Shared.Generated;
 using Microsoft.EntityFrameworkCore;
 
