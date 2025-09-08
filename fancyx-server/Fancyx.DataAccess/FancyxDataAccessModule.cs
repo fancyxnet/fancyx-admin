@@ -21,7 +21,7 @@ namespace Fancyx.DataAccess
 #endif
                      .EnableDetailedErrors(); ;
             });
-            //context.Services.AddScoped<UnitOfWorkManager>(r => new UnitOfWorkManager(createFreeSql()));
+            context.Services.AddScoped<IUnitOfWorkManager, UnitOfWorkManager>();
             context.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         }
 
