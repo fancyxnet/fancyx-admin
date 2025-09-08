@@ -104,7 +104,7 @@ namespace Fancyx.DataAccess
         }
 
         /// <summary>
-        ///
+        /// 应用查询过滤器
         /// </summary>
         /// <param name="modelBuilder"></param>
         private void ApplyDataQueryFilter(ModelBuilder modelBuilder)
@@ -153,7 +153,6 @@ namespace Fancyx.DataAccess
         public DbSet<LoginLog> LoginLog { get; set; }
         public DbSet<LogRecord> LogRecord { get; set; }
         public DbSet<Dept> Dept { get; set; }
-        public DbSet<Employee> Employee { get; set; }
         public DbSet<Position> Position { get; set; }
         public DbSet<PositionGroup> PositionGroup { get; set; }
         public DbSet<PaymentOrder> PaymentOrder { get; set; }

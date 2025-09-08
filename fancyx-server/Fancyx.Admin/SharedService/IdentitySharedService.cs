@@ -26,12 +26,11 @@ namespace Fancyx.Admin.SharedService
         private readonly IHybridCache _hybridCache;
         private readonly ICurrentUser _currentUser;
         private readonly IRepository<RoleDept> _roleDeptRepository;
-        private readonly IRepository<Employee> _employeeRepository;
         private readonly IRepository<Dept> _deptRepository;
 
         public IdentitySharedService(IRepository<UserRole> userRoleRepository, IRepository<RoleMenu> roleMenuRepository, IRepository<Role> roleRepository,
             IRepository<Menu> menuRepository, IConfiguration configuration, IRepository<User> userRepository, IHybridCache hybridCache, ICurrentUser currentUser
-            , IRepository<RoleDept> roleDeptRepository, IRepository<Employee> employeeRepository, IRepository<Dept> deptRepository)
+            , IRepository<RoleDept> roleDeptRepository, IRepository<Dept> deptRepository)
         {
             _userRoleRepository = userRoleRepository;
             _roleMenuRepository = roleMenuRepository;
@@ -42,7 +41,6 @@ namespace Fancyx.Admin.SharedService
             _hybridCache = hybridCache;
             _currentUser = currentUser;
             _roleDeptRepository = roleDeptRepository;
-            _employeeRepository = employeeRepository;
             _deptRepository = deptRepository;
         }
 
@@ -201,10 +199,9 @@ namespace Fancyx.Admin.SharedService
         /// <returns></returns>
         private async Task<(List<Guid> deptIds, List<Guid> employeeIds)> GetCurrentUserDeptPowerAsync()
         {
-            Guid? employeeId = Guid.TryParse(_currentUser.FindClaim(AdminConsts.EmployeeId).Value, out var id) ? id : null;
-            if (!_currentUser.Id.HasValue || !employeeId.HasValue) return ([], []);
+            if (!_currentUser.Id.HasValue) return ([], []);
 
-            var key = SystemCacheKey.EmployeeDeptPower(employeeId.Value);
+            var key = SystemCacheKey.EmployeeDeptPower(_currentUser.Id.Value);
             var cacheData = await _hybridCache.GetAsync<DeptPowerData>(key);
             if (cacheData != null) return (cacheData.DeptIds, cacheData.EmployeeIds);
 
@@ -223,7 +220,7 @@ namespace Fancyx.Admin.SharedService
                     //所有部门
                     deptIds.AddRange(await _deptRepository.GetQueryable().SelectToListAsync(x => x.Id));
                     //所有员工
-                    employeeIds.AddRange(await _employeeRepository.GetQueryable().SelectToListAsync(x => x.Id));
+                    employeeIds.AddRange(await _userRepository.GetQueryable().SelectToListAsync(x => x.Id));
                     break;
                 }
                 switch (powerType)
@@ -251,13 +248,13 @@ namespace Fancyx.Admin.SharedService
                         break;
 
                     case DeptPowerType.OnlyMe:
-                        employeeIds.Add(employeeId.Value);
+                        employeeIds.Add(_currentUser.Id.Value);
                         break;
                 }
             }
             if (deptIds.Count > 0)
             {
-                var findEmployeeIds = await _employeeRepository.Where(x => x.DeptId != null && deptIds.Contains(x.DeptId.Value)).SelectToListAsync(x => x.Id);
+                var findEmployeeIds = await _userRepository.Where(x => x.DeptId != null && deptIds.Contains(x.DeptId.Value)).SelectToListAsync(x => x.Id);
                 employeeIds.AddRange(findEmployeeIds);
             }
             deptIds = deptIds.Distinct().ToList();
@@ -273,10 +270,9 @@ namespace Fancyx.Admin.SharedService
         /// <returns></returns>
         public async Task ClearCurrentUserDeptPower()
         {
-            Guid? employeeId = Guid.TryParse(_currentUser.FindClaim(AdminConsts.EmployeeId).Value, out var id) ? id : null;
-            if (!_currentUser.Id.HasValue || !employeeId.HasValue) return;
+            if (!_currentUser.Id.HasValue) return;
 
-            var key = SystemCacheKey.EmployeeDeptPower(employeeId.Value);
+            var key = SystemCacheKey.EmployeeDeptPower(_currentUser.Id.Value);
             await _hybridCache.RemoveAsync(key);
         }
     }

@@ -86,5 +86,17 @@ namespace Fancyx.DataAccess.Entities.System
         /// </summary>
         [Column("phone")]
         public string? Phone { get; set; }
+
+        /// <summary>
+        /// 部门ID
+        /// </summary>
+        [Column("dept_id")]
+        public Guid? DeptId { get; set; }
+
+        /// <summary>
+        /// 职位ID
+        /// </summary>
+        [Column("post_id")]
+        public Guid? PostId { get; set; }
     }
 }

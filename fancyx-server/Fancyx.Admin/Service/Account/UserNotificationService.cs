@@ -3,8 +3,8 @@ using Fancyx.Admin.IService.Account.Dtos;
 using Fancyx.Core.Extensions;
 using Fancyx.Core.Interfaces;
 using Fancyx.DataAccess;
-using Fancyx.DataAccess.Entities.Organization;
 using Fancyx.DataAccess.Entities.System;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.Service.Account
@@ -12,23 +12,20 @@ namespace Fancyx.Admin.Service.Account
     public class UserNotificationService : IUserNotificationService, IScopedDependency
     {
         private readonly IRepository<Notification> _repository;
-        private readonly IRepository<Employee> _employeeRepository;
         private readonly ICurrentUser _currentUser;
 
-        public UserNotificationService(IRepository<Notification> repository, IRepository<Employee> employeeRepository, ICurrentUser currentUser)
+        public UserNotificationService(IRepository<Notification> repository, ICurrentUser currentUser)
         {
             _repository = repository;
-            _employeeRepository = employeeRepository;
             _currentUser = currentUser;
         }
 
         public async Task<PagedResult<UserNotificationListDto>> GetMyNotificationListAsync(UserNotificationQueryDto dto)
         {
-            var employeeId = await this.GetCurrentEmployeeIdAsync();
-            if (!employeeId.HasValue) return new PagedResult<UserNotificationListDto>();
+            if (!_currentUser.Id.HasValue) return new PagedResult<UserNotificationListDto>();
 
             var resp = await _repository
-                .Where(x => x.EmployeeId == employeeId)
+                .Where(x => x.UserId == _currentUser.Id)
                 .WhereIf(!string.IsNullOrEmpty(dto.Title), x => x.Title!.Contains(x.Title))
                 .WhereIf(dto.IsReaded.HasValue, x => x.IsReaded == dto.IsReaded)
                 .OrderBy(x => x.IsReaded)
@@ -40,10 +37,9 @@ namespace Fancyx.Admin.Service.Account
         public async Task<UserNotificationNavbarDto> GetMyNotificationNavbarInfoAsync()
         {
             var result = new UserNotificationNavbarDto();
-            var employeeId = await this.GetCurrentEmployeeIdAsync();
-            if (!employeeId.HasValue) return result;
+            if (!_currentUser.Id.HasValue) return result;
 
-            var query = _repository.Where(x => x.EmployeeId == employeeId);
+            var query = _repository.Where(x => x.UserId == _currentUser.Id);
             result.Items = await query.OrderBy(x => x.IsReaded).OrderByDescending(x => x.CreationTime)
                 .Take(5).SelectToListAsync(x => new UserNotificationNavbarItemDto
                 {
@@ -59,17 +55,9 @@ namespace Fancyx.Admin.Service.Account
 
         public async Task ReadedAsync(Guid[] ids)
         {
-            var employeeId = await this.GetCurrentEmployeeIdAsync();
-            if (!employeeId.HasValue) return;
-
             var now = DateTime.Now;
-            await _repository.Where(x => x.EmployeeId == employeeId && ids.Contains(x.Id))
+            await _repository.Where(x => x.UserId == _currentUser.Id && ids.Contains(x.Id))
                 .ExecuteUpdateAsync(x => x.SetProperty(f => f.IsReaded, true).SetProperty(f => f.ReadedTime, now));
-        }
-
-        private async Task<Guid?> GetCurrentEmployeeIdAsync()
-        {
-            return await _employeeRepository.Where(x => x.UserId.HasValue && x.UserId == _currentUser.Id).ToOneAsync(x => x.Id);
         }
     }
 }

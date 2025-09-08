@@ -4,6 +4,8 @@ using Fancyx.Admin.Service.Organization.Models;
 using Fancyx.Core.Helpers;
 using Fancyx.DataAccess;
 using Fancyx.DataAccess.Entities.Organization;
+using Fancyx.DataAccess.Entities.System;
+
 using System.Data;
 
 namespace Fancyx.Admin.Service.Organization
@@ -12,14 +14,14 @@ namespace Fancyx.Admin.Service.Organization
     {
         private readonly IRepository<Position> _positionRepository;
         private readonly IRepository<PositionGroup> _positionGroupRepository;
-        private readonly IRepository<Employee> _employeeRepository;
+        private readonly IRepository<User> _userRepository;
 
         public PositionService(IRepository<Position> positionRepository, IRepository<PositionGroup> positionGroupRepository
-            , IRepository<Employee> employeeRepository)
+            , IRepository<User> userRepository)
         {
             _positionRepository = positionRepository;
             _positionGroupRepository = positionGroupRepository;
-            _employeeRepository = employeeRepository;
+            _userRepository = userRepository;
         }
 
         private async Task<List<PosistionLayerNames>> GetPosistionGroupNameAsync(List<Guid> ids)
@@ -63,7 +65,7 @@ namespace Fancyx.Admin.Service.Organization
 
         public async Task<bool> DeletePositionAsync(Guid id)
         {
-            var hasEmployees = await _employeeRepository.AnyAsync(x => x.PositionId == id);
+            var hasEmployees = await _userRepository.AnyAsync(x => x.PostId == id);
             if (hasEmployees) throw new BusinessException(message: "职位正在使用，不能删除");
             await _positionRepository.DeleteAsync(x => x.Id == id);
             return true;

@@ -61,6 +61,7 @@ namespace Fancyx.DataAccess.Entities.Log
         /// <summary>
         /// 用户ID
         /// </summary>
+        [Column("user_id")]
         public Guid? UserId { get; set; }
 
         /// <summary>

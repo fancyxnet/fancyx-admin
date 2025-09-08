@@ -124,14 +124,15 @@ namespace Fancyx.Core
             app.UseCors();
             app.UseRouting();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.UseMiddleware<CurrentUserMiddleware>();
             if (MultiTenancyConsts.IsEnabled)
             {
                 app.UseMiddleware<MultiTenancyMiddleware>();
             }
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseMiddleware<CurrentUserMiddleware>();
 
             var context = new ApplicationInitializationContext(app);
             foreach (var module in modules.OrderBy(m => m.Value.sort))

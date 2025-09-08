@@ -1,7 +1,6 @@
 ﻿using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.DataAccess;
-using Fancyx.DataAccess.Entities.Organization;
 using Fancyx.DataAccess.Entities.System;
 
 namespace Fancyx.Admin.Service.System
@@ -9,12 +8,10 @@ namespace Fancyx.Admin.Service.System
     public class NotificationService : INotificationService
     {
         private readonly IRepository<Notification> _repository;
-        private readonly IRepository<Employee> _employeeRepository;
 
-        public NotificationService(IRepository<Notification> repository, IRepository<Employee> employeeRepository)
+        public NotificationService(IRepository<Notification> repository)
         {
             _repository = repository;
-            _employeeRepository = employeeRepository;
         }
 
         public Task AddNotificationAsync(NotificationDto dto)
@@ -23,7 +20,7 @@ namespace Fancyx.Admin.Service.System
             {
                 Title = dto.Title,
                 Content = dto.Content,
-                EmployeeId = dto.EmployeeId,
+                UserId = dto.EmployeeId,
                 IsReaded = false
             };
             return _repository.InsertAsync(entity);
@@ -38,7 +35,7 @@ namespace Fancyx.Admin.Service.System
         {
             // TODO:
             throw new NotImplementedException();
-            //var list = await _repository.Select.From<EmployeeDO>().LeftJoin((n, e) => n.EmployeeId == e.Id)
+            //var list = await _repository.Select.From<EmployeeDO>().LeftJoin((n, e) => n.UserId == e.Id)
             //    .WhereIf(!string.IsNullOrEmpty(dto.Title), (x, e) => x.Title!.Contains(x.Title))
             //    .WhereIf(dto.IsReaded.HasValue, (x, e) => x.IsReaded == dto.IsReaded)
             //    .OrderByDescending((x, e) => x.CreationTime)
@@ -49,7 +46,7 @@ namespace Fancyx.Admin.Service.System
             //        Id = n.Id,
             //        Title = n.Title,
             //        Content = n.Content,
-            //        EmployeeId = n.EmployeeId,
+            //        UserId = n.UserId,
             //        IsReaded = n.IsReaded,
             //        CreationTime = n.CreationTime,
             //        ReadedTime = n.ReadedTime,
@@ -67,7 +64,7 @@ namespace Fancyx.Admin.Service.System
             }
             entity.Title = dto.Title;
             entity.Content = dto.Content;
-            entity.EmployeeId = dto.EmployeeId;
+            entity.UserId = dto.EmployeeId;
             await _repository.UpdateAsync(entity);
         }
     }

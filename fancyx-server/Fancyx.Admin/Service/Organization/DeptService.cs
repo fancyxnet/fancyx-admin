@@ -3,6 +3,8 @@ using Fancyx.Admin.IService.Organization.Dtos;
 using Fancyx.Core.Helpers;
 using Fancyx.DataAccess;
 using Fancyx.DataAccess.Entities.Organization;
+using Fancyx.DataAccess.Entities.System;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.Service.Organization
@@ -10,12 +12,12 @@ namespace Fancyx.Admin.Service.Organization
     public class DeptService : IDeptService
     {
         private readonly IRepository<Dept> _deptRepository;
-        private readonly IRepository<Employee> _employeeRepository;
+        private readonly IRepository<User> _userRepository;
 
-        public DeptService(IRepository<Dept> deptRepository, IRepository<Employee> employeeRepository)
+        public DeptService(IRepository<Dept> deptRepository, IRepository<User> userRepository)
         {
             _deptRepository = deptRepository;
-            _employeeRepository = employeeRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<bool> AddDeptAsync(DeptDto dto)
@@ -56,8 +58,8 @@ namespace Fancyx.Admin.Service.Organization
                 throw new BusinessException("存在子部门，无法删除");
             }
 
-            var hasEmployees = await _employeeRepository.AnyAsync(x => x.DeptId == id);
-            if (hasEmployees) throw new BusinessException(message: "部门下存在员工，不能删除");
+            var hasEmployees = await _userRepository.AnyAsync(x => x.DeptId == id);
+            if (hasEmployees) throw new BusinessException(message: "部门下存在用户，不能删除");
             await _deptRepository.DeleteAsync(x => id == x.Id);
             return true;
         }
@@ -75,18 +77,12 @@ namespace Fancyx.Admin.Service.Organization
                     .OrderBy(x => x.Sort).ToListAsync();
                 var result = AutoMapperHelper.Instance.Map<List<Dept>, List<DeptListDto>>(filter);
 
-                // Add curator names for filtered results
-                await AddCuratorNames(result); // ++
-
                 return result;
             }
 
             var all = await _deptRepository.GetQueryable().OrderBy(x => x.ParentIds).ToListAsync();
             var tree = AutoMapperHelper.Instance.Map<List<Dept>, List<DeptListDto>>(all.Where(x => x.ParentId == null)
                 .OrderBy(t => t.Sort).ToList());
-
-            // Add curator names for all departments
-            await AddCuratorNames(tree); // ++
 
             foreach (var item in tree)
             {
@@ -100,9 +96,6 @@ namespace Fancyx.Admin.Service.Organization
                         .ToList());
                 if (children.Count <= 0) return null;
 
-                // Add curator names for child departments
-                AddCuratorNames(children).Wait(); // ++
-
                 foreach (var item in children)
                 {
                     item.Children = getChildren(item.Id);
@@ -112,28 +105,6 @@ namespace Fancyx.Admin.Service.Organization
             }
 
             return tree;
-        }
-
-        private async Task AddCuratorNames(List<DeptListDto> depts)
-        {
-            var curatorIds = depts.Select(d => d.CuratorId).Where(id => id.HasValue).Distinct().ToList();
-
-            if (curatorIds.Any())
-            {
-                var employees = await _employeeRepository
-                    .Where(e => curatorIds.Contains(e.Id))
-                    .SelectToListAsync(e => new { e.Id, e.Name });
-
-                var employeeDict = employees.ToDictionary(e => e.Id, e => e.Name);
-
-                foreach (var dept in depts)
-                {
-                    if (dept.CuratorId.HasValue && employeeDict.TryGetValue(dept.CuratorId.Value, out var name))
-                    {
-                        dept.CuratorName = name;
-                    }
-                }
-            }
         }
 
         public async Task<bool> UpdateDeptAsync(DeptDto dto)

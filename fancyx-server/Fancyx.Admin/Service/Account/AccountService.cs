@@ -29,12 +29,11 @@ namespace Fancyx.Admin.Service.Account
         private readonly IdentitySharedService _identitySharedService;
         private readonly ICapPublisher _capPublisher;
         private readonly IMapper _mapper;
-        private readonly IRepository<Employee> _employeeRepository;
         private readonly HttpContext _httpContext;
 
         public AccountService(IRepository<User> userRepository, ICurrentUser currentUser, IRepository<Menu> menuRepository
             , IConfiguration configuration, IHybridCache hybridCache, IdentitySharedService identitySharedService
-            , ICapPublisher capPublisher, IHttpContextAccessor httpContextAccessor, IMapper mapper, IRepository<Employee> employeeRepository)
+            , ICapPublisher capPublisher, IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
             _userRepository = userRepository;
             _currentUser = currentUser;
@@ -44,7 +43,6 @@ namespace Fancyx.Admin.Service.Account
             _identitySharedService = identitySharedService;
             _capPublisher = capPublisher;
             _mapper = mapper;
-            _employeeRepository = employeeRepository;
             _httpContext = httpContextAccessor.HttpContext!;
         }
 
@@ -66,20 +64,6 @@ namespace Fancyx.Admin.Service.Account
                 new(ClaimTypes.Name, userName),
                 new(AdminConsts.SessionId, sessionId)
             };
-            //查询用户员工、部门、职位信息
-            var employee = await _employeeRepository.GetAsync(x => x.UserId == userId);
-            if (employee != null)
-            {
-                claims.Add(new Claim(AdminConsts.EmployeeId, employee.Id.ToString()));
-                if (employee.DeptId.HasValue)
-                {
-                    claims.Add(new Claim(AdminConsts.DeptId, employee.DeptId.ToString()!));
-                }
-                if (employee.PositionId.HasValue)
-                {
-                    claims.Add(new Claim(AdminConsts.PositionId, employee.PositionId.ToString()!));
-                }
-            }
 
             var tokenExpired = time.AddHours(AdminConsts.TokenExpiredHour);
             var rs = new LoginResultDto
@@ -130,8 +114,7 @@ namespace Fancyx.Admin.Service.Account
                     NickName = user.NickName,
                     Avatar = user.Avatar,
                     Sex = (int)user.Sex,
-                    Phone = user.Phone,
-                    EmployeeId = await _employeeRepository.Where(x => x.UserId == uid).ToOneAsync(x => x.Id)
+                    Phone = user.Phone
                 },
                 Menus = await GetFrontMenus(),
                 Permissions = permission.Auths ?? []

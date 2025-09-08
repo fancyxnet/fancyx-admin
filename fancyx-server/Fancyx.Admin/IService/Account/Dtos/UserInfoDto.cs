@@ -28,11 +28,6 @@ namespace Fancyx.Admin.IService.Account.Dtos
         public int Sex { get; set; }
 
         /// <summary>
-        /// 绑定员工ID
-        /// </summary>
-        public Guid? EmployeeId { get; set; }
-
-        /// <summary>
         /// 手机号
         /// </summary>
         public string? Phone { get; set; }

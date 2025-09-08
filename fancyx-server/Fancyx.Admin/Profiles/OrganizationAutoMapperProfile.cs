@@ -8,7 +8,6 @@ namespace Fancyx.Admin.Profiles
     {
         public OrganizationAutoMapperProfile()
         {
-            CreateMap<EmployeeDto, Employee>();
             CreateMap<DeptDto, Dept>();
             CreateMap<Dept, DeptListDto>();
             CreateMap<PositionGroupDto, PositionGroup>();
@@ -16,7 +15,6 @@ namespace Fancyx.Admin.Profiles
                 .ForMember(d => d.Rawchildren, o => o.MapFrom(s => s.Children));
             CreateMap<Position, PositionListDto>();
             CreateMap<PositionDto, Position>();
-            CreateMap<Employee, EmployeeInfoDto>();
         }
     }
 }

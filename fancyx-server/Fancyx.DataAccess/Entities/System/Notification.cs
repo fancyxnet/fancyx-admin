@@ -30,8 +30,8 @@ namespace Fancyx.DataAccess.Entities.System
         /// </summary>
         [NotNull]
         [Required]
-        [Column("employee_id")]
-        public Guid EmployeeId { get; set; }
+        [Column("user_id")]
+        public Guid UserId { get; set; }
 
         /// <summary>
         /// 是否已读(true已读false未读)
