@@ -2,11 +2,11 @@
 using Fancyx.Admin.IService.Payment.Dtos;
 using Fancyx.Core.Extensions;
 using Fancyx.Core.Interfaces;
+using Fancyx.DataAccess;
+using Fancyx.DataAccess.Entities.Payment;
+using Fancyx.DataAccess.Enums;
 using Fancyx.Payment;
-using Fancyx.Payment.Enums;
 using Fancyx.Payment.Models;
-using Fancyx.Repository;
-using Fancyx.Repository.Entities.Payment;
 
 namespace Fancyx.Admin.Service.Payment
 {

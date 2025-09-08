@@ -1,8 +1,8 @@
 ﻿using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
-using Fancyx.Repository;
-using Fancyx.Repository.Entities.Organization;
-using Fancyx.Repository.Entities.System;
+using Fancyx.DataAccess;
+using Fancyx.DataAccess.Entities.Organization;
+using Fancyx.DataAccess.Entities.System;
 
 namespace Fancyx.Admin.Service.System
 {

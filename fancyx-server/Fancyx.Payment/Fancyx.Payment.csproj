@@ -16,6 +16,6 @@
 	  <ProjectReference Include="..\Fancyx.Job\Fancyx.Job.csproj" />
 	  <ProjectReference Include="..\Fancyx.Logger\Fancyx.Logger.csproj" />
 	  <ProjectReference Include="..\Fancyx.Redis\Fancyx.Redis.csproj" />
-	  <ProjectReference Include="..\Fancyx.Repository\Fancyx.Repository.csproj" />
+	  <ProjectReference Include="..\Fancyx.DataAccess\Fancyx.DataAccess.csproj" />
 	</ItemGroup>
 </Project>

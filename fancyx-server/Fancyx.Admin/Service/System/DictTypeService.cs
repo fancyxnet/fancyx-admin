@@ -1,8 +1,8 @@
 ﻿using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
+using Fancyx.DataAccess;
+using Fancyx.DataAccess.Entities.System;
 using Fancyx.Logger;
-using Fancyx.Repository;
-using Fancyx.Repository.Entities.System;
 using Fancyx.Shared.Consts;
 
 namespace Fancyx.Admin.Service.System;

@@ -1,4 +1,4 @@
-using Fancyx.Repository.Enums;
+using Fancyx.DataAccess.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace Fancyx.Admin.IService.Account.Dtos

@@ -1,11 +1,11 @@
 ﻿using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
+using Fancyx.DataAccess;
+using Fancyx.DataAccess.Enums;
 using Fancyx.Job;
 using Fancyx.Logger;
-using Fancyx.Payment.Enums;
 using Fancyx.Payment.Services;
 using Fancyx.Redis;
-using Fancyx.Repository;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fancyx.Payment

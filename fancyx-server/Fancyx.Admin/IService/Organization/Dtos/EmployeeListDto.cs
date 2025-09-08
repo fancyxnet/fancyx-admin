@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Fancyx.Repository.Enums;
+using Fancyx.DataAccess.Enums;
 
 namespace Fancyx.Admin.IService.Organization.Dtos
 {

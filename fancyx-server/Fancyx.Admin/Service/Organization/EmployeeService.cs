@@ -6,10 +6,10 @@ using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Admin.SharedService;
 using Fancyx.Core.Interfaces;
 using Fancyx.Core.Utils;
-using Fancyx.Repository;
-using Fancyx.Repository.Aop;
-using Fancyx.Repository.Entities.Organization;
-using Fancyx.Repository.Entities.System;
+using Fancyx.DataAccess;
+using Fancyx.DataAccess.Entities.Organization;
+using Fancyx.DataAccess.Entities.System;
+using Fancyx.DataAccess.Aop;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.Service.Organization

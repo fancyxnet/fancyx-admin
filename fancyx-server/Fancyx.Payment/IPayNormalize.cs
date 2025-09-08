@@ -1,4 +1,4 @@
-﻿using Fancyx.Payment.Enums;
+﻿using Fancyx.DataAccess.Enums;
 using Fancyx.Payment.Models;
 
 namespace Fancyx.Payment

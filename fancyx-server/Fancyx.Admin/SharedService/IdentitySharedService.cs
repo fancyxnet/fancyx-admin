@@ -1,10 +1,10 @@
 ﻿using Fancyx.Core.Authorization;
 using Fancyx.Core.Interfaces;
+using Fancyx.DataAccess;
+using Fancyx.DataAccess.Entities.Organization;
+using Fancyx.DataAccess.Entities.System;
+using Fancyx.DataAccess.Enums;
 using Fancyx.Redis;
-using Fancyx.Repository;
-using Fancyx.Repository.Entities.Organization;
-using Fancyx.Repository.Entities.System;
-using Fancyx.Repository.Enums;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Keys;
 using Microsoft.EntityFrameworkCore;

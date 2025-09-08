@@ -1,5 +1,5 @@
 ﻿using EnumsNET;
-using Fancyx.Payment.Enums;
+using Fancyx.DataAccess.Enums;
 
 namespace Fancyx.Payment.Exceptions
 {

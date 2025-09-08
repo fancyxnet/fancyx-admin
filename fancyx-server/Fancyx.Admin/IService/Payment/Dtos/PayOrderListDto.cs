@@ -1,4 +1,4 @@
-﻿using Fancyx.Payment.Enums;
+﻿using Fancyx.DataAccess.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace Fancyx.Admin.IService.Payment.Dtos

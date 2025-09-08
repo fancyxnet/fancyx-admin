@@ -1,7 +1,7 @@
 ﻿using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
+using Fancyx.DataAccess;
 using Fancyx.Job.Database;
-using Fancyx.Repository;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using Quartz.Impl;

@@ -1,9 +1,9 @@
 ﻿using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Core.Extensions;
+using Fancyx.DataAccess;
+using Fancyx.DataAccess.Entities.Job;
 using Fancyx.Job;
-using Fancyx.Repository;
-using Fancyx.Repository.Entities.Job;
 
 namespace Fancyx.Admin.Service.System
 {

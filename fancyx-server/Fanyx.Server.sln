@@ -14,7 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Shared", "Fancyx.Sha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Admin", "Fancyx.Admin\Fancyx.Admin.csproj", "{C0FB332D-78AF-4230-9750-2914BE0406D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Repository", "Fancyx.Repository\Fancyx.Repository.csproj", "{979A8DFF-BAE5-49D7-A6F4-335974873E31}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.DataAccess", "Fancyx.DataAccess\Fancyx.DataAccess.csproj", "{979A8DFF-BAE5-49D7-A6F4-335974873E31}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Redis", "Fancyx.Redis\Fancyx.Redis.csproj", "{5364A22C-7C01-4499-903D-1A985B11B30C}"
 EndProject

@@ -1,11 +1,11 @@
 using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Admin.SharedService;
-using Fancyx.Repository;
-using Fancyx.Repository.Aop;
-using Fancyx.Repository.Entities.Organization;
-using Fancyx.Repository.Entities.System;
-using Fancyx.Repository.Enums;
+using Fancyx.DataAccess;
+using Fancyx.DataAccess.Entities.Organization;
+using Fancyx.DataAccess.Entities.System;
+using Fancyx.DataAccess.Enums;
+using Fancyx.DataAccess.Aop;
 using Fancyx.Shared.Consts;
 
 namespace Fancyx.Admin.Service.System

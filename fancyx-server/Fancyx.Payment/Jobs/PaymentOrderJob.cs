@@ -1,8 +1,8 @@
 ﻿using Fancyx.Core.AutoInject;
+using Fancyx.DataAccess;
+using Fancyx.DataAccess.Entities.Payment;
+using Fancyx.DataAccess.Enums;
 using Fancyx.Job;
-using Fancyx.Payment.Enums;
-using Fancyx.Repository;
-using Fancyx.Repository.Entities.Payment;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 using RedLockNet.SERedis;

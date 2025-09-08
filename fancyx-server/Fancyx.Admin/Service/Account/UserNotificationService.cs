@@ -2,9 +2,9 @@
 using Fancyx.Admin.IService.Account.Dtos;
 using Fancyx.Core.Extensions;
 using Fancyx.Core.Interfaces;
-using Fancyx.Repository;
-using Fancyx.Repository.Entities.Organization;
-using Fancyx.Repository.Entities.System;
+using Fancyx.DataAccess;
+using Fancyx.DataAccess.Entities.Organization;
+using Fancyx.DataAccess.Entities.System;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.Service.Account

@@ -1,8 +1,8 @@
 ﻿using Fancyx.Core.AutoInject;
+using Fancyx.DataAccess;
+using Fancyx.DataAccess.Entities.Job;
 using Fancyx.Job.Database.Models;
-using Fancyx.Repository;
-using Fancyx.Repository.Aop;
-using Fancyx.Repository.Entities.Job;
+using Fancyx.DataAccess.Aop;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Quartz;

@@ -1,7 +1,7 @@
 ﻿using Fancyx.Cap;
 using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
-using Fancyx.Repository;
+using Fancyx.DataAccess;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
