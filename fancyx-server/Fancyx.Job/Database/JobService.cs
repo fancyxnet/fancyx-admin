@@ -13,12 +13,12 @@ namespace Fancyx.Job.Database
     [DenpendencyInject(AsSelf = true)]
     internal class JobService : IJobControl
     {
-        private readonly IRepository<ScheduledTaskDO> _scheduledTaskRepository;
-        private readonly IRepository<TaskExecutionLogDO> _taskExecutionLogRepository;
+        private readonly IRepository<ScheduledTask> _scheduledTaskRepository;
+        private readonly IRepository<TaskExecutionLog> _taskExecutionLogRepository;
         private readonly IScheduler _scheduler;
         private readonly IMemoryCache _memoryCache;
 
-        public JobService(IRepository<ScheduledTaskDO> scheduledTaskRepository, IRepository<TaskExecutionLogDO> taskExecutionLogRepository, IScheduler scheduler, IMemoryCache memoryCache)
+        public JobService(IRepository<ScheduledTask> scheduledTaskRepository, IRepository<TaskExecutionLog> taskExecutionLogRepository, IScheduler scheduler, IMemoryCache memoryCache)
         {
             _scheduledTaskRepository = scheduledTaskRepository;
             _taskExecutionLogRepository = taskExecutionLogRepository;
@@ -37,7 +37,7 @@ namespace Fancyx.Job.Database
                 throw new InvalidOperationException($"任务KEY:{key}，已存在");
             }
 
-            var entity = new ScheduledTaskDO()
+            var entity = new ScheduledTask()
             {
                 TaskKey = key,
                 CronExpression = cron,

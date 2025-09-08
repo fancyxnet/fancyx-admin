@@ -10,7 +10,7 @@ using Quartz.Impl.Matchers;
 namespace Fancyx.Job
 {
     [DependsOn(
-        typeof(FancyxRepositoryModule)
+        typeof(FancyxDataAccessModule)
         )]
     public class FancyxJobModule : ModuleBase
     {

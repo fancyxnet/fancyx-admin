@@ -9,9 +9,9 @@ namespace Fancyx.Admin.Service.System.LogManagement
 {
     public class BusinessLogService : IBusinessLogService
     {
-        private readonly IRepository<LogRecordDO> _logRecordRepository;
+        private readonly IRepository<LogRecord> _logRecordRepository;
 
-        public BusinessLogService(IRepository<LogRecordDO> logRecordRepository)
+        public BusinessLogService(IRepository<LogRecord> logRecordRepository)
         {
             _logRecordRepository = logRecordRepository;
         }
@@ -25,7 +25,7 @@ namespace Fancyx.Admin.Service.System.LogManagement
                 .WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.UserName != null && x.UserName.Contains(dto.UserName!))
                 .OrderByDescending(x => x.CreationTime)
                 .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<BusinessLogListDto>(dto, resp.Total, resp.Items.MapperList<LogRecordDO, BusinessLogListDto>());
+            return new PagedResult<BusinessLogListDto>(dto, resp.Total, resp.Items.MapperList<LogRecord, BusinessLogListDto>());
         }
 
         public Task<List<AppOption>> GetBusinessTypeOptionsAsync(string? type)

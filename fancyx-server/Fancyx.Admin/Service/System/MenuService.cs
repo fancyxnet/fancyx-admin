@@ -11,9 +11,9 @@ namespace Fancyx.Admin.Service.System
 {
     public class MenuService : IMenuService
     {
-        private readonly IRepository<MenuDO> _menuRepository;
+        private readonly IRepository<Menu> _menuRepository;
 
-        public MenuService(IRepository<MenuDO> menuRepository)
+        public MenuService(IRepository<Menu> menuRepository)
         {
             _menuRepository = menuRepository;
         }
@@ -46,7 +46,7 @@ namespace Fancyx.Admin.Service.System
                 throw new BusinessException(message: $"已存在【{dto.Path}】菜单路由");
             }
 
-            var entity = AutoMapperHelper.Instance.Map<MenuDto, MenuDO>(dto);
+            var entity = AutoMapperHelper.Instance.Map<MenuDto, Menu>(dto);
             await _menuRepository.InsertAsync(entity);
             return true;
         }
@@ -76,7 +76,7 @@ namespace Fancyx.Admin.Service.System
                 .ToListAsync();
             var top = all.Where(x => isFilter || !x.ParentId.HasValue || x.ParentId == Guid.Empty).OrderBy(x => x.Sort)
                 .ToList();
-            var topMap = AutoMapperHelper.Instance.Map<List<MenuDO>, List<MenuListDto>>(top);
+            var topMap = AutoMapperHelper.Instance.Map<List<Menu>, List<MenuListDto>>(top);
             if (isFilter) return topMap;
             foreach (var item in topMap)
             {
@@ -87,7 +87,7 @@ namespace Fancyx.Admin.Service.System
             {
                 var children = all.Where(x => x.ParentId == currentId).OrderBy(x => x.Sort).ToList();
                 if (children.Count == 0) return null;
-                var childrenMap = AutoMapperHelper.Instance.Map<List<MenuDO>, List<MenuListDto>>(children);
+                var childrenMap = AutoMapperHelper.Instance.Map<List<Menu>, List<MenuListDto>>(children);
                 foreach (var item in childrenMap)
                 {
                     item.Children = getChildren(item.Id);

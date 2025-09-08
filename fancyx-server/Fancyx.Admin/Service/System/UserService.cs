@@ -15,12 +15,12 @@ namespace Fancyx.Admin.Service.System
 {
     public class UserService : IUserService
     {
-        private readonly IRepository<UserDO> _userRepository;
-        private readonly IRepository<UserRoleDO> _userRoleRepository;
+        private readonly IRepository<User> _userRepository;
+        private readonly IRepository<UserRole> _userRoleRepository;
         private readonly IdentitySharedService _identityDomainService;
         private readonly ICurrentUser _currentUser;
 
-        public UserService(IRepository<UserDO> userRepository, IRepository<UserRoleDO> userRoleRepository
+        public UserService(IRepository<User> userRepository, IRepository<UserRole> userRoleRepository
             , IdentitySharedService identityDomainService, ICurrentUser currentUser)
         {
             _userRepository = userRepository;
@@ -40,7 +40,7 @@ namespace Fancyx.Admin.Service.System
             {
                 throw new BusinessException("密码格式不正确");
             }
-            var user = new UserDO
+            var user = new User
             {
                 Id = Guid.NewGuid(),
                 UserName = dto.UserName,
@@ -65,10 +65,10 @@ namespace Fancyx.Admin.Service.System
             await _userRoleRepository.DeleteAsync(x => x.UserId == dto.UserId);
             if (dto.RoleIds != null)
             {
-                var items = new List<UserRoleDO>();
+                var items = new List<UserRole>();
                 foreach (var item in dto.RoleIds)
                 {
-                    items.Add(new UserRoleDO
+                    items.Add(new UserRole
                     {
                         UserId = dto.UserId,
                         RoleId = item

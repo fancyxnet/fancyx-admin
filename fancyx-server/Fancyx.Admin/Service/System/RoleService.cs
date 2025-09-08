@@ -12,16 +12,16 @@ namespace Fancyx.Admin.Service.System
 {
     public class RoleService : IRoleService
     {
-        private readonly IRepository<RoleDO> _roleRepository;
-        private readonly IRepository<RoleMenuDO> _roleMenuRepository;
-        private readonly IRepository<UserRoleDO> _userRoleRepository;
+        private readonly IRepository<Role> _roleRepository;
+        private readonly IRepository<RoleMenu> _roleMenuRepository;
+        private readonly IRepository<UserRole> _userRoleRepository;
         private readonly IdentitySharedService _identitySharedService;
-        private readonly IRepository<RoleDeptDO> _roleDeptRepository;
-        private readonly IRepository<DeptDO> _deptRepository;
+        private readonly IRepository<RoleDept> _roleDeptRepository;
+        private readonly IRepository<Dept> _deptRepository;
 
-        public RoleService(IRepository<RoleDO> roleRepository, IRepository<RoleMenuDO> roleMenuRepository
-            , IRepository<UserRoleDO> userRoleRepository, IdentitySharedService identitySharedService
-            , IRepository<RoleDeptDO> roleDeptRepository, IRepository<DeptDO> deptRepository)
+        public RoleService(IRepository<Role> roleRepository, IRepository<RoleMenu> roleMenuRepository
+            , IRepository<UserRole> userRoleRepository, IdentitySharedService identitySharedService
+            , IRepository<RoleDept> roleDeptRepository, IRepository<Dept> deptRepository)
         {
             _roleRepository = roleRepository;
             _roleMenuRepository = roleMenuRepository;
@@ -39,7 +39,7 @@ namespace Fancyx.Admin.Service.System
                 throw new BusinessException("角色名已存在");
             }
 
-            var entity = new RoleDO
+            var entity = new Role
             {
                 RoleName = dto.RoleName,
                 Remark = dto.Remark
@@ -53,10 +53,10 @@ namespace Fancyx.Admin.Service.System
             await _roleMenuRepository.DeleteAsync(x => x.RoleId == dto.RoleId);
             if (dto.MenuIds != null)
             {
-                var items = new List<RoleMenuDO>();
+                var items = new List<RoleMenu>();
                 foreach (var item in dto.MenuIds)
                 {
-                    items.Add(new RoleMenuDO
+                    items.Add(new RoleMenu
                     {
                         RoleId = dto.RoleId,
                         MenuId = item
@@ -203,7 +203,7 @@ namespace Fancyx.Admin.Service.System
             if (dto is { DeptPowerType: DeptPowerType.Specify, DeptIds.Length: > 0 })
             {
                 var roleDeptList = dto.DeptIds
-                    .Select(deptId => new RoleDeptDO { DeptId = deptId, RoleId = dto.RoleId }).ToList();
+                    .Select(deptId => new RoleDept { DeptId = deptId, RoleId = dto.RoleId }).ToList();
                 await _roleDeptRepository.InsertManyAsync(roleDeptList);
             }
 

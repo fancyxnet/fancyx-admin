@@ -9,10 +9,10 @@ namespace Fancyx.Admin
 {
     public class TenantChecker : ITenantChecker, ISingletonDependency
     {
-        private readonly IRepository<TenantDO> _tenantRepository;
+        private readonly IRepository<Tenant> _tenantRepository;
         private readonly IDatabase _redisClient;
 
-        public TenantChecker(IRepository<TenantDO> tenantRepository, IDatabase redisClient)
+        public TenantChecker(IRepository<Tenant> tenantRepository, IDatabase redisClient)
         {
             _tenantRepository = tenantRepository;
             _redisClient = redisClient;

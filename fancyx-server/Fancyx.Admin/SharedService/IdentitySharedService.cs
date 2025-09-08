@@ -17,21 +17,21 @@ namespace Fancyx.Admin.SharedService
 {
     public class IdentitySharedService : IScopedDependency
     {
-        private readonly IRepository<UserRoleDO> _userRoleRepository;
-        private readonly IRepository<RoleMenuDO> _roleMenuRepository;
-        private readonly IRepository<RoleDO> _roleRepository;
-        private readonly IRepository<MenuDO> _menuRepository;
+        private readonly IRepository<UserRole> _userRoleRepository;
+        private readonly IRepository<RoleMenu> _roleMenuRepository;
+        private readonly IRepository<Role> _roleRepository;
+        private readonly IRepository<Menu> _menuRepository;
         private readonly IConfiguration _configuration;
-        private readonly IRepository<UserDO> _userRepository;
+        private readonly IRepository<User> _userRepository;
         private readonly IHybridCache _hybridCache;
         private readonly ICurrentUser _currentUser;
-        private readonly IRepository<RoleDeptDO> _roleDeptRepository;
-        private readonly IRepository<EmployeeDO> _employeeRepository;
-        private readonly IRepository<DeptDO> _deptRepository;
+        private readonly IRepository<RoleDept> _roleDeptRepository;
+        private readonly IRepository<Employee> _employeeRepository;
+        private readonly IRepository<Dept> _deptRepository;
 
-        public IdentitySharedService(IRepository<UserRoleDO> userRoleRepository, IRepository<RoleMenuDO> roleMenuRepository, IRepository<RoleDO> roleRepository,
-            IRepository<MenuDO> menuRepository, IConfiguration configuration, IRepository<UserDO> userRepository, IHybridCache hybridCache, ICurrentUser currentUser
-            , IRepository<RoleDeptDO> roleDeptRepository, IRepository<EmployeeDO> employeeRepository, IRepository<DeptDO> deptRepository)
+        public IdentitySharedService(IRepository<UserRole> userRoleRepository, IRepository<RoleMenu> roleMenuRepository, IRepository<Role> roleRepository,
+            IRepository<Menu> menuRepository, IConfiguration configuration, IRepository<User> userRepository, IHybridCache hybridCache, ICurrentUser currentUser
+            , IRepository<RoleDept> roleDeptRepository, IRepository<Employee> employeeRepository, IRepository<Dept> deptRepository)
         {
             _userRoleRepository = userRoleRepository;
             _roleMenuRepository = roleMenuRepository;

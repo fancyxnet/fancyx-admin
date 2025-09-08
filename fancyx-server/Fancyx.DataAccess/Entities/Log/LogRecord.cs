@@ -6,7 +6,7 @@ using Fancyx.DataAccess.BaseEntity;
 namespace Fancyx.DataAccess.Entities.Log
 {
     [Table("log_record")]
-    public class LogRecordDO : CreationEntity, ITenant
+    public class LogRecord : CreationEntity, ITenant
     {
         /// <summary>
         /// 日志类型

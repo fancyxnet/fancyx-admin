@@ -27,7 +27,7 @@ using System.Threading.RateLimiting;
 namespace Fancyx.Admin
 {
     [DependsOn(
-        typeof(FancyxRepositoryModule),
+        typeof(FancyxDataAccessModule),
         typeof(FancyxRedisModule),
         typeof(FancyxCapModule),
         typeof(FancyxLoggerModule),

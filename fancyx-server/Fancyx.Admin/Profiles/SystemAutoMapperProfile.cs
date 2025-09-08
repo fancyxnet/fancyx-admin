@@ -10,10 +10,10 @@ namespace Fancyx.Admin.Profiles
         public SystemAutoMapperProfile()
         {
             CreateMap<TokenResultDto, LoginResultDto>();
-            CreateMap<MenuDto, MenuDO>();
-            CreateMap<MenuDO, MenuListDto>();
-            CreateMap<DictDataDto, DictDataDO>();
-            CreateMap<MenuDO, FrontendMenu>();
+            CreateMap<MenuDto, Menu>();
+            CreateMap<Menu, MenuListDto>();
+            CreateMap<DictDataDto, DictData>();
+            CreateMap<Menu, FrontendMenu>();
         }
     }
 }

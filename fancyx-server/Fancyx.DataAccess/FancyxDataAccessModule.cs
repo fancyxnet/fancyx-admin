@@ -1,13 +1,15 @@
 ﻿using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fancyx.DataAccess
 {
-    public class FancyxRepositoryModule : ModuleBase
+    public class FancyxDataAccessModule : ModuleBase
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
+            context.Services.AddNpgsql<FancyxDbContext>(context.Configuration.GetConnectionString("Default"));
             //context.Services.AddScoped<UnitOfWorkManager>(r => new UnitOfWorkManager(createFreeSql()));
             context.Services.AddScoped(typeof(IRepository<>), typeof(RepositoryBase<>));
         }

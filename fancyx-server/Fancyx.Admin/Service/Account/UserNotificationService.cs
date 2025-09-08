@@ -11,11 +11,11 @@ namespace Fancyx.Admin.Service.Account
 {
     public class UserNotificationService : IUserNotificationService, IScopedDependency
     {
-        private readonly IRepository<NotificationDO> _repository;
-        private readonly IRepository<EmployeeDO> _employeeRepository;
+        private readonly IRepository<Notification> _repository;
+        private readonly IRepository<Employee> _employeeRepository;
         private readonly ICurrentUser _currentUser;
 
-        public UserNotificationService(IRepository<NotificationDO> repository, IRepository<EmployeeDO> employeeRepository, ICurrentUser currentUser)
+        public UserNotificationService(IRepository<Notification> repository, IRepository<Employee> employeeRepository, ICurrentUser currentUser)
         {
             _repository = repository;
             _employeeRepository = employeeRepository;
@@ -34,7 +34,7 @@ namespace Fancyx.Admin.Service.Account
                 .OrderBy(x => x.IsReaded)
                 .OrderByDescending(x => x.CreationTime)
                 .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<UserNotificationListDto>(dto, resp.Total, resp.Items.MapperList<NotificationDO, UserNotificationListDto>());
+            return new PagedResult<UserNotificationListDto>(dto, resp.Total, resp.Items.MapperList<Notification, UserNotificationListDto>());
         }
 
         public async Task<UserNotificationNavbarDto> GetMyNotificationNavbarInfoAsync()

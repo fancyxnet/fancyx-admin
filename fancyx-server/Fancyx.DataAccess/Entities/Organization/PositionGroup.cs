@@ -10,7 +10,7 @@ namespace Fancyx.DataAccess.Entities.Organization
     /// 职位分组
     /// </summary>
     [Table("org_position_group")]
-    public class PositionGroupDO : AuditedEntity, ITenant
+    public class PositionGroup : AuditedEntity, ITenant
     {
         /// <summary>
         /// 分组名
@@ -54,8 +54,8 @@ namespace Fancyx.DataAccess.Entities.Organization
         [Column("tenant_id")]
         public string? TenantId { get; set; }
 
-        public PositionGroupDO? Parent { get; set; }
+        public PositionGroup? Parent { get; set; }
 
-        public List<PositionGroupDO>? Children { get; set; }
+        public List<PositionGroup>? Children { get; set; }
     }
 }

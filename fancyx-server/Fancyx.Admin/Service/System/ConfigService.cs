@@ -12,10 +12,10 @@ namespace Fancyx.Admin.Service.System
 {
     public class ConfigService : IConfigService
     {
-        private readonly IRepository<ConfigDO> _configRepository;
+        private readonly IRepository<Config> _configRepository;
         private readonly ConfigSharedService _configSharedService;
 
-        public ConfigService(IRepository<ConfigDO> configRepository, ConfigSharedService configSharedService)
+        public ConfigService(IRepository<Config> configRepository, ConfigSharedService configSharedService)
         {
             _configRepository = configRepository;
             _configSharedService = configSharedService;
@@ -28,7 +28,7 @@ namespace Fancyx.Admin.Service.System
                 throw new BusinessException($"配置【{dto.Key}】已存在");
             }
 
-            var entity = new ConfigDO()
+            var entity = new Config()
             {
                 Name = dto.Name,
                 Key = dto.Key!,
@@ -46,7 +46,7 @@ namespace Fancyx.Admin.Service.System
                 .WhereIf(!string.IsNullOrEmpty(dto.Key), x => x.Key.ToLower().Contains(dto.Key!.ToLower()))
                 .PagedAsync(dto.Current, dto.PageSize);
 
-            return new PagedResult<ConfigListDto>(resp.Total, resp.Items.MapperList<ConfigDO, ConfigListDto>());
+            return new PagedResult<ConfigListDto>(resp.Total, resp.Items.MapperList<Config, ConfigListDto>());
         }
 
         public async Task DeleteConfigAsync(Guid id)

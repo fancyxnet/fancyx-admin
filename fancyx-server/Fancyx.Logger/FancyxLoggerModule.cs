@@ -9,7 +9,7 @@ namespace Fancyx.Logger
 {
     [DependsOn(
         typeof(FancyxCapModule),
-        typeof(FancyxRepositoryModule)
+        typeof(FancyxDataAccessModule)
         )]
     public class FancyxLoggerModule : ModuleBase
     {

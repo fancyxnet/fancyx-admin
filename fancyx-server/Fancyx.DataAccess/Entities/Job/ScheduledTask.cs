@@ -10,7 +10,7 @@ namespace Fancyx.DataAccess.Entities.Job
     /// </summary>
     [Table("scheduled_tasks")]
     [Index(nameof(TaskKey), IsUnique = true)]
-    public class ScheduledTaskDO : AuditedEntity
+    public class ScheduledTask : AuditedEntity
     {
         /// <summary>
         /// 任务KEY（唯一标识）

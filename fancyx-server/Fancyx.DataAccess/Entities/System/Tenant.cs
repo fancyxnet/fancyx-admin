@@ -8,7 +8,7 @@ namespace Fancyx.DataAccess.Entities.System
 {
     [Table("sys_tenant")]
     [Index(nameof(TenantId), IsUnique = true)]
-    public class TenantDO : AuditedEntity
+    public class Tenant : AuditedEntity
     {
         /// <summary>
         /// 租户名称

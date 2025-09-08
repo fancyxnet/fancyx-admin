@@ -11,9 +11,9 @@ namespace Fancyx.Admin.Service.System
 {
     public class DictDataService : IDictDataService
     {
-        private readonly IRepository<DictDataDO> _dictRepository;
+        private readonly IRepository<DictData> _dictRepository;
 
-        public DictDataService(IRepository<DictDataDO> dictRepository)
+        public DictDataService(IRepository<DictData> dictRepository)
         {
             _dictRepository = dictRepository;
         }
@@ -25,7 +25,7 @@ namespace Fancyx.Admin.Service.System
             {
                 throw new BusinessException("字典值已存在");
             }
-            var entity = AutoMapperHelper.Instance.Map<DictDataDto, DictDataDO>(dto);
+            var entity = AutoMapperHelper.Instance.Map<DictDataDto, DictData>(dto);
             await _dictRepository.InsertAsync(entity);
 
             return true;
@@ -51,7 +51,7 @@ namespace Fancyx.Admin.Service.System
                 .OrderBy(x => x.Sort).OrderByDescending(x => x.CreationTime)
                 .PagedAsync(dto.Current, dto.PageSize);
 
-            return new PagedResult<DictDataListDto>(resp.Total, resp.Items.MapperList<DictDataDO, DictDataListDto>());
+            return new PagedResult<DictDataListDto>(resp.Total, resp.Items.MapperList<DictData, DictDataListDto>());
         }
 
         [AsyncLogRecord(LogRecordConsts.SysDictData, LogRecordConsts.SysDictDataUpdateSubType, "{{id}}", LogRecordConsts.SysDictDataUpdateContent)]

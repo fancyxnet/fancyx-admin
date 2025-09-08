@@ -21,20 +21,20 @@ namespace Fancyx.Admin.Service.Account
 {
     public class AccountService : IAccountService
     {
-        private readonly IRepository<UserDO> _userRepository;
+        private readonly IRepository<User> _userRepository;
         private readonly ICurrentUser _currentUser;
-        private readonly IRepository<MenuDO> _menuRepository;
+        private readonly IRepository<Menu> _menuRepository;
         private readonly IConfiguration _configuration;
         private readonly IHybridCache _hybridCache;
         private readonly IdentitySharedService _identitySharedService;
         private readonly ICapPublisher _capPublisher;
         private readonly IMapper _mapper;
-        private readonly IRepository<EmployeeDO> _employeeRepository;
+        private readonly IRepository<Employee> _employeeRepository;
         private readonly HttpContext _httpContext;
 
-        public AccountService(IRepository<UserDO> userRepository, ICurrentUser currentUser, IRepository<MenuDO> menuRepository
+        public AccountService(IRepository<User> userRepository, ICurrentUser currentUser, IRepository<Menu> menuRepository
             , IConfiguration configuration, IHybridCache hybridCache, IdentitySharedService identitySharedService
-            , ICapPublisher capPublisher, IHttpContextAccessor httpContextAccessor, IMapper mapper, IRepository<EmployeeDO> employeeRepository)
+            , ICapPublisher capPublisher, IHttpContextAccessor httpContextAccessor, IMapper mapper, IRepository<Employee> employeeRepository)
         {
             _userRepository = userRepository;
             _currentUser = currentUser;
@@ -141,7 +141,7 @@ namespace Fancyx.Admin.Service.Account
 
         public async Task<LoginResultDto> LoginAsync(LoginDto dto)
         {
-            var loginLog = new LoginLogDO
+            var loginLog = new LoginLog
             {
                 IsSuccess = true,
                 Ip = RequestUtils.GetIp(_httpContext),
@@ -182,7 +182,7 @@ namespace Fancyx.Admin.Service.Account
 
         public async Task<LoginResultDto> SmsLoginAsync(SmsLoginDto dto)
         {
-            var loginLog = new LoginLogDO
+            var loginLog = new LoginLog
             {
                 IsSuccess = true,
                 Ip = RequestUtils.GetIp(_httpContext),
@@ -237,7 +237,7 @@ namespace Fancyx.Admin.Service.Account
             var topMap = new List<FrontendMenu>();
             foreach (var item in top)
             {
-                var mapItem = AutoMapperHelper.Instance.Map<MenuDO, FrontendMenu>(item);
+                var mapItem = AutoMapperHelper.Instance.Map<Menu, FrontendMenu>(item);
                 mapItem.LayerName = item.Title;
                 mapItem.Children = getChildren(mapItem);
                 topMap.Add(mapItem);
@@ -251,7 +251,7 @@ namespace Fancyx.Admin.Service.Account
                 var childrenMap = new List<FrontendMenu>();
                 foreach (var item in children)
                 {
-                    var mapItem = AutoMapperHelper.Instance.Map<MenuDO, FrontendMenu>(item);
+                    var mapItem = AutoMapperHelper.Instance.Map<Menu, FrontendMenu>(item);
                     mapItem.LayerName = current.LayerName + "/" + item.Title;
                     mapItem.Children = getChildren(mapItem);
                     childrenMap.Add(mapItem);

@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Fancyx.Payment
 {
     [DependsOn(
-        typeof(FancyxRepositoryModule),
+        typeof(FancyxDataAccessModule),
         typeof(FancyxLoggerModule),
         typeof(FancyxRedisModule),
         typeof(FancyxJobModule)

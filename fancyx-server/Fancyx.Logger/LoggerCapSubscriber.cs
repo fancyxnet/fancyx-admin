@@ -19,7 +19,7 @@ namespace Fancyx.Logger
         [CapSubscribe(EventBusTopicConsts.LOG_RECORD_EVENT)]
         public async Task LogRecord(LogRecordMessage message)
         {
-            var entity = new LogRecordDO
+            var entity = new LogRecord
             {
                 Type = message.Type,
                 SubType = message.SubType,
@@ -41,7 +41,7 @@ namespace Fancyx.Logger
         [CapSubscribe(EventBusTopicConsts.API_ACCESS_LOG_EVENT)]
         public async Task ApiAccessLog(ApiAccessLogMessage message)
         {
-            var entity = new ApiAccessLogDO
+            var entity = new ApiAccessLog
             {
                 Path = message.Path,
                 Method = message.Method,
@@ -68,7 +68,7 @@ namespace Fancyx.Logger
         [CapSubscribe(EventBusTopicConsts.EXCEPTION_LOG_EVENT)]
         public async Task ExceptionLog(ExceptionLogMessage message)
         {
-            var entity = new ExceptionLogDO()
+            var entity = new ExceptionLog()
             {
                 RequestPath = message.RequestPath,
                 RequestMethod = message.RequestMethod,

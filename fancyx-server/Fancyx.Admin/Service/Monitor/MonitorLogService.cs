@@ -9,11 +9,11 @@ namespace Fancyx.Admin.Service.Monitor
 {
     public class MonitorLogService : IMonitorLogService, IScopedDependency
     {
-        private readonly IRepository<ApiAccessLogDO> _apiAccessRepository;
-        private readonly IRepository<ExceptionLogDO> _exceptionLogRepository;
+        private readonly IRepository<ApiAccessLog> _apiAccessRepository;
+        private readonly IRepository<ExceptionLog> _exceptionLogRepository;
         private readonly ICurrentUser _currentUser;
 
-        public MonitorLogService(IRepository<ApiAccessLogDO> apiAccessRepository, IRepository<ExceptionLogDO> exceptionLogRepository, ICurrentUser currentUser)
+        public MonitorLogService(IRepository<ApiAccessLog> apiAccessRepository, IRepository<ExceptionLog> exceptionLogRepository, ICurrentUser currentUser)
         {
             _apiAccessRepository = apiAccessRepository;
             _exceptionLogRepository = exceptionLogRepository;
@@ -26,7 +26,7 @@ namespace Fancyx.Admin.Service.Monitor
                 .WhereIf(!string.IsNullOrEmpty(dto.Path), x => x.Path.Contains(dto.Path!))
                 .OrderByDescending(x => x.CreationTime)
                 .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<ApiAccessLogListDto>(dto, resp.Total, resp.Items.MapperList<ApiAccessLogDO, ApiAccessLogListDto>());
+            return new PagedResult<ApiAccessLogListDto>(dto, resp.Total, resp.Items.MapperList<ApiAccessLog, ApiAccessLogListDto>());
         }
 
         public async Task<PagedResult<ExceptionLogListDto>> GetExceptionLogListAsync(ExceptionLogQueryDto dto)
@@ -36,7 +36,7 @@ namespace Fancyx.Admin.Service.Monitor
                 .WhereIf(dto.IsHandled.HasValue, x => x.IsHandled == dto.IsHandled!)
                 .OrderByDescending(x => x.CreationTime)
                 .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<ExceptionLogListDto>(dto, resp.Total, resp.Items.MapperList<ExceptionLogDO, ExceptionLogListDto>());
+            return new PagedResult<ExceptionLogListDto>(dto, resp.Total, resp.Items.MapperList<ExceptionLog, ExceptionLogListDto>());
         }
 
         public async Task HandleExceptionAsync(Guid exceptionId)

@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Fancyx.DataAccess.Entities.Log
 {
     [Table("api_access_log")]
-    public class ApiAccessLogDO : CreationEntity, ITenant
+    public class ApiAccessLog : CreationEntity, ITenant
     {
         /// <summary>
         /// 请求路径

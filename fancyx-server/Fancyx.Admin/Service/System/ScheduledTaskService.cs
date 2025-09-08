@@ -9,11 +9,11 @@ namespace Fancyx.Admin.Service.System
 {
     public class ScheduledTaskService : IScheduledTaskService
     {
-        private readonly IRepository<ScheduledTaskDO> _scheduledTaskRepository;
-        private readonly IRepository<TaskExecutionLogDO> _taskExecutionLogRepository;
+        private readonly IRepository<ScheduledTask> _scheduledTaskRepository;
+        private readonly IRepository<TaskExecutionLog> _taskExecutionLogRepository;
         private readonly IJobControl _jobControl;
 
-        public ScheduledTaskService(IRepository<ScheduledTaskDO> scheduledTaskRepository, IRepository<TaskExecutionLogDO> taskExecutionLogRepository, IJobControl jobControl)
+        public ScheduledTaskService(IRepository<ScheduledTask> scheduledTaskRepository, IRepository<TaskExecutionLog> taskExecutionLogRepository, IJobControl jobControl)
         {
             _scheduledTaskRepository = scheduledTaskRepository;
             _taskExecutionLogRepository = taskExecutionLogRepository;
@@ -39,7 +39,7 @@ namespace Fancyx.Admin.Service.System
                 .WhereIf(dto.Cost > 0, x => x.Cost >= dto.Cost)
                 .OrderByDescending(x => x.ExecutionTime)
                 .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<TaskExecutionLogListDto>(dto, resp.Total, resp.Items.MapperList<TaskExecutionLogDO, TaskExecutionLogListDto>());
+            return new PagedResult<TaskExecutionLogListDto>(dto, resp.Total, resp.Items.MapperList<TaskExecutionLog, TaskExecutionLogListDto>());
         }
 
         public async Task<PagedResult<ScheduledTaskListDto>> GetListAsync(ScheduledTaskQueryDto dto)

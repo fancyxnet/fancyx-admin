@@ -9,7 +9,7 @@ namespace Fancyx.Job
     internal class GlobalJobListener : IJobListener
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly BlockingCollection<TaskExecutionLogDO> _logQueue = [];
+        private readonly BlockingCollection<TaskExecutionLog> _logQueue = [];
         private readonly CancellationTokenSource _cancellationTokenSource = new();
 
         public GlobalJobListener(IServiceProvider serviceProvider)
@@ -42,7 +42,7 @@ namespace Fancyx.Job
 
         public Task JobWasExecuted(IJobExecutionContext context, JobExecutionException? jobException, CancellationToken cancellationToken = default)
         {
-            var entity = new TaskExecutionLogDO()
+            var entity = new TaskExecutionLog()
             {
                 TaskKey = JobKeyUtils.GetPureJobKey(context.JobDetail.Key.Name),
                 ExecutionTime = (DateTime)context.Get("ExecutionTime")!,
@@ -61,12 +61,12 @@ namespace Fancyx.Job
 
         private void ProcessQueue()
         {
-            IRepository<TaskExecutionLogDO>? repository = _serviceProvider.GetService<IRepository<TaskExecutionLogDO>>();
+            IRepository<TaskExecutionLog>? repository = _serviceProvider.GetService<IRepository<TaskExecutionLog>>();
             if (repository == null) return;
 
             Task.Run(async () =>
             {
-                var batch = new List<TaskExecutionLogDO>();
+                var batch = new List<TaskExecutionLog>();
                 while (!_cancellationTokenSource.IsCancellationRequested)
                 {
                     if (_logQueue.TryTake(out var log, 500))

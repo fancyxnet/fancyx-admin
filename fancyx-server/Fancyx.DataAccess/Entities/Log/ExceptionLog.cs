@@ -9,7 +9,7 @@ namespace Fancyx.DataAccess.Entities.Log
     /// 异常日志实体类
     /// </summary>
     [Table("exception_log")]
-    public class ExceptionLogDO : CreationEntity, ITenant
+    public class ExceptionLog : CreationEntity, ITenant
     {
         /// <summary>
         /// 异常类型

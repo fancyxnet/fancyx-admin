@@ -12,7 +12,7 @@ namespace Fancyx.DataAccess.Entities.System
     /// 用户表
     /// </summary>
     [Table("sys_user")]
-    public class UserDO : FullAuditedEntity, ITenant
+    public class User : FullAuditedEntity, ITenant
     {
         /// <summary>
         /// 用户名
@@ -73,7 +73,7 @@ namespace Fancyx.DataAccess.Entities.System
         /// <summary>
         /// 用户角色
         /// </summary>
-        public virtual ICollection<UserRoleDO>? UserRoles { get; set; }
+        public virtual ICollection<UserRole>? UserRoles { get; set; }
 
         /// <summary>
         /// 租户ID

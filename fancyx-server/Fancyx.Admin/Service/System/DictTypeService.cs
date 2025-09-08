@@ -9,10 +9,10 @@ namespace Fancyx.Admin.Service.System;
 
 public class DictTypeService : IDictTypeService
 {
-    private readonly IRepository<DictTypeDO> _dictTypeRepository;
-    private readonly IRepository<DictDataDO> _dictDataRepository;
+    private readonly IRepository<DictType> _dictTypeRepository;
+    private readonly IRepository<DictData> _dictDataRepository;
 
-    public DictTypeService(IRepository<DictTypeDO> dictTypeRepository, IRepository<DictDataDO> dictDataRepository)
+    public DictTypeService(IRepository<DictType> dictTypeRepository, IRepository<DictData> dictDataRepository)
     {
         _dictTypeRepository = dictTypeRepository;
         _dictDataRepository = dictDataRepository;
@@ -21,16 +21,16 @@ public class DictTypeService : IDictTypeService
     [AsyncLogRecord(LogRecordConsts.SysDictType, LogRecordConsts.SysDictAddSubType, "{{dict.Id}}", LogRecordConsts.SysDictAddContent)]
     public async Task AddDictTypeAsync(DictTypeDto dto)
     {
-        if (await _dictTypeRepository.AnyAsync(x => x.DictType.ToLower() == dto.DictType.ToLower()))
+        if (await _dictTypeRepository.AnyAsync(x => x.Type.ToLower() == dto.DictType.ToLower()))
         {
             throw new BusinessException(message: "字典类型已存在");
         }
 
-        var entity = new DictTypeDO
+        var entity = new DictType
         {
             Name = dto.Name,
             IsEnabled = dto.IsEnabled,
-            DictType = dto.DictType,
+            Type = dto.DictType,
             Remark = dto.Remark
         };
 
@@ -44,7 +44,7 @@ public class DictTypeService : IDictTypeService
     {
         var dict = await _dictDataRepository.GetAsync(x => x.DictType.ToLower() == dictType.ToLower()) ?? throw new EntityNotFoundException();
         await _dictDataRepository.DeleteAsync(x => x.DictType == dictType);
-        await _dictTypeRepository.DeleteAsync(x => x.DictType == dictType);
+        await _dictTypeRepository.DeleteAsync(x => x.Type == dictType);
 
         LogRecordContext.PutVariable("dict", dict);
     }
@@ -53,14 +53,14 @@ public class DictTypeService : IDictTypeService
     {
         var resp = await _dictTypeRepository.GetQueryable()
             .WhereIf(!string.IsNullOrEmpty(dto.Name), x => x.Name.Contains(dto.Name!))
-            .WhereIf(!string.IsNullOrEmpty(dto.DictType), x => x.DictType.Contains(dto.DictType!))
+            .WhereIf(!string.IsNullOrEmpty(dto.DictType), x => x.Type.Contains(dto.DictType!))
             .OrderByDescending(x => x.CreationTime)
             .Select(x => new DictTypeResultDto
             {
                 Name = x.Name,
                 Id = x.Id,
                 IsEnabled = x.IsEnabled,
-                DictType = x.DictType,
+                DictType = x.Type,
                 Remark = x.Remark,
                 CreationTime = x.CreationTime
             })
@@ -75,15 +75,15 @@ public class DictTypeService : IDictTypeService
     public async Task UpdateDictTypeAsync(DictTypeDto dto)
     {
         var entity = await _dictTypeRepository.GetAsync(x => x.Id == dto.Id) ?? throw new EntityNotFoundException();
-        if (!entity.DictType.Equals(dto.DictType, StringComparison.CurrentCultureIgnoreCase) 
-            && await _dictTypeRepository.AnyAsync(x => x.DictType.ToLower() == dto.DictType.ToLower()))
+        if (!entity.Type.Equals(dto.DictType, StringComparison.CurrentCultureIgnoreCase) 
+            && await _dictTypeRepository.AnyAsync(x => x.Type.ToLower() == dto.DictType.ToLower()))
         {
             throw new BusinessException(message: "字典类型已存在");
         }
 
         entity.Name = dto.Name;
         entity.IsEnabled = dto.IsEnabled;
-        entity.DictType = dto.DictType;
+        entity.Type = dto.DictType;
         entity.Remark = dto.Remark;
 
         await _dictTypeRepository.UpdateAsync(entity);
@@ -100,7 +100,7 @@ public class DictTypeService : IDictTypeService
     [AsyncLogRecord(LogRecordConsts.SysDictType, LogRecordConsts.SysDictBatchDeleteSubType, "{{ids}}", LogRecordConsts.SysDictBatchDeleteContent)]
     public async Task DeleteDictTypesAsync(Guid[] ids)
     {
-        var dictTypes = await _dictTypeRepository.Where(x => ids.Contains(x.Id)).SelectToListAsync(x => x.DictType);
+        var dictTypes = await _dictTypeRepository.Where(x => ids.Contains(x.Id)).SelectToListAsync(x => x.Type);
         await _dictDataRepository.DeleteAsync(x => dictTypes.Contains(x.DictType));
         await _dictTypeRepository.DeleteAsync(x => ids.Contains(x.Id));
 

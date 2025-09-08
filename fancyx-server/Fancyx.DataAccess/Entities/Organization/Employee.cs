@@ -12,7 +12,7 @@ namespace Fancyx.DataAccess.Entities.Organization
     /// 员工表
     /// </summary>
     [Table("org_employee")]
-    public class EmployeeDO : FullAuditedEntity, ITenant
+    public class Employee : FullAuditedEntity, ITenant
     {
         /// <summary>
         /// 工号

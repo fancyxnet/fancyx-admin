@@ -10,7 +10,7 @@ namespace Fancyx.DataAccess.Entities.Job
     [Table("task_execution_logs")]
     [Index(nameof(TaskKey))]
     [Index(nameof(ExecutionTime))]
-    public class TaskExecutionLogDO : CreationEntity
+    public class TaskExecutionLog : CreationEntity
     {
         /// <summary>
         /// 任务KEY

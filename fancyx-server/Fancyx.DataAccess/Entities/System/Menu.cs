@@ -11,7 +11,7 @@ namespace Fancyx.DataAccess.Entities.System
     /// 菜单表
     /// </summary>
     [Table("sys_menu")]
-    public class MenuDO : AuditedEntity, ITenant
+    public class Menu : AuditedEntity, ITenant
     {
         /// <summary>
         /// 显示标题/名称
@@ -79,7 +79,7 @@ namespace Fancyx.DataAccess.Entities.System
         /// <summary>
         /// 角色菜单
         /// </summary>
-        public virtual ICollection<RoleMenuDO>? RoleMenus { get; set; }
+        public virtual ICollection<RoleMenu>? RoleMenus { get; set; }
 
         /// <summary>
         /// 租户ID

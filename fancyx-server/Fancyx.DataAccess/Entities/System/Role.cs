@@ -11,7 +11,7 @@ namespace Fancyx.DataAccess.Entities.System
     /// 角色表
     /// </summary>
     [Table("sys_role")]
-    public class RoleDO : FullAuditedEntity, ITenant
+    public class Role : FullAuditedEntity, ITenant
     {
         /// <summary>
         /// 角色名
@@ -31,17 +31,17 @@ namespace Fancyx.DataAccess.Entities.System
         /// <summary>
         /// 用户角色
         /// </summary>
-        public virtual ICollection<UserRoleDO>? UserRoles { get; set; }
+        public virtual ICollection<UserRole>? UserRoles { get; set; }
 
         /// <summary>
         /// 角色菜单
         /// </summary>
-        public virtual ICollection<RoleMenuDO>? RoleMenus { get; set; }
+        public virtual ICollection<RoleMenu>? RoleMenus { get; set; }
 
         /// <summary>
         /// 角色查看部门（数据权限类型=<see cref="DeptPowerType.Specify"/>时，指定部门时才存入）
         /// </summary>
-        public virtual ICollection<RoleDeptDO>? RoleDepts { get; set; }
+        public virtual ICollection<RoleDept>? RoleDepts { get; set; }
 
         /// <summary>
         /// 租户ID

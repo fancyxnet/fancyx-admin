@@ -16,16 +16,16 @@ namespace Fancyx.Admin.Service.Organization
 {
     public class EmployeeService : IScopedDependency, IEmployeeService
     {
-        private readonly IRepository<EmployeeDO> _employeeRepository;
-        private readonly IRepository<DeptDO> _deptRepository;
+        private readonly IRepository<Employee> _employeeRepository;
+        private readonly IRepository<Dept> _deptRepository;
         private readonly FancyxDbContext _context;
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
-        private readonly IRepository<UserDO> _userRepository;
+        private readonly IRepository<User> _userRepository;
         private readonly IdentitySharedService _identitySharedService;
 
-        public EmployeeService(IRepository<EmployeeDO> employeeRepository, IRepository<DeptDO> deptRepository, IRepository<PositionDO> orgPositionRepository
-            , FancyxDbContext freeSql, IMapper mapper, IUserService userService, IRepository<UserDO> userRepository, IdentitySharedService identitySharedService)
+        public EmployeeService(IRepository<Employee> employeeRepository, IRepository<Dept> deptRepository, IRepository<Position> orgPositionRepository
+            , FancyxDbContext freeSql, IMapper mapper, IUserService userService, IRepository<User> userRepository, IdentitySharedService identitySharedService)
         {
             _employeeRepository = employeeRepository;
             _deptRepository = deptRepository;
@@ -73,7 +73,7 @@ namespace Fancyx.Admin.Service.Organization
                 });
             }
 
-            var entity = _mapper.Map<EmployeeDto, EmployeeDO>(dto);
+            var entity = _mapper.Map<EmployeeDto, Employee>(dto);
             entity.UserId = userId;
             await _employeeRepository.InsertAsync(entity);
 

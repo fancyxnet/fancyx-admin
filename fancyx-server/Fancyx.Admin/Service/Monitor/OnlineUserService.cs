@@ -14,12 +14,12 @@ namespace Fancyx.Admin.Service.Monitor
 {
     public class OnlineUserService : IOnlineUserService
     {
-        private readonly IRepository<LoginLogDO> _loginLogRepository;
+        private readonly IRepository<LoginLog> _loginLogRepository;
         private readonly IDatabase _redisDb;
-        private readonly IRepository<UserDO> _userRepository;
+        private readonly IRepository<User> _userRepository;
         private readonly IMemoryCache _memoryCache;
 
-        public OnlineUserService(IRepository<LoginLogDO> loginLogRepository, IDatabase redisDb, IRepository<UserDO> userRepository, IMemoryCache memoryCache)
+        public OnlineUserService(IRepository<LoginLog> loginLogRepository, IDatabase redisDb, IRepository<User> userRepository, IMemoryCache memoryCache)
         {
             _loginLogRepository = loginLogRepository;
             _redisDb = redisDb;

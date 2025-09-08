@@ -17,12 +17,12 @@ namespace Fancyx.Admin.Jobs
     public class NotificationJob : IJob
     {
         private readonly ILogger<NotificationJob> _logger;
-        private readonly IRepository<NotificationDO> _repository;
+        private readonly IRepository<Notification> _repository;
         private readonly MqttSharedService _mqttService;
         private readonly IDatabase _database;
         private readonly RedLockFactory redLockFactory;
 
-        public NotificationJob(ILogger<NotificationJob> logger, IRepository<NotificationDO> repository, MqttSharedService mqttService, IDatabase database
+        public NotificationJob(ILogger<NotificationJob> logger, IRepository<Notification> repository, MqttSharedService mqttService, IDatabase database
             , RedLockFactory redLockFactory)
         {
             _logger = logger;

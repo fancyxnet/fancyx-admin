@@ -8,10 +8,10 @@ namespace Fancyx.Admin.Service.System
 {
     public class NotificationService : INotificationService
     {
-        private readonly IRepository<NotificationDO> _repository;
-        private readonly IRepository<EmployeeDO> _employeeRepository;
+        private readonly IRepository<Notification> _repository;
+        private readonly IRepository<Employee> _employeeRepository;
 
-        public NotificationService(IRepository<NotificationDO> repository, IRepository<EmployeeDO> employeeRepository)
+        public NotificationService(IRepository<Notification> repository, IRepository<Employee> employeeRepository)
         {
             _repository = repository;
             _employeeRepository = employeeRepository;
@@ -19,7 +19,7 @@ namespace Fancyx.Admin.Service.System
 
         public Task AddNotificationAsync(NotificationDto dto)
         {
-            var entity = new NotificationDO()
+            var entity = new Notification()
             {
                 Title = dto.Title,
                 Content = dto.Content,

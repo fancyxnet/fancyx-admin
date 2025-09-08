@@ -8,9 +8,9 @@ namespace Fancyx.Admin.Service.System.LogManagement
 {
     public class LoginLogService : ILoginLogService
     {
-        private readonly IRepository<LoginLogDO> _loginLogRepository;
+        private readonly IRepository<LoginLog> _loginLogRepository;
 
-        public LoginLogService(IRepository<LoginLogDO> loginLogRepository)
+        public LoginLogService(IRepository<LoginLog> loginLogRepository)
         {
             _loginLogRepository = loginLogRepository;
         }
@@ -25,7 +25,7 @@ namespace Fancyx.Admin.Service.System.LogManagement
                 .OrderByDescending(x => x.CreationTime)
                 .PagedAsync(dto.Current, dto.PageSize);
 
-            return new PagedResult<LoginLogListDto>(resp.Total, resp.Items.MapperList<LoginLogDO, LoginLogListDto>());
+            return new PagedResult<LoginLogListDto>(resp.Total, resp.Items.MapperList<LoginLog, LoginLogListDto>());
         }
     }
 }

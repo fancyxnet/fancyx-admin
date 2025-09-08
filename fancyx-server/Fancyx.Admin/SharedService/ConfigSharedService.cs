@@ -9,10 +9,10 @@ namespace Fancyx.Admin.SharedService
 {
     public class ConfigSharedService : IScopedDependency
     {
-        private readonly IRepository<ConfigDO> _configRepository;
+        private readonly IRepository<Config> _configRepository;
         private readonly IDatabase _redisClient;
 
-        public ConfigSharedService(IRepository<ConfigDO> configRepository, IDatabase redisClient)
+        public ConfigSharedService(IRepository<Config> configRepository, IDatabase redisClient)
         {
             _configRepository = configRepository;
             _redisClient = redisClient;

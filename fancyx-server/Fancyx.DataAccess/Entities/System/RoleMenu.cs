@@ -5,16 +5,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Fancyx.DataAccess.Entities.System
 {
     /// <summary>
-    /// 用户角色关联表
+    /// 角色菜单表
     /// </summary>
-    [Table("sys_user_role")]
-    public class UserRoleDO : Entity, ITenant
+    [Table("sys_role_menu")]
+    public class RoleMenu : Entity, ITenant
     {
         /// <summary>
-        /// 用户ID
+        /// 菜单ID
         /// </summary>
-        [Column("user_id")]
-        public Guid UserId { get; set; }
+        [Column("menu_id")]
+        public Guid MenuId { get; set; }
 
         /// <summary>
         /// 角色ID

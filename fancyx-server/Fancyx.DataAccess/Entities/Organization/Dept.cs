@@ -11,7 +11,7 @@ namespace Fancyx.DataAccess.Entities.Organization
     /// 部门表
     /// </summary>
     [Table("sys_dept")]
-    public class DeptDO : FullAuditedEntity, ITenant
+    public class Dept : FullAuditedEntity, ITenant
     {
         /// <summary>
         /// 部门编号
@@ -96,8 +96,8 @@ namespace Fancyx.DataAccess.Entities.Organization
         [Column("tenant_id")]
         public string? TenantId { get; set; }
 
-        public DeptDO? Parent { get; set; }
+        public Dept? Parent { get; set; }
 
-        public List<DeptDO>? Children { get; set; }
+        public List<Dept>? Children { get; set; }
     }
 }

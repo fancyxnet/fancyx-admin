@@ -10,7 +10,7 @@ namespace Fancyx.DataAccess.Entities.Log
     /// 登录日志
     /// </summary>
     [Table("sys_login_log")]
-    public class LoginLogDO : CreationEntity, ITenant
+    public class LoginLog : CreationEntity, ITenant
     {
         /// <summary>
         /// 账号

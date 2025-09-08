@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using Fancyx.Core.Interfaces;
@@ -7,28 +7,43 @@ using Fancyx.DataAccess.BaseEntity;
 namespace Fancyx.DataAccess.Entities.System
 {
     /// <summary>
-    /// 字典类型表
+    /// 系统配置
     /// </summary>
-    [Table("sys_dict_type")]
-    public class DictTypeDO : AuditedEntity, ITenant
+    [Table("sys_config")]
+    public class Config : AuditedEntity, ITenant
     {
         /// <summary>
-        /// 字典名称
+        /// 配置名称
         /// </summary>
         [NotNull]
         [Required]
-        [StringLength(128)]
         [Column("name")]
+        [StringLength(256)]
         public string? Name { get; set; }
 
         /// <summary>
-        /// 字典类型
+        /// 配置键名
         /// </summary>
         [NotNull]
         [Required]
+        [Column("key")]
         [StringLength(128)]
-        [Column("dict_type")]
-        public string? DictType { get; set; }
+        public string? Key { get; set; }
+
+        /// <summary>
+        /// 配置键值
+        /// </summary>
+        [NotNull]
+        [Required]
+        [Column("value")]
+        public string? Value { get; set; }
+
+        /// <summary>
+        /// 组别
+        /// </summary>
+        [StringLength(64)]
+        [Column("group_key")]
+        public string? GroupKey { get; set; }
 
         /// <summary>
         /// 备注
@@ -36,12 +51,6 @@ namespace Fancyx.DataAccess.Entities.System
         [StringLength(512)]
         [Column("remark")]
         public string? Remark { get; set; }
-
-        /// <summary>
-        /// 是否开启
-        /// </summary>
-        [Column("is_enabled")]
-        public bool IsEnabled { get; set; }
 
         /// <summary>
         /// 租户ID
