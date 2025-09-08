@@ -1,22 +1,23 @@
 ﻿using DotNetCore.CAP;
 using Fancyx.Shared.Consts;
 using Fancyx.Admin.Entities.System;
+using Fancyx.Repository;
 
 namespace Fancyx.Admin.Subscribers
 {
     public class CapEventSubscriber : ICapSubscribe
     {
-        private readonly IFreeSql freeSql;
+        private readonly FancyxDbContext _context;
 
-        public CapEventSubscriber(IFreeSql freeSql)
+        public CapEventSubscriber(FancyxDbContext context)
         {
-            this.freeSql = freeSql;
+            _context = context;
         }
 
         [CapSubscribe(AdminEventBusTopicConsts.LoginLogEvent)]
         public async Task WriteLoginLog(LoginLogDO log)
         {
-            await freeSql.Insert(log).ExecuteAffrowsAsync();
+            await _context.SingleInsertAsync(log);
         }
     }
 }

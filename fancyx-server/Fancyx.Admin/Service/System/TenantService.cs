@@ -16,7 +16,7 @@ namespace Fancyx.Admin.Service.System
 
         public async Task AddTenantAsync(TenantDto dto)
         {
-            if (await _tenantRepository.Select.AnyAsync(x => x.TenantId.ToLower() == dto.TenantId.ToLower()))
+            if (await _tenantRepository.AnyAsync(x => x.TenantId.ToLower() == dto.TenantId.ToLower()))
             {
                 throw new BusinessException($"租户标识[{dto.TenantId}]已存在");
             }
@@ -38,25 +38,24 @@ namespace Fancyx.Admin.Service.System
 
         public async Task<PagedResult<TenantResultDto>> GetTenantListAsync(TenantSearchDto dto)
         {
-            var items = await _tenantRepository.Select
+            var resp = await _tenantRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.Keyword), x => x.Name.Contains(dto.Keyword!) || x.TenantId.Contains(dto.Keyword!))
                 .OrderByDescending(x => x.CreationTime)
-                .Count(out var total)
-                .Page(dto.Current, dto.PageSize)
-                .ToListAsync<TenantResultDto>();
+                .Select(x => new TenantResultDto { CreationTime = x.CreationTime, Domain = x.Domain, Id = x.Id, LastModificationTime = x.LastModificationTime, Name = x.Name, Remark = x.Remark, TenantId = x.TenantId })
+                .PagedAsync(dto.Current, dto.PageSize);
             return new PagedResult<TenantResultDto>(dto)
             {
-                TotalCount = total,
-                Items = items
+                TotalCount = resp.Total,
+                Items = resp.Items
             };
         }
 
         public async Task UpdateTenantAsync(TenantDto dto)
         {
-            var entity = await _tenantRepository.Where(x => x.Id == dto.Id).FirstAsync();
+            var entity = await _tenantRepository.GetAsync(x => x.Id == dto.Id) ?? throw new EntityNotFoundException();
 
             var tenantIdLower = dto.TenantId.ToLower();
-            if (await _tenantRepository.Select.AnyAsync(x => x.TenantId.ToLower() == tenantIdLower) 
+            if (await _tenantRepository.AnyAsync(x => x.TenantId.ToLower() == tenantIdLower)
                 && !tenantIdLower.Equals(entity.TenantId, StringComparison.CurrentCultureIgnoreCase))
             {
                 throw new BusinessException($"租户标识[{dto.TenantId}]已存在");

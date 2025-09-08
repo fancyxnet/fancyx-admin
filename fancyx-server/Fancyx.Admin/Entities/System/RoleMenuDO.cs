@@ -1,31 +1,31 @@
-using Fancyx.Repository.BaseEntity;
 using Fancyx.Core.Interfaces;
-using FreeSql.DataAnnotations;
+using Fancyx.Repository.BaseEntity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fancyx.Admin.Entities.System
 {
     /// <summary>
     /// 角色菜单表
     /// </summary>
-    [Table(Name = "sys_role_menu")]
+    [Table("sys_role_menu")]
     public class RoleMenuDO : Entity, ITenant
     {
         /// <summary>
         /// 菜单ID
         /// </summary>
-        [Column(IsNullable = false)]
+        [Column("menu_id")]
         public Guid MenuId { get; set; }
 
         /// <summary>
         /// 角色ID
         /// </summary>
-        [Column(IsNullable = false)]
+        [Column("role_id")]
         public Guid RoleId { get; set; }
 
         /// <summary>
         /// 租户ID
         /// </summary>
-        [Column(IsNullable = true, StringLength = 18)]
+        [Column("tenant_id")]
         public string? TenantId { get; set; }
     }
 }

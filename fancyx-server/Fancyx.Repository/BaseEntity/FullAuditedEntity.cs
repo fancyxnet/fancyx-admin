@@ -1,15 +1,16 @@
-﻿using FreeSql.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fancyx.Repository.BaseEntity
 {
     public abstract class FullAuditedEntity : AuditedEntity, IDeletionProperty
     {
-        [Column(IsNullable = false)]
+        [Column("is_deleted")]
         public bool IsDeleted { get; set; } = false;
 
-        [Column(IsNullable = true)]
+        [Column("deleter_id")]
         public Guid? DeleterId { get; set; }
 
+        [Column("deletion_time")]
         public DateTime? DeletionTime { get; set; }
 
         public void Delete(Guid deleterId)

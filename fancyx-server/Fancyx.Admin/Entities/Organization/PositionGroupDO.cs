@@ -1,17 +1,15 @@
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-
 using Fancyx.Core.Interfaces;
 using Fancyx.Repository.BaseEntity;
-
-using FreeSql.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Fancyx.Admin.Entities.Organization
 {
     /// <summary>
     /// 职位分组
     /// </summary>
-    [Table(Name = "org_position_group")]
+    [Table("org_position_group")]
     public class PositionGroupDO : AuditedEntity, ITenant
     {
         /// <summary>
@@ -20,45 +18,44 @@ namespace Fancyx.Admin.Entities.Organization
         [NotNull]
         [Required]
         [StringLength(64)]
-        [Column(IsNullable = false, StringLength = 64)]
+        [Column("group_name")]
         public string? GroupName { get; set; }
 
         /// <summary>
         /// 备注
         /// </summary>
         [StringLength(512)]
-        [Column(StringLength = 512)]
+        [Column("remark")]
         public string? Remark { get; set; }
 
         /// <summary>
         /// 父ID
         /// </summary>
+        [Column("parent_id")]
         public Guid? ParentId { get; set; }
 
         /// <summary>
         /// 层级父ID
         /// </summary>
         [StringLength(1024)]
-        [Column(StringLength = 1024)]
+        [Column("parent_ids")]
         public string? ParentIds { get; set; }
 
         /// <summary>
         /// 排序值
         /// </summary>
         [Required]
-        [Column(IsNullable = false)]
+        [Column("sort")]
         public int Sort { get; set; }
 
         /// <summary>
         /// 租户ID
         /// </summary>
-        [Column(IsNullable = true, StringLength = 18)]
+        [Column("tenant_id")]
         public string? TenantId { get; set; }
 
-        [Navigate(nameof(ParentId))]
         public PositionGroupDO? Parent { get; set; }
 
-        [Navigate(nameof(ParentId))]
         public List<PositionGroupDO>? Children { get; set; }
     }
 }

@@ -2,8 +2,10 @@
 using Fancyx.Admin.Entities.System;
 using Fancyx.Admin.IService.Account;
 using Fancyx.Admin.IService.Account.Dtos;
+using Fancyx.Core.Extensions;
 using Fancyx.Core.Interfaces;
 using Fancyx.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.Service.Account
 {
@@ -25,16 +27,14 @@ namespace Fancyx.Admin.Service.Account
             var employeeId = await this.GetCurrentEmployeeIdAsync();
             if (!employeeId.HasValue) return new PagedResult<UserNotificationListDto>();
 
-            var list = await _repository
+            var resp = await _repository
                 .Where(x => x.EmployeeId == employeeId)
                 .WhereIf(!string.IsNullOrEmpty(dto.Title), x => x.Title!.Contains(x.Title))
                 .WhereIf(dto.IsReaded.HasValue, x => x.IsReaded == dto.IsReaded)
                 .OrderBy(x => x.IsReaded)
                 .OrderByDescending(x => x.CreationTime)
-                .Count(out var total)
-                .Page(dto.Current, dto.PageSize)
-                .ToListAsync<UserNotificationListDto>();
-            return new PagedResult<UserNotificationListDto>(dto, total, list);
+                .PagedAsync(dto.Current, dto.PageSize);
+            return new PagedResult<UserNotificationListDto>(dto, resp.Total, resp.Items.MapperList<NotificationDO, UserNotificationListDto>());
         }
 
         public async Task<UserNotificationNavbarDto> GetMyNotificationNavbarInfoAsync()
@@ -45,7 +45,13 @@ namespace Fancyx.Admin.Service.Account
 
             var query = _repository.Where(x => x.EmployeeId == employeeId);
             result.Items = await query.OrderBy(x => x.IsReaded).OrderByDescending(x => x.CreationTime)
-                .Take(5).ToListAsync<UserNotificationNavbarItemDto>();
+                .Take(5).SelectToListAsync(x => new UserNotificationNavbarItemDto
+                {
+                    Title = x.Title,
+                    Content = x.Content,
+                    IsReaded = x.IsReaded,
+                    CreationTime = x.CreationTime,
+                });
             result.NoReadedCount = (int)await query.Where(x => !x.IsReaded).CountAsync();
 
             return result;
@@ -57,10 +63,8 @@ namespace Fancyx.Admin.Service.Account
             if (!employeeId.HasValue) return;
 
             var now = DateTime.Now;
-            await _repository.UpdateDiy.Set(x => x.IsReaded, true)
-                .Set(x => x.ReadedTime, now)
-                .Where(x => x.EmployeeId == employeeId && ids.Contains(x.Id))
-                .ExecuteAffrowsAsync();
+            await _repository.Where(x => x.EmployeeId == employeeId && ids.Contains(x.Id))
+                .ExecuteUpdateAsync(x => x.SetProperty(f => f.IsReaded, true).SetProperty(f => f.ReadedTime, now));
         }
 
         private async Task<Guid?> GetCurrentEmployeeIdAsync()

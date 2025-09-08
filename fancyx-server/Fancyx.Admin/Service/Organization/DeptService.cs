@@ -3,6 +3,7 @@ using Fancyx.Admin.IService.Organization;
 using Fancyx.Admin.IService.Organization.Dtos;
 using Fancyx.Core.Helpers;
 using Fancyx.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.Service.Organization
 {
@@ -29,7 +30,7 @@ namespace Fancyx.Admin.Service.Organization
             entity.Code = dto.Code;
             if (entity.ParentId.HasValue)
             {
-                var all = await _deptRepository.Select.ToListAsync();
+                var all = await _deptRepository.GetListAsync(x => true);
                 int layer = 1;
                 entity.ParentIds = GetParentIds(all, entity.ParentId.Value, ref layer);
                 entity.Layer = layer;
@@ -49,13 +50,13 @@ namespace Fancyx.Admin.Service.Organization
 
         public async Task<bool> DeleteDeptAsync(Guid id)
         {
-            var hasChildren = await _deptRepository.Where(x => x.ParentId == id).AnyAsync();
+            var hasChildren = await _deptRepository.AnyAsync(x => x.ParentId == id);
             if (hasChildren)
             {
                 throw new BusinessException("存在子部门，无法删除");
             }
 
-            var hasEmployees = await _employeeRepository.Select.AnyAsync(x => x.DeptId == id);
+            var hasEmployees = await _employeeRepository.AnyAsync(x => x.DeptId == id);
             if (hasEmployees) throw new BusinessException(message: "部门下存在员工，不能删除");
             await _deptRepository.DeleteAsync(x => id == x.Id);
             return true;
@@ -67,7 +68,7 @@ namespace Fancyx.Admin.Service.Organization
                                                              || dto.Status > 0;
             if (hasFilter)
             {
-                var filter = await _deptRepository
+                var filter = await _deptRepository.GetQueryable()
                     .WhereIf(!string.IsNullOrEmpty(dto.Name), x => x.Name.Contains(dto.Name!))
                     .WhereIf(!string.IsNullOrEmpty(dto.Code), x => x.Code.Contains(dto.Code!)) // ==
                     .WhereIf(dto.Status > 0, x => x.Status == dto.Status) // ==
@@ -80,7 +81,7 @@ namespace Fancyx.Admin.Service.Organization
                 return result;
             }
 
-            var all = await _deptRepository.Select.OrderBy(x => x.ParentIds).ToListAsync();
+            var all = await _deptRepository.GetQueryable().OrderBy(x => x.ParentIds).ToListAsync();
             var tree = AutoMapperHelper.Instance.Map<List<DeptDO>, List<DeptListDto>>(all.Where(x => x.ParentId == null)
                 .OrderBy(t => t.Sort).ToList());
 
@@ -121,7 +122,7 @@ namespace Fancyx.Admin.Service.Organization
             {
                 var employees = await _employeeRepository
                     .Where(e => curatorIds.Contains(e.Id))
-                    .ToListAsync(e => new { e.Id, e.Name });
+                    .SelectToListAsync(e => new { e.Id, e.Name });
 
                 var employeeDict = employees.ToDictionary(e => e.Id, e => e.Name);
 
@@ -141,7 +142,7 @@ namespace Fancyx.Admin.Service.Organization
 
             var entity = await _deptRepository.Where(x => x.Id == dto.Id).FirstAsync();
             if (!entity.Code.Equals(dto.Code, StringComparison.CurrentCultureIgnoreCase) &&
-                await _deptRepository.Select.AnyAsync(x => x.Code.ToLower() == dto.Code!.ToLower()))
+                await _deptRepository.AnyAsync(x => x.Code.ToLower() == dto.Code!.ToLower()))
             {
                 throw new BusinessException(message: "部门编号已存在");
             }
@@ -169,7 +170,7 @@ namespace Fancyx.Admin.Service.Organization
                     throw new BusinessException("不能选择子部门作为上级部门");
                 }
 
-                var all = await _deptRepository.Select.ToListAsync();
+                var all = await _deptRepository.GetListAsync(x => true);
                 int layer = 1;
                 entity.ParentIds = GetParentIds(all, entity.ParentId.Value, ref layer);
                 entity.Layer = layer;
@@ -181,9 +182,9 @@ namespace Fancyx.Admin.Service.Organization
 
         public async Task<List<DeptSimpleInfoDto>> GetDeptSimpleInfosAsync(string? keyword)
         {
-            var depts = await _deptRepository.WhereIf(!string.IsNullOrEmpty(keyword),
+            var depts = await _deptRepository.GetQueryable().WhereIf(!string.IsNullOrEmpty(keyword),
                     x => x.Name.StartsWith(keyword!) || x.Code.StartsWith(keyword!))
-                .ToListAsync(x => new { x.Id, x.Name, x.Code, x.ParentId, x.Sort });
+                .SelectToListAsync(x => new { x.Id, x.Name, x.Code, x.ParentId, x.Sort });
             var list = new List<DeptSimpleInfoDto>();
             //顶级部门放前面
             var topDepts = depts.Where(x => !x.ParentId.HasValue || x.ParentId == Guid.Empty).OrderBy(x => x.Sort)

@@ -9,6 +9,7 @@ using Fancyx.Repository;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Enums;
 using Fancyx.Shared.Generated;
+using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.Service.System
 {
@@ -30,7 +31,7 @@ namespace Fancyx.Admin.Service.System
 
         public async Task<Guid> AddUserAsync(UserDto dto)
         {
-            var isExist = await _userRepository.Select.AnyAsync(x => x.UserName.ToLower() == dto.UserName.ToLower());
+            var isExist = await _userRepository.AnyAsync(x => x.UserName.ToLower() == dto.UserName.ToLower());
             if (isExist)
             {
                 throw new BusinessException("账号已存在");
@@ -75,7 +76,7 @@ namespace Fancyx.Admin.Service.System
                 }
                 if (items.Count > 0)
                 {
-                    await _userRoleRepository.InsertAsync(items);
+                    await _userRoleRepository.InsertManyAsync(items);
                 }
             }
             return true;
@@ -94,19 +95,18 @@ namespace Fancyx.Admin.Service.System
 
         public async Task<PagedResult<UserListDto>> GetUserListAsync(UserQueryDto dto)
         {
-            var rows = await _userRepository.Select
+            var resp = await _userRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.UserName.Contains(dto.UserName!))
                 .OrderByDescending(x => x.CreationTime)
-                .Count(out var total)
-                .Page(dto.Current, dto.PageSize)
-                .ToListAsync<UserListDto>();
+                .Select(x => new UserListDto { Id = x.Id, Avatar = x.Avatar , UserName = x.UserName, Sex = x.Sex.GetHashCode(), IsEnabled = x.IsEnabled, NickName = x.NickName, Phone = x.Phone })
+                .PagedAsync(dto.Current, dto.PageSize);
 
-            return new PagedResult<UserListDto>(total, rows);
+            return new PagedResult<UserListDto>(resp.Total, resp.Items);
         }
 
         public async Task<Guid[]> GetUserRoleIdsAsync(Guid uid)
         {
-            return [.. await _userRoleRepository.Where(x => x.UserId == uid).ToListAsync(x => x.RoleId)];
+            return [.. await _userRoleRepository.Where(x => x.UserId == uid).SelectToListAsync(x => x.RoleId)];
         }
 
         public async Task<bool> SwitchUserEnabledStatusAsync(Guid id)
@@ -126,7 +126,7 @@ namespace Fancyx.Admin.Service.System
         [AsyncLogRecord(LogRecordConsts.SysUser, LogRecordConsts.SysUserResetPwdSubType, "{{id}}", LogRecordConsts.SysUserResetPwdContent)]
         public async Task ResetUserPasswordAsync(ResetUserPwdDto dto)
         {
-            var user = await _userRepository.Where(x => x.Id == dto.UserId).FirstAsync();
+            var user = await _userRepository.GetAsync(x => x.Id == dto.UserId) ?? throw new EntityNotFoundException();
             if (!RegexCodeGen.Password().IsMatch(dto.Password))
             {
                 throw new BusinessException("密码格式不正确");
@@ -145,15 +145,17 @@ namespace Fancyx.Admin.Service.System
             return _userRepository.Where(x => x.IsEnabled)
                 .WhereIf(!string.IsNullOrEmpty(keyword), x => x.UserName.Contains(keyword!) || x.NickName.Contains(keyword!))
                 .OrderBy(x => x.NickName)
-                .ToListAsync<UserSimpleInfoDto>();
+                .Select(x => new UserSimpleInfoDto { Id = x.Id.ToString(), NickName = x.NickName, UserName = x.UserName })
+                .ToListAsync();
         }
 
         public Task<List<UserListDto>> ExportUserListAsync(UserQueryDto dto)
         {
-            return _userRepository.Select
+            return _userRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.UserName.Contains(dto.UserName!))
                 .OrderByDescending(x => x.CreationTime)
-                .ToListAsync<UserListDto>();
+                .Select(x => new UserListDto { Id = x.Id, UserName = x.UserName, Phone = x.Phone, Avatar = x.Avatar, IsEnabled = x.IsEnabled, NickName = x.NickName, Sex = x.Sex.GetHashCode() })
+                .ToListAsync();
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Fancyx.Admin.Service.System
 
         public async Task<bool> AddRoleAsync(RoleDto dto)
         {
-            var isExist = await _roleRepository.Select.AnyAsync(x => x.RoleName.ToLower() == dto.RoleName.ToLower());
+            var isExist = await _roleRepository.AnyAsync(x => x.RoleName.ToLower() == dto.RoleName.ToLower());
             if (isExist)
             {
                 throw new BusinessException("角色名已存在");
@@ -65,7 +65,7 @@ namespace Fancyx.Admin.Service.System
 
                 if (items.Count > 0)
                 {
-                    await _roleMenuRepository.InsertAsync(items);
+                    await _roleMenuRepository.InsertManyAsync(items);
                 }
             }
 
@@ -75,10 +75,10 @@ namespace Fancyx.Admin.Service.System
 
         public async Task<bool> DeleteRoleAsync(Guid id)
         {
-            var hasUsers = await _userRoleRepository.Select.AnyAsync(x => x.RoleId == id);
+            var hasUsers = await _userRoleRepository.AnyAsync(x => x.RoleId == id);
             if (hasUsers) throw new BusinessException(message: "角色已分配给用户，不能删除");
 
-            var role = await _roleRepository.Where(x => x.Id == id).FirstAsync();
+            var role = await _roleRepository.GetAsync(x => x.Id == id) ?? throw new EntityNotFoundException();
             if (role.RoleName == AdminConsts.SuperAdminRole)
             {
                 throw new BusinessException(message: $"{role.RoleName}不能删除");
@@ -91,19 +91,18 @@ namespace Fancyx.Admin.Service.System
 
         public async Task<PagedResult<RoleListDto>> GetRoleListAsync(RoleQueryDto dto)
         {
-            var rows = await _roleRepository.Select
+            var resp = await _roleRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.RoleName), x => x.RoleName.Contains(dto.RoleName!))
                 .OrderByDescending(x => x.CreationTime)
-                .Count(out var total)
-                .Page(dto.Current, dto.PageSize)
-                .ToListAsync<RoleListDto>();
+                .Select(x => new RoleListDto() { Id = x.Id, IsEnabled = x.IsEnabled, Remark = x.Remark, CreationTime = x.CreationTime, RoleName = x.RoleName })
+                .PagedAsync(dto.Current, dto.PageSize);
 
-            return new PagedResult<RoleListDto>(total, rows);
+            return new PagedResult<RoleListDto>(resp.Total, resp.Items);
         }
 
         public async Task<List<AppOption>> GetRoleOptionsAsync()
         {
-            return await _roleRepository.Select.ToListAsync(x => new AppOption
+            return await _roleRepository.GetQueryable().SelectToListAsync(x => new AppOption
             {
                 Label = x.RoleName,
                 Value = x.Id.ToString()
@@ -113,9 +112,8 @@ namespace Fancyx.Admin.Service.System
         public async Task<bool> UpdateRoleAsync(RoleDto dto)
         {
             if (!dto.Id.HasValue) throw new ArgumentNullException(nameof(dto.Id));
-            var entity = await _roleRepository.Where(x => x.Id == dto.Id).FirstAsync()
-                         ?? throw new BusinessException("数据不存在");
-            var isExist = await _roleRepository.Select.AnyAsync(x => x.RoleName.ToLower() == dto.RoleName.ToLower());
+            var entity = await _roleRepository.GetAsync(x => x.Id == dto.Id) ?? throw new BusinessException("数据不存在");
+            var isExist = await _roleRepository.AnyAsync(x => x.RoleName.ToLower() == dto.RoleName.ToLower());
             if (entity.RoleName.ToLower() != dto.RoleName.ToLower() && isExist)
             {
                 throw new BusinessException("角色名已存在");
@@ -141,12 +139,12 @@ namespace Fancyx.Admin.Service.System
 
         public async Task<Guid[]> GetRoleMenuIdsAsync(Guid id)
         {
-            return [.. await _roleMenuRepository.Where(x => x.RoleId == id).ToListAsync(x => x.MenuId)];
+            return [.. await _roleMenuRepository.Where(x => x.RoleId == id).SelectToListAsync(x => x.MenuId)];
         }
 
         public async Task<(RolePowerInfoDto, List<DeptTreeOptionDto>)> GetRoleDeptPowerInfoAsync(Guid roleId)
         {
-            var role = await _roleRepository.OneAsync(x => x.Id == roleId);
+            var role = await _roleRepository.GetAsync(x => x.Id == roleId);
             if (role == null) return (new RolePowerInfoDto(), []);
 
             var info = new RolePowerInfoDto()
@@ -155,10 +153,10 @@ namespace Fancyx.Admin.Service.System
             };
             if (info.DeptPowerType == DeptPowerType.Specify)
             {
-                info.DeptIds = await _roleDeptRepository.Where(x => x.RoleId == roleId).ToListAsync(x => x.DeptId);
+                info.DeptIds = await _roleDeptRepository.Where(x => x.RoleId == roleId).SelectToListAsync(x => x.DeptId);
             }
 
-            var allDept = await _deptRepository.Select.ToListAsync(x => new { x.Id, x.Name, x.Code, x.ParentId });
+            var allDept = await _deptRepository.GetQueryable().SelectToListAsync(x => new { x.Id, x.Name, x.Code, x.ParentId });
             info.AllDeptIds = allDept.Select(x => x.Id).ToList();
             var rootDept = allDept.Where(x => !x.ParentId.HasValue).ToList();
             var resultList = new List<DeptTreeOptionDto>();
@@ -198,7 +196,7 @@ namespace Fancyx.Admin.Service.System
         [AsyncTransactional]
         public async Task AssignDataScopeAsync(AssignDataScopeDto dto)
         {
-            var role = await _roleRepository.OneAsync(x => x.Id == dto.RoleId);
+            var role = await _roleRepository.GetAsync(x => x.Id == dto.RoleId);
             if (role == null) throw new BusinessException("角色不存在");
 
             await _roleDeptRepository.DeleteAsync(x => x.RoleId == dto.RoleId);
@@ -206,7 +204,7 @@ namespace Fancyx.Admin.Service.System
             {
                 var roleDeptList = dto.DeptIds
                     .Select(deptId => new RoleDeptDO { DeptId = deptId, RoleId = dto.RoleId }).ToList();
-                await _roleDeptRepository.InsertAsync(roleDeptList);
+                await _roleDeptRepository.InsertManyAsync(roleDeptList);
             }
 
             role.DeptPowerType = dto.DeptPowerType;

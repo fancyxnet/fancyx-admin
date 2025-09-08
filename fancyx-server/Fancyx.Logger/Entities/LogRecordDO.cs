@@ -1,61 +1,61 @@
 ﻿using Fancyx.Repository.BaseEntity;
 using Fancyx.Core.Interfaces;
-using FreeSql.DataAnnotations;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fancyx.Logger.Entities
 {
-    [Table(Name = "log_record")]
+    [Table("log_record")]
     public class LogRecordDO : CreationEntity, ITenant
     {
         /// <summary>
         /// 日志类型
         /// </summary>
-        [Column(IsNullable = false, StringLength = 64)]
+        [Column("type")]
         public string? Type { get; set; } = null!;
 
         /// <summary>
         /// 日志子类型
         /// </summary>
-        [Column(IsNullable = false, StringLength = 512)]
+        [Column("sub_type")]
         public string? SubType { get; set; } = null!;
 
         /// <summary>
         /// 业务编号/ID
         /// </summary>
-        [Column(IsNullable = false, StringLength = 64)]
+        [Column("biz_no")]
         public string? BizNo { get; set; } = null!;
 
         /// <summary>
         /// 操作内容
         /// </summary>
-        [Column(IsNullable = false, StringLength = -2)]
+        [Column("content")]
         public string? Content { get; set; } = null!;
 
         /// <summary>
         /// 浏览器
         /// </summary>
         [StringLength(512)]
-        [Column(StringLength = 512)]
+        [Column("browser")]
         public string? Browser { get; set; }
 
         /// <summary>
         /// IP
         /// </summary>
         [StringLength(32)]
-        [Column(StringLength = 32)]
+        [Column("ip")]
         public string? Ip { get; set; }
 
         /// <summary>
         /// 跟踪ID (用于关联一次请求的所有日志)
         /// </summary>
-        [Column(StringLength = 64)]
+        [Column("trace_id")]
         public string? TraceId { get; set; }
 
         /// <summary>
         /// 租户ID
         /// </summary>
-        [Column(StringLength = 18)]
+        [Column("tenant_id")]
         public string? TenantId { get; set; }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Fancyx.Logger.Entities
         /// <summary>
         /// 用户名
         /// </summary>
-        [Column(StringLength = 32)]
+        [Column("user_name")]
         public string? UserName { get; set; }
     }
 }

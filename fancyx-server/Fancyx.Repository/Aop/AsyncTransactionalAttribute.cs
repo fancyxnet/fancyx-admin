@@ -1,7 +1,4 @@
 ﻿using Fancyx.Core.AutoInject;
-using FreeSql;
-using Microsoft.Extensions.DependencyInjection;
-using System.Data;
 
 namespace Fancyx.Repository.Aop
 {
@@ -10,9 +7,9 @@ namespace Fancyx.Repository.Aop
     /// </summary>
     public class AsyncTransactionalAttribute : AsyncAopAttributeBase
     {
-        public Propagation Propagation { get; set; } = Propagation.Required;
-        public IsolationLevel IsolationLevel => IsolationLevel.ReadCommitted;
-        private IUnitOfWork? _uow;
+        //public Propagation Propagation { get; set; } = Propagation.Required;
+        //public IsolationLevel IsolationLevel => IsolationLevel.ReadCommitted;
+        //private IUnitOfWork? _uow;
 
         public AsyncTransactionalAttribute() : base(true)
         {
@@ -20,22 +17,22 @@ namespace Fancyx.Repository.Aop
 
         public override Task OnAfterAsync()
         {
-            _uow?.Commit();
-            _uow?.Dispose();
+            //_uow?.Commit();
+            //_uow?.Dispose();
             return Task.CompletedTask;
         }
 
         public override Task OnBeforeAsync()
         {
-            var unitOfWorkManager = ServiceProvider.GetService<UnitOfWorkManager>();
-            _uow = unitOfWorkManager?.Begin(Propagation, this.IsolationLevel);
+            //var unitOfWorkManager = ServiceProvider.GetService<UnitOfWorkManager>();
+            //_uow = unitOfWorkManager?.Begin(Propagation, this.IsolationLevel);
             return Task.CompletedTask;
         }
 
         public override Task OnExceptionAsync()
         {
-            _uow?.Rollback();
-            _uow?.Dispose();
+            //_uow?.Rollback();
+            //_uow?.Dispose();
             return Task.CompletedTask;
         }
     }

@@ -1,12 +1,15 @@
-﻿using FreeSql.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Fancyx.Repository.BaseEntity
 {
     public abstract class AuditedEntity : CreationEntity
     {
+        [Column("last_modification_time")]
         public DateTime? LastModificationTime { get; set; }
 
-        [Column(IsNullable = true)]
+        [AllowNull]
+        [Column("last_modifier_id")]
         public Guid? LastModifierId { get; set; }
     }
 }

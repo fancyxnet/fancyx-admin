@@ -1,12 +1,11 @@
 using Fancyx.Admin.Entities.System;
 using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
-using Fancyx.Admin.SharedService;
 using Fancyx.Core.Helpers;
 using Fancyx.Core.Utils;
 using Fancyx.Repository;
 using Fancyx.Shared.Enums;
-using FreeSql;
+using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.Service.System
 {
@@ -33,14 +32,14 @@ namespace Fancyx.Admin.Service.System
 
             if (dto.ParentId.HasValue)
             {
-                var parentMenu = await _menuRepository.Where(x => x.Id == dto.ParentId).FirstAsync();
-                if (parentMenu.MenuType == MenuType.Button)
+                var parentMenu = await _menuRepository.GetAsync(x => x.Id == dto.ParentId);
+                if (parentMenu != null && parentMenu.MenuType == MenuType.Button)
                 {
                     throw new BusinessException(message: "菜单父级不能是按钮");
                 }
             }
 
-            var isExist = await _menuRepository.Select.AnyAsync(x =>
+            var isExist = await _menuRepository.AnyAsync(x =>
                 x.Path != null && dto.Path != null && x.Path.ToLower() == dto.Path.ToLower());
             if (isExist)
             {
@@ -55,7 +54,7 @@ namespace Fancyx.Admin.Service.System
         public async Task<bool> DeleteMenusAsync(Guid[] ids)
         {
             var hasChildren =
-                await _menuRepository.Select.AnyAsync(x => x.ParentId.HasValue && ids.Contains(x.ParentId.Value));
+                await _menuRepository.AnyAsync(x => x.ParentId.HasValue && ids.Contains(x.ParentId.Value));
             if (hasChildren)
             {
                 throw new BusinessException("存在子菜单，无法删除");
@@ -69,7 +68,7 @@ namespace Fancyx.Admin.Service.System
         {
             //是否过滤
             var isFilter = !string.IsNullOrEmpty(dto.Title) || !string.IsNullOrEmpty(dto.Path);
-            var all = await _menuRepository
+            var all = await _menuRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.Title),
                     x => !string.IsNullOrEmpty(x.Title) && x.Title.Contains(dto.Title!))
                 .WhereIf(!string.IsNullOrEmpty(dto.Path),
@@ -104,7 +103,7 @@ namespace Fancyx.Admin.Service.System
             string? keyword)
         {
             var isKeywordSearch = !string.IsNullOrEmpty(keyword);
-            var all = await _menuRepository
+            var all = await _menuRepository.GetQueryable()
                 .WhereIf(onlyMenu, x => x.MenuType == MenuType.Folder || x.MenuType == MenuType.Menu)
                 .WhereIf(isKeywordSearch, x => x.Title != null && x.Title.Contains(keyword!)).ToListAsync();
             var keys = all.Select(x => x.Id.ToString()).ToArray();
@@ -112,7 +111,7 @@ namespace Fancyx.Admin.Service.System
             if (isKeywordSearch)
             {
                 var list = all.Select(x => new MenuOptionTreeDto()
-                    { Key = x.Id.ToString(), Title = x.Title, MenuType = (int)x.MenuType }).ToList();
+                { Key = x.Id.ToString(), Title = x.Title, MenuType = (int)x.MenuType }).ToList();
                 return (keys, list);
             }
 
@@ -166,14 +165,14 @@ namespace Fancyx.Admin.Service.System
 
             if (dto.ParentId.HasValue)
             {
-                var parentMenu = await _menuRepository.OneAsync(x => x.Id == dto.ParentId);
-                if (parentMenu.MenuType == MenuType.Button)
+                var parentMenu = await _menuRepository.GetAsync(x => x.Id == dto.ParentId);
+                if (parentMenu != null && parentMenu.MenuType == MenuType.Button)
                 {
                     throw new BusinessException(message: "菜单父级不能是按钮");
                 }
             }
 
-            var isExist = await _menuRepository.Select.AnyAsync(x =>
+            var isExist = await _menuRepository.AnyAsync(x =>
                 x.Path != null && dto.Path != null && x.Path.ToLower() == dto.Path.ToLower());
             var entity = await _menuRepository.Where(x => x.Id == dto.Id).FirstAsync() ??
                          throw new BusinessException("数据不存在");

@@ -3,7 +3,7 @@ using Fancyx.Admin.SharedService;
 using Fancyx.Core.AutoInject;
 using Fancyx.Job;
 using Fancyx.Repository;
-
+using Microsoft.EntityFrameworkCore;
 using Quartz;
 
 using RedLockNet.SERedis;

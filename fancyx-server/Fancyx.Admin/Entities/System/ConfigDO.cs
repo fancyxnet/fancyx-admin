@@ -1,17 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
 using Fancyx.Core.Interfaces;
 using Fancyx.Repository.BaseEntity;
 
-using FreeSql.DataAnnotations;
 
 namespace Fancyx.Admin.Entities.System
 {
     /// <summary>
     /// 系统配置
     /// </summary>
-    [Table(Name = "sys_config")]
+    [Table("sys_config")]
     public class ConfigDO : AuditedEntity, ITenant
     {
         /// <summary>
@@ -19,7 +19,7 @@ namespace Fancyx.Admin.Entities.System
         /// </summary>
         [NotNull]
         [Required]
-        [Column(IsNullable = false)]
+        [Column("name")]
         [StringLength(256)]
         public string? Name { get; set; }
 
@@ -28,7 +28,7 @@ namespace Fancyx.Admin.Entities.System
         /// </summary>
         [NotNull]
         [Required]
-        [Column(IsNullable = false)]
+        [Column("key")]
         [StringLength(128)]
         public string? Key { get; set; }
 
@@ -37,25 +37,27 @@ namespace Fancyx.Admin.Entities.System
         /// </summary>
         [NotNull]
         [Required]
-        [Column(IsNullable = false, StringLength = 1024)]
+        [Column("value")]
         public string? Value { get; set; }
 
         /// <summary>
         /// 组别
         /// </summary>
         [StringLength(64)]
+        [Column("group_key")]
         public string? GroupKey { get; set; }
 
         /// <summary>
         /// 备注
         /// </summary>
         [StringLength(512)]
+        [Column("remark")]
         public string? Remark { get; set; }
 
         /// <summary>
         /// 租户ID
         /// </summary>
-        [Column(IsNullable = true, StringLength = 18)]
+        [Column("tenant_id")]
         public string? TenantId { get; set; }
     }
 }

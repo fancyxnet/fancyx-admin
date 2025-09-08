@@ -1,17 +1,16 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
 using Fancyx.Core.Interfaces;
 using Fancyx.Repository.BaseEntity;
-
-using FreeSql.DataAnnotations;
 
 namespace Fancyx.Admin.Entities.System
 {
     /// <summary>
     /// 字典类型表
     /// </summary>
-    [Table(Name = "sys_dict_type")]
+    [Table("sys_dict_type")]
     public class DictTypeDO : AuditedEntity, ITenant
     {
         /// <summary>
@@ -20,7 +19,7 @@ namespace Fancyx.Admin.Entities.System
         [NotNull]
         [Required]
         [StringLength(128)]
-        [Column(IsNullable = false, StringLength = 128)]
+        [Column("name")]
         public string? Name { get; set; }
 
         /// <summary>
@@ -29,25 +28,26 @@ namespace Fancyx.Admin.Entities.System
         [NotNull]
         [Required]
         [StringLength(128)]
-        [Column(IsNullable = false, StringLength = 128)]
+        [Column("dict_type")]
         public string? DictType { get; set; }
 
         /// <summary>
         /// 备注
         /// </summary>
         [StringLength(512)]
-        [Column(StringLength = 512)]
+        [Column("remark")]
         public string? Remark { get; set; }
 
         /// <summary>
         /// 是否开启
         /// </summary>
+        [Column("is_enabled")]
         public bool IsEnabled { get; set; }
 
         /// <summary>
         /// 租户ID
         /// </summary>
-        [Column(IsNullable = true, StringLength = 18)]
+        [Column("tenant_id")]
         public string? TenantId { get; set; }
     }
 }

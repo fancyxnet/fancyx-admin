@@ -3,6 +3,7 @@ using Fancyx.Job;
 using Fancyx.Payment.Entities;
 using Fancyx.Payment.Enums;
 using Fancyx.Repository;
+using Microsoft.EntityFrameworkCore;
 using Quartz;
 using RedLockNet.SERedis;
 
@@ -31,10 +32,9 @@ namespace Fancyx.Payment.Jobs
             if (!redLock.IsAcquired) return;
 
             var now = DateTime.Now;
-            await _paymentOrderRepository.UpdateDiy.Where(x => now >= x.InitiationTime.AddMinutes(15) && x.PayStatus == PayStatus.Processing.GetStatus())
-                .Set(s => s.PayStatus, PayStatus.Timeout.GetStatus())
-                .Set(s => s.TimeoutTime, now)
-                .ExecuteAffrowsAsync();
+            await _paymentOrderRepository.Where(x => now >= x.InitiationTime.AddMinutes(15) && x.PayStatus == PayStatus.Processing.GetStatus())
+                .ExecuteUpdateAsync(x => x.SetProperty(s => s.PayStatus, PayStatus.Timeout.GetStatus())
+                .SetProperty(s => s.TimeoutTime, now));
         }
     }
 }

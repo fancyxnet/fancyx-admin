@@ -1,5 +1,6 @@
 ﻿using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
+using Fancyx.Core.Extensions;
 using Fancyx.Job;
 using Fancyx.Job.Database.Entities;
 using Fancyx.Repository;
@@ -31,33 +32,32 @@ namespace Fancyx.Admin.Service.System
 
         public async Task<PagedResult<TaskExecutionLogListDto>> GetExecutionLogListAsync(TaskExecutionLogQueryDto dto)
         {
-            var list = await _taskExecutionLogRepository.WhereIf(!string.IsNullOrEmpty(dto.TaskKey), x => x.TaskKey == dto.TaskKey)
+            var resp = await _taskExecutionLogRepository.GetQueryable()
+                .WhereIf(!string.IsNullOrEmpty(dto.TaskKey), x => x.TaskKey == dto.TaskKey)
                 .WhereIf(dto.Status > 0, x => x.Status == dto.Status!.Value)
                 .WhereIf(dto.ExecutionTimeRange != null && dto.ExecutionTimeRange.Length >= 2, x => x.ExecutionTime >= dto.ExecutionTimeRange![0] && x.ExecutionTime <= dto.ExecutionTimeRange![1])
                 .WhereIf(dto.Cost > 0, x => x.Cost >= dto.Cost)
                 .OrderByDescending(x => x.ExecutionTime)
-                .Count(out var total)
-                .Page(dto.Current, dto.PageSize)
-                .ToListAsync<TaskExecutionLogListDto>();
-            return new PagedResult<TaskExecutionLogListDto>(dto, total, list);
+                .PagedAsync(dto.Current, dto.PageSize);
+            return new PagedResult<TaskExecutionLogListDto>(dto, resp.Total, resp.Items.MapperList<TaskExecutionLogDO, TaskExecutionLogListDto>());
         }
 
         public async Task<PagedResult<ScheduledTaskListDto>> GetListAsync(ScheduledTaskQueryDto dto)
         {
-            var list = await _scheduledTaskRepository.WhereIf(!string.IsNullOrEmpty(dto.TaskKey), x => x.TaskKey == dto.TaskKey)
+            var resp = await _scheduledTaskRepository.GetQueryable()
+                .WhereIf(!string.IsNullOrEmpty(dto.TaskKey), x => x.TaskKey == dto.TaskKey)
                 .WhereIf(!string.IsNullOrEmpty(dto.Description), x => x.Description != null && x.Description.Contains(dto.Description!))
                 .OrderByDescending(x => x.CreationTime)
-                .Count(out var total)
-                .Page(dto.Current, dto.PageSize)
-                .ToListAsync<ScheduledTaskListDto>();
-            return new PagedResult<ScheduledTaskListDto>(dto, total, list);
+                .Select(x => new ScheduledTaskListDto { Id = x.Id, CreationTime = x.CreationTime, CronExpression = x.CronExpression, Description = x.Description, IsActive = x.IsActive, LastModificationTime = x.LastModificationTime, TaskKey = x.TaskKey })
+                .PagedAsync(dto.Current, dto.PageSize);
+            return new PagedResult<ScheduledTaskListDto>(dto, resp.Total, resp.Items);
         }
 
         public async Task UpdateAsync(ScheduledTaskDto dto)
         {
             ArgumentNullException.ThrowIfNull(dto.Id, nameof(dto));
 
-            var entity = await _scheduledTaskRepository.OneAsync(x => x.Id == dto.Id.Value) ?? throw new EntityNotFoundException();
+            var entity = await _scheduledTaskRepository.GetAsync(x => x.Id == dto.Id.Value) ?? throw new EntityNotFoundException();
             await _jobControl.UpdateJobAsync(entity.TaskKey, dto.TaskKey, dto.CronExpression, dto.Description, dto.IsActive);
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Fancyx.Admin.IService.Payment;
 using Fancyx.Admin.IService.Payment.Dtos;
+using Fancyx.Core.Extensions;
 using Fancyx.Core.Interfaces;
 using Fancyx.Payment;
 using Fancyx.Payment.Entities;
@@ -34,17 +35,15 @@ namespace Fancyx.Admin.Service.Payment
 
         public async Task<PagedResult<PayOrderListDto>> QueryPayOrderAsync(PayOrderQueryDto dto)
         {
-            var rows = await _paymentOrderRepository
+            var resp = await _paymentOrderRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.OrderNo), x => x.OrderNo == dto.OrderNo)
                 .WhereIf(!string.IsNullOrEmpty(dto.RefundNo), x => x.RefundNo == dto.RefundNo)
                 .WhereIf(!string.IsNullOrEmpty(dto.PayStatus), x => x.PayStatus == dto.PayStatus)
                 .WhereIf(dto.ProviderId.HasValue, x => x.ProviderId == dto.ProviderId)
                 .OrderByDescending(x => x.CreationTime)
-                .Count(out var total)
-                .Page(dto.Current, dto.PageSize)
-                .ToListAsync<PayOrderListDto>();
+                .PagedAsync(dto.Current, dto.PageSize);
 
-            return new PagedResult<PayOrderListDto>(total, rows);
+            return new PagedResult<PayOrderListDto>(resp.Total, resp.Items.MapperList<PaymentOrder, PayOrderListDto>());
         }
     }
 }

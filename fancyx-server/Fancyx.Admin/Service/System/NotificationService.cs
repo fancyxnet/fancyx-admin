@@ -36,29 +36,31 @@ namespace Fancyx.Admin.Service.System
 
         public async Task<PagedResult<NotificationResultDto>> GetNotificationListAsync(NotificationQueryDto dto)
         {
-            var list = await _repository.Select.From<EmployeeDO>().LeftJoin((n, e) => n.EmployeeId == e.Id)
-                .WhereIf(!string.IsNullOrEmpty(dto.Title), (x, e) => x.Title!.Contains(x.Title))
-                .WhereIf(dto.IsReaded.HasValue, (x, e) => x.IsReaded == dto.IsReaded)
-                .OrderByDescending((x, e) => x.CreationTime)
-                .Count(out var total)
-                .Page(dto.Current, dto.PageSize)
-                .ToListAsync((n, e) => new NotificationResultDto
-                {
-                    Id = n.Id,
-                    Title = n.Title,
-                    Content = n.Content,
-                    EmployeeId = n.EmployeeId,
-                    IsReaded = n.IsReaded,
-                    CreationTime = n.CreationTime,
-                    ReadedTime = n.ReadedTime,
-                    EmployeeName = e.Name
-                });
-            return new PagedResult<NotificationResultDto>(dto, total, list);
+            // TODO:
+            throw new NotImplementedException();
+            //var list = await _repository.Select.From<EmployeeDO>().LeftJoin((n, e) => n.EmployeeId == e.Id)
+            //    .WhereIf(!string.IsNullOrEmpty(dto.Title), (x, e) => x.Title!.Contains(x.Title))
+            //    .WhereIf(dto.IsReaded.HasValue, (x, e) => x.IsReaded == dto.IsReaded)
+            //    .OrderByDescending((x, e) => x.CreationTime)
+            //    .Count(out var total)
+            //    .Page(dto.Current, dto.PageSize)
+            //    .ToListAsync((n, e) => new NotificationResultDto
+            //    {
+            //        Id = n.Id,
+            //        Title = n.Title,
+            //        Content = n.Content,
+            //        EmployeeId = n.EmployeeId,
+            //        IsReaded = n.IsReaded,
+            //        CreationTime = n.CreationTime,
+            //        ReadedTime = n.ReadedTime,
+            //        EmployeeName = e.Name
+            //    });
+            //return new PagedResult<NotificationResultDto>(dto, total, list);
         }
 
         public async Task UpdateNotificationAsync(NotificationDto dto)
         {
-            var entity = await _repository.Where(x => x.Id == dto.Id).FirstAsync();
+            var entity = await _repository.GetAsync(x => x.Id == dto.Id) ?? throw new EntityNotFoundException();
             if (entity.IsReaded)
             {
                 throw new BusinessException(message: "已读消息不能修改");

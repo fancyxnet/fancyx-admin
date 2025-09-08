@@ -1,9 +1,5 @@
-using System.Security.Claims;
-
 using AutoMapper;
-
 using DotNetCore.CAP;
-
 using Fancyx.Admin.Entities.Organization;
 using Fancyx.Admin.Entities.System;
 using Fancyx.Admin.IService.Account;
@@ -17,8 +13,8 @@ using Fancyx.Repository;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Enums;
 using Fancyx.Shared.Keys;
-
-using FreeSql;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Fancyx.Admin.Service.Account
 {
@@ -70,7 +66,7 @@ namespace Fancyx.Admin.Service.Account
                 new(AdminConsts.SessionId, sessionId)
             };
             //查询用户员工、部门、职位信息
-            var employee = await _employeeRepository.OneAsync(x => x.UserId == userId);
+            var employee = await _employeeRepository.GetAsync(x => x.UserId == userId);
             if (employee != null)
             {
                 claims.Add(new Claim(AdminConsts.EmployeeId, employee.Id.ToString()));
@@ -122,7 +118,7 @@ namespace Fancyx.Admin.Service.Account
         public async Task<UserAuthInfoDto> GetUserAuthInfoAsync()
         {
             var uid = _currentUser.Id!.Value;
-            var user = await _userRepository.Where(x => x.Id == uid).FirstAsync() ?? throw new BusinessException(message: "用户不存在");
+            var user = await _userRepository.GetAsync(x => x.Id == uid) ?? throw new BusinessException(message: "用户不存在");
             var permission = await _identitySharedService.GetUserPermissionAsync(uid);
             UserAuthInfoDto result = new()
             {
@@ -134,7 +130,7 @@ namespace Fancyx.Admin.Service.Account
                     Avatar = user.Avatar,
                     Sex = (int)user.Sex,
                     Phone = user.Phone,
-                    EmployeeId = _employeeRepository.Where(x => x.UserId == uid).ToOne(x => x.Id)
+                    EmployeeId = await _employeeRepository.Where(x => x.UserId == uid).ToOneAsync(x => x.Id)
                 },
                 Menus = await GetFrontMenus(),
                 Permissions = permission.Auths ?? []
@@ -153,7 +149,7 @@ namespace Fancyx.Admin.Service.Account
             };
             try
             {
-                var user = await _userRepository.Where(x => x.UserName.ToLower() == dto.UserName.ToLower() && x.IsEnabled).FirstAsync() ?? throw new BusinessException(message: "账号或密码不存在");
+                var user = await _userRepository.GetAsync(x => x.UserName.ToLower() == dto.UserName.ToLower() && x.IsEnabled) ?? throw new BusinessException(message: "账号或密码不存在");
                 var isRight = user.Password == EncryptionUtils.GenEncodingPassword(dto.Password, user.PasswordSalt);
                 if (!isRight) throw new BusinessException(message: "密码错误");
 
@@ -194,7 +190,7 @@ namespace Fancyx.Admin.Service.Account
             };
             try
             {
-                var user = await _userRepository.Where(x => x.Phone == dto.Phone && x.IsEnabled).FirstAsync() ?? throw new BusinessException(message: "手机号不存在");
+                var user = await _userRepository.GetAsync(x => x.Phone == dto.Phone && x.IsEnabled) ?? throw new BusinessException(message: "手机号不存在");
                 var codeKey = SystemCacheKey.LoginSmsCode(dto.Phone);
                 var code = await _hybridCache.GetAsync<string>(codeKey);
                 if (string.IsNullOrEmpty(code)) throw new BusinessException("验证码已过期");

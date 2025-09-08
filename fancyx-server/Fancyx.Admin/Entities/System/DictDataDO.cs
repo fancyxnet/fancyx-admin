@@ -1,17 +1,17 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
 using Fancyx.Core.Interfaces;
 using Fancyx.Repository.BaseEntity;
 
-using FreeSql.DataAnnotations;
 
 namespace Fancyx.Admin.Entities.System
 {
     /// <summary>
     /// 字典数据表
     /// </summary>
-    [Table(Name = "sys_dict_data")]
+    [Table("sys_dict_data")]
     public class DictDataDO : AuditedEntity, ITenant
     {
         /// <summary>
@@ -20,7 +20,7 @@ namespace Fancyx.Admin.Entities.System
         [NotNull]
         [Required]
         [StringLength(256)]
-        [Column(IsNullable = false, StringLength = 256)]
+        [Column("value")]
         public string? Value { get; set; }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace Fancyx.Admin.Entities.System
         [NotNull]
         [Required]
         [StringLength(128)]
-        [Column(IsNullable = false, StringLength = 128)]
+        [Column("label")]
         public string? Label { get; set; }
 
         /// <summary>
@@ -38,31 +38,32 @@ namespace Fancyx.Admin.Entities.System
         [NotNull]
         [Required]
         [StringLength(128)]
-        [Column(IsNullable = false, StringLength = 128)]
+        [Column("dict_type")]
         public string? DictType { get; set; }
 
         /// <summary>
         /// 备注
         /// </summary>
         [StringLength(512)]
-        [Column(StringLength = 512)]
+        [Column("remark")]
         public string? Remark { get; set; }
 
         /// <summary>
         /// 排序值
         /// </summary>
-        [Column(IsNullable = false)]
+        [Column("sort")]
         public int Sort { get; set; }
 
         /// <summary>
         /// 是否开启
         /// </summary>
+        [Column("is_enabled")]
         public bool IsEnabled { get; set; }
 
         /// <summary>
         /// 租户ID
         /// </summary>
-        [Column(IsNullable = true, StringLength = 18)]
+        [Column("tenant_id")]
         public string? TenantId { get; set; }
     }
 }

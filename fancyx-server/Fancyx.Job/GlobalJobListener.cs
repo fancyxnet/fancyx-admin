@@ -62,8 +62,9 @@ namespace Fancyx.Job
         private void ProcessQueue()
         {
             IRepository<TaskExecutionLogDO>? repository = _serviceProvider.GetService<IRepository<TaskExecutionLogDO>>();
+            if (repository == null) return;
 
-            Task.Run(() =>
+            Task.Run(async () =>
             {
                 var batch = new List<TaskExecutionLogDO>();
                 while (!_cancellationTokenSource.IsCancellationRequested)
@@ -73,7 +74,7 @@ namespace Fancyx.Job
                         batch.Add(log);
                         if (batch.Count >= 500 || _logQueue.Count == 0)
                         {
-                            repository?.Insert(batch);
+                            await repository.InsertManyAsync(batch);
                             batch.Clear();
                         }
                     }

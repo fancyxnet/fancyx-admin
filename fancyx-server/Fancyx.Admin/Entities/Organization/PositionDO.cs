@@ -1,17 +1,15 @@
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-
 using Fancyx.Core.Interfaces;
 using Fancyx.Repository.BaseEntity;
-
-using FreeSql.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Fancyx.Admin.Entities.Organization
 {
     /// <summary>
     /// 职位表
     /// </summary>
-    [Table(Name = "org_position")]
+    [Table("org_position")]
     public class PositionDO : FullAuditedEntity, ITenant
     {
         /// <summary>
@@ -20,7 +18,7 @@ namespace Fancyx.Admin.Entities.Organization
         [NotNull]
         [Required]
         [StringLength(32)]
-        [Column(IsNullable = false, StringLength = 32)]
+        [Column("code")]
         public string? Code { get; set; }
 
         /// <summary>
@@ -29,7 +27,7 @@ namespace Fancyx.Admin.Entities.Organization
         [NotNull]
         [Required]
         [StringLength(64)]
-        [Column(IsNullable = false, StringLength = 64)]
+        [Column("name")]
         public string? Name { get; set; }
 
         /// <summary>
@@ -38,30 +36,32 @@ namespace Fancyx.Admin.Entities.Organization
         [NotNull]
         [Required]
         [Range(1, int.MaxValue)]
-        [Column(IsNullable = false)]
+        [Column("level")]
         public int Level { get; set; }
 
         /// <summary>
         /// 状态：1正常2停用
         /// </summary>
+        [Column("status")]
         public int Status { get; set; }
 
         /// <summary>
         /// 描述
         /// </summary>
         [StringLength(512)]
-        [Column(StringLength = 512)]
+        [Column("description")]
         public string? Description { get; set; }
 
         /// <summary>
         /// 职位分组
         /// </summary>
+        [Column("group_id")]
         public Guid? GroupId { get; set; }
 
         /// <summary>
         /// 租户ID
         /// </summary>
-        [Column(IsNullable = true, StringLength = 18)]
+        [Column("tenant_id")]
         public string? TenantId { get; set; }
     }
 }

@@ -1,8 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-
-using Fancyx.Admin.Entities.Organization;
+﻿using Fancyx.Admin.Entities.Organization;
 using Fancyx.Admin.Entities.System;
 using Fancyx.Core.Authorization;
 using Fancyx.Core.Interfaces;
@@ -11,11 +7,11 @@ using Fancyx.Repository;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Enums;
 using Fancyx.Shared.Keys;
-
-using FreeSql;
-using FreeSql.Internal.Model;
-
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Fancyx.Admin.SharedService
 {
@@ -64,11 +60,11 @@ namespace Fancyx.Admin.SharedService
                 return cacheValue!;
             }
 
-            var roleIds = await _userRoleRepository.Where(x => x.UserId == userId).ToListAsync(x => x.RoleId);
+            var roleIds = await _userRoleRepository.Where(x => x.UserId == userId).SelectToListAsync(x => x.RoleId);
             var roles = await _roleRepository.Where(x => roleIds.Contains(x.Id) && x.IsEnabled).ToListAsync();
             var isSuperAdmin = roles.Any(r => r.RoleName == AdminConsts.SuperAdminRole);
-            var menuIds = await _roleMenuRepository.Where(x => roleIds.Contains(x.RoleId)).ToListAsync(x => x.MenuId);
-            var menus = await _menuRepository.Select.Where(x => menuIds.Contains(x.Id) || isSuperAdmin).ToListAsync(x => new { x.Permission, x.Id, x.MenuType });
+            var menuIds = await _roleMenuRepository.Where(x => roleIds.Contains(x.RoleId)).SelectToListAsync(x => x.MenuId);
+            var menus = await _menuRepository.Where(x => menuIds.Contains(x.Id) || isSuperAdmin).SelectToListAsync(x => new { x.Permission, x.Id, x.MenuType });
             if (isSuperAdmin)
             {
                 menuIds = menus.Select(x => x.Id).ToList();
@@ -196,51 +192,7 @@ namespace Fancyx.Admin.SharedService
         public Task<bool> UserIsFromMainDbAsync(string id)
         {
             TenantManager.SetCurrent("");
-            return _userRepository.Select.AnyAsync(x => x.Id.ToString() == id);
-        }
-
-        /// <summary>
-        /// 获取当前用户数据权限过滤信息（以员工ID做组织架构筛选）
-        /// </summary>
-        /// <param name="entity">控制实体名</param>
-        /// <returns></returns>
-        public async Task<DynamicFilterInfo> GetDataFilterAsync(string entity)
-        {
-            var filterInfo = new DynamicFilterInfo
-            {
-                Logic = DynamicFilterLogic.And
-            };
-            var (deptIds, employeeIds) = await this.GetCurrentUserDeptPowerAsync();
-            if (deptIds.Count == 0 && employeeIds.Count == 0)
-            {
-                return filterInfo;
-            }
-            switch (entity)
-            {
-                case nameof(EmployeeDO):
-                    filterInfo.Field = nameof(EmployeeDO.Id);
-                    filterInfo.Operator = DynamicFilterOperator.Any;
-                    filterInfo.Value = employeeIds;
-                    filterInfo.Filters = new List<DynamicFilterInfo>()
-                    {
-                        new DynamicFilterInfo
-                        {
-                            Logic = DynamicFilterLogic.Or,
-                            Field = nameof(EmployeeDO.DeptId),
-                            Operator = DynamicFilterOperator.Any,
-                            Value = deptIds
-                        }
-                    };
-                    break;
-
-                case nameof(DeptDO):
-                    filterInfo.Field = nameof(DeptDO.Id);
-                    filterInfo.Operator = DynamicFilterOperator.Any;
-                    filterInfo.Value = deptIds;
-                    break;
-            }
-
-            return filterInfo;
+            return _userRepository.AnyAsync(x => x.Id.ToString() == id);
         }
 
         /// <summary>
@@ -258,7 +210,7 @@ namespace Fancyx.Admin.SharedService
 
             var userPermission = await this.GetUserPermissionAsync(_currentUser.Id.Value!);
             if (userPermission.RoleIds == null || userPermission.RoleIds.Length == 0) return ([], []);
-            var powerTypes = await _roleRepository.Where(x => userPermission.RoleIds.Contains(x.Id)).Distinct().ToListAsync(x => x.DeptPowerType);
+            var powerTypes = await _roleRepository.Where(x => userPermission.RoleIds.Contains(x.Id)).Distinct().SelectToListAsync(x => x.DeptPowerType);
             if (powerTypes == null || powerTypes.Count == 0) return ([], []);
 
             var deptIds = new List<Guid>();
@@ -269,9 +221,9 @@ namespace Fancyx.Admin.SharedService
                 if (powerType == DeptPowerType.All)
                 {
                     //所有部门
-                    deptIds.AddRange(await _deptRepository.Select.ToListAsync(x => x.Id));
+                    deptIds.AddRange(await _deptRepository.GetQueryable().SelectToListAsync(x => x.Id));
                     //所有员工
-                    employeeIds.AddRange(await _employeeRepository.Select.ToListAsync(x => x.Id));
+                    employeeIds.AddRange(await _employeeRepository.GetQueryable().SelectToListAsync(x => x.Id));
                     break;
                 }
                 switch (powerType)
@@ -288,13 +240,13 @@ namespace Fancyx.Admin.SharedService
                         {
                             deptIds.Add(curDeptId.Value);
                             //以下部门
-                            var subDept = await _deptRepository.Where(x => x.ParentId == curDeptId).ToListAsync(x => x.Id);
+                            var subDept = await _deptRepository.Where(x => x.ParentId == curDeptId).SelectToListAsync(x => x.Id);
                             deptIds.AddRange(subDept);
                         }
                         break;
 
                     case DeptPowerType.Specify:
-                        var specifyDeptIds = await _roleDeptRepository.Where(x => userPermission.RoleIds.Contains(x.RoleId)).ToListAsync(x => x.DeptId);
+                        var specifyDeptIds = await _roleDeptRepository.Where(x => userPermission.RoleIds.Contains(x.RoleId)).SelectToListAsync(x => x.DeptId);
                         deptIds.AddRange(specifyDeptIds);
                         break;
 
@@ -305,7 +257,7 @@ namespace Fancyx.Admin.SharedService
             }
             if (deptIds.Count > 0)
             {
-                var findEmployeeIds = await _employeeRepository.Where(x => x.DeptId != null && deptIds.Contains(x.DeptId.Value)).ToListAsync(x => x.Id);
+                var findEmployeeIds = await _employeeRepository.Where(x => x.DeptId != null && deptIds.Contains(x.DeptId.Value)).SelectToListAsync(x => x.Id);
                 employeeIds.AddRange(findEmployeeIds);
             }
             deptIds = deptIds.Distinct().ToList();

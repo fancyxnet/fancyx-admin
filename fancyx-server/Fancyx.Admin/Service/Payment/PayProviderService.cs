@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Fancyx.Admin.IService.Payment;
 using Fancyx.Admin.IService.Payment.Dtos;
+using Fancyx.Core.Extensions;
 using Fancyx.Core.Utils;
 using Fancyx.Payment.Entities;
 using Fancyx.Repository;
@@ -22,7 +23,7 @@ namespace Fancyx.Admin.Service.Payment
 
         public async Task AddPayProviderAsync(PayProviderDto dto)
         {
-            if (await _payProviderRepository.Where(x => x.Name == dto.Name).AnyAsync())
+            if (await _payProviderRepository.AnyAsync(x => x.Name == dto.Name))
             {
                 throw new BusinessException($"支付渠道{dto.Name}已存在");
             }
@@ -33,32 +34,30 @@ namespace Fancyx.Admin.Service.Payment
 
         public async Task DeletePayProviderAsync(Guid id)
         {
-            if (await _paymentOrderRepository.Where(x => x.ProviderId == id).AnyAsync())
+            if (await _paymentOrderRepository.AnyAsync(x => x.ProviderId == id))
             {
                 throw new BusinessException("该支付渠道已存在支付订单，无法删除");
             }
 
-            await _payProviderRepository.SoftDeleteAsync(x => x.Id == id);
+            await _payProviderRepository.DeleteAsync(x => x.Id == id);
         }
 
         public async Task<PagedResult<PayProviderListDto>> GetPayProviderListAsync(PayProviderQueryDto dto)
         {
-            var rows = await _payProviderRepository
+            var resp = await _payProviderRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.Name), x => x.Name.Contains(dto.Name!))
                 .WhereIf(dto.Type.HasValue, x => (int)x.Type == dto.Type)
                 .WhereIf(dto.IsEnabled.HasValue, x => x.IsEnabled == dto.IsEnabled)
                 .OrderByDescending(x => x.CreationTime)
-                .Count(out var total)
-                .Page(dto.Current, dto.PageSize)
-                .ToListAsync<PayProviderListDto>();
+                .PagedAsync(dto.Current, dto.PageSize);
 
-            return new PagedResult<PayProviderListDto>(total, rows);
+            return new PagedResult<PayProviderListDto>(resp.Total, resp.Items.MapperList<PayProvider, PayProviderListDto>());
         }
 
         public async Task UpdatePayProviderAsync(PayProviderDto dto)
         {
-            var entity = await _payProviderRepository.OneAsync(x => x.Id == dto.Id) ?? throw new EntityNotFoundException();
-            if (entity.Name != dto.Name && await _payProviderRepository.Where(x => x.Name == dto.Name).AnyAsync())
+            var entity = await _payProviderRepository.GetAsync(x => x.Id == dto.Id) ?? throw new EntityNotFoundException();
+            if (entity.Name != dto.Name && await _payProviderRepository.AnyAsync(x => x.Name == dto.Name))
             {
                 throw new BusinessException($"支付渠道{dto.Name}已存在");
             }

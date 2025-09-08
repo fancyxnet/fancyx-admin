@@ -1,14 +1,12 @@
-﻿using System.Reflection;
-
-using Fancyx.Core.AutoInject;
+﻿using Fancyx.Core.AutoInject;
 using Fancyx.Job.Database.Entities;
 using Fancyx.Job.Database.Models;
 using Fancyx.Repository;
 using Fancyx.Repository.Aop;
-
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-
 using Quartz;
+using System.Reflection;
 
 namespace Fancyx.Job.Database
 {
@@ -34,7 +32,7 @@ namespace Fancyx.Job.Database
             {
                 throw new FormatException("Cron表达式不正确");
             }
-            if (_scheduledTaskRepository.Where(x => x.TaskKey == key).Any())
+            if (await _scheduledTaskRepository.AnyAsync(x => x.TaskKey == key))
             {
                 throw new InvalidOperationException($"任务KEY:{key}，已存在");
             }
@@ -57,7 +55,7 @@ namespace Fancyx.Job.Database
             {
                 throw new FormatException("Cron表达式不正确");
             }
-            if (oldKey != key && _scheduledTaskRepository.Where(x => x.TaskKey == key).Any())
+            if (oldKey != key && await _scheduledTaskRepository.AnyAsync(x => x.TaskKey == key))
             {
                 throw new InvalidOperationException($"任务KEY:{key}，已存在");
             }
@@ -70,13 +68,12 @@ namespace Fancyx.Job.Database
                 await _scheduler.PauseJob(new JobKey(JobKeyUtils.GetJobKey(key)));
             }
 
-            await _scheduledTaskRepository.UpdateDiy
-                .Set(x => x.TaskKey, key)
-                .Set(x => x.CronExpression, cron)
-                .Set(x => x.IsActive, isActive)
-                .Set(x => x.Description, description)
-                .Where(x => x.TaskKey == oldKey)
-                .ExecuteAffrowsAsync();
+            await _scheduledTaskRepository.GetQueryable()
+                .Where(e => e.TaskKey == oldKey)
+                .ExecuteUpdateAsync(e => e.SetProperty(x => x.TaskKey, key)
+                .SetProperty(x => x.CronExpression, cron)
+                .SetProperty(x => x.IsActive, isActive)
+                .SetProperty(x => x.Description, description));
         }
 
         [AsyncTransactional]
@@ -93,12 +90,14 @@ namespace Fancyx.Job.Database
 
         public Task<List<ScheduledTaskInfo>> GetScheduledTaskInfos()
         {
-            return _scheduledTaskRepository.Where(x => x.IsActive).ToListAsync<ScheduledTaskInfo>();
+            return _scheduledTaskRepository.Where(x => x.IsActive)
+                .Select(x => new ScheduledTaskInfo { TaskKey = x.TaskKey, CronExpression = x.CronExpression })
+                .ToListAsync();
         }
 
         public async Task StartAsync(string taskKey)
         {
-            var entity = await _scheduledTaskRepository.OneAsync(x => x.TaskKey == taskKey);
+            var entity = await _scheduledTaskRepository.GetAsync(x => x.TaskKey == taskKey);
             if (entity != null)
             {
                 var jobKey = new JobKey(JobKeyUtils.GetJobKey(taskKey));
@@ -118,7 +117,7 @@ namespace Fancyx.Job.Database
 
         public async Task StopAsync(string taskKey)
         {
-            var entity = await _scheduledTaskRepository.OneAsync(x => x.TaskKey == taskKey);
+            var entity = await _scheduledTaskRepository.GetAsync(x => x.TaskKey == taskKey);
             if (entity != null)
             {
                 var jobKey = new JobKey(JobKeyUtils.GetJobKey(taskKey));
@@ -134,7 +133,7 @@ namespace Fancyx.Job.Database
 
         public async Task TriggerJobAsync(string key)
         {
-            var entity = await _scheduledTaskRepository.OneAsync(x => x.TaskKey == key);
+            var entity = await _scheduledTaskRepository.GetAsync(x => x.TaskKey == key);
             if (entity == null)
             {
                 throw new InvalidOperationException("任务不存在");

@@ -2,9 +2,11 @@
 using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Admin.SharedService;
+using Fancyx.Core.Extensions;
 using Fancyx.Logger;
 using Fancyx.Repository;
 using Fancyx.Shared.Consts;
+using System.Linq;
 
 namespace Fancyx.Admin.Service.System
 {
@@ -21,7 +23,7 @@ namespace Fancyx.Admin.Service.System
 
         public async Task AddConfigAsync(ConfigDto dto)
         {
-            if (_configRepository.Select.Any(x => x.Key.ToLower() == dto.Key.ToLower()))
+            if (await _configRepository.AnyAsync(x => x.Key.ToLower() == dto.Key.ToLower()))
             {
                 throw new BusinessException($"配置【{dto.Key}】已存在");
             }
@@ -39,21 +41,17 @@ namespace Fancyx.Admin.Service.System
 
         public async Task<PagedResult<ConfigListDto>> GetConfigListAsync(ConfigQueryDto dto)
         {
-            var rows = await _configRepository.Select
+            var resp = await _configRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.Name), x => x.Name.ToLower().Contains(dto.Name!.ToLower()))
                 .WhereIf(!string.IsNullOrEmpty(dto.Key), x => x.Key.ToLower().Contains(dto.Key!.ToLower()))
-                .OrderByDescending(string.IsNullOrEmpty(dto.SortProperty), x => x.CreationTime)
-                .OrderByPropertyName(dto.SortProperty, dto.IsAsecending)
-                .Count(out var total)
-                .Page(dto.Current, dto.PageSize)
-                .ToListAsync<ConfigListDto>();
+                .PagedAsync(dto.Current, dto.PageSize);
 
-            return new PagedResult<ConfigListDto>(total, rows);
+            return new PagedResult<ConfigListDto>(resp.Total, resp.Items.MapperList<ConfigDO, ConfigListDto>());
         }
 
         public async Task DeleteConfigAsync(Guid id)
         {
-            var entity = _configRepository.Select.Where(x => x.Id == id).ToOne();
+            var entity = await _configRepository.GetAsync(x => x.Id == id);
             if (entity == null)
             {
                 throw new BusinessException("数据已删除");
@@ -71,14 +69,14 @@ namespace Fancyx.Admin.Service.System
         [AsyncLogRecord(LogRecordConsts.SysConfig, LogRecordConsts.SysConfigUpdateSubType, "{{id}}", LogRecordConsts.SysConfigUpdateContent)]
         public async Task UpdateConfigAsync(ConfigDto dto)
         {
-            var entity = _configRepository.Select.Where(x => x.Id == dto.Id).ToOne();
+            var entity = await _configRepository.GetAsync(x => x.Id == dto.Id);
             if (entity == null)
             {
                 throw new BusinessException("数据不存在");
             }
 
             var key = dto.Key.ToLower();
-            if (_configRepository.Select.Any(x => x.Key.ToLower() == key) && entity.Key.ToLower() != key)
+            if (await _configRepository.AnyAsync(x => x.Key.ToLower() == key) && entity.Key.ToLower() != key)
             {
                 throw new BusinessException($"配置【{dto.Key}】已存在");
             }

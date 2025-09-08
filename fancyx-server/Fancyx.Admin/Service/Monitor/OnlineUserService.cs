@@ -4,9 +4,7 @@ using Fancyx.Admin.IService.Monitor.Dtos;
 using Fancyx.Repository;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Keys;
-
-using FreeSql;
-
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
 using StackExchange.Redis;
@@ -38,7 +36,7 @@ namespace Fancyx.Admin.Service.Monitor
                 .WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.UserName.Contains(dto.UserName!))
                 .OrderByDescending(x => x.CreationTime).ToListAsync();
             var userNames = loginLogs.Select(x => x.UserName).ToList();
-            var users = await _userRepository.Where(x => userNames.Contains(x.UserName)).ToListAsync(x => new { x.Id, x.UserName });
+            var users = await _userRepository.Where(x => userNames.Contains(x.UserName)).Select(x => new { x.Id, x.UserName }).ToListAsync();
 
             var list = new List<OnlineUserResultDto>();
             foreach (var loginLog in loginLogs)

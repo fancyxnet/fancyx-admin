@@ -3,16 +3,17 @@ using Fancyx.Core.Utils;
 using Fancyx.Logger.Consts;
 using Fancyx.Logger.Entities;
 using Fancyx.Logger.Message;
+using Fancyx.Repository;
 
 namespace Fancyx.Logger
 {
     public class LoggerCapSubscriber : ICapSubscribe
     {
-        private readonly IFreeSql _freeSql;
+        private readonly FancyxDbContext _context;
 
-        public LoggerCapSubscriber(IFreeSql freeSql)
+        public LoggerCapSubscriber(FancyxDbContext context)
         {
-            _freeSql = freeSql;
+            _context = context;
         }
 
         [CapSubscribe(EventBusTopicConsts.LOG_RECORD_EVENT)]
@@ -34,7 +35,7 @@ namespace Fancyx.Logger
                 CreationTime = message.CreationTime
             };
 
-            await _freeSql.Insert(entity).ExecuteAffrowsAsync();
+            await _context.SingleInsertAsync(entity);
         }
 
         [CapSubscribe(EventBusTopicConsts.API_ACCESS_LOG_EVENT)]
@@ -61,7 +62,7 @@ namespace Fancyx.Logger
                 TenantId = message.TenantId,
             };
 
-            await _freeSql.Insert(entity).ExecuteAffrowsAsync();
+            await _context.SingleInsertAsync(entity);
         }
 
         [CapSubscribe(EventBusTopicConsts.EXCEPTION_LOG_EVENT)]
@@ -84,7 +85,7 @@ namespace Fancyx.Logger
                 TenantId = message.TenantId
             };
 
-            await _freeSql.Insert(entity).ExecuteAffrowsAsync();
+            await _context.SingleInsertAsync(entity);
         }
     }
 }

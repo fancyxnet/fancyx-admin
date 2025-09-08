@@ -25,7 +25,7 @@ namespace Fancyx.Admin.SharedService
                 return (string?)await _redisClient.HashGetAsync(SystemCacheKey.SystemConfig, key);
             }
 
-            string? value = await _configRepository.Select.Where(x => x.Key.ToLower() == key.ToLower()).ToOneAsync(e => e.Value);
+            string? value = await _configRepository.Where(x => x.Key.ToLower() == key.ToLower()).ToOneAsync(e => e.Value);
             if (value != null)
             {
                 await _redisClient.HashSetAsync(SystemCacheKey.SystemConfig, key, value);
@@ -46,7 +46,7 @@ namespace Fancyx.Admin.SharedService
                 }
             }
 
-            var groupKeys = _configRepository.Select.Where(x => !string.IsNullOrEmpty(x.GroupKey) && x.GroupKey.ToLower() == group.ToLower())
+            var groupKeys = _configRepository.Where(x => !string.IsNullOrEmpty(x.GroupKey) && x.GroupKey.ToLower() == group.ToLower())
                 .ToDictionary(k => k.Key, v => v.Value);
             if (groupKeys.Count > 0)
             {

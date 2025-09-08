@@ -1,18 +1,17 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
 using Fancyx.Core.Interfaces;
 using Fancyx.Repository.BaseEntity;
 using Fancyx.Shared.Enums;
 
-using FreeSql.DataAnnotations;
-
 namespace Fancyx.Admin.Entities.System
 {
     /// <summary>
     /// 角色表
     /// </summary>
-    [Table(Name = "sys_role")]
+    [Table("sys_role")]
     public class RoleDO : FullAuditedEntity, ITenant
     {
         /// <summary>
@@ -20,14 +19,14 @@ namespace Fancyx.Admin.Entities.System
         /// </summary>
         [NotNull]
         [StringLength(64)]
-        [Column(IsNullable = false, StringLength = 64)]
+        [Column("role_name")]
         public string? RoleName { get; set; }
 
         /// <summary>
         /// 备注
         /// </summary>
         [StringLength(512)]
-        [Column(StringLength = 512)]
+        [Column("remark")]
         public string? Remark { get; set; }
 
         /// <summary>
@@ -48,19 +47,19 @@ namespace Fancyx.Admin.Entities.System
         /// <summary>
         /// 租户ID
         /// </summary>
-        [Column(IsNullable = true, StringLength = 18)]
+        [Column("tenant_id")]
         public string? TenantId { get; set; }
 
         /// <summary>
         /// 是否启用
         /// </summary>
-        [Column(IsNullable = false)]
+        [Column("is_enabled")]
         public bool IsEnabled { get; set; } = false;
 
         /// <summary>
         /// 部门权限类型
         /// </summary>
-        [Column(IsNullable = false)]
+        [Column("dept_power_type")]
         public DeptPowerType DeptPowerType { get; set; } = DeptPowerType.All;
     }
 }

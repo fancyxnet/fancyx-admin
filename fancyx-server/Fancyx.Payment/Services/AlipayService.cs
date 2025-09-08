@@ -46,7 +46,7 @@ namespace Fancyx.Payment.Services
                 throw new PaymentFailureException("用户操作太快");
             }
 
-            var provider = await _payProviderRepository.OneAsync(x => x.IsEnabled && x.Type == this.PayType)
+            var provider = await _payProviderRepository.GetAsync(x => x.IsEnabled && x.Type == this.PayType)
                 ?? throw new NotFoundPayProviderException(this.PayType);
             //创建付款单
             var paymentOrder = new PaymentOrder()
@@ -92,9 +92,9 @@ namespace Fancyx.Payment.Services
 
         public async Task<TradeQueryResult> QueryTradeStatusAsync(string orderNo)
         {
-            var paymentOrder = await _paymentOrderRepository.OneAsync(x => x.OrderNo == orderNo)
+            var paymentOrder = await _paymentOrderRepository.GetAsync(x => x.OrderNo == orderNo)
                 ?? throw new PaymentFailureException($"找不到单号{orderNo}的付款单");
-            var payProvider = await _payProviderRepository.OneAsync(x => x.Id == paymentOrder.ProviderId)
+            var payProvider = await _payProviderRepository.GetAsync(x => x.Id == paymentOrder.ProviderId)
                 ?? throw new PaymentFailureException($"找不到{paymentOrder.ProviderId}的支付渠道");
 
             var client = await GetAlipayClientAsync(payProvider);
@@ -159,7 +159,7 @@ namespace Fancyx.Payment.Services
             }
 
             //验签
-            var provider = await _payProviderRepository.OneAsync(x => x.IsEnabled && x.Type == this.PayType && x.AppId == appId)
+            var provider = await _payProviderRepository.GetAsync(x => x.IsEnabled && x.Type == this.PayType && x.AppId == appId)
                 ?? throw new NotFoundPayProviderException(this.PayType);
             string signKeyOrCert;
             if (provider.SignMode == "key")
@@ -192,7 +192,7 @@ namespace Fancyx.Payment.Services
             }
 
             //找到对应的付款单
-            var paymentOrder = await _paymentOrderRepository.OneAsync(x => x.OrderNo == outTradeNo && x.PayStatus == PayStatus.Processing.GetStatus())
+            var paymentOrder = await _paymentOrderRepository.GetAsync(x => x.OrderNo == outTradeNo && x.PayStatus == PayStatus.Processing.GetStatus())
                 ?? throw new PayCallBackException($"找不到单号{outTradeNo}的付款单");
             var result = new PayCallBackResult();
             if (tradeStatus == "TRADE_SUCCESS" || tradeStatus == "TRADE_FINISHED") //TRADE_SUCCESS:交易支付成功；TRADE_FINISHED:交易结束，不可退款
@@ -255,9 +255,9 @@ namespace Fancyx.Payment.Services
             /* 目前沙盒测试，支付宝只能退款3次，超过3次会提示退款金额无效 */
 
             var result = new RefundResult() { IsSuccess = false };
-            var paymentOrder = await _paymentOrderRepository.OneAsync(x => x.OrderNo == req.OrderNo)
+            var paymentOrder = await _paymentOrderRepository.GetAsync(x => x.OrderNo == req.OrderNo)
                 ?? throw new RefundException($"找不到单号{req.OrderNo}的付款单");
-            var payProvider = await _payProviderRepository.OneAsync(x => x.Id == paymentOrder.ProviderId)
+            var payProvider = await _payProviderRepository.GetAsync(x => x.Id == paymentOrder.ProviderId)
                 ?? throw new RefundException($"找不到{paymentOrder.ProviderId}的支付渠道");
             if (paymentOrder.PayStatus != PayStatus.Success.GetStatus() && paymentOrder.PayStatus != PayStatus.Refunded.GetStatus())
             {

@@ -1,12 +1,13 @@
 ﻿using Fancyx.Repository.BaseEntity;
-using FreeSql.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Fancyx.Admin.Entities.System
 {
-    [Index("uk_tenant_id", nameof(TenantId), true)]
-    [Table(Name = "sys_tenant")]
+    [Table("sys_tenant")]
+    [Index(nameof(TenantId), IsUnique = true)]
     public class TenantDO : AuditedEntity
     {
         /// <summary>
@@ -14,7 +15,7 @@ namespace Fancyx.Admin.Entities.System
         /// </summary>
         [NotNull]
         [Required]
-        [Column(IsNullable = false, StringLength = 64)]
+        [Column("name")]
         public string? Name { get; set; }
 
         /// <summary>
@@ -23,19 +24,19 @@ namespace Fancyx.Admin.Entities.System
         [NotNull]
         [Required]
         [MaxLength(18)]
-        [Column(IsNullable = false, StringLength = 18)]
+        [Column("tenant_id")]
         public string? TenantId { get; set; }
 
         /// <summary>
         /// 备注
         /// </summary>
-        [Column(StringLength = 512)]
+        [Column("remark")]
         public string? Remark { get; set; }
 
         /// <summary>
         /// 租户域名
         /// </summary>
-        [Column(StringLength = 256)]
+        [Column("domain")]
         public string? Domain { get; set; }
     }
 }

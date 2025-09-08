@@ -24,7 +24,7 @@ namespace Fancyx.Admin.Service.Organization
             entity.ParentId = dto.ParentId;
             if (entity.ParentId.HasValue)
             {
-                var all = await _positionGroupRepository.Select.ToListAsync();
+                var all = await _positionGroupRepository.GetListAsync();
                 entity.ParentIds = GetParentIds(all, entity.ParentId.Value);
             }
 
@@ -41,13 +41,13 @@ namespace Fancyx.Admin.Service.Organization
 
         public async Task<bool> DeletePositionGroupAsync(Guid id)
         {
-            var hasChildren = await _positionGroupRepository.Select.AnyAsync(x => x.ParentId == id);
+            var hasChildren = await _positionGroupRepository.AnyAsync(x => x.ParentId == id);
             if (hasChildren)
             {
                 throw new BusinessException("存在子分组，不能删除");
             }
 
-            var hasPositions = await _positionRepository.Select.AnyAsync(x => x.GroupId == id);
+            var hasPositions = await _positionRepository.AnyAsync(x => x.GroupId == id);
             if (hasPositions)
             {
                 throw new BusinessException(message: "分组下有职位，不能删除");
@@ -59,18 +59,20 @@ namespace Fancyx.Admin.Service.Organization
 
         public async Task<List<PositionGroupListDto>> GetPositionGroupListAsync(PositionGroupQueryDto dto)
         {
-            var rawTree = await _positionGroupRepository.Select
-                .WhereIf(!string.IsNullOrEmpty(dto.GroupName), x => x.GroupName.Contains(dto.GroupName!))
-                .OrderBy(x => x.Sort)
-                .ToTreeListAsync();
+            //var rawTree = await _positionGroupRepository.GetQueryable()
+            //    .WhereIf(!string.IsNullOrEmpty(dto.GroupName), x => x.GroupName.Contains(dto.GroupName!))
+            //    .OrderBy(x => x.Sort)
+            //    .ToTreeListAsync();
 
-            return AutoMapperHelper.Instance.Map<List<PositionGroupDO>, List<PositionGroupListDto>>(rawTree);
+            //return AutoMapperHelper.Instance.Map<List<PositionGroupDO>, List<PositionGroupListDto>>(rawTree);
+            // TODO:
+            throw new Exception();
         }
 
         public async Task<bool> UpdatePositionGroupAsync(PositionGroupDto dto)
         {
             if (!dto.Id.HasValue) throw new ArgumentNullException(nameof(dto.Id));
-            var entity = await _positionGroupRepository.Where(x => x.Id == dto.Id).FirstAsync();
+            var entity = await _positionGroupRepository.GetAsync(x => x.Id == dto.Id) ?? throw new EntityNotFoundException();
             if (dto.ParentId == entity.Id)
             {
                 throw new BusinessException(message: "不能选择自己为父级");
@@ -82,7 +84,7 @@ namespace Fancyx.Admin.Service.Organization
             entity.Sort = dto.Sort;
             if (entity.ParentId.HasValue)
             {
-                var all = await _positionGroupRepository.Select.ToListAsync();
+                var all = await _positionGroupRepository.GetListAsync();
                 entity.ParentIds = GetParentIds(all, entity.ParentId.Value);
             }
 

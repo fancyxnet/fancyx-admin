@@ -4,7 +4,6 @@ using Fancyx.Admin.IService.Organization.Dtos;
 using Fancyx.Admin.Service.Organization.Models;
 using Fancyx.Core.Helpers;
 using Fancyx.Repository;
-using FreeSql;
 using System.Data;
 
 namespace Fancyx.Admin.Service.Organization
@@ -25,8 +24,8 @@ namespace Fancyx.Admin.Service.Organization
 
         private async Task<List<PosistionLayerNames>> GetPosistionGroupNameAsync(List<Guid> ids)
         {
-            var positions = await _positionRepository.Where(x => ids.Contains(x.Id)).ToListAsync(x => new { x.Id, x.GroupId });
-            var groups = await _positionGroupRepository.Select.ToListAsync();
+            var positions = await _positionRepository.Where(x => ids.Contains(x.Id)).SelectToListAsync(x => new { x.Id, x.GroupId });
+            var groups = await _positionGroupRepository.GetListAsync(x => true);
             var list = new List<PosistionLayerNames>();
 
             foreach (var item in positions)
@@ -53,7 +52,7 @@ namespace Fancyx.Admin.Service.Organization
 
         public async Task<bool> AddPositionAsync(PositionDto dto)
         {
-            if (_positionRepository.Select.Any(x => x.Code.ToLower() == dto.Code!.ToLower()))
+            if (await _positionRepository.AnyAsync(x => x.Code.ToLower() == dto.Code!.ToLower()))
             {
                 throw new BusinessException("职位编号已存在");
             }
@@ -64,7 +63,7 @@ namespace Fancyx.Admin.Service.Organization
 
         public async Task<bool> DeletePositionAsync(Guid id)
         {
-            var hasEmployees = await _employeeRepository.Select.AnyAsync(x => x.PositionId == id);
+            var hasEmployees = await _employeeRepository.AnyAsync(x => x.PositionId == id);
             if (hasEmployees) throw new BusinessException(message: "职位正在使用，不能删除");
             await _positionRepository.DeleteAsync(x => x.Id == id);
             return true;
@@ -72,34 +71,32 @@ namespace Fancyx.Admin.Service.Organization
 
         public async Task<PagedResult<PositionListDto>> GetPositionListAsync(PositionQueryDto dto)
         {
-            var rows = await _positionRepository.Select
+            var pagedResp = await _positionRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.Keyword), x => x.Name.Contains(dto.Keyword!) || x.Code.Contains(dto.Keyword!))
                 .WhereIf(dto.Level > 0, x => x.Level == dto.Level)
                 .WhereIf(dto.Status > 0, x => x.Status == dto.Status)
                 .WhereIf(dto.GroupId.HasValue, x => x.GroupId == dto.GroupId)
                 .OrderBy(x => x.Level)
                 .OrderBy(x => x.CreationTime)
-                .Count(out var total)
-                .Page(dto.Current, dto.PageSize)
-                .ToListAsync();
-            var ids = rows.Select(x => x.Id).ToList();
-            var list = AutoMapperHelper.Instance.Map<List<PositionDO>, List<PositionListDto>>(rows);
+                .PagedAsync(dto.Current, dto.PageSize);
+            var ids = pagedResp.Items.Select(x => x.Id).ToList();
+            var list = AutoMapperHelper.Instance.Map<List<PositionDO>, List<PositionListDto>>(pagedResp.Items);
             var names = await GetPosistionGroupNameAsync(ids);
             foreach (var item in list)
             {
                 var tmp = names.FirstOrDefault(x => x.Id == item.Id);
                 item.LayerName = tmp?.LayerName;
             }
-            return new PagedResult<PositionListDto>(total, list);
+            return new PagedResult<PositionListDto>(pagedResp.Total, list);
         }
 
         public async Task<bool> UpdatePositionAsync(PositionDto dto)
         {
             if (!dto.Id.HasValue) throw new ArgumentNullException(nameof(dto.Id));
-            var entity = await _positionRepository.Where(x => x.Id == dto.Id).FirstAsync()
+            var entity = await _positionRepository.GetAsync(x => x.Id == dto.Id)
                 ?? throw new BusinessException("数据不存在");
             string code = dto.Code!.ToLower();
-            if (entity.Code.ToLower() != code && _positionRepository.Select.Any(x => x.Code.ToLower() == code))
+            if (entity.Code.ToLower() != code && await _positionRepository.AnyAsync(x => x.Code.ToLower() == code))
             {
                 throw new BusinessException("职位编号已存在");
             }
@@ -116,8 +113,8 @@ namespace Fancyx.Admin.Service.Organization
 
         public async Task<List<AppOptionTree>> GetPositionTreeOptionAsync()
         {
-            var groups = await _positionGroupRepository.Select.ToListAsync();
-            var positions = await _positionRepository.Select.ToListAsync();
+            var groups = await _positionGroupRepository.GetListAsync(x => true);
+            var positions = await _positionRepository.GetListAsync(x => true);
             var topGroups = groups.Where(x => !x.ParentId.HasValue).ToList();
             var list = new List<AppOptionTree>();
             List<AppOptionTree> GetChildren(string id)

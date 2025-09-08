@@ -1,9 +1,9 @@
 using Fancyx.Core.Interfaces;
 using Fancyx.Repository.BaseEntity;
 using Fancyx.Shared.Enums;
-using FreeSql.DataAnnotations;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Fancyx.Admin.Entities.System
@@ -11,7 +11,7 @@ namespace Fancyx.Admin.Entities.System
     /// <summary>
     /// 用户表
     /// </summary>
-    [Table(Name = "sys_user")]
+    [Table("sys_user")]
     public class UserDO : FullAuditedEntity, ITenant
     {
         /// <summary>
@@ -19,7 +19,7 @@ namespace Fancyx.Admin.Entities.System
         /// </summary>
         [NotNull]
         [StringLength(32)]
-        [Column(IsNullable = false, StringLength = 32)]
+        [Column("user_name")]
         public string? UserName { get; set; }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace Fancyx.Admin.Entities.System
         /// </summary>
         [NotNull]
         [StringLength(512)]
-        [Column(IsNullable = false, StringLength = 512)]
+        [Column("password")]
         public string? Password { get; set; }
 
         /// <summary>
@@ -35,14 +35,14 @@ namespace Fancyx.Admin.Entities.System
         /// </summary>
         [NotNull]
         [StringLength(256)]
-        [Column(IsNullable = false, StringLength = 256)]
+        [Column("password_salt")]
         public string? PasswordSalt { get; set; }
 
         /// <summary>
         /// 头像
         /// </summary>
         [StringLength(256)]
-        [Column(IsNullable = true, StringLength = 256)]
+        [Column("avatar")]
         public string? Avatar { get; set; }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace Fancyx.Admin.Entities.System
         [NotNull]
         [Required]
         [StringLength(64)]
-        [Column(IsNullable = false, StringLength = 64)]
+        [Column("nick_name")]
         public string? NickName { get; set; }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Fancyx.Admin.Entities.System
         /// </summary>
         [NotNull]
         [Required]
-        [Column(IsNullable = false)]
+        [Column("sex")]
         [DefaultValue(0)]
         public SexType Sex { get; set; }
 
@@ -67,7 +67,7 @@ namespace Fancyx.Admin.Entities.System
         /// 是否启用
         /// </summary>
         [Required]
-        [Column(IsNullable = false)]
+        [Column("is_enabled")]
         public bool IsEnabled { get; set; }
 
         /// <summary>
@@ -78,13 +78,13 @@ namespace Fancyx.Admin.Entities.System
         /// <summary>
         /// 租户ID
         /// </summary>
-        [Column(IsNullable = true, StringLength = 18)]
+        [Column("tenant_id")]
         public string? TenantId { get; set; }
 
         /// <summary>
         /// 手机号码
         /// </summary>
-        [Column(StringLength = 11)]
+        [Column("phone")]
         public string? Phone { get; set; }
     }
 }
