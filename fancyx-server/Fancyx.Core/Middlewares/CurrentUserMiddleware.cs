@@ -24,7 +24,7 @@ namespace Fancyx.Core.Middlewares
             }
             string? userName = context.User.FindFirst(x => x.Type == ClaimTypes.Name)?.Value;
             context.Features.Set(new CurrentUser(Guid.Parse(subId), userName, context.User.Claims));
-            UserManager.SetCurrent(subId);
+            UserManager.SetCurrent(Guid.Parse(subId));
 
             await next(context);
         }

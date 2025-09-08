@@ -1,12 +1,16 @@
-﻿using Fancyx.Core.Authorization;
+﻿using System.Linq.Expressions;
+
+using Fancyx.Core.Authorization;
+using Fancyx.Core.Expressions;
 using Fancyx.Core.Interfaces;
+using Fancyx.DataAccess.BaseEntity;
 using Fancyx.DataAccess.Entities.Job;
 using Fancyx.DataAccess.Entities.Log;
 using Fancyx.DataAccess.Entities.Organization;
 using Fancyx.DataAccess.Entities.Payment;
 using Fancyx.DataAccess.Entities.System;
+
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace Fancyx.DataAccess
 {
@@ -14,52 +18,132 @@ namespace Fancyx.DataAccess
     {
         private static readonly Type _softDeleteType = typeof(IDeletionProperty);
         private static readonly Type _tenantType = typeof(ITenant);
+        private readonly ICurrentTenant _currentTenant;
 
-        public FancyxDbContext(DbContextOptions<FancyxDbContext> options) : base(options)
+        public FancyxDbContext(DbContextOptions<FancyxDbContext> options, ICurrentTenant currentTenant) : base(options)
         {
+            _currentTenant = currentTenant;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            ApplyQueryFilter(modelBuilder);
+            base.OnModelCreating(modelBuilder);
+            ApplyDataQueryFilter(modelBuilder);
         }
 
-        private static void ApplyQueryFilter(ModelBuilder modelBuilder)
+        public override int SaveChanges()
+        {
+            ApplyAuditValues();
+            return base.SaveChanges();
+        }
+
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        {
+            ApplyAuditValues();
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            ApplyAuditValues();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            ApplyAuditValues();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        /// <summary>
+        /// 应用审计值填充
+        /// </summary>
+        private void ApplyAuditValues()
+        {
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                var entity = entry.Entity;
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        if (entity is CreationEntity creationEntity)
+                        {
+                            if (creationEntity.CreationTime == default)
+                            {
+                                creationEntity.CreationTime = DateTime.Now;
+                            }
+
+                            creationEntity.CreatorId ??= UserManager.Current;
+                        }
+                        if (entity is ITenant entityWithTenant)
+                        {
+                            entityWithTenant.TenantId ??= TenantManager.Current;
+                        }
+                        break;
+
+                    case EntityState.Modified:
+                        if (entity is AuditedEntity auditedEntity)
+                        {
+                            auditedEntity.LastModificationTime ??= DateTime.Now;
+
+                            auditedEntity.LastModifierId ??= UserManager.Current;
+                        }
+                        break;
+
+                    case EntityState.Deleted:
+                        if (entity is FullAuditedEntity fullAuditedEntity)
+                        {
+                            fullAuditedEntity.IsDeleted = true;
+                            fullAuditedEntity.DeletionTime ??= DateTime.Now;
+
+                            fullAuditedEntity.DeleterId ??= UserManager.Current;
+                        }
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="modelBuilder"></param>
+        private void ApplyDataQueryFilter(ModelBuilder modelBuilder)
         {
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
-                LambdaExpression? combinedFilter = null;
+                LambdaExpression? lambda = null;
                 if (_softDeleteType.IsAssignableFrom(entityType.ClrType))
                 {
                     var parameter = Expression.Parameter(entityType.ClrType, "e");
                     var property = Expression.Property(parameter, nameof(IDeletionProperty.IsDeleted));
                     var condition = Expression.Equal(property, Expression.Constant(false));
-                    if (combinedFilter == null)
-                    {
-                        combinedFilter = Expression.Lambda(condition, parameter);
-                    }
-                    else
-                    {
-                        combinedFilter = Expression.And(combinedFilter, Expression.Lambda(condition, parameter)).Conversion;
-                    }
+                    lambda = Expression.Lambda(condition, parameter);
+                    modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
                 }
-                if (MultiTenancyConsts.IsEnabled && !string.IsNullOrEmpty(TenantManager.Current) && _tenantType.IsAssignableFrom(entityType.ClrType))
+                if (MultiTenancyConsts.IsEnabled && _tenantType.IsAssignableFrom(entityType.ClrType))
                 {
                     var parameter = Expression.Parameter(entityType.ClrType, "e");
                     var property = Expression.Property(parameter, nameof(ITenant.TenantId));
-                    var condition = Expression.Equal(property, Expression.Constant(TenantManager.Current));
-                    if (combinedFilter == null)
+                    var tenantProviderExpression = Expression.Call(Expression.Constant(this), typeof(FancyxDbContext).GetMethod(nameof(GetCurrentTenantId))!);
+                    var condition = Expression.Equal(property, tenantProviderExpression);
+                    lambda ??= Expression.Lambda(condition, parameter);
+                    if (lambda != null)
                     {
-                        combinedFilter = Expression.Lambda(condition, parameter);
-                    }
-                    else
-                    {
-                        combinedFilter = Expression.And(combinedFilter, Expression.Lambda(condition, parameter)).Conversion;
+                        var filter2 = Expression.Lambda(condition, parameter);
+                        var parameter1 = lambda.Parameters[0];
+                        lambda = Expression.Lambda(Expression.AndAlso(new SwapVisitor(parameter1, filter2.Parameters[0]).Visit(lambda.Body)!, filter2.Body), filter2.Parameters);
                     }
                 }
-                if (combinedFilter == null) continue;
-                modelBuilder.Entity(entityType.ClrType).HasQueryFilter(combinedFilter);
+                if (lambda != null)
+                {
+                    modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
+                }
             }
+        }
+
+        public string? GetCurrentTenantId()
+        {
+            return _currentTenant.TenantId;
         }
 
         public DbSet<ScheduledTask> ScheduledTask { get; set; }
@@ -75,6 +159,7 @@ namespace Fancyx.DataAccess
         public DbSet<PaymentOrder> PaymentOrder { get; set; }
         public DbSet<PayProvider> PayProvider { get; set; }
         public DbSet<Config> Config { get; set; }
+        public DbSet<Tenant> Tenant { get; set; }
         public DbSet<DictData> DictData { get; set; }
         public DbSet<DictType> DictType { get; set; }
         public DbSet<Menu> Menu { get; set; }

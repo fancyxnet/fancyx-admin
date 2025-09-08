@@ -37,7 +37,7 @@ namespace Fancyx.Core.Middlewares
                             return;
                         }
                     }
-                    context.Features.Set<ICurrentTenant>(new CurrentTenant(tenantId));
+                    context.Features.Set(new CurrentTenant(tenantId));
                     TenantManager.SetCurrent(tenantId);
                 }
 
