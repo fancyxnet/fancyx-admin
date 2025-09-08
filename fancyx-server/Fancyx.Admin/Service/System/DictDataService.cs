@@ -34,9 +34,7 @@ namespace Fancyx.Admin.Service.System
         [AsyncLogRecord(LogRecordConsts.SysDictData, LogRecordConsts.SysDictDataDeleteSubType, "{{ids}}", LogRecordConsts.SysDictDataDeleteContent)]
         public async Task<bool> DeleteDictDataAsync(Guid[] ids)
         {
-            var entity = await _dictRepository.GetAsync(x => ids.Contains(x.Id))
-                ?? throw new BusinessException("数据不存在");
-            await _dictRepository.DeleteAsync(entity);
+            await _dictRepository.DeleteAsync(x => ids.Contains(x.Id));
 
             LogRecordContext.PutVariable("ids", string.Join(',', ids));
 

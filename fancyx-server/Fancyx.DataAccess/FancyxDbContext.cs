@@ -16,7 +16,7 @@ namespace Fancyx.DataAccess
 {
     public class FancyxDbContext : DbContext
     {
-        private static readonly Type _softDeleteType = typeof(IDeletionProperty);
+        private static readonly Type _softDeleteType = typeof(FullAuditedEntity);
         private static readonly Type _tenantType = typeof(ITenant);
         private readonly ICurrentTenant _currentTenant;
 
@@ -115,7 +115,7 @@ namespace Fancyx.DataAccess
                 if (_softDeleteType.IsAssignableFrom(entityType.ClrType))
                 {
                     var parameter = Expression.Parameter(entityType.ClrType, "e");
-                    var property = Expression.Property(parameter, nameof(IDeletionProperty.IsDeleted));
+                    var property = Expression.Property(parameter, nameof(FullAuditedEntity.IsDeleted));
                     var condition = Expression.Equal(property, Expression.Constant(false));
                     lambda = Expression.Lambda(condition, parameter);
                     modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);

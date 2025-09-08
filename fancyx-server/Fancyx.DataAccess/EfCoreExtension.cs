@@ -1,6 +1,9 @@
-﻿using Fancyx.DataAccess.Models;
+﻿using System.Linq.Expressions;
+
+using Fancyx.DataAccess.BaseEntity;
+using Fancyx.DataAccess.Models;
+
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace Fancyx.DataAccess
 {
@@ -29,6 +32,14 @@ namespace Fancyx.DataAccess
                 Total = await query.AsNoTracking().CountAsync(),
                 Items = await query.AsNoTracking().Skip((current - 1) * pageSize).Take(pageSize).ToListAsync()
             };
+        }
+
+        public static Task SoftDeleteAsync<TEntity>(this IQueryable<TEntity> entities, Guid? userId) where TEntity : FullAuditedEntity
+        {
+            var now = DateTime.Now;
+            return entities.ExecuteUpdateAsync(e => e.SetProperty(s => s.IsDeleted, true)
+                .SetProperty(s => s.DeletionTime, now)
+                .SetProperty(s => s.DeleterId, userId));
         }
     }
 }

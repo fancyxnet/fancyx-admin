@@ -3,8 +3,11 @@ using Fancyx.DataAccess;
 using Fancyx.DataAccess.Entities.Payment;
 using Fancyx.DataAccess.Enums;
 using Fancyx.Job;
+
 using Microsoft.EntityFrameworkCore;
+
 using Quartz;
+
 using RedLockNet.SERedis;
 
 namespace Fancyx.Payment.Jobs
@@ -34,7 +37,8 @@ namespace Fancyx.Payment.Jobs
             var now = DateTime.Now;
             await _paymentOrderRepository.Where(x => now >= x.InitiationTime.AddMinutes(15) && x.PayStatus == PayStatus.Processing.GetStatus())
                 .ExecuteUpdateAsync(x => x.SetProperty(s => s.PayStatus, PayStatus.Timeout.GetStatus())
-                .SetProperty(s => s.TimeoutTime, now));
+                .SetProperty(s => s.TimeoutTime, now)
+                .SetProperty(s => s.LastModificationTime, now));
         }
     }
 }

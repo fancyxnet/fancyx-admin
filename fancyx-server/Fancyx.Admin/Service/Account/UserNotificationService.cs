@@ -57,7 +57,10 @@ namespace Fancyx.Admin.Service.Account
         {
             var now = DateTime.Now;
             await _repository.Where(x => x.UserId == _currentUser.Id && ids.Contains(x.Id))
-                .ExecuteUpdateAsync(x => x.SetProperty(f => f.IsReaded, true).SetProperty(f => f.ReadedTime, now));
+                .ExecuteUpdateAsync(x => x.SetProperty(f => f.IsReaded, true)
+                .SetProperty(f => f.ReadedTime, now)
+                .SetProperty(f => f.LastModifierId, _currentUser.Id)
+                .SetProperty(f => f.LastModificationTime, now));
         }
     }
 }

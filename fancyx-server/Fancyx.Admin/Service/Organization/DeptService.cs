@@ -1,6 +1,7 @@
 using Fancyx.Admin.IService.Organization;
 using Fancyx.Admin.IService.Organization.Dtos;
 using Fancyx.Core.Helpers;
+using Fancyx.Core.Interfaces;
 using Fancyx.DataAccess;
 using Fancyx.DataAccess.Entities.Organization;
 using Fancyx.DataAccess.Entities.System;
@@ -13,11 +14,13 @@ namespace Fancyx.Admin.Service.Organization
     {
         private readonly IRepository<Dept> _deptRepository;
         private readonly IRepository<User> _userRepository;
+        private readonly ICurrentUser _currentUser;
 
-        public DeptService(IRepository<Dept> deptRepository, IRepository<User> userRepository)
+        public DeptService(IRepository<Dept> deptRepository, IRepository<User> userRepository, ICurrentUser currentUser)
         {
             _deptRepository = deptRepository;
             _userRepository = userRepository;
+            _currentUser = currentUser;
         }
 
         public async Task<bool> AddDeptAsync(DeptDto dto)
@@ -60,7 +63,7 @@ namespace Fancyx.Admin.Service.Organization
 
             var hasEmployees = await _userRepository.AnyAsync(x => x.DeptId == id);
             if (hasEmployees) throw new BusinessException(message: "部门下存在用户，不能删除");
-            await _deptRepository.DeleteAsync(x => id == x.Id);
+            await _deptRepository.Where(x => id == x.Id).SoftDeleteAsync(_currentUser.Id);
             return true;
         }
 
@@ -111,7 +114,7 @@ namespace Fancyx.Admin.Service.Organization
         {
             if (!dto.Id.HasValue) throw new ArgumentNullException(nameof(dto.Id));
 
-            var entity = await _deptRepository.Where(x => x.Id == dto.Id).FirstAsync();
+            var entity = await _deptRepository.GetAsync(x => x.Id == dto.Id) ?? throw new EntityNotFoundException();
             if (!entity.Code.Equals(dto.Code, StringComparison.CurrentCultureIgnoreCase) &&
                 await _deptRepository.AnyAsync(x => x.Code.ToLower() == dto.Code!.ToLower()))
             {

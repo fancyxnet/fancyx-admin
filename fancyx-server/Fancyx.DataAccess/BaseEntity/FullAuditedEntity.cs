@@ -2,7 +2,7 @@
 
 namespace Fancyx.DataAccess.BaseEntity
 {
-    public abstract class FullAuditedEntity : AuditedEntity, IDeletionProperty
+    public abstract class FullAuditedEntity : AuditedEntity
     {
         [Column("is_deleted")]
         public bool IsDeleted { get; set; } = false;

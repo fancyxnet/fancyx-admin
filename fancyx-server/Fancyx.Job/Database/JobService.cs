@@ -1,12 +1,16 @@
-﻿using Fancyx.Core.AutoInject;
+﻿using System.Reflection;
+
+using Fancyx.Core.AutoInject;
+using Fancyx.Core.Interfaces;
 using Fancyx.DataAccess;
+using Fancyx.DataAccess.Aop;
 using Fancyx.DataAccess.Entities.Job;
 using Fancyx.Job.Database.Models;
-using Fancyx.DataAccess.Aop;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+
 using Quartz;
-using System.Reflection;
 
 namespace Fancyx.Job.Database
 {
@@ -17,13 +21,16 @@ namespace Fancyx.Job.Database
         private readonly IRepository<TaskExecutionLog> _taskExecutionLogRepository;
         private readonly IScheduler _scheduler;
         private readonly IMemoryCache _memoryCache;
+        private readonly ICurrentUser _currentUser;
 
-        public JobService(IRepository<ScheduledTask> scheduledTaskRepository, IRepository<TaskExecutionLog> taskExecutionLogRepository, IScheduler scheduler, IMemoryCache memoryCache)
+        public JobService(IRepository<ScheduledTask> scheduledTaskRepository, IRepository<TaskExecutionLog> taskExecutionLogRepository
+            , IScheduler scheduler, IMemoryCache memoryCache, ICurrentUser currentUser)
         {
             _scheduledTaskRepository = scheduledTaskRepository;
             _taskExecutionLogRepository = taskExecutionLogRepository;
             _scheduler = scheduler;
             _memoryCache = memoryCache;
+            _currentUser = currentUser;
         }
 
         public async Task AddJobAsync(string key, string cron, string? description, bool isActive = false)
@@ -73,7 +80,9 @@ namespace Fancyx.Job.Database
                 .ExecuteUpdateAsync(e => e.SetProperty(x => x.TaskKey, key)
                 .SetProperty(x => x.CronExpression, cron)
                 .SetProperty(x => x.IsActive, isActive)
-                .SetProperty(x => x.Description, description));
+                .SetProperty(x => x.Description, description)
+                .SetProperty(x => x.LastModificationTime, DateTime.Now)
+                .SetProperty(x => x.LastModifierId, _currentUser.Id));
         }
 
         [AsyncTransactional]
