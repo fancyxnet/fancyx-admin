@@ -27,6 +27,8 @@ namespace Fancyx.DataAccess
 
         Task<int> UpdateAsync(T entity);
 
+        Task<int> UpdateManyAsync(List<T> entities);
+
         Task<int> DeleteAsync(Expression<Func<T, bool>> whereExpression);
 
         Task<int> DeleteAsync(T entity);

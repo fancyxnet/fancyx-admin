@@ -91,6 +91,26 @@ namespace Fancyx.DataAccess
             return _context.SaveChangesAsync();
         }
 
+        public async Task<int> UpdateManyAsync(List<T> entities)
+        {
+            if (entities.Count > 500)
+            {
+                var now = DateTime.Now;
+                foreach (var entity in entities)
+                {
+                    if (entity is AuditedEntity value)
+                    {
+                        value.LastModifierId ??= _currentUser.Id;
+                        if (value.LastModificationTime == default) value.LastModificationTime = now;
+                    }
+                }
+                await _context.Set<T>().BulkUpdateAsync(entities);
+                return entities.Count;
+            }
+            _context.Set<T>().UpdateRange(entities);
+            return await _context.SaveChangesAsync();
+        }
+
         public IQueryable<T> Where(Expression<Func<T, bool>> whereExpression)
         {
             return _context.Set<T>().Where(whereExpression);
