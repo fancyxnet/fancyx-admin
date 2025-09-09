@@ -165,8 +165,6 @@ namespace Fancyx.Admin
                 });
             }
 
-            //TODO: 生产环境可以去掉
-            app.UseMiddleware<DemonstrationModeMiddleware>();
             app.UseStaticFiles();
 
             context.Endpoint.MapConnectionHandler<MqttConnectionHandler>(

@@ -3,15 +3,19 @@ using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.DataAccess;
 using Fancyx.DataAccess.Entities.System;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace Fancyx.Admin.Service.System
 {
     public class NotificationService : INotificationService
     {
         private readonly IRepository<Notification> _repository;
+        private readonly IRepository<User> _userRepository;
 
-        public NotificationService(IRepository<Notification> repository)
+        public NotificationService(IRepository<Notification> repository, IRepository<User> userRepository)
         {
             _repository = repository;
+            _userRepository = userRepository;
         }
 
         public Task AddNotificationAsync(NotificationDto dto)
@@ -20,7 +24,7 @@ namespace Fancyx.Admin.Service.System
             {
                 Title = dto.Title,
                 Content = dto.Content,
-                UserId = dto.EmployeeId,
+                UserId = dto.UserId,
                 IsReaded = false
             };
             return _repository.InsertAsync(entity);
@@ -33,26 +37,23 @@ namespace Fancyx.Admin.Service.System
 
         public async Task<PagedResult<NotificationResultDto>> GetNotificationListAsync(NotificationQueryDto dto)
         {
-            // TODO:
-            throw new NotImplementedException();
-            //var list = await _repository.Select.From<EmployeeDO>().LeftJoin((n, e) => n.UserId == e.Id)
-            //    .WhereIf(!string.IsNullOrEmpty(dto.Title), (x, e) => x.Title!.Contains(x.Title))
-            //    .WhereIf(dto.IsReaded.HasValue, (x, e) => x.IsReaded == dto.IsReaded)
-            //    .OrderByDescending((x, e) => x.CreationTime)
-            //    .Count(out var total)
-            //    .Page(dto.Current, dto.PageSize)
-            //    .ToListAsync((n, e) => new NotificationResultDto
-            //    {
-            //        Id = n.Id,
-            //        Title = n.Title,
-            //        Content = n.Content,
-            //        UserId = n.UserId,
-            //        IsReaded = n.IsReaded,
-            //        CreationTime = n.CreationTime,
-            //        ReadedTime = n.ReadedTime,
-            //        EmployeeName = e.Name
-            //    });
-            //return new PagedResult<NotificationResultDto>(dto, total, list);
+            var resp = await _repository.GetQueryable().Join(_userRepository.GetQueryable().AsNoTracking(), n => n.UserId, u => u.Id, (n, u) =>
+                new NotificationResultDto
+                {
+                    Id = n.Id,
+                    Title = n.Title,
+                    Content = n.Content,
+                    UserId = n.UserId,
+                    IsReaded = n.IsReaded,
+                    CreationTime = n.CreationTime,
+                    ReadedTime = n.ReadedTime,
+                    NickName = u.NickName
+                })
+                .WhereIf(!string.IsNullOrEmpty(dto.Title), u => u.Title!.Contains(u.Title))
+                .WhereIf(dto.IsReaded.HasValue, u => u.IsReaded == dto.IsReaded)
+                .OrderByDescending(u => u.CreationTime)
+                .PagedAsync(dto.Current, dto.PageSize);
+            return new PagedResult<NotificationResultDto>(dto, resp.Total, resp.Items);
         }
 
         public async Task UpdateNotificationAsync(NotificationDto dto)
@@ -64,7 +65,7 @@ namespace Fancyx.Admin.Service.System
             }
             entity.Title = dto.Title;
             entity.Content = dto.Content;
-            entity.UserId = dto.EmployeeId;
+            entity.UserId = dto.UserId;
             await _repository.UpdateAsync(entity);
         }
     }

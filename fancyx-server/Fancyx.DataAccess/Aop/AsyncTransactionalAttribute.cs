@@ -1,5 +1,7 @@
 ﻿using Fancyx.Core.AutoInject;
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Fancyx.DataAccess.Aop
 {
     /// <summary>
@@ -7,33 +9,37 @@ namespace Fancyx.DataAccess.Aop
     /// </summary>
     public class AsyncTransactionalAttribute : AsyncAopAttributeBase
     {
-        //public Propagation Propagation { get; set; } = Propagation.Required;
-        //public IsolationLevel IsolationLevel => IsolationLevel.ReadCommitted;
-        //private IUnitOfWork? _uow;
+        private IUnitOfWork? _uow;
 
         public AsyncTransactionalAttribute() : base(true)
         {
         }
 
-        public override Task OnAfterAsync()
+        public override async Task OnAfterAsync()
         {
-            //_uow?.Commit();
-            //_uow?.Dispose();
-            return Task.CompletedTask;
+            if (_uow != null)
+            {
+                await _uow.CommitAsync();
+                await _uow.DisposeAsync();
+            }
         }
 
-        public override Task OnBeforeAsync()
+        public override async Task OnBeforeAsync()
         {
-            //var unitOfWorkManager = ServiceProvider.GetService<UnitOfWorkManager>();
-            //_uow = unitOfWorkManager?.Begin(Propagation, this.IsolationLevel);
-            return Task.CompletedTask;
+            var unitOfWorkManager = ServiceProvider.GetService<IUnitOfWorkManager>();
+            if (unitOfWorkManager != null)
+            {
+                _uow = await unitOfWorkManager.BeginAsync();
+            }
         }
 
-        public override Task OnExceptionAsync()
+        public override async Task OnExceptionAsync()
         {
-            //_uow?.Rollback();
-            //_uow?.Dispose();
-            return Task.CompletedTask;
+            if(_uow != null)
+            {
+                await _uow.RollbackAsync();
+                await _uow.DisposeAsync();
+            }
         }
     }
 }

@@ -30,10 +30,10 @@ export function updateScheduledTask(dto: ScheduledTaskDto) {
 
 /**
  * 删除定时任务
- * @param id
+ * @param key
  */
-export function deleteScheduledTask(id: string) {
-  return httpClient.delete<string, AppResponse<boolean>>(`/api/scheduledTask/delete/${id}`);
+export function deleteScheduledTask(key: string) {
+  return httpClient.delete<string, AppResponse<boolean>>(`/api/scheduledTask/delete?key=${key}`);
 }
 
 /**

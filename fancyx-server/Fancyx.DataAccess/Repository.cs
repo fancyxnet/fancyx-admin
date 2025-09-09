@@ -13,6 +13,7 @@ namespace Fancyx.DataAccess
         private readonly ICurrentUser _currentUser;
         private static readonly Type _fullAuditedEntityType = typeof(FullAuditedEntity);
         private static readonly Type _efCoreExtensionType = typeof(EfCoreExtension);
+        private static Type _currentType = typeof(T);
 
         public Repository(FancyxDbContext context, ICurrentUser currentUser)
         {
@@ -33,17 +34,17 @@ namespace Fancyx.DataAccess
         public async Task<int> DeleteAsync(Expression<Func<T, bool>> whereExpression)
         {
             var query = _context.Set<T>().AsNoTracking().Where(whereExpression);
-            if (_fullAuditedEntityType.IsAssignableFrom(typeof(T)))
+            if (_fullAuditedEntityType.IsAssignableFrom(_currentType))
             {
                 var softDeleteMethod = _efCoreExtensionType.GetMethod(nameof(EfCoreExtension.SoftDeleteAsync), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
                 if(softDeleteMethod != null)
                 {
-                    var count = await query.CountAsync();
-                    var task = (Task?)softDeleteMethod.Invoke(null, [query]);
+                    softDeleteMethod = softDeleteMethod.MakeGenericMethod(_currentType);
+                    var task = (Task?)softDeleteMethod.Invoke(null, [query, _currentUser.Id]);
                     if (task != null)
                     {
                         await task;
-                        return count;
+                        return -1;
                     }
                 }
             }

@@ -43,7 +43,6 @@ namespace Fancyx.DataAccess.Entities.System
         /// <summary>
         /// 已读时间
         /// </summary>
-        [Required]
         [Column("readed_time")]
         public DateTime? ReadedTime { get; set; }
 

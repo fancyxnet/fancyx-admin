@@ -23,8 +23,8 @@ const NotificationList: React.FC = () => {
       dataIndex: 'title',
     },
     {
-      title: '通知员工',
-      dataIndex: 'employeeName',
+      title: '通知用户',
+      dataIndex: 'nickName',
     },
     {
       title: '通知内容',

@@ -84,8 +84,8 @@
         /// <summary>
         /// 部门权限KEY
         /// </summary>
-        /// <param name="employeeId"></param>
+        /// <param name="UserId"></param>
         /// <returns></returns>
-        public static string EmployeeDeptPower(Guid employeeId) => WithTenantPrefix($"employee_dept_power:{employeeId}");
+        public static string EmployeeDeptPower(Guid UserId) => WithTenantPrefix($"employee_dept_power:{UserId}");
     }
 }

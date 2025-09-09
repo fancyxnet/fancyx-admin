@@ -197,13 +197,13 @@ namespace Fancyx.Admin.SharedService
         /// 获取当前用户部门数据权限
         /// </summary>
         /// <returns></returns>
-        private async Task<(List<Guid> deptIds, List<Guid> employeeIds)> GetCurrentUserDeptPowerAsync()
+        private async Task<(List<Guid> deptIds, List<Guid> UserIds)> GetCurrentUserDeptPowerAsync()
         {
             if (!_currentUser.Id.HasValue) return ([], []);
 
             var key = SystemCacheKey.EmployeeDeptPower(_currentUser.Id.Value);
             var cacheData = await _hybridCache.GetAsync<DeptPowerData>(key);
-            if (cacheData != null) return (cacheData.DeptIds, cacheData.EmployeeIds);
+            if (cacheData != null) return (cacheData.DeptIds, cacheData.UserIds);
 
             var userPermission = await this.GetUserPermissionAsync(_currentUser.Id.Value!);
             if (userPermission.RoleIds == null || userPermission.RoleIds.Length == 0) return ([], []);
@@ -211,7 +211,7 @@ namespace Fancyx.Admin.SharedService
             if (powerTypes == null || powerTypes.Count == 0) return ([], []);
 
             var deptIds = new List<Guid>();
-            var employeeIds = new List<Guid>();
+            var UserIds = new List<Guid>();
             Guid? curDeptId = Guid.TryParse(_currentUser.FindClaim(AdminConsts.DeptId).Value, out var _deptId) ? _deptId : null;
             foreach (var powerType in powerTypes)
             {
@@ -220,7 +220,7 @@ namespace Fancyx.Admin.SharedService
                     //所有部门
                     deptIds.AddRange(await _deptRepository.GetQueryable().SelectToListAsync(x => x.Id));
                     //所有员工
-                    employeeIds.AddRange(await _userRepository.GetQueryable().SelectToListAsync(x => x.Id));
+                    UserIds.AddRange(await _userRepository.GetQueryable().SelectToListAsync(x => x.Id));
                     break;
                 }
                 switch (powerType)
@@ -248,20 +248,20 @@ namespace Fancyx.Admin.SharedService
                         break;
 
                     case DeptPowerType.OnlyMe:
-                        employeeIds.Add(_currentUser.Id.Value);
+                        UserIds.Add(_currentUser.Id.Value);
                         break;
                 }
             }
             if (deptIds.Count > 0)
             {
-                var findEmployeeIds = await _userRepository.Where(x => x.DeptId != null && deptIds.Contains(x.DeptId.Value)).SelectToListAsync(x => x.Id);
-                employeeIds.AddRange(findEmployeeIds);
+                var findUserIds = await _userRepository.Where(x => x.DeptId != null && deptIds.Contains(x.DeptId.Value)).SelectToListAsync(x => x.Id);
+                UserIds.AddRange(findUserIds);
             }
             deptIds = deptIds.Distinct().ToList();
-            employeeIds = employeeIds.Distinct().ToList();
+            UserIds = UserIds.Distinct().ToList();
 
-            await _hybridCache.SetAsync(key, new DeptPowerData { DeptIds = deptIds, EmployeeIds = employeeIds });
-            return (deptIds, employeeIds);
+            await _hybridCache.SetAsync(key, new DeptPowerData { DeptIds = deptIds, UserIds = UserIds });
+            return (deptIds, UserIds);
         }
 
         /// <summary>

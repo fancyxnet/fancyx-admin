@@ -14,6 +14,6 @@ namespace Fancyx.Shared.Models
         /// 员工ID
         /// </summary>
         [NotNull]
-        public List<Guid>? EmployeeIds { get; set; }
+        public List<Guid>? UserIds { get; set; }
     }
 }

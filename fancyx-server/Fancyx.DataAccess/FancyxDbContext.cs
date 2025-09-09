@@ -82,9 +82,8 @@ namespace Fancyx.DataAccess
                     case EntityState.Modified:
                         if (entity is AuditedEntity auditedEntity)
                         {
-                            auditedEntity.LastModificationTime ??= DateTime.Now;
-
-                            auditedEntity.LastModifierId ??= UserManager.Current;
+                            auditedEntity.LastModificationTime = DateTime.Now;
+                            auditedEntity.LastModifierId = UserManager.Current;
                         }
                         break;
 
@@ -92,9 +91,8 @@ namespace Fancyx.DataAccess
                         if (entity is FullAuditedEntity fullAuditedEntity)
                         {
                             fullAuditedEntity.IsDeleted = true;
-                            fullAuditedEntity.DeletionTime ??= DateTime.Now;
-
-                            fullAuditedEntity.DeleterId ??= UserManager.Current;
+                            fullAuditedEntity.DeletionTime = DateTime.Now;
+                            fullAuditedEntity.DeleterId = UserManager.Current;
                         }
                         break;
                 }

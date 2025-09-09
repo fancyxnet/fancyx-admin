@@ -26,6 +26,6 @@ namespace Fancyx.Admin.IService.System.Dtos
         /// </summary>
         [NotNull]
         [Required]
-        public Guid EmployeeId { get; set; }
+        public Guid UserId { get; set; }
     }
 }

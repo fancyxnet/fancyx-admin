@@ -3,7 +3,6 @@
 using Fancyx.Core.AutoInject;
 using Fancyx.Core.Interfaces;
 using Fancyx.DataAccess;
-using Fancyx.DataAccess.Aop;
 using Fancyx.DataAccess.Entities.Job;
 using Fancyx.Job.Database.Models;
 
@@ -22,15 +21,17 @@ namespace Fancyx.Job.Database
         private readonly IScheduler _scheduler;
         private readonly IMemoryCache _memoryCache;
         private readonly ICurrentUser _currentUser;
+        private readonly IUnitOfWorkManager _unitOfWorkManager;
 
         public JobService(IRepository<ScheduledTask> scheduledTaskRepository, IRepository<TaskExecutionLog> taskExecutionLogRepository
-            , IScheduler scheduler, IMemoryCache memoryCache, ICurrentUser currentUser)
+            , IScheduler scheduler, IMemoryCache memoryCache, ICurrentUser currentUser, IUnitOfWorkManager unitOfWorkManager)
         {
             _scheduledTaskRepository = scheduledTaskRepository;
             _taskExecutionLogRepository = taskExecutionLogRepository;
             _scheduler = scheduler;
             _memoryCache = memoryCache;
             _currentUser = currentUser;
+            _unitOfWorkManager = unitOfWorkManager;
         }
 
         public async Task AddJobAsync(string key, string cron, string? description, bool isActive = false)
@@ -85,16 +86,25 @@ namespace Fancyx.Job.Database
                 .SetProperty(x => x.LastModifierId, _currentUser.Id));
         }
 
-        [AsyncTransactional]
         public async Task DeleteJobAsync(string key)
         {
-            await _taskExecutionLogRepository.DeleteAsync(x => x.TaskKey == key);
-            await _scheduledTaskRepository.DeleteAsync(x => x.TaskKey == key);
+            using var uow = await _unitOfWorkManager.BeginAsync();
+            try
+            {
+                await _taskExecutionLogRepository.DeleteAsync(x => x.TaskKey == key);
+                await _scheduledTaskRepository.DeleteAsync(x => x.TaskKey == key);
 
-            var jobMap = this.GetJobInfos();
-            if (!jobMap.TryGetValue(key, out var taskType)) return;
+                var jobMap = this.GetJobInfos();
+                if (!jobMap.TryGetValue(key, out var taskType)) return;
 
-            await _scheduler.DeleteJob(new JobKey(JobKeyUtils.GetJobKey(key)));
+                await _scheduler.DeleteJob(new JobKey(JobKeyUtils.GetJobKey(key)));
+                await uow.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await uow.RollbackAsync();
+                throw;
+            }
         }
 
         public Task<List<ScheduledTaskInfo>> GetScheduledTaskInfos()

@@ -17,7 +17,7 @@
         /// <summary>
         /// 通知员工
         /// </summary>
-        public Guid EmployeeId { get; set; }
+        public Guid UserId { get; set; }
 
         /// <summary>
         /// 是否已读(1已读0未读)
@@ -34,6 +34,6 @@
         /// <summary>
         /// 员工名称
         /// </summary>
-        public string? EmployeeName { get; set; }
+        public string? NickName { get; set; }
     }
 }

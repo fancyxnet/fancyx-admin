@@ -1,10 +1,10 @@
-import { Form, Input, Modal, TreeSelect } from 'antd';
+import { Form, Input, Modal, Select } from 'antd';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import type { AppResponse } from '@/types/api';
 import { addNotification, type NotificationDto, updateNotification } from '@/api/organization/notification.ts';
 import useApp from 'antd/es/app/useApp';
-import { getDeptEmployeeTree, type DeptEmployeeTreeDto } from '@/api/organization/employee.ts';
 import TextArea from 'antd/es/input/TextArea';
+import { getUserSimpleInfos, type UserSimpleInfoDto } from '@/api/system/user';
 
 interface ModalProps {
   refresh?: () => void;
@@ -19,7 +19,7 @@ const NotificationForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
   const [form] = Form.useForm();
   const [row, setRow] = useState<NotificationDto | null>();
   const { message } = useApp();
-  const [treeData, setTreeData] = useState<DeptEmployeeTreeDto[]>([]);
+  const [userOptions, setUserOptions] = useState<UserSimpleInfoDto[]>([]);
 
   useImperativeHandle(ref, () => ({
     openModal,
@@ -31,9 +31,9 @@ const NotificationForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
     }
   }, [isOpenModal]);
 
-  const fetchTreeData = (employeeName?: string) => {
-    getDeptEmployeeTree({ employeeName: employeeName }).then((res) => {
-      setTreeData(res.data!);
+  const fetchTreeData = (keyword?: string) => {
+    getUserSimpleInfos(keyword).then((res) => {
+      setUserOptions(res.data!);
     });
   };
 
@@ -95,20 +95,12 @@ const NotificationForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
         <Form.Item label="通知标题" name="title" rules={[{ required: true }, { max: 100 }]}>
           <Input placeholder="请输入通知标题" />
         </Form.Item>
-        <Form.Item label="通知员工" name="employeeId" rules={[{ required: true }, { max: 500 }]}>
-          <TreeSelect
+        <Form.Item label="通知用户" name="userId" rules={[{ required: true }, { max: 500 }]}>
+          <Select
+            placeholder="请选择通知用户"
             showSearch
             style={{ width: '100%' }}
-            styles={{
-              popup: {
-                root: { maxHeight: 400, overflow: 'auto' },
-              },
-            }}
-            placeholder="请选择通知员工"
-            allowClear
-            treeDefaultExpandAll
-            treeData={treeData}
-            filterTreeNode={false}
+            options={userOptions.map((x) => ({ label: x.nickName, value: x.id }))}
             onSearch={(value) => {
               fetchTreeData(value ? value : undefined);
             }}

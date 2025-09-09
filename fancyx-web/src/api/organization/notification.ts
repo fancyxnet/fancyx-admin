@@ -41,18 +41,18 @@ export interface NotificationDto {
   id?: string;
   title: string;
   content: string | null;
-  employeeId: string;
+  userId: string;
 }
 
 export interface NotificationListDto {
   id: string;
   title: string;
   content: string | null;
-  employeeId: string;
+  userId: string;
   isReaded: boolean;
   creationTime: string;
   readedTime: string;
-  employeeName: string;
+  nickName: string;
 }
 
 export interface NotificationQueryDto extends PageSearch {

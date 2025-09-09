@@ -4,6 +4,8 @@ using Fancyx.Core.Helpers;
 using Fancyx.DataAccess;
 using Fancyx.DataAccess.Entities.Organization;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace Fancyx.Admin.Service.Organization
 {
     public class PositionGroupService : IPositionGroupService
@@ -59,14 +61,12 @@ namespace Fancyx.Admin.Service.Organization
 
         public async Task<List<PositionGroupListDto>> GetPositionGroupListAsync(PositionGroupQueryDto dto)
         {
-            //var rawTree = await _positionGroupRepository.GetQueryable()
-            //    .WhereIf(!string.IsNullOrEmpty(dto.GroupName), x => x.GroupName.Contains(dto.GroupName!))
-            //    .OrderBy(x => x.Sort)
-            //    .ToTreeListAsync();
+            var rawTree = await _positionGroupRepository.GetQueryable()
+                .WhereIf(!string.IsNullOrEmpty(dto.GroupName), x => x.GroupName.Contains(dto.GroupName!))
+                .OrderBy(x => x.Sort)
+                .ToListAsync();
 
-            //return AutoMapperHelper.Instance.Map<List<PositionGroupDO>, List<PositionGroupListDto>>(rawTree);
-            // TODO:
-            throw new Exception();
+            return AutoMapperHelper.Instance.Map<List<PositionGroup>, List<PositionGroupListDto>>(rawTree);
         }
 
         public async Task<bool> UpdatePositionGroupAsync(PositionGroupDto dto)

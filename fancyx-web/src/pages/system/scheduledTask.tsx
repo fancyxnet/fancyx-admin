@@ -85,7 +85,7 @@ const ScheduledTaskList: React.FC = () => {
               title="确定删除吗？"
               description="删除后无法撤销"
               onConfirm={() => {
-                deleteScheduledTask(record.id!).then(() => {
+                deleteScheduledTask(record.taskKey!).then(() => {
                   message.success('删除成功');
                   tableRef.current?.reload();
                 });
