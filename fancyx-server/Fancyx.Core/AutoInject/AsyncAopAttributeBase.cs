@@ -1,5 +1,9 @@
 ﻿namespace Fancyx.Core.AutoInject
 {
+    /// <summary>
+    /// 异步AOP
+    /// 如果一个类同时被接口、本身服务注册，此特性将不生效
+    /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
     public abstract class AsyncAopAttributeBase : Attribute
     {

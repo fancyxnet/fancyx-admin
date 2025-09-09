@@ -10,7 +10,7 @@ namespace Fancyx.DataAccess.Entities.System
     /// <summary>
     /// 菜单表
     /// </summary>
-    [Table("sys_menu")]
+    [Table("menu")]
     public class Menu : AuditedEntity, ITenant
     {
         /// <summary>

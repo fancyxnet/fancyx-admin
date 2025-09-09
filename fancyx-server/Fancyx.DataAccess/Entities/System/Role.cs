@@ -10,7 +10,7 @@ namespace Fancyx.DataAccess.Entities.System
     /// <summary>
     /// 角色表
     /// </summary>
-    [Table("sys_role")]
+    [Table("role")]
     public class Role : FullAuditedEntity, ITenant
     {
         /// <summary>

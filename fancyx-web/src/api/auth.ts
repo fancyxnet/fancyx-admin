@@ -99,7 +99,6 @@ interface UserInfoDto {
   avatar: string;
   nickName: string;
   sex: number;
-  employeeId?: string | null;
   phone?: string | null;
 }
 

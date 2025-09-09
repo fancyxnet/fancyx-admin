@@ -9,7 +9,7 @@ namespace Fancyx.DataAccess.Entities.System
     /// <summary>
     /// 系统配置
     /// </summary>
-    [Table("sys_config")]
+    [Table("config")]
     public class Config : AuditedEntity, ITenant
     {
         /// <summary>

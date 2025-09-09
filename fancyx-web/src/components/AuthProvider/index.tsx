@@ -60,7 +60,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         sex: authInfo.user.sex,
         menus: authInfo.menus,
         permissions: authInfo.permissions,
-        employeeId: authInfo.user.employeeId,
         phone: authInfo.user.phone,
       };
       UserStore.setUserInfo(_authInfo);

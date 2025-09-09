@@ -7,7 +7,7 @@ namespace Fancyx.DataAccess.Entities.System
     /// <summary>
     /// 角色菜单表
     /// </summary>
-    [Table("sys_role_menu")]
+    [Table("role_menu")]
     public class RoleMenu : Entity, ITenant
     {
         /// <summary>

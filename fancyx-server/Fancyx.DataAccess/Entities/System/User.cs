@@ -11,7 +11,7 @@ namespace Fancyx.DataAccess.Entities.System
     /// <summary>
     /// 用户表
     /// </summary>
-    [Table("sys_user")]
+    [Table("user")]
     public class User : FullAuditedEntity, ITenant
     {
         /// <summary>

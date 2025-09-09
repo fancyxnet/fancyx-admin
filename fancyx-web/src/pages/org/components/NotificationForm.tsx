@@ -27,11 +27,11 @@ const NotificationForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
 
   useEffect(() => {
     if (isOpenModal) {
-      fetchTreeData();
+      fetchUserOptions();
     }
   }, [isOpenModal]);
 
-  const fetchTreeData = (keyword?: string) => {
+  const fetchUserOptions = (keyword?: string) => {
     getUserSimpleInfos(keyword).then((res) => {
       setUserOptions(res.data!);
     });
@@ -102,7 +102,7 @@ const NotificationForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
             style={{ width: '100%' }}
             options={userOptions.map((x) => ({ label: x.nickName, value: x.id }))}
             onSearch={(value) => {
-              fetchTreeData(value ? value : undefined);
+              fetchUserOptions(value ? value : undefined);
             }}
           />
         </Form.Item>

@@ -9,7 +9,7 @@ namespace Fancyx.DataAccess.Entities.Log
     /// <summary>
     /// 登录日志
     /// </summary>
-    [Table("sys_login_log")]
+    [Table("login_log")]
     public class LoginLog : CreationEntity, ITenant
     {
         /// <summary>

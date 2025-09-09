@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fancyx.DataAccess.Entities.System
 {
-    [Table("sys_role_dept")]
+    [Table("role_dept")]
     public class RoleDept : Entity, ITenant
     {
         /// <summary>

@@ -6,7 +6,7 @@ using Fancyx.DataAccess.BaseEntity;
 
 namespace Fancyx.DataAccess.Entities.System
 {
-    [Table("sys_notification")]
+    [Table("notification")]
     public class Notification : AuditedEntity, ITenant
     {
         /// <summary>

@@ -1,9 +1,9 @@
-import { Form, Input, InputNumber, Modal, Switch, TreeSelect, Select } from 'antd'; // ++
+import { Form, Input, InputNumber, Modal, Switch, TreeSelect, Select } from 'antd';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { addDept, getDeptList, type DeptDto, type DeptListDto, updateDept } from '@/api/organization/dept';
 import type { AppResponse } from '@/types/api';
 import useApp from 'antd/es/app/useApp';
-import { getEmployeeList } from '@/api/organization/employee.ts'; // ++
+import { getUserSimpleInfos, type UserSimpleInfoDto } from '@/api/system/user';
 
 interface ModalProps {
   refresh?: () => void;
@@ -19,32 +19,22 @@ const DeptForm = forwardRef<DeptModalRef, ModalProps>((props, ref) => {
   const [row, setRow] = useState<DeptDto | null>();
   const [treeData, setTreeData] = useState<DeptListDto[]>([]);
   const { message } = useApp();
-  const [deptEmployeeOptions, setDeptEmployeeOptions] = useState<{ label: string; value: string }[]>(); // ++
+  const [userOptions, setUserOptions] = useState<UserSimpleInfoDto[]>([]);
 
   useImperativeHandle(ref, () => ({
     openModal,
   }));
 
-  // ++
-  const fetchDeptEmployeeList = (deptId?: string, name?: string) => {
-    getEmployeeList({ deptId: deptId, keyword: name }).then((res) => {
-      if (res.data && res.data.length > 0) {
-        setDeptEmployeeOptions(
-          res.data.map((x) => {
-            return {
-              label: `${x.name}`,
-              value: x.id || '',
-            };
-          }),
-        );
-      }
+  const fetchUserOptions = (keyword?: string) => {
+    getUserSimpleInfos(keyword).then((res) => {
+      setUserOptions(res.data!);
     });
   };
 
   useEffect(() => {
     if (isOpenModal) {
       fetchTreeData();
-      fetchDeptEmployeeList(); // ++
+      fetchUserOptions();
     }
   }, [isOpenModal]);
 
@@ -165,13 +155,13 @@ const DeptForm = forwardRef<DeptModalRef, ModalProps>((props, ref) => {
         </Form.Item>
         <Form.Item label="部门负责人" name="curatorId">
           <Select
-            options={deptEmployeeOptions}
+            options={userOptions.map((x) => ({ label: x.nickName, value: x.id }))}
             placeholder="请选择部门负责人"
             allowClear
             showSearch
             filterOption={false}
             onSearch={(value: string) => {
-              fetchDeptEmployeeList(undefined, value);
+              fetchUserOptions(value ?? '');
             }}
           />
         </Form.Item>

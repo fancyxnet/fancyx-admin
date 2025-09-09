@@ -9,7 +9,7 @@ namespace Fancyx.DataAccess.Entities.Organization
     /// <summary>
     /// 职位分组
     /// </summary>
-    [Table("org_position_group")]
+    [Table("position_group")]
     public class PositionGroup : AuditedEntity, ITenant
     {
         /// <summary>

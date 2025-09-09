@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Fancyx.DataAccess.Entities.System
 {
-    [Table("sys_tenant")]
+    [Table("tenant")]
     [Index(nameof(TenantId), IsUnique = true)]
     public class Tenant : AuditedEntity
     {

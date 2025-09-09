@@ -10,7 +10,7 @@ namespace Fancyx.DataAccess.Entities.Organization
     /// <summary>
     /// 部门表
     /// </summary>
-    [Table("sys_dept")]
+    [Table("dept")]
     public class Dept : FullAuditedEntity, ITenant
     {
         /// <summary>

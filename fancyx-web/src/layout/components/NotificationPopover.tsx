@@ -33,7 +33,7 @@ const NotificationPopover = observer(() => {
     fetchNotifications();
   }, []);
 
-  useMqtt('Notification:' + UserStore.userInfo?.employeeId, {
+  useMqtt('Notification:' + UserStore.userInfo?.userId, {
     onMessage: (json: string) => {
       const data = JSON.parse(json);
       if (data instanceof Object) {

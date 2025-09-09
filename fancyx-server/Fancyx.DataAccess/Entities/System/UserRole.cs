@@ -7,7 +7,7 @@ namespace Fancyx.DataAccess.Entities.System
     /// <summary>
     /// 用户角色关联表
     /// </summary>
-    [Table("sys_user_role")]
+    [Table("user_role")]
     public class UserRole : Entity, ITenant
     {
         /// <summary>

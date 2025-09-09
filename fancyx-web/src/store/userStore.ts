@@ -18,7 +18,6 @@ export type UserAuthInfo = {
   sex: number;
   permissions: string[];
   menus: FrontendMenu[];
-  employeeId?: string | null;
   phone?: string | null;
 };
 

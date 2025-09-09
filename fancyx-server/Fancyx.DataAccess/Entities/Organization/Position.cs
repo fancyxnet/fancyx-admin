@@ -9,7 +9,7 @@ namespace Fancyx.DataAccess.Entities.Organization
     /// <summary>
     /// 职位表
     /// </summary>
-    [Table("org_position")]
+    [Table("position")]
     public class Position : FullAuditedEntity, ITenant
     {
         /// <summary>

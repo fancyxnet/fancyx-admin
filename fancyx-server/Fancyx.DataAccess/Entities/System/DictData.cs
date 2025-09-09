@@ -9,7 +9,7 @@ namespace Fancyx.DataAccess.Entities.System
     /// <summary>
     /// 字典数据表
     /// </summary>
-    [Table("sys_dict_data")]
+    [Table("dict_data")]
     public class DictData : AuditedEntity, ITenant
     {
         /// <summary>
