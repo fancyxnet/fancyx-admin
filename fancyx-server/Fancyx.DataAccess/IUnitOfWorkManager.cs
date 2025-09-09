@@ -4,6 +4,8 @@ namespace Fancyx.DataAccess
 {
     public interface IUnitOfWorkManager
     {
-        IUnitOfWork Begin(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
+        Task<IUnitOfWork> BeginAsync(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
+
+        Task<int> SaveChangeAsync();
     }
 }

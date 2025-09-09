@@ -5,9 +5,9 @@ namespace Fancyx.DataAccess
 {
     public interface IRepository<T> where T : class
     {
-        Task<int> InsertAsync(T entity);
+        Task<int> InsertAsync(T entity, bool autoSave = true);
 
-        Task<int> InsertManyAsync(List<T> entities);
+        Task<int> InsertManyAsync(List<T> entities, bool autoSave = true);
 
         IQueryable<T> GetQueryable();
 
@@ -25,12 +25,12 @@ namespace Fancyx.DataAccess
 
         Task<int> CountAsync(Expression<Func<T, bool>> whereExpression);
 
-        Task<int> UpdateAsync(T entity);
+        Task<int> UpdateAsync(T entity, bool autoSave = true);
 
-        Task<int> UpdateManyAsync(List<T> entities);
+        Task<int> UpdateManyAsync(List<T> entities, bool autoSave = true);
 
         Task<int> DeleteAsync(Expression<Func<T, bool>> whereExpression);
 
-        Task<int> DeleteAsync(T entity);
+        Task<int> DeleteAsync(T entity, bool autoSave = true);
     }
 }

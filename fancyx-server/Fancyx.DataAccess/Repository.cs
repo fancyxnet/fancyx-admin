@@ -66,13 +66,13 @@ namespace Fancyx.DataAccess
             return _context.Set<T>();
         }
 
-        public Task<int> InsertAsync(T entity)
+        public async Task<int> InsertAsync(T entity, bool autoSave = true)
         {
             _context.Set<T>().Add(entity);
-            return _context.SaveChangesAsync();
+            return autoSave ? await _context.SaveChangesAsync() : -1;
         }
 
-        public async Task<int> InsertManyAsync(List<T> entities)
+        public async Task<int> InsertManyAsync(List<T> entities, bool autoSave = true)
         {
             if (entities.Count > 500)
             {
@@ -89,7 +89,7 @@ namespace Fancyx.DataAccess
                 return entities.Count;
             }
             _context.Set<T>().AddRange(entities);
-            return await _context.SaveChangesAsync();
+            return autoSave ? await _context.SaveChangesAsync() : -1;
         }
 
         public Task<T?> GetAsync(Expression<Func<T, bool>> whereExpression)
@@ -97,16 +97,16 @@ namespace Fancyx.DataAccess
             return _context.Set<T>().FirstOrDefaultAsync(whereExpression);
         }
 
-        public Task<int> UpdateAsync(T entity)
+        public async Task<int> UpdateAsync(T entity, bool autoSave = true)
         {
             if (_context.Entry(entity).State != EntityState.Modified)
             {
                 _context.Set<T>().Update(entity);
             }
-            return _context.SaveChangesAsync();
+            return autoSave ? await _context.SaveChangesAsync() : -1;
         }
 
-        public async Task<int> UpdateManyAsync(List<T> entities)
+        public async Task<int> UpdateManyAsync(List<T> entities, bool autoSave = true)
         {
             if (entities.Count > 500)
             {
@@ -123,7 +123,7 @@ namespace Fancyx.DataAccess
                 return entities.Count;
             }
             _context.Set<T>().UpdateRange(entities);
-            return await _context.SaveChangesAsync();
+            return autoSave ? await _context.SaveChangesAsync() : -1;
         }
 
         public IQueryable<T> Where(Expression<Func<T, bool>> whereExpression)
@@ -136,7 +136,7 @@ namespace Fancyx.DataAccess
             return _context.Set<T>().AsNoTracking().ToListAsync();
         }
 
-        public Task<int> DeleteAsync(T entity)
+        public async Task<int> DeleteAsync(T entity, bool autoSave = true)
         {
             if (entity is FullAuditedEntity val)
             {
@@ -158,7 +158,7 @@ namespace Fancyx.DataAccess
             {
                 _context.Set<T>().Remove(entity);
             }
-            return _context.SaveChangesAsync();
+            return autoSave ? await _context.SaveChangesAsync() : -1;
         }
 
         private static void SoftDeleteBeforeResetOtherProperty(EntityEntry entry)

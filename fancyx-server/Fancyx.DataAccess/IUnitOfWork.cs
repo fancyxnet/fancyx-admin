@@ -1,9 +1,13 @@
 ﻿namespace Fancyx.DataAccess
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork : IDisposable, IAsyncDisposable
     {
-        void Commit();
+        Guid Id { get; }
 
-        void Rollback();
+        bool IsCompeleted { get; }
+
+        Task CommitAsync();
+
+        Task RollbackAsync();
     }
 }

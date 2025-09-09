@@ -11,10 +11,15 @@ namespace Fancyx.DataAccess
             _context = context;
         }
 
-        public IUnitOfWork Begin(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
+        public async Task<IUnitOfWork> BeginAsync(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
         {
-            var transaction = _context.Database.BeginTransaction();
-            return new UnitOfWork(transaction);
+            var transaction = await _context.Database.BeginTransactionAsync();
+            return new UnitOfWork(Guid.NewGuid(), transaction);
+        }
+
+        public Task<int> SaveChangeAsync()
+        {
+            return _context.SaveChangesAsync();
         }
     }
 }
