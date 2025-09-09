@@ -195,6 +195,7 @@ const SmartTable = forwardRef<SmartTableRef, SmartTableProps<any>>(
           </div>
           <Table
             {...restProps}
+            bordered
             dataSource={dataSource}
             columns={withEmptyValue(columns)}
             rowKey={props.rowKey ?? 'id'}
