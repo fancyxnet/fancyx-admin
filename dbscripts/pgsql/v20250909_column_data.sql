@@ -12,7 +12,7 @@
  Target Server Version : 160009 (160009)
  File Encoding         : 65001
 
- Date: 09/09/2025 20:59:19
+ Date: 09/09/2025 23:29:28
 */
 
 
@@ -77,7 +77,6 @@ COMMENT ON TABLE "public"."config" IS '系统配置';
 -- Records of config
 -- ----------------------------
 INSERT INTO "public"."config" VALUES ('68758b9b-e6de-0d4c-0000-b9861878b283', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-07-14 22:58:35.09269', '2025-07-14 22:58:40.62024', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '文件存储驱动类型', 'StorageType', '1', 'System', '本地服务器=1，阿里云OSS=2', NULL);
-INSERT INTO "public"."config" VALUES ('019929de-d5e8-73d2-811d-727288f694f9', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-09-08 23:08:13.732732', '2025-09-09 20:55:22.702391', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', 'tom212121', 'test', '1', NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for dept
@@ -101,8 +100,8 @@ CREATE TABLE "public"."dept" (
   "email" varchar(64) COLLATE "pg_catalog"."default",
   "phone" varchar(64) COLLATE "pg_catalog"."default",
   "parent_id" uuid,
-  "parent_ids" varchar(1024) COLLATE "pg_catalog"."default",
-  "layer" int4 NOT NULL,
+  "tree_path" varchar(1024) COLLATE "pg_catalog"."default" NOT NULL,
+  "tree_level" int4 NOT NULL,
   "tenant_id" varchar(18) COLLATE "pg_catalog"."default"
 )
 ;
@@ -115,18 +114,16 @@ COMMENT ON COLUMN "public"."dept"."curator_id" IS '负责人';
 COMMENT ON COLUMN "public"."dept"."email" IS '邮箱';
 COMMENT ON COLUMN "public"."dept"."phone" IS '电话';
 COMMENT ON COLUMN "public"."dept"."parent_id" IS '父ID';
-COMMENT ON COLUMN "public"."dept"."parent_ids" IS '层级父ID';
-COMMENT ON COLUMN "public"."dept"."layer" IS '层级';
+COMMENT ON COLUMN "public"."dept"."tree_path" IS '树形路径';
+COMMENT ON COLUMN "public"."dept"."tree_level" IS '树形层级';
 COMMENT ON COLUMN "public"."dept"."tenant_id" IS '租户ID';
 COMMENT ON TABLE "public"."dept" IS '部门表';
 
 -- ----------------------------
 -- Records of dept
 -- ----------------------------
-INSERT INTO "public"."dept" VALUES ('6861a4ed-de18-91c8-009e-ef9b36642c3c', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-06-29 20:41:17.23825', '2025-07-14 22:01:12.096261', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', 'f', NULL, NULL, 'root', '风汐科技有限公司', 1, NULL, 1, '6869907c-9c93-beac-0062-34172a640e0e', NULL, NULL, NULL, NULL, 3, NULL);
-INSERT INTO "public"."dept" VALUES ('68b4d421-3a66-9e98-00a5-e1ae300cfb46', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-08-31 23:00:49.658059', NULL, NULL, 'f', NULL, NULL, '0002', '研发一部', 0, NULL, 1, NULL, NULL, NULL, '6861a4ed-de18-91c8-009e-ef9b36642c3c', '6861a4ed-de18-91c8-009e-ef9b36642c3c', 2, NULL);
-INSERT INTO "public"."dept" VALUES ('019929d0-405a-7d80-9455-a74cbee4a97f', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-09-08 22:52:17.917782', NULL, NULL, 'f', NULL, NULL, 'string', 'test1223', 0, 'string', 0, '3fa85f64-5717-4562-b3fc-2c963f66afa6', 'string', 'string', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '3fa85f64-5717-4562-b3fc-2c963f66afa6', 2, NULL);
-INSERT INTO "public"."dept" VALUES ('019929f9-0c79-72d8-889f-999d437c5391', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-09-08 23:36:51.642375', '2025-09-08 23:37:49.848219', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', 't', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-09-08 23:38:02.341653', 'string1212112', 'string12122112', 0, 'string', 0, '3fa85f64-5717-4562-b3fc-2c963f66afa6', 'string', 'string', '3fa85f64-5717-4562-b3fc-2c963f66afa6', '3fa85f64-5717-4562-b3fc-2c963f66afa6', 2, NULL);
+INSERT INTO "public"."dept" VALUES ('b4cb13b2-9abf-4308-b6de-a75e29d860b9', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-09-09 22:15:23.024634', NULL, NULL, 'f', NULL, NULL, '001', '研发部', 0, NULL, 1, NULL, NULL, NULL, NULL, 'b4cb13b2-9abf-4308-b6de-a75e29d860b9', 1, NULL);
+INSERT INTO "public"."dept" VALUES ('2caf547c-461b-4661-a2c7-2310a8707709', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-09-09 22:44:43.333833', NULL, NULL, 't', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-09-09 22:49:33.049842', '003', '前端组', 0, NULL, 1, NULL, NULL, NULL, NULL, 'b4cb13b2-9abf-4308-b6de-a75e29d860b9/2caf547c-461b-4661-a2c7-2310a8707709', 2, NULL);
 
 -- ----------------------------
 -- Table structure for dict_data
@@ -539,24 +536,25 @@ CREATE TABLE "public"."position_group" (
   "group_name" varchar(64) COLLATE "pg_catalog"."default" NOT NULL,
   "remark" varchar(512) COLLATE "pg_catalog"."default",
   "parent_id" uuid,
-  "parent_ids" varchar(1024) COLLATE "pg_catalog"."default",
+  "tree_path" varchar(1024) COLLATE "pg_catalog"."default" NOT NULL,
   "sort" int4 NOT NULL,
-  "tenant_id" varchar(18) COLLATE "pg_catalog"."default"
+  "tenant_id" varchar(18) COLLATE "pg_catalog"."default",
+  "tree_level" int4 NOT NULL
 )
 ;
 COMMENT ON COLUMN "public"."position_group"."group_name" IS '分组名';
 COMMENT ON COLUMN "public"."position_group"."remark" IS '备注';
 COMMENT ON COLUMN "public"."position_group"."parent_id" IS '父ID';
-COMMENT ON COLUMN "public"."position_group"."parent_ids" IS '层级父ID';
+COMMENT ON COLUMN "public"."position_group"."tree_path" IS '层级路径';
 COMMENT ON COLUMN "public"."position_group"."sort" IS '排序值';
 COMMENT ON COLUMN "public"."position_group"."tenant_id" IS '租户ID';
+COMMENT ON COLUMN "public"."position_group"."tree_level" IS '层级';
 COMMENT ON TABLE "public"."position_group" IS '职位分组';
 
 -- ----------------------------
 -- Records of position_group
 -- ----------------------------
-INSERT INTO "public"."position_group" VALUES ('685f2f1d-7ef6-c114-0022-88b738cf5c1c', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-06-27 23:54:05.887842', NULL, NULL, '前端', NULL, '685f2cd3-7ef6-c114-0022-88b50a861368', '685f2cd3-7ef6-c114-0022-88b50a861368', 0, NULL);
-INSERT INTO "public"."position_group" VALUES ('685f2cd3-7ef6-c114-0022-88b50a861368', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-06-27 23:44:19.081278', '2025-06-28 15:57:31.895397', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '软件', '软件研发岗位', NULL, NULL, 1, NULL);
+INSERT INTO "public"."position_group" VALUES ('685f2cd3-7ef6-c114-0022-88b50a861368', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-06-27 23:44:19.081278', '2025-06-28 15:57:31.895397', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '软件', '软件研发岗位', NULL, '685f2cd3-7ef6-c114-0022-88b50a861368', 1, NULL, 1);
 
 -- ----------------------------
 -- Table structure for role
@@ -680,6 +678,7 @@ CREATE TABLE "public"."scheduled_tasks" (
 -- ----------------------------
 -- Records of scheduled_tasks
 -- ----------------------------
+INSERT INTO "public"."scheduled_tasks" VALUES ('01992e98-634b-7a88-8fa3-c6906d74d47c', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-09-09 21:09:22.920617', NULL, NULL, 'NotificationJob', '站内信', '0 0/1 * * * ?', 't');
 
 -- ----------------------------
 -- Table structure for task_execution_logs
