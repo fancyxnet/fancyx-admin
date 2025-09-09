@@ -1,11 +1,9 @@
-﻿using System.Linq.Expressions;
-
-using Fancyx.Core.Interfaces;
+﻿using Fancyx.Core.Interfaces;
 using Fancyx.DataAccess.BaseEntity;
 using Fancyx.DataAccess.Models;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Linq.Expressions;
 
 namespace Fancyx.DataAccess
 {
@@ -13,6 +11,8 @@ namespace Fancyx.DataAccess
     {
         private readonly FancyxDbContext _context;
         private readonly ICurrentUser _currentUser;
+        private static readonly Type _fullAuditedEntityType = typeof(FullAuditedEntity);
+        private static readonly Type _efCoreExtensionType = typeof(EfCoreExtension);
 
         public Repository(FancyxDbContext context, ICurrentUser currentUser)
         {
@@ -30,9 +30,24 @@ namespace Fancyx.DataAccess
             return _context.Set<T>().AsNoTracking().CountAsync(whereExpression);
         }
 
-        public Task<int> DeleteAsync(Expression<Func<T, bool>> whereExpression)
+        public async Task<int> DeleteAsync(Expression<Func<T, bool>> whereExpression)
         {
-            return _context.Set<T>().AsNoTracking().Where(whereExpression).ExecuteDeleteAsync();
+            var query = _context.Set<T>().AsNoTracking().Where(whereExpression);
+            if (_fullAuditedEntityType.IsAssignableFrom(typeof(T)))
+            {
+                var softDeleteMethod = _efCoreExtensionType.GetMethod(nameof(EfCoreExtension.SoftDeleteAsync), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                if(softDeleteMethod != null)
+                {
+                    var count = await query.CountAsync();
+                    var task = (Task?)softDeleteMethod.Invoke(null, [query]);
+                    if (task != null)
+                    {
+                        await task;
+                        return count;
+                    }
+                }
+            }
+            return await query.ExecuteDeleteAsync();
         }
 
         public Task<List<T>> GetListAsync(Expression<Func<T, bool>> whereExpression)

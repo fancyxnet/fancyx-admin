@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Job", "Fancyx.Job\Fa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Payment", "Fancyx.Payment\Fancyx.Payment.csproj", "{A9561E75-5F1E-C830-F40E-68BFAF8249EF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{59BFD2F8-06D0-4A28-83A1-8A8CA6842B37} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{5364A22C-7C01-4499-903D-1A985B11B30C} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{F6BFCC9E-2239-46CE-AAF5-F7D08B4F4C1D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{5A5DDF67-7FDD-4801-BF74-432B8DDF33F3} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {28315BFD-90E7-4E14-A2EA-F3D23AF4126F}
