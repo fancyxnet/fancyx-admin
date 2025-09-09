@@ -23,22 +23,10 @@ namespace Fancyx.Admin.Service.Organization
         public async Task<bool> AddPositionGroupAsync(PositionGroupDto dto)
         {
             var entity = AutoMapperHelper.Instance.Map<PositionGroupDto, PositionGroup>(dto);
-            entity.ParentId = dto.ParentId;
-            if (entity.ParentId.HasValue)
-            {
-                var all = await _positionGroupRepository.GetListAsync();
-                entity.ParentIds = GetParentIds(all, entity.ParentId.Value);
-            }
+            entity.SetTreeProperties(await _positionGroupRepository.GetAsync(x => x.Id == dto.ParentId));
 
             await _positionGroupRepository.InsertAsync(entity);
             return true;
-        }
-
-        public string GetParentIds(List<PositionGroup> all, Guid id)
-        {
-            var parentId = all.Find(x => x.Id == id)?.ParentId;
-            if (parentId == null) return id.ToString();
-            return GetParentIds(all, parentId.Value) + "," + id;
         }
 
         public async Task<bool> DeletePositionGroupAsync(Guid id)
@@ -61,12 +49,38 @@ namespace Fancyx.Admin.Service.Organization
 
         public async Task<List<PositionGroupListDto>> GetPositionGroupListAsync(PositionGroupQueryDto dto)
         {
-            var rawTree = await _positionGroupRepository.GetQueryable()
+            var allNodes = await _positionGroupRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.GroupName), x => x.GroupName.Contains(dto.GroupName!))
                 .OrderBy(x => x.Sort)
-                .ToListAsync();
+                .ToDictionaryAsync(k => k.Id);
 
-            return AutoMapperHelper.Instance.Map<List<PositionGroup>, List<PositionGroupListDto>>(rawTree);
+            var tree = new List<PositionGroupListDto>();
+            var nodeDtos = new Dictionary<Guid, PositionGroupListDto>();
+            var endDtos = new List<PositionGroupListDto>();
+
+            foreach (var node in allNodes.Values)
+            {
+                var tmp = AutoMapperHelper.Instance.Map<PositionGroup, PositionGroupListDto>(node);
+                nodeDtos[tmp.Id] = tmp;
+                if (node.ParentId.HasValue)
+                {
+                    if (nodeDtos.TryGetValue(node.ParentId.Value, out var parent))
+                    {
+                        parent.Children ??= [];
+                        parent.Children.Add(tmp);
+                        parent.Children = parent.Children.OrderBy(s => s.Sort).ToList();
+                    }
+                    else
+                    {
+                        endDtos.Add(tmp);
+                    }
+                }
+                else
+                {
+                    tree.Add(tmp);
+                }
+            }
+            return tree.OrderBy(x => x.Sort).Concat(endDtos).ToList();
         }
 
         public async Task<bool> UpdatePositionGroupAsync(PositionGroupDto dto)
@@ -82,11 +96,7 @@ namespace Fancyx.Admin.Service.Organization
             entity.Remark = dto.Remark;
             entity.ParentId = dto.ParentId;
             entity.Sort = dto.Sort;
-            if (entity.ParentId.HasValue)
-            {
-                var all = await _positionGroupRepository.GetListAsync();
-                entity.ParentIds = GetParentIds(all, entity.ParentId.Value);
-            }
+            entity.SetTreeProperties(await _positionGroupRepository.GetAsync(x => x.Id == dto.ParentId));
 
             await _positionGroupRepository.UpdateAsync(entity);
             return true;

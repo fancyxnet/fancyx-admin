@@ -8,11 +8,12 @@ namespace Fancyx.Admin.Profiles
     {
         public OrganizationAutoMapperProfile()
         {
+            AllowNullCollections = true;
+
             CreateMap<DeptDto, Dept>();
             CreateMap<Dept, DeptListDto>();
             CreateMap<PositionGroupDto, PositionGroup>();
-            CreateMap<PositionGroup, PositionGroupListDto>()
-                .ForMember(d => d.Rawchildren, o => o.MapFrom(s => s.Children));
+            CreateMap<PositionGroup, PositionGroupListDto>();
             CreateMap<Position, PositionListDto>();
             CreateMap<PositionDto, Position>();
         }

@@ -43,12 +43,13 @@ namespace Fancyx.Admin.Service.Account
             result.Items = await query.OrderBy(x => x.IsReaded).OrderByDescending(x => x.CreationTime)
                 .Take(5).SelectToListAsync(x => new UserNotificationNavbarItemDto
                 {
+                    Id = x.Id,
                     Title = x.Title,
                     Content = x.Content,
                     IsReaded = x.IsReaded,
                     CreationTime = x.CreationTime,
                 });
-            result.NoReadedCount = (int)await query.Where(x => !x.IsReaded).CountAsync();
+            result.NoReadedCount = await query.Where(x => !x.IsReaded).CountAsync();
 
             return result;
         }

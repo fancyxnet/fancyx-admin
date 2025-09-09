@@ -11,7 +11,7 @@ namespace Fancyx.DataAccess.Entities.Organization
     /// 部门表
     /// </summary>
     [Table("dept")]
-    public class Dept : FullAuditedEntity, ITenant
+    public class Dept : FullAuditedEntity, ITenant, ITreeEntity
     {
         /// <summary>
         /// 部门编号
@@ -77,27 +77,24 @@ namespace Fancyx.DataAccess.Entities.Organization
         public Guid? ParentId { get; set; }
 
         /// <summary>
-        /// 层级父ID
+        /// 树形路径
         /// </summary>
         [StringLength(1024)]
-        [Column("parent_ids")]
-        public string? ParentIds { get; set; }
+        [Column("tree_path")]
+        [NotNull, Required]
+        public string TreePath { get; set; } = null!;
 
         /// <summary>
-        /// 层级
+        /// 树形层级
         /// </summary>
         [DefaultValue(0)]
-        [Column("layer")]
-        public int Layer { get; set; }
+        [Column("tree_level")]
+        public int TreeLevel { get; set; }
 
         /// <summary>
         /// 租户ID
         /// </summary>
         [Column("tenant_id")]
         public string? TenantId { get; set; }
-
-        public Dept? Parent { get; set; }
-
-        public List<Dept>? Children { get; set; }
     }
 }

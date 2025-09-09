@@ -36,10 +36,10 @@ namespace Fancyx.Admin.Service.Organization
                 {
                     Id = item.Id
                 };
-                var allGroups = groups.Where(x => x.Id == item.GroupId).Select(x => x.ParentIds + "," + x.Id);
+                var allGroups = groups.Where(x => x.Id == item.GroupId).Select(x => x.TreePath);
                 foreach (var groupIds in allGroups)
                 {
-                    foreach (var groupId in groupIds.Split(","))
+                    foreach (var groupId in groupIds.Split("/"))
                     {
                         single.LayerName += groups.Find(x => x.Id.ToString() == groupId)?.GroupName + "/";
                     }

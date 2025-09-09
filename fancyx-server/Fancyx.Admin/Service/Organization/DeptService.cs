@@ -33,24 +33,10 @@ namespace Fancyx.Admin.Service.Organization
             var entity = AutoMapperHelper.Instance.Map<DeptDto, Dept>(dto);
             entity.ParentId = dto.ParentId;
             entity.Code = dto.Code;
-            if (entity.ParentId.HasValue)
-            {
-                var all = await _deptRepository.GetListAsync(x => true);
-                int layer = 1;
-                entity.ParentIds = GetParentIds(all, entity.ParentId.Value, ref layer);
-                entity.Layer = layer;
-            }
+            entity.SetTreeProperties(await _deptRepository.GetAsync(x => x.Id == dto.ParentId));
 
             await _deptRepository.InsertAsync(entity);
             return true;
-        }
-
-        public string GetParentIds(List<Dept> all, Guid id, ref int layer)
-        {
-            layer += 1;
-            var parentId = all.Find(x => x.Id == id)?.ParentId;
-            if (parentId == null) return id.ToString();
-            return GetParentIds(all, parentId.Value, ref layer) + "," + id;
         }
 
         public async Task<bool> DeleteDeptAsync(Guid id)
@@ -69,8 +55,7 @@ namespace Fancyx.Admin.Service.Organization
 
         public async Task<List<DeptListDto>> GetDeptListAsync(DeptQueryDto dto)
         {
-            bool hasFilter = !string.IsNullOrEmpty(dto.Name) || !string.IsNullOrEmpty(dto.Code)
-                                                             || dto.Status > 0;
+            bool hasFilter = !string.IsNullOrEmpty(dto.Name) || !string.IsNullOrEmpty(dto.Code) || dto.Status > 0;
             if (hasFilter)
             {
                 var filter = await _deptRepository.GetQueryable()
@@ -83,31 +68,34 @@ namespace Fancyx.Admin.Service.Organization
                 return result;
             }
 
-            var all = await _deptRepository.GetQueryable().OrderBy(x => x.ParentIds).ToListAsync();
-            var tree = AutoMapperHelper.Instance.Map<List<Dept>, List<DeptListDto>>(all.Where(x => x.ParentId == null)
-                .OrderBy(t => t.Sort).ToList());
+            var allNodes = await _deptRepository.GetQueryable().OrderBy(x => x.TreePath).ToDictionaryAsync(k => k.Id);
+            var tree = new List<DeptListDto>();
+            var nodeDtos = new Dictionary<Guid, DeptListDto>();
+            var endDtos = new List<DeptListDto>();
 
-            foreach (var item in tree)
+            foreach (var node in allNodes.Values)
             {
-                item.Children = getChildren(item.Id)?.OrderBy(x => x.Sort).ToList();
-            }
-
-            List<DeptListDto>? getChildren(Guid id)
-            {
-                var children =
-                    AutoMapperHelper.Instance.Map<List<Dept>, List<DeptListDto>>(all.Where(x => x.ParentId == id)
-                        .ToList());
-                if (children.Count <= 0) return null;
-
-                foreach (var item in children)
+                var tmp = AutoMapperHelper.Instance.Map<Dept, DeptListDto>(node);
+                nodeDtos[tmp.Id] = tmp;
+                if (node.ParentId.HasValue)
                 {
-                    item.Children = getChildren(item.Id);
+                    if (nodeDtos.TryGetValue(node.ParentId.Value, out var parent))
+                    {
+                        parent.Children ??= [];
+                        parent.Children.Add(tmp);
+                        parent.Children = parent.Children.OrderBy(s => s.Sort).ToList();
+                    }
+                    else
+                    {
+                        endDtos.Add(tmp);
+                    }
                 }
-
-                return children;
+                else
+                {
+                    tree.Add(tmp);
+                }
             }
-
-            return tree;
+            return tree.OrderBy(x => x.Sort).Concat(endDtos).ToList();
         }
 
         public async Task<bool> UpdateDeptAsync(DeptDto dto)
@@ -137,17 +125,12 @@ namespace Fancyx.Admin.Service.Organization
             entity.ParentId = dto.ParentId;
             if (entity.ParentId.HasValue)
             {
-                var parentIsSub = await _deptRepository
-                    .Where(x => x.Id == entity.ParentId.Value && x.ParentId == entity.Id).AnyAsync();
+                var parentIsSub = await _deptRepository.AnyAsync(x => x.ParentId == entity.Id);
                 if (parentIsSub)
                 {
                     throw new BusinessException("不能选择子部门作为上级部门");
                 }
-
-                var all = await _deptRepository.GetListAsync(x => true);
-                int layer = 1;
-                entity.ParentIds = GetParentIds(all, entity.ParentId.Value, ref layer);
-                entity.Layer = layer;
+                entity.SetTreeProperties(await _deptRepository.GetAsync(x => x.Id == entity.ParentId));
             }
 
             await _deptRepository.UpdateAsync(entity);

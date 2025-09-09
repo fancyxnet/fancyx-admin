@@ -58,18 +58,18 @@ namespace Fancyx.Admin.IService.Organization.Dtos
         public Guid? ParentId { get; set; }
 
         /// <summary>
-        /// 层级父ID
-        /// </summary>
-        public string? ParentIds { get; set; }
-
-        /// <summary>
-        /// 层级
-        /// </summary>
-        public int Layer { get; set; }
-
-        /// <summary>
         /// 子集
         /// </summary>
         public List<DeptListDto>? Children { get; set; }
+
+        /// <summary>
+        /// 树形路径
+        /// </summary>
+        public string TreePath { get; set; } = null!;
+
+        /// <summary>
+        /// 树形层级
+        /// </summary>
+        public int TreeLevel { get; set; }
     }
 }

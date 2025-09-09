@@ -41,5 +41,21 @@ namespace Fancyx.DataAccess
                 .SetProperty(s => s.DeletionTime, now)
                 .SetProperty(s => s.DeleterId, userId));
         }
+
+        public static void SetTreeProperties<TEntity>(this TEntity entity, TEntity? parent) where TEntity : Entity, ITreeEntity
+        {
+            if (entity.Id == default)
+            {
+                entity.Id = Guid.NewGuid();
+            }
+            if (parent != null)
+            {
+                entity.TreePath = $"{parent.TreePath}/{entity.Id}";
+                entity.TreeLevel = parent.TreeLevel + 1;
+                return;
+            }
+            entity.TreePath = entity.Id.ToString();
+            entity.TreeLevel = 1;
+        }
     }
 }
