@@ -125,7 +125,7 @@ namespace Fancyx.Admin.Service.Organization
             entity.ParentId = dto.ParentId;
             if (entity.ParentId.HasValue)
             {
-                var parentIsSub = await _deptRepository.AnyAsync(x => x.ParentId == entity.Id);
+                var parentIsSub = await _deptRepository.AnyAsync(x => x.Id == entity.ParentId && x.ParentId == entity.Id);
                 if (parentIsSub)
                 {
                     throw new BusinessException("不能选择子部门作为上级部门");
@@ -141,14 +141,14 @@ namespace Fancyx.Admin.Service.Organization
         {
             var depts = await _deptRepository.GetQueryable().WhereIf(!string.IsNullOrEmpty(keyword),
                     x => x.Name.StartsWith(keyword!) || x.Code.StartsWith(keyword!))
-                .SelectToListAsync(x => new { x.Id, x.Name, x.Code, x.ParentId, x.Sort });
+                .SelectToListAsync(x => new { x.Id, x.Name, x.Code, x.ParentId, x.Sort, x.CreationTime, x.TreeLevel });
             var list = new List<DeptSimpleInfoDto>();
             //顶级部门放前面
-            var topDepts = depts.Where(x => !x.ParentId.HasValue || x.ParentId == Guid.Empty).OrderBy(x => x.Sort)
-                .ThenBy(x => x.Name).ToList();
+            var topDepts = depts.Where(x => !x.ParentId.HasValue || x.ParentId == Guid.Empty).OrderBy(x => x.TreeLevel)
+                .ThenBy(x => x.Sort).ThenBy(x => x.CreationTime).ToList();
             topDepts.ForEach(x => { list.Add(new DeptSimpleInfoDto { Id = x.Id, Name = x.Name, Code = x.Code }); });
             //子部门放后面
-            depts.Where(x => x.ParentId.HasValue).OrderBy(x => x.Sort).ThenBy(x => x.Name).ToList().ForEach(x =>
+            depts.Where(x => x.ParentId.HasValue).OrderBy(x => x.TreeLevel).ThenBy(x => x.Sort).ThenBy(x => x.CreationTime).ToList().ForEach(x =>
             {
                 list.Add(new DeptSimpleInfoDto { Id = x.Id, Name = x.Name, Code = x.Code });
             });

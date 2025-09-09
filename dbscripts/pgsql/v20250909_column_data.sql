@@ -12,7 +12,7 @@
  Target Server Version : 160009 (160009)
  File Encoding         : 65001
 
- Date: 09/09/2025 23:29:28
+ Date: 09/09/2025 23:58:55
 */
 
 
@@ -122,8 +122,14 @@ COMMENT ON TABLE "public"."dept" IS '部门表';
 -- ----------------------------
 -- Records of dept
 -- ----------------------------
-INSERT INTO "public"."dept" VALUES ('b4cb13b2-9abf-4308-b6de-a75e29d860b9', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-09-09 22:15:23.024634', NULL, NULL, 'f', NULL, NULL, '001', '研发部', 0, NULL, 1, NULL, NULL, NULL, NULL, 'b4cb13b2-9abf-4308-b6de-a75e29d860b9', 1, NULL);
 INSERT INTO "public"."dept" VALUES ('2caf547c-461b-4661-a2c7-2310a8707709', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-09-09 22:44:43.333833', NULL, NULL, 't', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-09-09 22:49:33.049842', '003', '前端组', 0, NULL, 1, NULL, NULL, NULL, NULL, 'b4cb13b2-9abf-4308-b6de-a75e29d860b9/2caf547c-461b-4661-a2c7-2310a8707709', 2, NULL);
+INSERT INTO "public"."dept" VALUES ('b4cb13b2-9abf-4308-b6de-a75e29d860b9', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-09-09 22:15:23.024634', NULL, NULL, 't', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-09-09 23:30:49.61694', '001', '研发部', 0, NULL, 1, NULL, NULL, NULL, NULL, 'b4cb13b2-9abf-4308-b6de-a75e29d860b9', 1, NULL);
+INSERT INTO "public"."dept" VALUES ('32b461cf-e5f8-4354-bc27-c6b5b2b8faaf', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-09-09 23:32:08.853433', NULL, NULL, 'f', NULL, NULL, 'web', '前端组', 0, NULL, 1, NULL, NULL, NULL, 'cf00274b-018f-433e-bfe9-58c9f4827296', 'e60121f5-d83f-4a72-aa74-8436e73f674f/cf00274b-018f-433e-bfe9-58c9f4827296/32b461cf-e5f8-4354-bc27-c6b5b2b8faaf', 3, NULL);
+INSERT INTO "public"."dept" VALUES ('49144183-a3f5-4943-a2ca-2e030ac0a38f', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-09-09 23:32:25.92131', NULL, NULL, 'f', NULL, NULL, '.net', '后端组', 0, NULL, 1, NULL, NULL, NULL, 'cf00274b-018f-433e-bfe9-58c9f4827296', 'e60121f5-d83f-4a72-aa74-8436e73f674f/cf00274b-018f-433e-bfe9-58c9f4827296/49144183-a3f5-4943-a2ca-2e030ac0a38f', 3, NULL);
+INSERT INTO "public"."dept" VALUES ('e60121f5-d83f-4a72-aa74-8436e73f674f', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-09-09 23:31:19.97476', '2025-09-09 23:48:11.542242', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', 'f', NULL, NULL, 'szfxkj', '深圳风汐科技有限公司', 1, NULL, 1, NULL, NULL, NULL, NULL, 'e60121f5-d83f-4a72-aa74-8436e73f674f', 1, NULL);
+INSERT INTO "public"."dept" VALUES ('f0915491-8aae-4be6-8eb1-7ddfc9b7c9a2', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-09-09 23:32:51.532019', '2025-09-09 23:48:40.622404', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', 'f', NULL, NULL, 'rsb', '人事部', 2, NULL, 1, NULL, NULL, NULL, 'e60121f5-d83f-4a72-aa74-8436e73f674f', 'e60121f5-d83f-4a72-aa74-8436e73f674f/f0915491-8aae-4be6-8eb1-7ddfc9b7c9a2', 2, NULL);
+INSERT INTO "public"."dept" VALUES ('cf00274b-018f-433e-bfe9-58c9f4827296', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-09-09 23:31:38.637803', '2025-09-09 23:51:05.712082', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', 'f', NULL, NULL, 'yfb', '研发部', 1, NULL, 1, NULL, NULL, NULL, 'e60121f5-d83f-4a72-aa74-8436e73f674f', 'e60121f5-d83f-4a72-aa74-8436e73f674f/cf00274b-018f-433e-bfe9-58c9f4827296', 2, NULL);
+INSERT INTO "public"."dept" VALUES ('024a98a1-f929-44a4-bddb-f19a2ede463a', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-09-09 23:33:11.880968', '2025-09-09 23:52:54.519347', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', 'f', NULL, NULL, 'sales', '销售部', 3, NULL, 1, NULL, NULL, NULL, 'e60121f5-d83f-4a72-aa74-8436e73f674f', 'e60121f5-d83f-4a72-aa74-8436e73f674f/024a98a1-f929-44a4-bddb-f19a2ede463a', 2, NULL);
 
 -- ----------------------------
 -- Table structure for dict_data
@@ -520,8 +526,8 @@ COMMENT ON TABLE "public"."position" IS '职位表';
 -- ----------------------------
 -- Records of position
 -- ----------------------------
-INSERT INTO "public"."position" VALUES ('686a9bac-aad5-2c54-003c-a0450445a76f', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-07-06 15:52:12.404982', NULL, NULL, 'f', NULL, NULL, '001', '前端开发工程师', 1, 1, NULL, '685f2f1d-7ef6-c114-0022-88b738cf5c1c', NULL);
 INSERT INTO "public"."position" VALUES ('01992e66-a6f5-72ed-95fb-af8159cc3bf1', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-09-09 20:15:03.454315', NULL, NULL, 't', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-09-09 20:22:06.037352', '990021021', '测试工程师', 3, 1, '1221221', NULL, NULL);
+INSERT INTO "public"."position" VALUES ('686a9bac-aad5-2c54-003c-a0450445a76f', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-07-06 15:52:12.404982', '2025-09-09 23:56:23.899262', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', 'f', NULL, NULL, '001', '前端开发工程师', 1, 1, NULL, '685f2cd3-7ef6-c114-0022-88b50a861368', NULL);
 
 -- ----------------------------
 -- Table structure for position_group
@@ -700,6 +706,7 @@ CREATE TABLE "public"."task_execution_logs" (
 -- ----------------------------
 -- Records of task_execution_logs
 -- ----------------------------
+INSERT INTO "public"."task_execution_logs" VALUES ('01992f31-d8f2-73f7-b863-6cd1b7d05584', '00000000-0000-0000-0000-000000000000', '2025-09-09 23:57:00.019089', 'NotificationJob', 1, '成功', NULL, '2025-09-09 23:57:00.015728', 2);
 
 -- ----------------------------
 -- Table structure for tenant
@@ -770,9 +777,7 @@ COMMENT ON TABLE "public"."user" IS '用户表';
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO "public"."user" VALUES ('00de38c4-17bd-415f-bf1c-2e0873eb177e', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-07-10 22:44:04.531912', NULL, NULL, 'f', NULL, NULL, 'coco', 'e145745caac61f1b499a3cc677ef7591', 'NsKMV/B5UAKe8IvGoP8kAg==', 'avatar/female.png', '珂珂', 2, 't', NULL, '', NULL, NULL);
 INSERT INTO "public"."user" VALUES ('3a172a37-55d5-ee9b-dc92-e07386eadc7c', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2024-12-30 22:48:48.458', '2025-06-17 19:05:09.599', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', 'f', NULL, NULL, 'admin', 'a2fa8ec90f15197c7a4e6e00525b198a', 'vHQZvbz+ng+B4NrSAEYl6g==', 'file/myavatar.jpg', '风汐', 1, 't', 'cq_market', '18273403759', NULL, NULL);
-INSERT INTO "public"."user" VALUES ('3e64db48-e302-46f7-87d8-dc3f8c4bd428', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', '2025-07-10 22:43:38.917621', '2025-07-10 22:46:16.649351', '3a172a37-55d5-ee9b-dc92-e07386eadc7c', 'f', NULL, NULL, 'tom', '7ff497634388c0517d3b1c973efd9b98', 'V12NcTVTF84SFyIJ2pNEuw==', 'avatar/male.png', 'tom', 1, 't', NULL, '', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for user_role

@@ -1,5 +1,5 @@
-import { Button, Switch, Space, Form, Input, Avatar } from 'antd';
-import { useRef } from 'react';
+import { Button, Switch, Space, Form, Input, Avatar, Col, Card, List, Row, Tag } from 'antd';
+import { useEffect, useRef, useState } from 'react';
 import { DeleteOutlined, ExclamationCircleFilled, KeyOutlined, PlusOutlined } from '@ant-design/icons';
 import useApp from 'antd/es/app/useApp';
 import {
@@ -17,6 +17,9 @@ import ResetUserPwdForm, { type ResetUserPwdFormRef } from '@/pages/system/compo
 import ProIcon from '@/components/ProIcon';
 import { useApplication } from '@/components/Application';
 import Permission from '@/components/Permission';
+import { getDeptSimpleInfos, type DeptSimpleInfoDto } from '@/api/organization/dept';
+import Search from 'antd/es/input/Search';
+import './styles/user.scss';
 
 const UserTable = () => {
   const tableRef = useRef<SmartTableRef>(null);
@@ -107,6 +110,31 @@ const UserTable = () => {
       ),
     },
   ];
+  const [deptData, setDeptData] = useState<DeptSimpleInfoDto[]>([]);
+  const [deptKeyword, setDeptKeyword] = useState<string>('');
+  const [curDept, setCurDept] = useState<DeptSimpleInfoDto | null>(null);
+  const [deptLoading, setDeptLoading] = useState<boolean>(false);
+  useEffect(() => {
+    setDeptLoading(true);
+    getDeptSimpleInfos(deptKeyword)
+      .then((res) => {
+        setDeptLoading(false);
+        setDeptData(res.data);
+      })
+      .catch(() => {
+        setDeptLoading(false);
+      });
+  }, [deptKeyword]);
+  const onDeptSearch = (value: string) => {
+    setDeptKeyword(value);
+  };
+  const preventDefault = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    setCurDept(null);
+  };
+  useEffect(() => {
+    tableRef?.current?.reload();
+  }, [curDept?.id]);
 
   const rowDelete = (id: string) => {
     modal.confirm({
@@ -129,34 +157,67 @@ const UserTable = () => {
 
   return (
     <>
-      <SmartTable
-        rowKey="id"
-        columns={columns}
-        ref={tableRef}
-        request={async (params) => {
-          const { data } = await getUserList(params);
-          return data;
-        }}
-        searchItems={
-          <Form.Item<UserQueryDto> label="账号" name="userName">
-            <Input placeholder="请输入账号" />
-          </Form.Item>
-        }
-        toolbar={
-          <Permission permissions={'Sys.User.Add'}>
-            <Button
-              color="primary"
-              variant="solid"
-              icon={<PlusOutlined />}
-              onClick={() => {
-                userEditModalRef?.current?.openModal();
-              }}
-            >
-              新增
-            </Button>
-          </Permission>
-        }
-      />
+      <Row gutter={16}>
+        <Col span={6}>
+          <Card>
+            {curDept?.id?.length && curDept?.id?.length > 0 && (
+              <Tag closeIcon onClose={preventDefault} style={{ marginBottom: 12 }}>
+                筛选部门：{curDept?.name}
+              </Tag>
+            )}
+            <Search placeholder="请输入部门名称/编码" style={{ marginBottom: 12 }} allowClear onSearch={onDeptSearch} />
+            <List
+              loading={deptLoading}
+              size="small"
+              dataSource={deptData}
+              className="dept-list"
+              renderItem={(item) => (
+                <List.Item>
+                  <span
+                    className="dept-text"
+                    onClick={() => {
+                      setCurDept(item);
+                    }}
+                  >
+                    {item.name}({item.code})
+                  </span>
+                </List.Item>
+              )}
+            />
+            
+          </Card>
+        </Col>
+        <Col span={18}>
+          <SmartTable
+            rowKey="id"
+            columns={columns}
+            ref={tableRef}
+            request={async (params) => {
+              const { data } = await getUserList({ ...params, deptId: curDept?.id });
+              return data;
+            }}
+            searchItems={
+              <Form.Item<UserQueryDto> label="账号" name="userName">
+                <Input placeholder="请输入账号" />
+              </Form.Item>
+            }
+            toolbar={
+              <Permission permissions={'Sys.User.Add'}>
+                <Button
+                  color="primary"
+                  variant="solid"
+                  icon={<PlusOutlined />}
+                  onClick={() => {
+                    userEditModalRef?.current?.openModal();
+                  }}
+                >
+                  新增
+                </Button>
+              </Permission>
+            }
+          />
+        </Col>
+      </Row>
       {/* 新增/编辑弹窗 */}
       <UserEditForm ref={userEditModalRef} refresh={() => tableRef?.current?.reload()} />
       {/* 分配角色弹窗 */}

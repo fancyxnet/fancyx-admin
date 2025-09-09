@@ -9,6 +9,7 @@ using Fancyx.DataAccess.Enums;
 using Fancyx.Logger;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Generated;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.Service.System
@@ -97,8 +98,9 @@ namespace Fancyx.Admin.Service.System
         {
             var resp = await _userRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.UserName.Contains(dto.UserName!))
+                .WhereIf(dto.DeptId.HasValue, x => x.DeptId == dto.DeptId!.Value)
                 .OrderByDescending(x => x.CreationTime)
-                .Select(x => new UserListDto { Id = x.Id, Avatar = x.Avatar , UserName = x.UserName, Sex = x.Sex.GetHashCode(), IsEnabled = x.IsEnabled, NickName = x.NickName, Phone = x.Phone })
+                .Select(x => new UserListDto { Id = x.Id, Avatar = x.Avatar, UserName = x.UserName, Sex = x.Sex.GetHashCode(), IsEnabled = x.IsEnabled, NickName = x.NickName, Phone = x.Phone })
                 .PagedAsync(dto.Current, dto.PageSize);
 
             return new PagedResult<UserListDto>(resp.Total, resp.Items);
