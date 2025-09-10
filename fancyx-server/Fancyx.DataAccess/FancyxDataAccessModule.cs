@@ -1,6 +1,5 @@
 ﻿using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +18,7 @@ namespace Fancyx.DataAccess
 #if DEBUG
                      .EnableSensitiveDataLogging()
 #endif
-                     .EnableDetailedErrors(); ;
+                     .EnableDetailedErrors();
             });
             context.Services.AddScoped<IUnitOfWorkManager, UnitOfWorkManager>();
             context.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));

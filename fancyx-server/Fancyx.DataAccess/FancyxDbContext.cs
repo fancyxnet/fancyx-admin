@@ -130,6 +130,7 @@ namespace Fancyx.DataAccess
                         lambda = Expression.Lambda(Expression.AndAlso(new SwapVisitor(parameter1, filter2.Parameters[0]).Visit(lambda.Body)!, filter2.Body), filter2.Parameters);
                     }
                 }
+
                 if (lambda != null)
                 {
                     modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);

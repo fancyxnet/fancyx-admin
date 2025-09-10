@@ -3,6 +3,11 @@ using System.Linq.Expressions;
 
 namespace Fancyx.DataAccess
 {
+    /// <summary>
+    /// 通用仓储类
+    /// 对于已知的多行查询不跟踪，未知的或单行查询跟踪
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IRepository<T> where T : class
     {
         Task<int> InsertAsync(T entity, bool autoSave = true);

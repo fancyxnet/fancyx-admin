@@ -8,7 +8,7 @@ namespace Fancyx.Shared.Keys
         {
             if (!string.IsNullOrEmpty(TenantManager.Current))
             {
-                key = $"Tenant:{TenantManager.Current}:{key}";
+                key = $"tenant:{TenantManager.Current}:{key}";
             }
             return key;
         }
