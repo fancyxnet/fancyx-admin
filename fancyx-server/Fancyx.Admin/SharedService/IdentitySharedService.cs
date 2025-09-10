@@ -207,49 +207,44 @@ namespace Fancyx.Admin.SharedService
 
             var deptIds = new List<Guid>();
             var UserIds = new List<Guid>();
-            var isAll = false;
-            foreach (var powerType in powerTypes)
+            var isAll = powerTypes.Any(x => x == DeptPowerType.All);
+            if (isAll)
             {
-                if (powerType == DeptPowerType.All)
+                deptIds = await _deptRepository.GetQueryable().SelectToListAsync(x => x.Id);
+                UserIds = await _userRepository.GetQueryable().SelectToListAsync(x => x.Id);
+            }
+            else
+            {
+                var inThisLevel = false;
+                var inThisLevelAndBelow = false;
+                foreach (var powerType in powerTypes)
                 {
-                    // 所有部门
-                    deptIds = await _deptRepository.GetQueryable().SelectToListAsync(x => x.Id);
-                    // 所有员工
-                    UserIds = await _userRepository.GetQueryable().SelectToListAsync(x => x.Id);
-                    isAll = true;
-                    break;
-                }
-                switch (powerType)
-                {
-                    case DeptPowerType.ThisLevel:
+                    if (!inThisLevelAndBelow && powerType == DeptPowerType.ThisLevel)
+                    {
+                        if (curDeptId.HasValue) deptIds.Add(curDeptId.Value);
+                        inThisLevel = true;
+                    }
+                    else if (powerType == DeptPowerType.ThisLevelAndBelow)
+                    {
                         if (curDeptId.HasValue)
                         {
                             deptIds.Add(curDeptId.Value);
-                        }
-                        break;
-
-                    case DeptPowerType.ThisLevelAndBelow:
-                        if (curDeptId.HasValue)
-                        {
-                            deptIds.Add(curDeptId.Value);
-                            //以下部门
-                            var subDept = await _deptRepository.Where(x => x.ParentId == curDeptId).SelectToListAsync(x => x.Id);
+                            var subDept = await _deptRepository.Where(x => x.TreePath.Contains(curDeptId.Value.ToString())).SelectToListAsync(x => x.Id);
                             deptIds.AddRange(subDept);
                         }
-                        break;
-
-                    case DeptPowerType.Specify:
+                        inThisLevel = true;
+                        inThisLevelAndBelow = true;
+                    }
+                    else if (powerType == DeptPowerType.Specify)
+                    {
                         var specifyDeptIds = await _roleDeptRepository.Where(x => userPermission.RoleIds.Contains(x.RoleId)).SelectToListAsync(x => x.DeptId);
                         deptIds.AddRange(specifyDeptIds);
-                        break;
-
-                    case DeptPowerType.OnlyMe:
+                    }
+                    else if (!(inThisLevel || inThisLevelAndBelow) && powerType == DeptPowerType.OnlyMe)
+                    {
                         UserIds.Add(userId);
-                        break;
+                    }
                 }
-            }
-            if (!isAll)
-            {
                 if (deptIds.Count > 0)
                 {
                     deptIds = [.. deptIds.Distinct()];
