@@ -45,5 +45,15 @@ namespace Fancyx.Admin.IService.System.Dtos
         /// </summary>
         [ExcelColumn(Name = "是否启用")]
         public bool IsEnabled { get; set; }
+
+        /// <summary>
+        /// 部门名称
+        /// </summary>
+        public string? DeptName { get; set; }
+
+        /// <summary>
+        /// 岗位名称
+        /// </summary>
+        public string? PostName { get; set; }
     }
 }

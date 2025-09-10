@@ -69,6 +69,43 @@ export function getUserSimpleInfos(keyword?: string) {
   });
 }
 
+/**
+ * 获取用户编辑信息
+ * @param id 用户ID
+ * @returns
+ */
+export function getUserEditInfo(id: string) {
+  return httpClient.get<string, AppResponse<UserEditInfoDto[]>>('/api/user/EditInfo?id=' + id);
+}
+
+/**
+ * 修改用户
+ * @param dto
+ * @returns
+ */
+export function updateUser(dto: UserEditDto) {
+  return httpClient.put<UserEditDto, AppResponse<boolean>>('/api/user/update', dto);
+}
+
+export interface UserEditInfoDto {
+  id?: string | null;
+  userName: string;
+  nickName?: string | null;
+  sex: number;
+  phone?: string;
+  deptId?: string | null;
+  postId?: string | null;
+}
+
+export interface UserEditDto {
+  id?: string | null;
+  nickName?: string | null;
+  sex: number;
+  phone?: string;
+  deptId?: string | null;
+  postId?: string | null;
+}
+
 export interface UserDto {
   id?: string | null;
   userName: string;
@@ -78,6 +115,8 @@ export interface UserDto {
   sex: number;
   isEnabled: boolean;
   phone?: string;
+  deptId?: string | null;
+  postId?: string | null;
 }
 
 export interface UserQueryDto extends PageSearch {
@@ -91,6 +130,8 @@ export interface UserListDto {
   nickName: string | null;
   sex: number;
   isEnabled: boolean;
+  deptName: string | null;
+  postName: string | null;
 }
 
 export interface AssignRoleDto {

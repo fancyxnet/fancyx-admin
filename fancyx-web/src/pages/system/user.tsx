@@ -1,6 +1,13 @@
-import { Button, Switch, Space, Form, Input, Avatar, Col, Card, List, Row, Tag } from 'antd';
+import { Button, Switch, Space, Form, Input, Avatar, Col, Card, List, Row, Tag, Dropdown } from 'antd';
 import { useEffect, useRef, useState } from 'react';
-import { DeleteOutlined, ExclamationCircleFilled, KeyOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  DoubleRightOutlined,
+  EditOutlined,
+  ExclamationCircleFilled,
+  KeyOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
 import useApp from 'antd/es/app/useApp';
 import {
   deleteUser,
@@ -20,6 +27,7 @@ import Permission from '@/components/Permission';
 import { getDeptSimpleInfos, type DeptSimpleInfoDto } from '@/api/organization/dept';
 import Search from 'antd/es/input/Search';
 import './styles/user.scss';
+import { useAuthProvider } from '@/components/AuthProvider';
 
 const UserTable = () => {
   const tableRef = useRef<SmartTableRef>(null);
@@ -28,6 +36,7 @@ const UserTable = () => {
   const assignRoleRef = useRef<AssignRoleFormRef>(null);
   const resetUserPwdFormRef = useRef<ResetUserPwdFormRef>(null);
   const { ossDomain } = useApplication();
+  const { hasPermission } = useAuthProvider();
   const columns: SmartTableColumnType[] = [
     {
       key: 'index',
@@ -73,41 +82,86 @@ const UserTable = () => {
       dataIndex: 'phone',
     },
     {
+      title: '部门',
+      dataIndex: 'deptName',
+    },
+    {
+      title: '岗位',
+      dataIndex: 'postName',
+    },
+    {
       title: '操作',
       key: 'action',
-      width: 240,
+      width: 180,
       fixed: 'right',
-      render: (_: any, record: UserListDto) => (
-        <Space>
-          <Permission permissions={'Sys.User.ResetPwd'}>
-            <Button
-              type="link"
-              icon={<KeyOutlined />}
-              onClick={() => {
-                resetUserPwdFormRef?.current?.openModal(record);
-              }}
-            >
-              重置密码
-            </Button>
-          </Permission>
-          <Permission permissions={'Sys.User.AssignRole'}>
-            <Button
-              type="link"
-              onClick={() => {
-                assignRoleRef?.current?.openModal(record);
-              }}
-            >
-              <ProIcon icon="iconify:simple-line-icons:check" />
-              分配角色
-            </Button>
-          </Permission>
-          <Permission permissions={'Sys.User.Delete'}>
-            <Button type="link" icon={<DeleteOutlined />} danger onClick={() => rowDelete(record.id)}>
-              删除
-            </Button>
-          </Permission>
-        </Space>
-      ),
+      render: (_: any, record: UserListDto) => {
+        const curDropdownItems = [];
+        if (hasPermission!('Sys.User.AssignRole')) {
+          curDropdownItems.push({
+            key: 'assignRole',
+            label: (
+              <a
+                onClick={() => {
+                  assignRoleRef?.current?.openModal(record);
+                }}
+              >
+                <ProIcon icon="iconify:simple-line-icons:check" className="mr-4" />
+                分配角色
+              </a>
+            ),
+            onClick: () => {},
+          });
+        }
+        if (hasPermission!('Sys.User.ResetPwd')) {
+          curDropdownItems.push({
+            key: 'resetPwd',
+            label: (
+              <a
+                onClick={() => {
+                  resetUserPwdFormRef?.current?.openModal(record);
+                }}
+              >
+                <KeyOutlined className="mr-4" />
+                重置密码
+              </a>
+            ),
+            onClick: () => {},
+          });
+        }
+        return (
+          <Space>
+            <Permission permissions={'Sys.User.Update'}>
+              <Button
+                type="link"
+                icon={<EditOutlined />}
+                key="edit"
+                onClick={() => {
+                  userEditModalRef?.current?.openModal(record.id);
+                }}
+              >
+                编辑
+              </Button>
+            </Permission>
+            <Permission permissions={'Sys.User.Delete'}>
+              <Button type="link" icon={<DeleteOutlined />} danger onClick={() => rowDelete(record.id)}>
+                删除
+              </Button>
+            </Permission>
+            <Permission permissions={['Sys.User.AssignRole', 'Sys.User.ResetPwd']} mode="some">
+              <Dropdown
+                placement="bottom"
+                menu={{
+                  items: curDropdownItems,
+                }}
+              >
+                <Button type="link" icon={<DoubleRightOutlined />}>
+                  更多
+                </Button>
+              </Dropdown>
+            </Permission>
+          </Space>
+        );
+      },
     },
   ];
   const [deptData, setDeptData] = useState<DeptSimpleInfoDto[]>([]);
@@ -184,7 +238,6 @@ const UserTable = () => {
                 </List.Item>
               )}
             />
-            
           </Card>
         </Col>
         <Col span={18}>

@@ -74,5 +74,12 @@ namespace Fancyx.Admin.IService.System
         /// <param name="dto"></param>
         /// <returns></returns>
         Task UpdateUserAsync(UserEditDto dto);
+
+        /// <summary>
+        /// 获取用户编辑信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<UserEditInfoDto> GetUserEditInfoAsync(Guid id); 
     }
 }

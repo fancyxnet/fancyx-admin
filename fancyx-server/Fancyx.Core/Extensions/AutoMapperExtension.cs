@@ -8,5 +8,10 @@ namespace Fancyx.Core.Extensions
         {
             return AutoMapperHelper.Instance.Map<List<TSource>, List<TTarget>>(sources);
         }
+
+        public static TTarget Mapper<TSource, TTarget>(this object obj)
+        {
+            return AutoMapperHelper.Instance.Map<TTarget>(obj);
+        }
     }
 }

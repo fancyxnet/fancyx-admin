@@ -164,5 +164,17 @@ namespace Fancyx.Admin.Controllers.System
             await _userService.UpdateUserAsync(dto);
             return Result.Ok();
         }
+
+        /// <summary>
+        /// 用户编辑信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("EditInfo")]
+        public async Task<AppResponse<UserEditInfoDto>> GetUserEditInfoAsync(Guid id)
+        {
+            var data = await _userService.GetUserEditInfoAsync(id);
+            return Result.Data(data);
+        }
     }
 }

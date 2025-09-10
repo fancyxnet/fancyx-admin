@@ -1,6 +1,7 @@
 using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Admin.SharedService;
+using Fancyx.Core.Extensions;
 using Fancyx.Core.Interfaces;
 using Fancyx.Core.Utils;
 using Fancyx.DataAccess;
@@ -20,14 +21,16 @@ namespace Fancyx.Admin.Service.System
         private readonly IRepository<UserRole> _userRoleRepository;
         private readonly IdentitySharedService _identityDomainService;
         private readonly ICurrentUser _currentUser;
+        private readonly FancyxDbContext _context;
 
         public UserService(IRepository<User> userRepository, IRepository<UserRole> userRoleRepository
-            , IdentitySharedService identityDomainService, ICurrentUser currentUser)
+            , IdentitySharedService identityDomainService, ICurrentUser currentUser, FancyxDbContext context)
         {
             _userRepository = userRepository;
             _userRoleRepository = userRoleRepository;
             _identityDomainService = identityDomainService;
             _currentUser = currentUser;
+            _context = context;
         }
 
         public async Task<Guid> AddUserAsync(UserDto dto)
@@ -102,12 +105,31 @@ namespace Fancyx.Admin.Service.System
 
         public async Task<PagedResult<UserListDto>> GetUserListAsync(UserQueryDto dto)
         {
-            var resp = await _userRepository.GetQueryable()
-                .WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.UserName.Contains(dto.UserName!))
-                .WhereIf(dto.DeptId.HasValue, x => x.DeptId == dto.DeptId!.Value)
-                .OrderByDescending(x => x.CreationTime)
-                .Select(x => new UserListDto { Id = x.Id, Avatar = x.Avatar, UserName = x.UserName, Sex = x.Sex.GetHashCode(), IsEnabled = x.IsEnabled, NickName = x.NickName, Phone = x.Phone })
-                .PagedAsync(dto.Current, dto.PageSize);
+            //var resp = await _userRepository.GetQueryable()
+            //    .WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.UserName.Contains(dto.UserName!))
+            //    .WhereIf(dto.DeptId.HasValue, x => x.DeptId == dto.DeptId!.Value)
+            //    .OrderByDescending(x => x.CreationTime)
+            //    .Select(x => new UserListDto { Id = x.Id, Avatar = x.Avatar, UserName = x.UserName, Sex = x.Sex.GetHashCode(), IsEnabled = x.IsEnabled, NickName = x.NickName, Phone = x.Phone })
+            //    .PagedAsync(dto.Current, dto.PageSize);
+
+            var resp = await _context.User.GroupJoin(_context.Dept, u => u.DeptId, d => d.Id, (u, d) => new { u, d })
+                .SelectMany(x => x.d.DefaultIfEmpty(), (x, d) => new { x.u, d })
+                .GroupJoin(_context.Position, m => m.u.PostId, p => p.Id, (m, p) => new { m, p })
+                .WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.m.u.UserName.Contains(dto.UserName!))
+                .WhereIf(dto.DeptId.HasValue, x => x.m.u.DeptId == dto.DeptId!.Value)
+                .OrderByDescending(x => x.m.u.CreationTime)
+                .SelectMany(x => x.p.DefaultIfEmpty(), (x, p) => new UserListDto
+                {
+                    Id = x.m.u.Id,
+                    Avatar = x.m.u.Avatar,
+                    UserName = x.m.u.UserName,
+                    Sex = x.m.u.Sex.GetHashCode(),
+                    IsEnabled = x.m.u.IsEnabled,
+                    NickName = x.m.u.NickName,
+                    Phone = x.m.u.Phone,
+                    PostName = p != null ? p.Name : null,
+                    DeptName = x.m.d != null ? x.m.d.Name : null
+                }).PagedAsync(dto.Current, dto.PageSize);
 
             return new PagedResult<UserListDto>(resp.Total, resp.Items);
         }
@@ -177,10 +199,17 @@ namespace Fancyx.Admin.Service.System
                 }
             }
             user.NickName = dto.NickName;
+            user.Phone = dto.Phone;
             user.Sex = dto.Sex;
             user.DeptId = dto.DeptId;
             user.PostId = dto.PostId;
             await _userRepository.UpdateAsync(user);
+        }
+
+        public async Task<UserEditInfoDto> GetUserEditInfoAsync(Guid id)
+        {
+            var user = await _userRepository.FindAsync(id) ?? throw new EntityNotFoundException();
+            return user.Mapper<User, UserEditInfoDto>();
         }
     }
 }

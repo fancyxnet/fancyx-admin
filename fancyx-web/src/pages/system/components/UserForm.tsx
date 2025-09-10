@@ -1,27 +1,56 @@
-import { Form, Input, Modal, Radio } from 'antd';
-import { forwardRef, useImperativeHandle, useState } from 'react';
-import { addUser, type UserDto } from '@/api/system/user.ts';
+import { Form, Input, Modal, Radio, TreeSelect } from 'antd';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import { addUser, getUserEditInfo, updateUser, type UserDto, type UserEditDto } from '@/api/system/user.ts';
 import { Patterns } from '@/utils/globalValue.ts';
 import useApp from 'antd/es/app/useApp';
+import { type DeptListDto, getDeptList } from '@/api/organization/dept.ts';
+import { getPositionOptions } from '@/api/organization/position.ts';
+import type { AppOptionTree } from '@/types/api';
 
 interface ModalProps {
   refresh?: () => void; // 定义 props 的类型
 }
 
 export interface ModalRef {
-  openModal: () => void; // 定义 ref 的类型
+  openModal: (id?: string) => void; // 定义 ref 的类型
 }
 
 const UserModal = forwardRef<ModalRef, ModalProps>((props, ref) => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [form] = Form.useForm();
   const { message } = useApp();
+  const [deptData, setDeptData] = useState<DeptListDto[]>([]);
+  const [positionData, setPositionData] = useState<AppOptionTree[]>([]);
+  const [id, setId] = useState<string>();
 
   useImperativeHandle(ref, () => ({
     openModal,
   }));
+  useEffect(() => {
+    if (isOpenModal) {
+      fetchDeptData();
+      fetchPositionData();
+    }
+  }, [isOpenModal]);
 
-  const openModal = () => {
+  const fetchDeptData = () => {
+    getDeptList({}).then((res) => {
+      setDeptData(res.data!);
+    });
+  };
+  const fetchPositionData = () => {
+    getPositionOptions().then((res) => {
+      setPositionData(res.data!);
+    });
+  };
+
+  const openModal = (id?: string) => {
+    if (id && id.length > 0) {
+      getUserEditInfo(id).then((res) => {
+        form.setFieldsValue(res.data);
+      });
+    }
+    setId(id);
     setIsOpenModal(true);
   };
 
@@ -34,13 +63,25 @@ const UserModal = forwardRef<ModalRef, ModalProps>((props, ref) => {
     form.submit();
   };
 
-  const onFinish = (values: UserDto) => {
-    addUser(values).then(() => {
-      message.success('新增成功');
-      setIsOpenModal(false);
-      form.resetFields();
-      props?.refresh?.();
-    });
+  const onFinish = (values: UserDto | UserEditDto) => {
+    if (id && id.length > 0) {
+      const editDto = values as UserEditDto;
+      editDto.id = id;
+      updateUser(editDto).then(() => {
+        message.success('编辑成功');
+        setIsOpenModal(false);
+        setId('');
+        form.resetFields();
+        props?.refresh?.();
+      });
+    } else {
+      addUser(values as UserDto).then(() => {
+        message.success('新增成功');
+        setIsOpenModal(false);
+        form.resetFields();
+        props?.refresh?.();
+      });
+    }
   };
   const pwdPatternValidateItem = {
     pattern: Patterns.LoginPassword,
@@ -48,7 +89,13 @@ const UserModal = forwardRef<ModalRef, ModalProps>((props, ref) => {
   };
 
   return (
-    <Modal title="新增用户" open={isOpenModal} onCancel={onCancel} onOk={onOk} maskClosable={false}>
+    <Modal
+      title={id && id.length > 0 ? '编辑用户' : '新增用户'}
+      open={isOpenModal}
+      onCancel={onCancel}
+      onOk={onOk}
+      maskClosable={false}
+    >
       <Form<UserDto>
         name="wrap"
         labelCol={{ flex: '80px' }}
@@ -59,11 +106,13 @@ const UserModal = forwardRef<ModalRef, ModalProps>((props, ref) => {
         onFinish={onFinish}
       >
         <Form.Item label="账号" name="userName" rules={[{ required: true }, { max: 32 }]}>
-          <Input placeholder="请输入账号" />
+          <Input placeholder="请输入账号" disabled={Boolean(id) && Boolean(id!.length)} />
         </Form.Item>
-        <Form.Item<UserDto> label="密码" name="password" rules={[{ required: true }, pwdPatternValidateItem]}>
-          <Input.Password placeholder="请输入密码" />
-        </Form.Item>
+        {(id && id.length > 0) ?? (
+          <Form.Item<UserDto> label="密码" name="password" rules={[{ required: true }, pwdPatternValidateItem]}>
+            <Input.Password placeholder="请输入密码" />
+          </Form.Item>
+        )}
         <Form.Item label="昵称" name="nickName" rules={[{ required: true }, { max: 64 }]}>
           <Input placeholder="请输入昵称" />
         </Form.Item>
@@ -84,6 +133,39 @@ const UserModal = forwardRef<ModalRef, ModalProps>((props, ref) => {
           ]}
         >
           <Input placeholder="请输入手机号" />
+        </Form.Item>
+        <Form.Item label="所属部门" name="deptId">
+          <TreeSelect
+            showSearch
+            style={{ width: '100%' }}
+            styles={{
+              popup: {
+                root: { maxHeight: 400, overflow: 'auto' },
+              },
+            }}
+            placeholder="请选择所属部门"
+            allowClear
+            treeData={deptData}
+            fieldNames={{
+              label: 'name',
+              value: 'id',
+              children: 'children',
+            }}
+          />
+        </Form.Item>
+        <Form.Item label="担任职位" name="postId">
+          <TreeSelect
+            showSearch
+            style={{ width: '100%' }}
+            styles={{
+              popup: {
+                root: { maxHeight: 400, overflow: 'auto' },
+              },
+            }}
+            placeholder="请选择担任职位"
+            allowClear
+            treeData={positionData}
+          />
         </Form.Item>
       </Form>
     </Modal>

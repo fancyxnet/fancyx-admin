@@ -64,12 +64,10 @@ const Role = () => {
           curDropdownItems.push({
             key: 'assignMenu',
             label: (
-              <Permission permissions={'Sys.Role.AssignMenu'}>
-                <a onClick={() => openAssignModal(record)}>
-                  <HddOutlined className="mr-4" />
-                  功能权限
-                </a>
-              </Permission>
+              <a onClick={() => openAssignModal(record)}>
+                <HddOutlined className="mr-4" />
+                功能权限
+              </a>
             ),
             onClick: () => {},
           });
@@ -78,12 +76,10 @@ const Role = () => {
           curDropdownItems.push({
             key: 'assignDataScope',
             label: (
-              <Permission permissions={'Sys.Role.AssignDataScope'}>
-                <a onClick={() => openAssignDataScopeModal(record)}>
-                  <PieChartOutlined className="mr-4" />
-                  数据权限
-                </a>
-              </Permission>
+              <a onClick={() => openAssignDataScopeModal(record)}>
+                <PieChartOutlined className="mr-4" />
+                数据权限
+              </a>
             ),
             onClick: () => {},
           });

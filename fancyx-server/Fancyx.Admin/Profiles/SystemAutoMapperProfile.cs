@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 
 using Fancyx.Admin.IService.Account.Dtos;
-using Fancyx.Admin.IService.Monitor.Dtos;
 using Fancyx.Admin.IService.System.Dtos;
-using Fancyx.DataAccess.Entities.Log;
 using Fancyx.DataAccess.Entities.System;
 
 namespace Fancyx.Admin.Profiles
@@ -20,6 +18,7 @@ namespace Fancyx.Admin.Profiles
             CreateMap<Notification, UserNotificationListDto>();
             CreateMap<Config, ConfigListDto>();
             CreateMap<DictData, DictDataListDto>();
+            CreateMap<User, UserEditInfoDto>(MemberList.None);
         }
     }
 }
