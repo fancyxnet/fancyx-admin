@@ -58,7 +58,7 @@ namespace Fancyx.Admin.Service.System
 
         public async Task UpdateNotificationAsync(NotificationDto dto)
         {
-            var entity = await _repository.GetAsync(x => x.Id == dto.Id) ?? throw new EntityNotFoundException();
+            var entity = await _repository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
             if (entity.IsReaded)
             {
                 throw new BusinessException(message: "已读消息不能修改");

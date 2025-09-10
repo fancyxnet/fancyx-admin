@@ -31,7 +31,7 @@ namespace Fancyx.Admin.Service.System
             return true;
         }
 
-        [AsyncLogRecord(LogRecordConsts.SysDictData, LogRecordConsts.SysDictDataDeleteSubType, "{{ids}}", LogRecordConsts.SysDictDataDeleteContent)]
+        [AsyncLogRecord(LogRecordConsts.DictData, LogRecordConsts.DictDataDeleteSubType, "{{ids}}", LogRecordConsts.DictDataDeleteContent)]
         public async Task<bool> DeleteDictDataAsync(Guid[] ids)
         {
             await _dictRepository.DeleteAsync(x => ids.Contains(x.Id));
@@ -52,11 +52,11 @@ namespace Fancyx.Admin.Service.System
             return new PagedResult<DictDataListDto>(resp.Total, resp.Items.MapperList<DictData, DictDataListDto>());
         }
 
-        [AsyncLogRecord(LogRecordConsts.SysDictData, LogRecordConsts.SysDictDataUpdateSubType, "{{id}}", LogRecordConsts.SysDictDataUpdateContent)]
+        [AsyncLogRecord(LogRecordConsts.DictData, LogRecordConsts.DictDataUpdateSubType, "{{id}}", LogRecordConsts.DictDataUpdateContent)]
         public async Task<bool> UpdateDictDataAsync(DictDataDto dto)
         {
             if (!dto.Id.HasValue) throw new ArgumentNullException(nameof(dto.Id));
-            var entity = await _dictRepository.GetAsync(x => x.Id == dto.Id) ?? throw new BusinessException("数据不存在");
+            var entity = await _dictRepository.FindAsync(dto.Id) ?? throw new BusinessException("数据不存在");
             var isExist = await _dictRepository.AnyAsync(x => x.Value.ToLower() == dto.Value.ToLower());
             if (entity.Value.ToLower() != dto.Value.ToLower() && isExist)
             {

@@ -15,6 +15,8 @@ namespace Fancyx.DataAccess
 
         Task<T?> GetAsync(Expression<Func<T, bool>> whereExpression);
 
+        ValueTask<T?> FindAsync<TKey>(TKey id);
+
         Task<List<T>> GetListAsync(Expression<Func<T, bool>> whereExpression);
 
         Task<List<T>> GetListAsync();

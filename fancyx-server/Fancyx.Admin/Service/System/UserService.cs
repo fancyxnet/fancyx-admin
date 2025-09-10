@@ -32,10 +32,14 @@ namespace Fancyx.Admin.Service.System
 
         public async Task<Guid> AddUserAsync(UserDto dto)
         {
-            var isExist = await _userRepository.AnyAsync(x => x.UserName.ToLower() == dto.UserName.ToLower());
-            if (isExist)
+            var userNameIsExist = await _userRepository.AnyAsync(x => x.UserName.ToLower() == dto.UserName.ToLower());
+            if (userNameIsExist)
             {
                 throw new BusinessException("账号已存在");
+            }
+            if (!string.IsNullOrEmpty(dto.Phone) && await _userRepository.AnyAsync(x => x.Phone == dto.Phone))
+            {
+                throw new BusinessException("手机号已存在");
             }
             if (!RegexCodeGen.Password().IsMatch(dto.Password))
             {
@@ -50,7 +54,9 @@ namespace Fancyx.Admin.Service.System
                 NickName = dto.NickName ?? dto.UserName,
                 Sex = dto.Sex,
                 Phone = dto.Phone,
-                IsEnabled = true
+                IsEnabled = true,
+                DeptId = dto.DeptId,
+                PostId = dto.PostId
             };
             if (string.IsNullOrWhiteSpace(dto.Avatar))
             {
@@ -125,10 +131,10 @@ namespace Fancyx.Admin.Service.System
             return true;
         }
 
-        [AsyncLogRecord(LogRecordConsts.SysUser, LogRecordConsts.SysUserResetPwdSubType, "{{id}}", LogRecordConsts.SysUserResetPwdContent)]
+        [AsyncLogRecord(LogRecordConsts.User, LogRecordConsts.UserResetPwdSubType, "{{id}}", LogRecordConsts.UserResetPwdContent)]
         public async Task ResetUserPasswordAsync(ResetUserPwdDto dto)
         {
-            var user = await _userRepository.GetAsync(x => x.Id == dto.UserId) ?? throw new EntityNotFoundException();
+            var user = await _userRepository.FindAsync(dto.UserId) ?? throw new EntityNotFoundException();
             if (!RegexCodeGen.Password().IsMatch(dto.Password))
             {
                 throw new BusinessException("密码格式不正确");
@@ -158,6 +164,23 @@ namespace Fancyx.Admin.Service.System
                 .OrderByDescending(x => x.CreationTime)
                 .Select(x => new UserListDto { Id = x.Id, UserName = x.UserName, Phone = x.Phone, Avatar = x.Avatar, IsEnabled = x.IsEnabled, NickName = x.NickName, Sex = x.Sex.GetHashCode() })
                 .ToListAsync();
+        }
+
+        public async Task UpdateUserAsync(UserEditDto dto)
+        {
+            var user = await _userRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
+            if (!string.IsNullOrEmpty(dto.Phone) && user.Phone != dto.Phone)
+            {
+                if (await _userRepository.AnyAsync(x => x.Phone == dto.Phone))
+                {
+                    throw new BusinessException("手机号已存在");
+                }
+            }
+            user.NickName = dto.NickName;
+            user.Sex = dto.Sex;
+            user.DeptId = dto.DeptId;
+            user.PostId = dto.PostId;
+            await _userRepository.UpdateAsync(user);
         }
     }
 }

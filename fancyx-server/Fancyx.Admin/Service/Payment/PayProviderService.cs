@@ -56,7 +56,7 @@ namespace Fancyx.Admin.Service.Payment
 
         public async Task UpdatePayProviderAsync(PayProviderDto dto)
         {
-            var entity = await _payProviderRepository.GetAsync(x => x.Id == dto.Id) ?? throw new EntityNotFoundException();
+            var entity = await _payProviderRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
             if (entity.Name != dto.Name && await _payProviderRepository.AnyAsync(x => x.Name == dto.Name))
             {
                 throw new BusinessException($"支付渠道{dto.Name}已存在");

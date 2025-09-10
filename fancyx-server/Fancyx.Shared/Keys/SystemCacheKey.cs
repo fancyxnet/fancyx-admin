@@ -82,10 +82,10 @@
         public static string LoginSmsCode(string phone) => WithTenantPrefix($"admin:login_sms_code:{phone}");
     
         /// <summary>
-        /// 部门权限KEY
+        /// 用户按部门数据权限KEY
         /// </summary>
         /// <param name="UserId"></param>
         /// <returns></returns>
-        public static string EmployeeDeptPower(Guid UserId) => WithTenantPrefix($"employee_dept_power:{UserId}");
+        public static string UserDeptPower(Guid UserId) => WithTenantPrefix($"user_dept_power:{UserId}");
     }
 }

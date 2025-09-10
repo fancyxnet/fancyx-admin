@@ -95,8 +95,7 @@ namespace Fancyx.Admin.Service.Organization
         public async Task<bool> UpdatePositionAsync(PositionDto dto)
         {
             if (!dto.Id.HasValue) throw new ArgumentNullException(nameof(dto.Id));
-            var entity = await _positionRepository.GetAsync(x => x.Id == dto.Id)
-                ?? throw new BusinessException("数据不存在");
+            var entity = await _positionRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
             string code = dto.Code!.ToLower();
             if (entity.Code.ToLower() != code && await _positionRepository.AnyAsync(x => x.Code.ToLower() == code))
             {

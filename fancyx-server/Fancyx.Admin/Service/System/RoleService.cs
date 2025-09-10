@@ -78,7 +78,7 @@ namespace Fancyx.Admin.Service.System
             var hasUsers = await _userRoleRepository.AnyAsync(x => x.RoleId == id);
             if (hasUsers) throw new BusinessException(message: "角色已分配给用户，不能删除");
 
-            var role = await _roleRepository.GetAsync(x => x.Id == id) ?? throw new EntityNotFoundException();
+            var role = await _roleRepository.FindAsync(id) ?? throw new EntityNotFoundException();
             if (role.RoleName == AdminConsts.SuperAdminRole)
             {
                 throw new BusinessException(message: $"{role.RoleName}不能删除");
@@ -111,8 +111,8 @@ namespace Fancyx.Admin.Service.System
 
         public async Task<bool> UpdateRoleAsync(RoleDto dto)
         {
-            if (!dto.Id.HasValue) throw new ArgumentNullException(nameof(dto.Id));
-            var entity = await _roleRepository.GetAsync(x => x.Id == dto.Id) ?? throw new BusinessException("数据不存在");
+            ArgumentNullException.ThrowIfNull(dto.Id);
+            var entity = await _roleRepository.FindAsync(dto.Id) ?? throw new BusinessException("数据不存在");
             var isExist = await _roleRepository.AnyAsync(x => x.RoleName.ToLower() == dto.RoleName.ToLower());
             if (entity.RoleName.ToLower() != dto.RoleName.ToLower() && isExist)
             {
@@ -144,7 +144,7 @@ namespace Fancyx.Admin.Service.System
 
         public async Task<(RolePowerInfoDto, List<DeptTreeOptionDto>)> GetRoleDeptPowerInfoAsync(Guid roleId)
         {
-            var role = await _roleRepository.GetAsync(x => x.Id == roleId);
+            var role = await _roleRepository.FindAsync(roleId);
             if (role == null) return (new RolePowerInfoDto(), []);
 
             var info = new RolePowerInfoDto()
@@ -196,7 +196,7 @@ namespace Fancyx.Admin.Service.System
         [AsyncTransactional]
         public async Task AssignDataScopeAsync(AssignDataScopeDto dto)
         {
-            var role = await _roleRepository.GetAsync(x => x.Id == dto.RoleId);
+            var role = await _roleRepository.FindAsync(dto.RoleId);
             if (role == null) throw new BusinessException("角色不存在");
 
             await _roleDeptRepository.DeleteAsync(x => x.RoleId == dto.RoleId);

@@ -150,5 +150,19 @@ namespace Fancyx.Admin.Controllers.System
             memoryStream.Seek(0, SeekOrigin.Begin);
             return File(memoryStream, MimeTypesHelper.Instance.GetMimeTypeByExtension("xlsx"), "用户列表.xlsx");
         }
+
+        /// <summary>
+        /// 修改用户
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPut("update")]
+        [HasPermission("Sys.User.Update")]
+        [ApiAccessLog(operateName: "修改用户")]
+        public async Task<AppResponse<bool>> UpdateUserAsync([FromBody] UserEditDto dto)
+        {
+            await _userService.UpdateUserAsync(dto);
+            return Result.Ok();
+        }
     }
 }

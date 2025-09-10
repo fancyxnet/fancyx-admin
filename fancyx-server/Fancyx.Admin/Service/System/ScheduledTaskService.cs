@@ -57,7 +57,7 @@ namespace Fancyx.Admin.Service.System
         {
             ArgumentNullException.ThrowIfNull(dto.Id, nameof(dto));
 
-            var entity = await _scheduledTaskRepository.GetAsync(x => x.Id == dto.Id.Value) ?? throw new EntityNotFoundException();
+            var entity = await _scheduledTaskRepository.FindAsync(dto.Id.Value) ?? throw new EntityNotFoundException();
             await _jobControl.UpdateJobAsync(entity.TaskKey, dto.TaskKey, dto.CronExpression, dto.Description, dto.IsActive);
         }
     }

@@ -33,7 +33,7 @@ namespace Fancyx.Admin.Service.Organization
             var entity = AutoMapperHelper.Instance.Map<DeptDto, Dept>(dto);
             entity.ParentId = dto.ParentId;
             entity.Code = dto.Code;
-            entity.SetTreeProperties(await _deptRepository.GetAsync(x => x.Id == dto.ParentId));
+            entity.SetTreeProperties(await _deptRepository.FindAsync(dto.ParentId));
 
             await _deptRepository.InsertAsync(entity);
             return true;
@@ -102,7 +102,7 @@ namespace Fancyx.Admin.Service.Organization
         {
             if (!dto.Id.HasValue) throw new ArgumentNullException(nameof(dto.Id));
 
-            var entity = await _deptRepository.GetAsync(x => x.Id == dto.Id) ?? throw new EntityNotFoundException();
+            var entity = await _deptRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
             if (!entity.Code.Equals(dto.Code, StringComparison.CurrentCultureIgnoreCase) &&
                 await _deptRepository.AnyAsync(x => x.Code.ToLower() == dto.Code!.ToLower()))
             {
@@ -130,7 +130,7 @@ namespace Fancyx.Admin.Service.Organization
                 {
                     throw new BusinessException("不能选择子部门作为上级部门");
                 }
-                entity.SetTreeProperties(await _deptRepository.GetAsync(x => x.Id == entity.ParentId));
+                entity.SetTreeProperties(await _deptRepository.FindAsync(entity.ParentId));
             }
 
             await _deptRepository.UpdateAsync(entity);

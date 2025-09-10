@@ -67,5 +67,12 @@ namespace Fancyx.Admin.IService.System
         /// <param name="dto"></param>
         /// <returns></returns>
         Task<List<UserListDto>> ExportUserListAsync(UserQueryDto dto);
+
+        /// <summary>
+        /// 编辑用户信息
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        Task UpdateUserAsync(UserEditDto dto);
     }
 }

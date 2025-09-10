@@ -94,7 +94,7 @@ namespace Fancyx.Payment.Services
         {
             var paymentOrder = await _paymentOrderRepository.GetAsync(x => x.OrderNo == orderNo)
                 ?? throw new PaymentFailureException($"找不到单号{orderNo}的付款单");
-            var payProvider = await _payProviderRepository.GetAsync(x => x.Id == paymentOrder.ProviderId)
+            var payProvider = await _payProviderRepository.FindAsync(paymentOrder.ProviderId)
                 ?? throw new PaymentFailureException($"找不到{paymentOrder.ProviderId}的支付渠道");
 
             var client = await GetAlipayClientAsync(payProvider);
@@ -257,7 +257,7 @@ namespace Fancyx.Payment.Services
             var result = new RefundResult() { IsSuccess = false };
             var paymentOrder = await _paymentOrderRepository.GetAsync(x => x.OrderNo == req.OrderNo)
                 ?? throw new RefundException($"找不到单号{req.OrderNo}的付款单");
-            var payProvider = await _payProviderRepository.GetAsync(x => x.Id == paymentOrder.ProviderId)
+            var payProvider = await _payProviderRepository.FindAsync(paymentOrder.ProviderId)
                 ?? throw new RefundException($"找不到{paymentOrder.ProviderId}的支付渠道");
             if (paymentOrder.PayStatus != PayStatus.Success.GetStatus() && paymentOrder.PayStatus != PayStatus.Refunded.GetStatus())
             {

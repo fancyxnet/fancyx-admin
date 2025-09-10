@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace Fancyx.Admin.IService.Organization.Dtos
 {
     public class PositionGroupListDto
@@ -25,9 +23,9 @@ namespace Fancyx.Admin.IService.Organization.Dtos
         public Guid? ParentId { get; set; }
 
         /// <summary>
-        /// 层级父ID
+        /// 树形路径
         /// </summary>
-        public string? ParentIds { get; set; }
+        public string TreePath { get; set; } = null!;
 
         /// <summary>
         /// 排序值

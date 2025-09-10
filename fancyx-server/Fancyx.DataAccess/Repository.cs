@@ -13,7 +13,7 @@ namespace Fancyx.DataAccess
         private readonly ICurrentUser _currentUser;
         private static readonly Type _fullAuditedEntityType = typeof(FullAuditedEntity);
         private static readonly Type _efCoreExtensionType = typeof(EfCoreExtension);
-        private static Type _currentType = typeof(T);
+        private static readonly Type _currentType = typeof(T);
 
         public Repository(FancyxDbContext context, ICurrentUser currentUser)
         {
@@ -96,6 +96,11 @@ namespace Fancyx.DataAccess
         public Task<T?> GetAsync(Expression<Func<T, bool>> whereExpression)
         {
             return _context.Set<T>().FirstOrDefaultAsync(whereExpression);
+        }
+
+        public ValueTask<T?> FindAsync<TKey>(TKey id)
+        {
+            return _context.Set<T>().FindAsync(id);
         }
 
         public async Task<int> UpdateAsync(T entity, bool autoSave = true)

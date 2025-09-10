@@ -18,7 +18,7 @@ public class DictTypeService : IDictTypeService
         _dictDataRepository = dictDataRepository;
     }
 
-    [AsyncLogRecord(LogRecordConsts.SysDictType, LogRecordConsts.SysDictAddSubType, "{{dict.Id}}", LogRecordConsts.SysDictAddContent)]
+    [AsyncLogRecord(LogRecordConsts.DictType, LogRecordConsts.DictAddSubType, "{{dict.Id}}", LogRecordConsts.DictAddContent)]
     public async Task AddDictTypeAsync(DictTypeDto dto)
     {
         if (await _dictTypeRepository.AnyAsync(x => x.Type.ToLower() == dto.DictType.ToLower()))
@@ -39,7 +39,7 @@ public class DictTypeService : IDictTypeService
         await _dictTypeRepository.InsertAsync(entity);
     }
 
-    [AsyncLogRecord(LogRecordConsts.SysDictType, LogRecordConsts.SysDictDeleteSubType, "{{dict.Id}}", LogRecordConsts.SysDictDeleteContent)]
+    [AsyncLogRecord(LogRecordConsts.DictType, LogRecordConsts.DictDeleteSubType, "{{dict.Id}}", LogRecordConsts.DictDeleteContent)]
     public async Task DeleteDictTypeAsync(string dictType)
     {
         var dict = await _dictDataRepository.GetAsync(x => x.DictType.ToLower() == dictType.ToLower()) ?? throw new EntityNotFoundException();
@@ -74,7 +74,7 @@ public class DictTypeService : IDictTypeService
 
     public async Task UpdateDictTypeAsync(DictTypeDto dto)
     {
-        var entity = await _dictTypeRepository.GetAsync(x => x.Id == dto.Id) ?? throw new EntityNotFoundException();
+        var entity = await _dictTypeRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
         if (!entity.Type.Equals(dto.DictType, StringComparison.CurrentCultureIgnoreCase) 
             && await _dictTypeRepository.AnyAsync(x => x.Type.ToLower() == dto.DictType.ToLower()))
         {
@@ -97,7 +97,7 @@ public class DictTypeService : IDictTypeService
             .SelectToListAsync(x => new AppOption(x.Label, x.Value));
     }
 
-    [AsyncLogRecord(LogRecordConsts.SysDictType, LogRecordConsts.SysDictBatchDeleteSubType, "{{ids}}", LogRecordConsts.SysDictBatchDeleteContent)]
+    [AsyncLogRecord(LogRecordConsts.DictType, LogRecordConsts.DictBatchDeleteSubType, "{{ids}}", LogRecordConsts.DictBatchDeleteContent)]
     public async Task DeleteDictTypesAsync(Guid[] ids)
     {
         var dictTypes = await _dictTypeRepository.Where(x => ids.Contains(x.Id)).SelectToListAsync(x => x.Type);

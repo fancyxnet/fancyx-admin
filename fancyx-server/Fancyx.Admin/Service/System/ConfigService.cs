@@ -51,7 +51,7 @@ namespace Fancyx.Admin.Service.System
 
         public async Task DeleteConfigAsync(Guid id)
         {
-            var entity = await _configRepository.GetAsync(x => x.Id == id);
+            var entity = await _configRepository.FindAsync(id);
             if (entity == null)
             {
                 throw new BusinessException("数据已删除");
@@ -66,14 +66,10 @@ namespace Fancyx.Admin.Service.System
             }
         }
 
-        [AsyncLogRecord(LogRecordConsts.SysConfig, LogRecordConsts.SysConfigUpdateSubType, "{{id}}", LogRecordConsts.SysConfigUpdateContent)]
+        [AsyncLogRecord(LogRecordConsts.Config, LogRecordConsts.ConfigUpdateSubType, "{{id}}", LogRecordConsts.ConfigUpdateContent)]
         public async Task UpdateConfigAsync(ConfigDto dto)
         {
-            var entity = await _configRepository.GetAsync(x => x.Id == dto.Id);
-            if (entity == null)
-            {
-                throw new BusinessException("数据不存在");
-            }
+            var entity = await _configRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
 
             var key = dto.Key.ToLower();
             if (await _configRepository.AnyAsync(x => x.Key.ToLower() == key) && entity.Key.ToLower() != key)

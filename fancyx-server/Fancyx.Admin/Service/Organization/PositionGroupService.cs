@@ -23,7 +23,7 @@ namespace Fancyx.Admin.Service.Organization
         public async Task<bool> AddPositionGroupAsync(PositionGroupDto dto)
         {
             var entity = AutoMapperHelper.Instance.Map<PositionGroupDto, PositionGroup>(dto);
-            entity.SetTreeProperties(await _positionGroupRepository.GetAsync(x => x.Id == dto.ParentId));
+            entity.SetTreeProperties(await _positionGroupRepository.FindAsync(dto.ParentId));
 
             await _positionGroupRepository.InsertAsync(entity);
             return true;
@@ -86,7 +86,7 @@ namespace Fancyx.Admin.Service.Organization
         public async Task<bool> UpdatePositionGroupAsync(PositionGroupDto dto)
         {
             if (!dto.Id.HasValue) throw new ArgumentNullException(nameof(dto.Id));
-            var entity = await _positionGroupRepository.GetAsync(x => x.Id == dto.Id) ?? throw new EntityNotFoundException();
+            var entity = await _positionGroupRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
             if (dto.ParentId == entity.Id)
             {
                 throw new BusinessException(message: "不能选择自己为父级");
@@ -96,7 +96,7 @@ namespace Fancyx.Admin.Service.Organization
             entity.Remark = dto.Remark;
             entity.ParentId = dto.ParentId;
             entity.Sort = dto.Sort;
-            entity.SetTreeProperties(await _positionGroupRepository.GetAsync(x => x.Id == dto.ParentId));
+            entity.SetTreeProperties(await _positionGroupRepository.FindAsync(dto.ParentId));
 
             await _positionGroupRepository.UpdateAsync(entity);
             return true;

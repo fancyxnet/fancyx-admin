@@ -103,7 +103,7 @@ namespace Fancyx.Admin.Service.Account
         public async Task<UserAuthInfoDto> GetUserAuthInfoAsync()
         {
             var uid = _currentUser.Id!.Value;
-            var user = await _userRepository.GetAsync(x => x.Id == uid) ?? throw new BusinessException(message: "用户不存在");
+            var user = await _userRepository.FindAsync(uid) ?? throw new BusinessException(message: "用户不存在");
             var permission = await _identitySharedService.GetUserPermissionAsync(uid);
             UserAuthInfoDto result = new()
             {

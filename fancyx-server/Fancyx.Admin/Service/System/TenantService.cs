@@ -52,7 +52,7 @@ namespace Fancyx.Admin.Service.System
 
         public async Task UpdateTenantAsync(TenantDto dto)
         {
-            var entity = await _tenantRepository.GetAsync(x => x.Id == dto.Id) ?? throw new EntityNotFoundException();
+            var entity = await _tenantRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
 
             var tenantIdLower = dto.TenantId.ToLower();
             if (await _tenantRepository.AnyAsync(x => x.TenantId.ToLower() == tenantIdLower)

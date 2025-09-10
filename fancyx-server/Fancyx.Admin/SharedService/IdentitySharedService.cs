@@ -201,7 +201,7 @@ namespace Fancyx.Admin.SharedService
         {
             if (!_currentUser.Id.HasValue) return ([], []);
 
-            var key = SystemCacheKey.EmployeeDeptPower(_currentUser.Id.Value);
+            var key = SystemCacheKey.UserDeptPower(_currentUser.Id.Value);
             var cacheData = await _hybridCache.GetAsync<DeptPowerData>(key);
             if (cacheData != null) return (cacheData.DeptIds, cacheData.UserIds);
 
@@ -272,7 +272,7 @@ namespace Fancyx.Admin.SharedService
         {
             if (!_currentUser.Id.HasValue) return;
 
-            var key = SystemCacheKey.EmployeeDeptPower(_currentUser.Id.Value);
+            var key = SystemCacheKey.UserDeptPower(_currentUser.Id.Value);
             await _hybridCache.RemoveAsync(key);
         }
     }
