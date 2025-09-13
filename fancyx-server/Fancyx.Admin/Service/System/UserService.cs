@@ -105,14 +105,7 @@ namespace Fancyx.Admin.Service.System
 
         public async Task<PagedResult<UserListDto>> GetUserListAsync(UserQueryDto dto)
         {
-            //var resp = await _userRepository.GetQueryable()
-            //    .WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.UserName.Contains(dto.UserName!))
-            //    .WhereIf(dto.DeptId.HasValue, x => x.DeptId == dto.DeptId!.Value)
-            //    .OrderByDescending(x => x.CreationTime)
-            //    .Select(x => new UserListDto { Id = x.Id, Avatar = x.Avatar, UserName = x.UserName, Sex = x.Sex.GetHashCode(), IsEnabled = x.IsEnabled, NickName = x.NickName, Phone = x.Phone })
-            //    .PagedAsync(dto.Current, dto.PageSize);
-
-            var resp = await _context.User.GroupJoin(_context.Dept, u => u.DeptId, d => d.Id, (u, d) => new { u, d })
+            var resp = await _context.User.PowerFilter(_currentUser).GroupJoin(_context.Dept, u => u.DeptId, d => d.Id, (u, d) => new { u, d })
                 .SelectMany(x => x.d.DefaultIfEmpty(), (x, d) => new { x.u, d })
                 .GroupJoin(_context.Position, m => m.u.PostId, p => p.Id, (m, p) => new { m, p })
                 .WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.m.u.UserName.Contains(dto.UserName!))

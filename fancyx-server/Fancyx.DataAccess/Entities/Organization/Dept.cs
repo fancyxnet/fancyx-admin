@@ -13,6 +13,13 @@ namespace Fancyx.DataAccess.Entities.Organization
     [Table("dept")]
     public class Dept : FullAuditedEntity, ITenant, ITreeEntity
     {
+        [Key]
+        [NotNull]
+        [Required]
+        [Column("id")]
+        [DataPower(DataPower.DeptId)]
+        public override Guid Id { get; set; }
+
         /// <summary>
         /// 部门编号
         /// </summary>

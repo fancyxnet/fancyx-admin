@@ -1,14 +1,16 @@
-﻿using System.Linq.Expressions;
-
+﻿using Fancyx.Core.Interfaces;
 using Fancyx.DataAccess.BaseEntity;
 using Fancyx.DataAccess.Models;
-
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Fancyx.DataAccess
 {
     public static class EfCoreExtension
     {
+        private static MethodInfo containsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) })!;
+
         public static IQueryable<T> WhereIf<T>(this IQueryable<T> query, bool condition, Expression<Func<T, bool>> expression) where T : class
         {
             if (condition) return query.Where(expression);
@@ -56,6 +58,48 @@ namespace Fancyx.DataAccess
             }
             entity.TreePath = entity.Id.ToString();
             entity.TreeLevel = 1;
+        }
+
+        public static IQueryable<TEntity> PowerFilter<TEntity>(this IQueryable<TEntity> query, ICurrentUser currentUser)
+        {
+            var type = typeof(TEntity);
+            var userIds = currentUser.FindClaim(DataPower.UserIdType)?.Value;
+            var deptIds = currentUser.FindClaim(DataPower.DeptIdType)?.Value;
+            var hitCount = 0; //命中次数
+            foreach (var prop in type.GetProperties())
+            {
+                if (hitCount >= 2) break;
+                var powerFieldAttr = prop.GetCustomAttribute<DataPowerAttribute>();
+                if (powerFieldAttr != null)
+                {
+                    PadExpr(powerFieldAttr.Field, prop.Name);
+                    hitCount++;
+                    continue;
+                }
+                PadExpr(prop.Name, prop.Name);
+                hitCount++;
+            }
+
+            void PadExpr(string field, string propName)
+            {
+                ConstantExpression? curFilterExpre = null;
+                if (field == DataPower.UserId && !string.IsNullOrEmpty(userIds))
+                {
+                    curFilterExpre = Expression.Constant(userIds, typeof(string));
+                }
+                if (field == DataPower.DeptId && !string.IsNullOrEmpty(deptIds))
+                {
+                    curFilterExpre = Expression.Constant(deptIds, typeof(string));
+                }
+                if (curFilterExpre == null) return;
+
+                var t1 = Expression.Parameter(type, "e");
+                var p1 = Expression.Property(t1, propName);
+                var c1 = Expression.Call(curFilterExpre, containsMethod, p1);
+                query = query.Where(Expression.Lambda<Func<TEntity, bool>>(c1, t1));
+            }
+
+            return query;
         }
     }
 }

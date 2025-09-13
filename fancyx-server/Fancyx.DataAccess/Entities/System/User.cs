@@ -14,6 +14,13 @@ namespace Fancyx.DataAccess.Entities.System
     [Table("user")]
     public class User : FullAuditedEntity, ITenant
     {
+        [Key]
+        [NotNull]
+        [Required]
+        [Column("id")]
+        [DataPower(DataPower.UserId)]
+        public override Guid Id { get; set; }
+
         /// <summary>
         /// 用户名
         /// </summary>

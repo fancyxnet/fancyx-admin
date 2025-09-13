@@ -243,6 +243,7 @@ namespace Fancyx.Admin.SharedService
                     else if (!(inThisLevel || inThisLevelAndBelow) && powerType == DeptPowerType.OnlyMe)
                     {
                         UserIds.Add(userId);
+                        if(curDeptId.HasValue) deptIds.Add(curDeptId.Value);
                     }
                 }
                 if (deptIds.Count > 0)
