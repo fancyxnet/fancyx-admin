@@ -15,7 +15,7 @@
         public string? Content { get; set; }
 
         /// <summary>
-        /// 通知员工
+        /// 通知用户
         /// </summary>
         public Guid UserId { get; set; }
 

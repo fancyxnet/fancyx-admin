@@ -30,6 +30,8 @@ namespace Fancyx.Admin.Service.Account
         private readonly IMapper _mapper;
         private readonly HttpContext _httpContext;
 
+        private delegate Task<User> LoginHandler();
+
         public AccountService(IRepository<User> userRepository, ICurrentUser currentUser, IRepository<Menu> menuRepository
             , IConfiguration configuration, IHybridCache hybridCache, IdentitySharedService identitySharedService
             , ICapPublisher capPublisher, IHttpContextAccessor httpContextAccessor, IMapper mapper)
@@ -48,12 +50,11 @@ namespace Fancyx.Admin.Service.Account
         /// <summary>
         /// 生成token
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="userName"></param>
-        /// <param name="sessionId"></param>
+        /// <param name="userId">用户ID</param>
+        /// <param name="userName">用户名</param>
+        /// <param name="sessionId">会话ID</param>
         /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        private async Task<(TokenResultDto tokenRes, string sessionId)> GenerateTokenAsync(Guid userId, string userName, string? sessionId = null)
+        private async Task<(TokenResultDto tokenRes, string sessionId)> GenerateTokenAsync(Guid userId, string userName, string? sessionId = null, IEnumerable<Claim>? otherClaims = null)
         {
             var time = DateTime.Now;
             var refreshToken = Guid.NewGuid().ToString("N").ToLower();
@@ -63,6 +64,7 @@ namespace Fancyx.Admin.Service.Account
                 new(ClaimTypes.Name, userName),
                 new(AdminConsts.SessionId, sessionId)
             };
+            if (otherClaims != null) claims.AddRange(otherClaims);
 
             var tokenExpired = time.AddHours(AdminConsts.TokenExpiredHour);
             var rs = new LoginResultDto
@@ -123,73 +125,69 @@ namespace Fancyx.Admin.Service.Account
 
         public async Task<LoginResultDto> LoginAsync(LoginDto dto)
         {
-            var loginLog = new LoginLog
-            {
-                IsSuccess = true,
-                Ip = RequestUtils.GetIp(_httpContext),
-                OperationMsg = "登录成功",
-                UserName = dto.UserName
-            };
-            try
+            return await InternalLoginAsync(dto.UserName, async () =>
             {
                 var user = await _userRepository.GetAsync(x => x.UserName.ToLower() == dto.UserName.ToLower() && x.IsEnabled) ?? throw new BusinessException(message: "账号或密码不存在");
-                var isRight = user.Password == EncryptionUtils.GenEncodingPassword(dto.Password, user.PasswordSalt);
-                if (!isRight) throw new BusinessException(message: "密码错误");
-
-                var (tokenRes, sessionId) = await GenerateTokenAsync(user.Id, user.UserName);
-
-                loginLog.SessionId = sessionId;
-
-                var rs = _mapper.Map<TokenResultDto, LoginResultDto>(tokenRes);
-                var permission = await _identitySharedService.GetUserPermissionAsync(user.Id);
-                rs.UserId = user.Id;
-                rs.UserName = dto.UserName;
-                rs.SessionId = sessionId;
-
-                return rs;
-            }
-            catch (BusinessException ex)
-            {
-                loginLog.IsSuccess = false;
-                loginLog.OperationMsg = ex.Message;
-                throw;
-            }
-            finally
-            {
-                loginLog.Address = RequestUtils.ResolveAddress(loginLog.Ip);
-                loginLog.Browser = RequestUtils.ResolveBrowser(RequestUtils.GetUserAgent(_httpContext));
-                await _capPublisher.PublishAsync(AdminEventBusTopicConsts.LoginLogEvent, loginLog);
-            }
+                var isOk = user.Password == EncryptionUtils.GenEncodingPassword(dto.Password, user.PasswordSalt);
+                if (!isOk) throw new BusinessException(message: "密码错误");
+                return user;
+            });
         }
 
         public async Task<LoginResultDto> SmsLoginAsync(SmsLoginDto dto)
         {
-            var loginLog = new LoginLog
-            {
-                IsSuccess = true,
-                Ip = RequestUtils.GetIp(_httpContext),
-                OperationMsg = "登录成功",
-                UserName = dto.Phone
-            };
-            try
+            return await InternalLoginAsync(dto.Phone, async () =>
             {
                 var user = await _userRepository.GetAsync(x => x.Phone == dto.Phone && x.IsEnabled) ?? throw new BusinessException(message: "手机号不存在");
                 var codeKey = SystemCacheKey.LoginSmsCode(dto.Phone);
                 var code = await _hybridCache.GetAsync<string>(codeKey);
                 if (string.IsNullOrEmpty(code)) throw new BusinessException("验证码已过期");
                 if (dto.Code != code) throw new BusinessException("验证码错误");
+                await _hybridCache.RemoveAsync(codeKey);
+                return user;
+            });
+        }
 
-                var (tokenRes, sessionId) = await GenerateTokenAsync(user.Id, user.UserName);
+        private async Task<LoginResultDto> InternalLoginAsync(string userName, LoginHandler loginHandler)
+        {
+            var loginLog = new LoginLog
+            {
+                IsSuccess = true,
+                Ip = RequestUtils.GetIp(_httpContext),
+                OperationMsg = "登录成功",
+                UserName = userName
+            };
+            try
+            {
+                var user = await loginHandler();
+                var claims = new List<Claim>();
 
+                // 组织信息
+                if (user.DeptId.HasValue) claims.Add(new Claim(AdminConsts.DeptId, user.DeptId.Value.ToString()));
+                if (user.PostId.HasValue) claims.Add(new Claim(AdminConsts.PostId, user.PostId.Value.ToString()));
+
+                // 权限：可查看部门和用户
+                var powerData = await _identitySharedService.GetUserDeptPowerAsync(user.Id, user.DeptId);
+                if (powerData != null)
+                {
+                    if (powerData.DeptIds?.Count > 0)
+                    {
+                        claims.Add(new Claim(DataPower.DeptIdType, string.Join(',', powerData.DeptIds)));
+                    }
+                    if (powerData.UserIds?.Count > 0)
+                    {
+                        claims.Add(new Claim(DataPower.UserIdType, string.Join(',', powerData.UserIds)));
+                    }
+                }
+
+                var (tokenRes, sessionId) = await GenerateTokenAsync(user.Id, user.UserName, otherClaims: claims);
                 loginLog.SessionId = sessionId;
 
                 var rs = _mapper.Map<TokenResultDto, LoginResultDto>(tokenRes);
                 var permission = await _identitySharedService.GetUserPermissionAsync(user.Id);
                 rs.UserId = user.Id;
-                rs.UserName = dto.Phone;
+                rs.UserName = user.UserName;
                 rs.SessionId = sessionId;
-
-                await _hybridCache.RemoveAsync(codeKey);
 
                 return rs;
             }

@@ -58,7 +58,7 @@ namespace Fancyx.Admin.Service.Organization
             bool hasFilter = !string.IsNullOrEmpty(dto.Name) || !string.IsNullOrEmpty(dto.Code) || dto.Status > 0;
             if (hasFilter)
             {
-                var filter = await _deptRepository.GetQueryable()
+                var filter = await _deptRepository.GetQueryable().PowerFilter(_currentUser)
                     .WhereIf(!string.IsNullOrEmpty(dto.Name), x => x.Name.Contains(dto.Name!))
                     .WhereIf(!string.IsNullOrEmpty(dto.Code), x => x.Code.Contains(dto.Code!)) // ==
                     .WhereIf(dto.Status > 0, x => x.Status == dto.Status) // ==
@@ -68,7 +68,7 @@ namespace Fancyx.Admin.Service.Organization
                 return result;
             }
 
-            var allNodes = await _deptRepository.GetQueryable().OrderBy(x => x.TreePath).ToDictionaryAsync(k => k.Id);
+            var allNodes = await _deptRepository.GetQueryable().PowerFilter(_currentUser).OrderBy(x => x.TreePath).ToDictionaryAsync(k => k.Id);
             var tree = new List<DeptListDto>();
             var nodeDtos = new Dictionary<Guid, DeptListDto>();
             var endDtos = new List<DeptListDto>();

@@ -15,7 +15,7 @@
         public string? Content { get; set; }
 
         /// <summary>
-        /// 通知员工
+        /// 通知用户
         /// </summary>
         public Guid UserId { get; set; }
 
@@ -32,7 +32,7 @@
         public DateTime? ReadedTime { get; set; }
 
         /// <summary>
-        /// 员工名称
+        /// 用户名称
         /// </summary>
         public string? NickName { get; set; }
     }

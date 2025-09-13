@@ -14,5 +14,5 @@ public static class AdminConsts
 
     public const string DeptId = "DeptId";
 
-    public const string PositionId = "PositionId";
+    public const string PostId = "PostId";
 }
