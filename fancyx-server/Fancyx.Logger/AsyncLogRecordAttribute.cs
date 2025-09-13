@@ -68,5 +68,11 @@ namespace Fancyx.Logger
             LogRecordContext.Init();
             return Task.CompletedTask;
         }
+
+        public override Task OnExceptionAsync()
+        {
+            LogRecordContext.Dispose();
+            return base.OnExceptionAsync();
+        }
     }
 }
