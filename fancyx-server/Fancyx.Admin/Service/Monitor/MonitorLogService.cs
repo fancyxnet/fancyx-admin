@@ -41,8 +41,7 @@ namespace Fancyx.Admin.Service.Monitor
 
         public async Task HandleExceptionAsync(Guid exceptionId)
         {
-            var entity = await _exceptionLogRepository.FindAsync(exceptionId);
-            if (entity == null) throw new EntityNotFoundException();
+            var entity = await _exceptionLogRepository.FindAsync(exceptionId) ?? throw new EntityNotFoundException();
             entity.IsHandled = true;
             entity.HandledBy = _currentUser.UserName;
             entity.HandledTime = DateTime.Now;

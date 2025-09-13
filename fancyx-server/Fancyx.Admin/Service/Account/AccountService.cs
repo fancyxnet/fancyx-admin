@@ -53,6 +53,7 @@ namespace Fancyx.Admin.Service.Account
         /// <param name="userId">用户ID</param>
         /// <param name="userName">用户名</param>
         /// <param name="sessionId">会话ID</param>
+        /// <param name="otherClaims">其它证件单元</param>
         /// <returns></returns>
         private async Task<(TokenResultDto tokenRes, string sessionId)> GenerateTokenAsync(Guid userId, string userName, string? sessionId = null, IEnumerable<Claim>? otherClaims = null)
         {
