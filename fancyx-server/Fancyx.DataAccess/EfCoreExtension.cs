@@ -93,10 +93,10 @@ namespace Fancyx.DataAccess
                 }
                 if (curFilterExpre == null) return;
 
-                var t1 = Expression.Parameter(type, "e");
-                var p1 = Expression.Property(t1, propName);
-                var c1 = Expression.Call(curFilterExpre, containsMethod, p1);
-                query = query.Where(Expression.Lambda<Func<TEntity, bool>>(c1, t1));
+                var parameter = Expression.Parameter(type, "e");
+                var property = Expression.Property(parameter, propName);
+                var call = Expression.Call(curFilterExpre, containsMethod, property);
+                query = query.Where(Expression.Lambda<Func<TEntity, bool>>(call, parameter));
             }
 
             return query;
