@@ -30,7 +30,7 @@ namespace Fancyx.Job
             {
                 scheduler.JobFactory = new JobFactory(context.ServiceProvider);
                 scheduler.ListenerManager.AddJobListener(new GlobalJobListener(context.ServiceProvider), EverythingMatcher<JobKey>.AllJobs());
-                scheduler.Start().ConfigureAwait(true);
+                scheduler.Start().ConfigureAwait(false);
             }
         }
     }
