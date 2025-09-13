@@ -3,28 +3,24 @@ using Fancyx.Admin.IService.Monitor.Dtos;
 using Fancyx.DataAccess;
 using Fancyx.DataAccess.Entities.Log;
 using Fancyx.DataAccess.Entities.System;
+using Fancyx.Redis;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Keys;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
-
-using StackExchange.Redis;
 
 namespace Fancyx.Admin.Service.Monitor
 {
     public class OnlineUserService : IOnlineUserService
     {
         private readonly IRepository<LoginLog> _loginLogRepository;
-        private readonly IDatabase _redisDb;
+        private readonly IHybridCache _hybridCache;
         private readonly IRepository<User> _userRepository;
-        private readonly IMemoryCache _memoryCache;
 
-        public OnlineUserService(IRepository<LoginLog> loginLogRepository, IDatabase redisDb, IRepository<User> userRepository, IMemoryCache memoryCache)
+        public OnlineUserService(IRepository<LoginLog> loginLogRepository, IHybridCache hybridCache, IRepository<User> userRepository)
         {
             _loginLogRepository = loginLogRepository;
-            _redisDb = redisDb;
+            _hybridCache = hybridCache;
             _userRepository = userRepository;
-            _memoryCache = memoryCache;
         }
 
         public async Task<PagedResult<OnlineUserResultDto>> GetOnlineUserListAsync(OnlineUserSearchDto dto)
@@ -45,7 +41,7 @@ namespace Fancyx.Admin.Service.Monitor
                 var user = users.FirstOrDefault(x => x.UserName == loginLog.UserName);
                 if (user == null) continue;
 
-                if (!string.IsNullOrEmpty(loginLog.SessionId) && await _redisDb.KeyExistsAsync(SystemCacheKey.AccessToken(user.Id, loginLog.SessionId)))
+                if (!string.IsNullOrEmpty(loginLog.SessionId) && await _hybridCache.ExistsAsync(SystemCacheKey.AccessToken(user.Id, loginLog.SessionId)))
                 {
                     list.Add(new OnlineUserResultDto
                     {
@@ -71,10 +67,9 @@ namespace Fancyx.Admin.Service.Monitor
         public async Task LogoutAsync(string key)
         {
             //移除访问token
-            await _redisDb.KeyDeleteAsync(SystemCacheKey.AccessToken(key));
-            _memoryCache.Remove(SystemCacheKey.AccessToken(key));
+            await _hybridCache.RemoveAsync(SystemCacheKey.AccessToken(key));
             //移除刷新token
-            await _redisDb.KeyDeleteAsync(SystemCacheKey.RefreshToken(key));
+            await _hybridCache.RemoveAsync(SystemCacheKey.RefreshToken(key));
         }
     }
 }
