@@ -1,10 +1,8 @@
-﻿using System.Collections.Concurrent;
+﻿using Microsoft.Extensions.Caching.Memory;
+using StackExchange.Redis;
+using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-
-using Microsoft.Extensions.Caching.Memory;
-
-using StackExchange.Redis;
 
 namespace Fancyx.Redis
 {
@@ -118,13 +116,21 @@ namespace Fancyx.Redis
 
         public async Task RemoveByPatternAsync(string pattern, HybridCacheMode mode = HybridCacheMode.Both)
         {
-            var regex = new Regex(pattern, RegexOptions.Singleline | RegexOptions.Compiled | RegexOptions.IgnoreCase);
-            var matches = _cacheKeys.Keys.Where(k => regex.IsMatch(k)).ToList();
+            var matches = await this.KeyPatternAsync(pattern, mode);
 
             foreach (var key in matches)
             {
                 await RemoveAsync(key, mode);
             }
+        }
+
+        public async Task<List<string>> KeyPatternAsync(string pattern, HybridCacheMode mode = HybridCacheMode.Both)
+        {
+            var regex = new Regex(pattern, RegexOptions.Singleline | RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            var keys = _cacheKeys.Keys.Where(k => regex.IsMatch(k)).ToList();
+            if (keys.Count > 0) return keys;
+
+            return (await _redisClient.KeyPatternAsync(pattern))?.ToList() ?? [];
         }
 
         public async Task<bool> ExistsAsync(string key, HybridCacheMode mode = HybridCacheMode.Both)

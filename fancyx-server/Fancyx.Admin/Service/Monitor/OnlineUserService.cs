@@ -4,7 +4,6 @@ using Fancyx.DataAccess;
 using Fancyx.DataAccess.Entities.Log;
 using Fancyx.DataAccess.Entities.System;
 using Fancyx.Redis;
-using Fancyx.Shared.Consts;
 using Fancyx.Shared.Keys;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,43 +24,45 @@ namespace Fancyx.Admin.Service.Monitor
 
         public async Task<PagedResult<OnlineUserResultDto>> GetOnlineUserListAsync(OnlineUserSearchDto dto)
         {
-            //有效token时间，1分钟误差
-            var time = DateTime.Now.AddHours(-AdminConsts.TokenExpiredHour).AddMinutes(-1);
-
-            var loginLogs = await _loginLogRepository.Where(x => x.CreationTime >= time)
-                .Where(x => x.IsSuccess && !string.IsNullOrEmpty(x.SessionId))
-                .WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.UserName.Contains(dto.UserName!))
-                .OrderByDescending(x => x.CreationTime).ToListAsync();
-            var userNames = loginLogs.Select(x => x.UserName).ToList();
-            var users = await _userRepository.Where(x => userNames.Contains(x.UserName)).Select(x => new { x.Id, x.UserName }).ToListAsync();
-
-            var list = new List<OnlineUserResultDto>();
-            foreach (var loginLog in loginLogs)
+            var pattern = SystemCacheKey.AccessToken("*:*");
+            if (!string.IsNullOrEmpty(dto.UserName))
             {
-                var user = users.FirstOrDefault(x => x.UserName == loginLog.UserName);
-                if (user == null) continue;
-
-                if (!string.IsNullOrEmpty(loginLog.SessionId) && await _hybridCache.ExistsAsync(SystemCacheKey.AccessToken(user.Id, loginLog.SessionId)))
+                Guid? queryUserId = await _userRepository.Where(x => x.UserName == dto.UserName).ToOneAsync(x => x.Id);
+                if (queryUserId.HasValue)
                 {
-                    list.Add(new OnlineUserResultDto
-                    {
-                        UserId = user.Id,
-                        UserName = loginLog.UserName,
-                        Ip = loginLog.Ip,
-                        Address = loginLog.Address,
-                        Browser = loginLog.Browser,
-                        CreationTime = loginLog.CreationTime,
-                        SessionId = loginLog.SessionId
-                    });
+                    pattern = SystemCacheKey.AccessToken($"{queryUserId}:*");
                 }
             }
-            var total = list.Count;
-
-            return new PagedResult<OnlineUserResultDto>(dto)
+            var tokenKeys = await _hybridCache.KeyPatternAsync(pattern);
+            var resp = new PagedResult<OnlineUserResultDto>(dto) { TotalCount = tokenKeys.Count };
+            if (tokenKeys.Count <= 0) return resp;
+            resp.Items = new List<OnlineUserResultDto>();
+            var loginLogs = await _loginLogRepository.Where(x => x.CreationTime <= x.CreationTime.AddDays(1)).OrderByDescending(x => x.CreationTime).ToListAsync();
+            foreach (var key in tokenKeys)
             {
-                TotalCount = total,
-                Items = list.OrderByDescending(s => s.CreationTime).Skip((dto.Current - 1) * dto.PageSize).Take(dto.PageSize).ToList()
-            };
+                if (resp.Items.Count >= dto.PageSize)
+                {
+                    return resp;
+                }
+                var arr = key.Split(':');
+                if (arr.Length < 3) continue;
+                var userId = arr[1];
+                var sessionId = arr[2];
+                var loginLog = loginLogs.FirstOrDefault(x => x.SessionId == sessionId);
+                if (loginLog == null) continue;
+                resp.Items.Add(new OnlineUserResultDto
+                {
+                    UserId = userId,
+                    UserName = loginLog.UserName,
+                    Ip = loginLog.Ip,
+                    Address = loginLog.Address,
+                    Browser = loginLog.Browser,
+                    CreationTime = loginLog.CreationTime,
+                    SessionId = loginLog.SessionId
+                });
+            }
+
+            return resp;
         }
 
         public async Task LogoutAsync(string key)

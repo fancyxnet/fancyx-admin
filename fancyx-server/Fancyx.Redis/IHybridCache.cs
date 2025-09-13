@@ -58,5 +58,13 @@
         /// <param name="mode"></param>
         /// <returns></returns>
         Task<bool> ExistsAsync(string key, HybridCacheMode mode = HybridCacheMode.Both);
+
+        /// <summary>
+        /// 获取正则匹配缓存KEY
+        /// </summary>
+        /// <param name="pattern"></param>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        Task<List<string>> KeyPatternAsync(string pattern, HybridCacheMode mode = HybridCacheMode.Both);
     }
 }

@@ -2,7 +2,7 @@
 {
     public class OnlineUserResultDto
     {
-        public Guid UserId { get; set; }
+        public string? UserId { get; set; }
 
         /// <summary>
         /// 账号
