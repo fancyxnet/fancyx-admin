@@ -38,7 +38,7 @@
 
 * .NET Core
 * PostgreSQL
-* FreeSql
+* EFCore
 * Aop
 * Redis
 * EventBus
