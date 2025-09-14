@@ -56,7 +56,7 @@ const HomePage = () => {
   const techStack = [
     { name: '.NET Core' },
     { name: 'PostgreSQL' },
-    { name: 'FreeSql' },
+    { name: 'EFCore' },
     { name: 'Aop' },
     { name: 'Redis' },
     { name: 'EventBus' },
