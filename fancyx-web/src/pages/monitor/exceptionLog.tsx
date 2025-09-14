@@ -13,7 +13,7 @@ const BusinessLogList: React.FC = () => {
   const tableRef = useRef<SmartTableRef>(null);
   const columns: SmartTableColumnType[] = [
     {
-      title: '异常发生时间',
+      title: '发生时间',
       dataIndex: 'creationTime',
     },
     {
