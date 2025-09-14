@@ -1,4 +1,5 @@
-﻿using Fancyx.Core.Interfaces;
+﻿using Fancyx.Core.Expressions;
+using Fancyx.Core.Interfaces;
 using Fancyx.DataAccess.BaseEntity;
 using Fancyx.DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
@@ -62,6 +63,8 @@ namespace Fancyx.DataAccess
 
         public static IQueryable<TEntity> PowerFilter<TEntity>(this IQueryable<TEntity> query, ICurrentUser currentUser)
         {
+            if (currentUser.IsInRoles(DataPower.SuperAdmin)) return query;
+
             var type = typeof(TEntity);
             var userIds = currentUser.FindClaim(DataPower.UserIdType)?.Value;
             var deptIds = currentUser.FindClaim(DataPower.DeptIdType)?.Value;
@@ -95,7 +98,8 @@ namespace Fancyx.DataAccess
 
                 var parameter = Expression.Parameter(type, "e");
                 var property = Expression.Property(parameter, propName);
-                var call = Expression.Call(curFilterExpre, containsMethod, property);
+                var propConvert = ExpressionHelper.ConvertPropertyToString(property);
+                var call = Expression.Call(curFilterExpre, containsMethod, propConvert);
                 query = query.Where(Expression.Lambda<Func<TEntity, bool>>(call, parameter));
             }
 

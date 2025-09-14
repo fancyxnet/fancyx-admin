@@ -52,8 +52,6 @@ namespace Fancyx.DataAccess.Entities.System
         /// <summary>
         /// 授权码
         /// </summary>
-        [NotNull]
-        [Required]
         [StringLength(128)]
         [Column("permission")]
         public string? Permission { get; set; }

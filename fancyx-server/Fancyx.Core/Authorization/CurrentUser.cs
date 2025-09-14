@@ -1,5 +1,6 @@
-﻿using Fancyx.Core.Interfaces;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+
+using Fancyx.Core.Interfaces;
 
 namespace Fancyx.Core.Authorization
 {
@@ -28,6 +29,18 @@ namespace Fancyx.Core.Authorization
         public static ICurrentUser Default()
         {
             return new CurrentUser(null, null, null);
+        }
+
+        public IEnumerable<Claim> GetClaims()
+        {
+            return _claims ?? [];
+        }
+
+        public bool IsInRoles(params string[] roles)
+        {
+            if (roles.Length == 0) return false;
+            var hasRoles = this.FindClaim(ClaimTypes.Role).Value;
+            return roles.All(x => hasRoles.Contains(x));
         }
     }
 }

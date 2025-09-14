@@ -9,5 +9,9 @@ namespace Fancyx.Core.Interfaces
         string? UserName { get; }
 
         Claim FindClaim(string type);
+
+        IEnumerable<Claim> GetClaims();
+
+        bool IsInRoles(params string[] roles);
     }
 }

@@ -18,9 +18,11 @@
     public static class DataPower
     {
         public const string UserId = "UserId";
-        public const string DeptId = "UserId";
+        public const string DeptId = "DeptId";
 
         public const string UserIdType = "power_user_ids";
         public const string DeptIdType = "power_dept_ids";
+
+        public const string SuperAdmin = "系统管理员";
     }
 }

@@ -1,16 +1,17 @@
-﻿using Fancyx.Core.Interfaces;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+
+using Fancyx.Core.Interfaces;
 using Fancyx.DataAccess;
 using Fancyx.DataAccess.Entities.Organization;
 using Fancyx.DataAccess.Entities.System;
 using Fancyx.DataAccess.Enums;
 using Fancyx.Redis;
-using Fancyx.Shared.Consts;
 using Fancyx.Shared.Keys;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace Fancyx.Admin.SharedService
 {
@@ -59,9 +60,9 @@ namespace Fancyx.Admin.SharedService
 
             var roleIds = await _userRoleRepository.Where(x => x.UserId == userId).SelectToListAsync(x => x.RoleId);
             var roles = await _roleRepository.Where(x => roleIds.Contains(x.Id) && x.IsEnabled).ToListAsync();
-            var isSuperAdmin = roles.Any(r => r.RoleName == AdminConsts.SuperAdminRole);
+            var isSuperAdmin = roles.Any(r => r.RoleName == DataPower.SuperAdmin);
             var menuIds = await _roleMenuRepository.Where(x => roleIds.Contains(x.RoleId)).SelectToListAsync(x => x.MenuId);
-            var menus = await _menuRepository.Where(x => x.Display && (menuIds.Contains(x.Id) || isSuperAdmin)).SelectToListAsync(x => new { x.Permission, x.Id, x.MenuType });
+            var menus = await _menuRepository.Where(x => menuIds.Contains(x.Id) || isSuperAdmin).SelectToListAsync(x => new { x.Permission, x.Id, x.MenuType, x.Display });
             if (isSuperAdmin)
             {
                 menuIds = menus.Select(x => x.Id).ToList();
@@ -70,7 +71,7 @@ namespace Fancyx.Admin.SharedService
             {
                 UserId = userId,
                 Roles = roles.Select(c => c.RoleName).ToArray(),
-                Auths = menus.Where(c => !string.IsNullOrEmpty(c.Permission) && c.MenuType == MenuType.Button).Select(c => c.Permission!).Distinct().ToArray(),
+                Auths = menus.Where(c => !string.IsNullOrEmpty(c.Permission) && c.MenuType == MenuType.Button && c.Display).Select(c => c.Permission!).Distinct().ToArray(),
                 RoleIds = [.. roleIds],
                 MenuIds = [.. menuIds],
                 IsSuperAdmin = isSuperAdmin
@@ -243,7 +244,7 @@ namespace Fancyx.Admin.SharedService
                     else if (!(inThisLevel || inThisLevelAndBelow) && powerType == DeptPowerType.OnlyMe)
                     {
                         UserIds.Add(userId);
-                        if(curDeptId.HasValue) deptIds.Add(curDeptId.Value);
+                        if (curDeptId.HasValue) deptIds.Add(curDeptId.Value);
                     }
                 }
                 if (deptIds.Count > 0)

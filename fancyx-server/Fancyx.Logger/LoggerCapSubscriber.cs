@@ -60,6 +60,7 @@ namespace Fancyx.Logger
                 TraceId = message.TraceId,
                 CreatorId = message.UserId,
                 TenantId = message.TenantId,
+                CreationTime = DateTime.Now
             };
 
             await _context.SingleInsertAsync(entity);
@@ -82,7 +83,8 @@ namespace Fancyx.Logger
                 UserName = message.UserName,
                 TraceId = message.TraceId,
                 CreatorId = message.UserId,
-                TenantId = message.TenantId
+                TenantId = message.TenantId,
+                CreationTime = DateTime.Now
             };
 
             await _context.SingleInsertAsync(entity);

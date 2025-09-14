@@ -1,5 +1,9 @@
+using System.Security.Claims;
+
 using AutoMapper;
+
 using DotNetCore.CAP;
+
 using Fancyx.Admin.IService.Account;
 using Fancyx.Admin.IService.Account.Dtos;
 using Fancyx.Admin.SharedService;
@@ -13,8 +17,8 @@ using Fancyx.DataAccess.Enums;
 using Fancyx.Redis;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Keys;
+
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace Fancyx.Admin.Service.Account
 {
@@ -65,7 +69,14 @@ namespace Fancyx.Admin.Service.Account
                 new(ClaimTypes.Name, userName),
                 new(AdminConsts.SessionId, sessionId)
             };
-            if (otherClaims != null) claims.AddRange(otherClaims);
+            if (otherClaims != null)
+            {
+                foreach (var claim in otherClaims)
+                {
+                    if (claims.Any(x => x.Type == claim.Type)) continue;
+                    claims.Add(claim);
+                }
+            }
 
             var tokenExpired = time.AddHours(AdminConsts.TokenExpiredHour);
             var rs = new LoginResultDto
@@ -99,7 +110,8 @@ namespace Fancyx.Admin.Service.Account
             var existRefreshToken = await _hybridCache.GetAsync<string>(key);
             if (!refreshToken.Equals(existRefreshToken)) throw new BusinessException(message: "刷新token不正确");
 
-            return (await GenerateTokenAsync(_currentUser.Id!.Value, _currentUser.UserName!, sessionId)).tokenRes;
+            var otherClaims = _currentUser.GetClaims();
+            return (await GenerateTokenAsync(_currentUser.Id!.Value, _currentUser.UserName!, sessionId, otherClaims)).tokenRes;
         }
 
         public async Task<UserAuthInfoDto> GetUserAuthInfoAsync()
@@ -181,11 +193,12 @@ namespace Fancyx.Admin.Service.Account
                     }
                 }
 
+                var permission = await _identitySharedService.GetUserPermissionAsync(user.Id);
+                if (permission.Roles?.Length > 0) claims.Add(new Claim(ClaimTypes.Role, string.Join(',', permission.Roles)));
+
                 var (tokenRes, sessionId) = await GenerateTokenAsync(user.Id, user.UserName, otherClaims: claims);
                 loginLog.SessionId = sessionId;
-
                 var rs = _mapper.Map<TokenResultDto, LoginResultDto>(tokenRes);
-                var permission = await _identitySharedService.GetUserPermissionAsync(user.Id);
                 rs.UserId = user.Id;
                 rs.UserName = user.UserName;
                 rs.SessionId = sessionId;

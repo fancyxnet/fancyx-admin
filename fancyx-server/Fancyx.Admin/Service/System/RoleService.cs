@@ -79,7 +79,7 @@ namespace Fancyx.Admin.Service.System
             if (hasUsers) throw new BusinessException(message: "角色已分配给用户，不能删除");
 
             var role = await _roleRepository.FindAsync(id) ?? throw new EntityNotFoundException();
-            if (role.RoleName == AdminConsts.SuperAdminRole)
+            if (role.RoleName == DataPower.SuperAdmin)
             {
                 throw new BusinessException(message: $"{role.RoleName}不能删除");
             }
@@ -119,7 +119,7 @@ namespace Fancyx.Admin.Service.System
                 throw new BusinessException("角色名已存在");
             }
 
-            if (entity.RoleName == AdminConsts.SuperAdminRole)
+            if (entity.RoleName == DataPower.SuperAdmin)
             {
                 throw new BusinessException(message: $"{entity.RoleName}不允许编辑");
             }

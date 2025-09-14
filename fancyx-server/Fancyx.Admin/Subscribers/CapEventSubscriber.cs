@@ -17,6 +17,7 @@ namespace Fancyx.Admin.Subscribers
         [CapSubscribe(AdminEventBusTopicConsts.LoginLogEvent)]
         public async Task WriteLoginLog(LoginLog log)
         {
+            log.CreationTime = DateTime.Now;
             await _context.SingleInsertAsync(log);
         }
     }
