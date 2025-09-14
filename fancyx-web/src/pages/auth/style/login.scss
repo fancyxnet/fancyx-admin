@@ -1,7 +1,4 @@
-$primary-color: #7E57C2;
-$hover-color: #9575CD;
-$active-color: #673AB7;
-$bg-color: #F5F3FF;
+@use '@/styles/vars.scss' as vars;
 
 .login-container {
   display: flex;
@@ -79,7 +76,7 @@ $bg-color: #F5F3FF;
         .form-title {
           text-align: center;
           margin-bottom: 30px;
-          color: $primary-color;
+          color: vars.$primary-color;
           font-size: 22px;
         }
 
@@ -100,17 +97,17 @@ $bg-color: #F5F3FF;
           height: 48px;
           font-size: 16px;
           border-radius: 8px;
-          background: $primary-color;
-          border-color: $primary-color;
+          background: vars.$primary-color;
+          border-color: vars.$primary-color;
 
           &:hover {
-            background: $hover-color;
-            border-color: $hover-color;
+            background: vars.$hover-color;
+            border-color: vars.$hover-color;
           }
 
           &:active {
-            background: $active-color;
-            border-color: $active-color;
+            background: vars.$active-color;
+            border-color: vars.$active-color;
           }
         }
 
@@ -120,7 +117,7 @@ $bg-color: #F5F3FF;
           margin-top: 16px;
 
           .ant-btn {
-            color: $primary-color;
+            color: vars.$primary-color;
           }
         }
       }

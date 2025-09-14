@@ -1,9 +1,9 @@
+@use '@/styles/vars.scss' as vars;
+
 * {
   padding: 0;
   margin: 0;
 }
-
-$fancyx-primary-color: #7E57C2;
 
 /** ================================ 覆盖antd pro样式开始 ================================ */
 .ant-pro-page-container-children-container-no-header {
@@ -112,7 +112,7 @@ $fancyx-primary-color: #7E57C2;
   .sidebar-header {
     height: 50px; // 严格限定高度
     padding: 0 20px;
-    background: linear-gradient(135deg, #7E57C2 0%, #9575CD 100%);
+    background: linear-gradient(135deg, vars.$primary-color 0%, #9575CD 100%);
     display: flex;
     align-items: center;
     position: relative;
@@ -206,7 +206,7 @@ $fancyx-primary-color: #7E57C2;
       top: 0;
       bottom: 0;
       width: 3px;
-      background: #7E57C2;
+      background: vars.$primary-color;
     }
   }
 }
@@ -214,7 +214,7 @@ $fancyx-primary-color: #7E57C2;
 // 选中状态
 .ant-menu-item-selected {
   background: #EDE7F6 !important;
-  color: #7E57C2 !important;
+  color: vars.$primary-color !important;
   font-weight: 500;
 }
 

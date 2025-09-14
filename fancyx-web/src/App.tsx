@@ -1,7 +1,7 @@
 import { useRoutes } from 'react-router-dom';
 import { routes } from '@/router';
 import zhCN from 'antd/locale/zh_CN';
-import { ConfigProvider, Spin, theme } from 'antd';
+import { ConfigProvider, Spin } from 'antd';
 import { Suspense } from 'react';
 import { generateDynamicRoutes } from './router/dynamic';
 import UserStore from './store/userStore';
@@ -10,46 +10,7 @@ import { selectSize } from '@/store/themeStore.ts';
 import { AuthProvider } from '@/components/AuthProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Application from '@/components/Application';
-
-// 清爽紫色主题配置
-const defaultTheme = {
-  algorithm: theme.defaultAlgorithm,
-  token: {
-    colorPrimary: '#7E57C2',
-    colorLink: '#7E57C2',
-    colorSuccess: '#66BB6A',
-    colorWarning: '#FFA726',
-    colorError: '#FF7043',
-    colorBgBase: '#FFFFFF',
-    colorTextBase: '#4A4A4A',
-    borderRadius: 4,
-    fontSize: 14,
-  },
-  components: {
-    Layout: {
-      siderBg: '#FFFFFF',
-      headerBg: '#FFFFFF',
-    },
-    Menu: {
-      itemBg: '#FFFFFF',
-      itemColor: '#4A4A4A',
-      itemSelectedBg: '#EDE7F6',
-      itemSelectedColor: '#7E57C2',
-      itemHoverBg: '#F5F3FF',
-      itemBorderRadius: 8,
-    },
-    Button: {
-      colorPrimary: '#7E57C2',
-      colorPrimaryHover: '#9575CD',
-      colorPrimaryActive: '#673AB7',
-    },
-    Table: {
-      headerBg: '#F5F3FF',
-      headerColor: '#4A4A4A',
-      borderColor: '#EDE7F6',
-    },
-  },
-};
+import { DefaultTheme } from './theme';
 
 function App() {
   const size = useSelector(selectSize);
@@ -84,7 +45,7 @@ function App() {
   return (
     <>
       <AuthProvider>
-        <ConfigProvider locale={zhCN} componentSize={size} theme={defaultTheme}>
+        <ConfigProvider locale={zhCN} componentSize={size} theme={DefaultTheme}>
           <Application>
             <QueryClientProvider client={queryClient}>
               <Suspense fallback={fallback}>{useRoutes(renderRoutes)}</Suspense>
