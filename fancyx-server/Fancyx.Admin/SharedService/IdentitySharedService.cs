@@ -1,17 +1,15 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-
-using Fancyx.Core.Interfaces;
+﻿using Fancyx.Core.Interfaces;
 using Fancyx.DataAccess;
 using Fancyx.DataAccess.Entities.Organization;
 using Fancyx.DataAccess.Entities.System;
 using Fancyx.DataAccess.Enums;
 using Fancyx.Redis;
 using Fancyx.Shared.Keys;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Fancyx.Admin.SharedService
 {
@@ -207,12 +205,12 @@ namespace Fancyx.Admin.SharedService
             if (powerTypes == null || powerTypes.Count == 0) return null;
 
             var deptIds = new List<Guid>();
-            var UserIds = new List<Guid>();
+            var userIds = new List<Guid>();
             var isAll = powerTypes.Any(x => x == DeptPowerType.All);
             if (isAll)
             {
                 deptIds = await _deptRepository.GetQueryable().SelectToListAsync(x => x.Id);
-                UserIds = await _userRepository.GetQueryable().SelectToListAsync(x => x.Id);
+                userIds = await _userRepository.GetQueryable().SelectToListAsync(x => x.Id);
             }
             else
             {
@@ -229,9 +227,8 @@ namespace Fancyx.Admin.SharedService
                     {
                         if (curDeptId.HasValue)
                         {
-                            deptIds.Add(curDeptId.Value);
-                            var subDept = await _deptRepository.Where(x => x.TreePath.Contains(curDeptId.Value.ToString())).SelectToListAsync(x => x.Id);
-                            deptIds.AddRange(subDept);
+                            var selfAndSubDept = await _deptRepository.Where(x => x.TreePath.Contains(curDeptId.Value.ToString())).SelectToListAsync(x => x.Id);
+                            deptIds.AddRange(selfAndSubDept);
                         }
                         inThisLevel = true;
                         inThisLevelAndBelow = true;
@@ -243,20 +240,20 @@ namespace Fancyx.Admin.SharedService
                     }
                     else if (!(inThisLevel || inThisLevelAndBelow) && powerType == DeptPowerType.OnlyMe)
                     {
-                        UserIds.Add(userId);
-                        if (curDeptId.HasValue) deptIds.Add(curDeptId.Value);
+                        userIds.Add(userId);
                     }
                 }
+
                 if (deptIds.Count > 0)
                 {
                     deptIds = [.. deptIds.Distinct()];
                     var findUserIds = await _userRepository.Where(x => x.DeptId != null && deptIds.Contains(x.DeptId.Value)).SelectToListAsync(x => x.Id);
-                    UserIds.AddRange(findUserIds);
+                    userIds.AddRange(findUserIds);
                 }
-                UserIds = [.. UserIds.Distinct()];
+                userIds = [.. userIds.Distinct()];
             }
 
-            var result = new DeptPowerData { DeptIds = deptIds, UserIds = UserIds };
+            var result = new DeptPowerData { DeptIds = deptIds, UserIds = userIds };
             await _hybridCache.SetAsync(key, result);
             return result;
         }

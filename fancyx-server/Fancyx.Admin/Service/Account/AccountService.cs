@@ -176,7 +176,7 @@ namespace Fancyx.Admin.Service.Account
                 var claims = new List<Claim>();
 
                 // 组织信息
-                if (user.DeptId.HasValue) claims.Add(new Claim(AdminConsts.DeptId, user.DeptId.Value.ToString()));
+                if (user.DeptId.HasValue) claims.Add(new Claim(DataPower.DeptId, user.DeptId.Value.ToString()));
                 if (user.PostId.HasValue) claims.Add(new Claim(AdminConsts.PostId, user.PostId.Value.ToString()));
 
                 // 权限：可查看部门和用户

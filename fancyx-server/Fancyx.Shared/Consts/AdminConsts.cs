@@ -10,7 +10,5 @@ public static class AdminConsts
 
     public const double TokenExpiredHour = 1; //访问Token过期时间（时），必须大于前端token自动刷新判定时间
 
-    public const string DeptId = "DeptId";
-
     public const string PostId = "PostId";
 }
