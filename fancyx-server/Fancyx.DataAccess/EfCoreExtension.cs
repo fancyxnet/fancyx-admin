@@ -1,10 +1,12 @@
-﻿using Fancyx.Core.Expressions;
+﻿using System.Linq.Expressions;
+using System.Reflection;
+
+using Fancyx.Core.Expressions;
 using Fancyx.Core.Interfaces;
 using Fancyx.DataAccess.BaseEntity;
 using Fancyx.DataAccess.Models;
+
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
-using System.Reflection;
 
 namespace Fancyx.DataAccess
 {
@@ -65,8 +67,8 @@ namespace Fancyx.DataAccess
             if (currentUser.IsInRoles(DataPower.SuperAdmin)) return query;
 
             var type = typeof(TEntity);
-            var userIds = currentUser.FindClaim(DataPower.UserIdType)?.Value;
-            var deptIds = currentUser.FindClaim(DataPower.DeptIdType)?.Value;
+            var userIds = currentUser.FindClaim(DataPower.UserIdType)?.Value ?? "";
+            var deptIds = currentUser.FindClaim(DataPower.DeptIdType)?.Value ?? "";
             var curDeptId = currentUser.FindClaim(DataPower.DeptId)?.Value;
 
             // 如果包含了本人用户ID，不含本人部门；
@@ -94,14 +96,14 @@ namespace Fancyx.DataAccess
 
                 var userFilter = false;
                 ConstantExpression? curFilterExpre = null;
-                if (field == DataPower.UserId && !string.IsNullOrEmpty(userIds))
+                if (field == DataPower.UserId)
                 {
                     userFilter = true;
                     filterMap.Add(field, 0);
                     userIdPropName = propName;
                     curFilterExpre = Expression.Constant(userIds, typeof(string));
                 }
-                if (field == DataPower.DeptId && !string.IsNullOrEmpty(deptIds))
+                if (field == DataPower.DeptId)
                 {
                     filterMap.Add(field, 0);
                     curFilterExpre = Expression.Constant(deptIds, typeof(string));

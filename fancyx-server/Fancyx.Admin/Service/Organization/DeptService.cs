@@ -139,7 +139,7 @@ namespace Fancyx.Admin.Service.Organization
 
         public async Task<List<DeptSimpleInfoDto>> GetDeptSimpleInfosAsync(string? keyword)
         {
-            var depts = await _deptRepository.GetQueryable().WhereIf(!string.IsNullOrEmpty(keyword),
+            var depts = await _deptRepository.GetQueryable().PowerFilter(_currentUser).WhereIf(!string.IsNullOrEmpty(keyword),
                     x => x.Name.StartsWith(keyword!) || x.Code.StartsWith(keyword!))
                 .SelectToListAsync(x => new { x.Id, x.Name, x.Code, x.ParentId, x.Sort, x.CreationTime, x.TreeLevel });
             var list = new List<DeptSimpleInfoDto>();
