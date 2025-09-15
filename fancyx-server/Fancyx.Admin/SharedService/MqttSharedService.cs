@@ -1,5 +1,5 @@
 ﻿using Fancyx.Core.Interfaces;
-
+using Fancyx.Shared.Keys;
 using MQTTnet;
 using MQTTnet.Protocol;
 using MQTTnet.Server;
@@ -28,7 +28,7 @@ namespace Fancyx.Admin.SharedService
 
         public async Task ValidatingConnectionAsync(ValidatingConnectionEventArgs e)
         {
-            var isValidToken = await redisDb.KeyExistsAsync($"MqttToken:{e.UserName}"); //此处将userName作为token使用
+            var isValidToken = await redisDb.KeyExistsAsync(MqttCacheKey.MqttToken(e.UserName)); //此处将userName作为token使用
             var isValidAccount = e.UserName == configuration["Mqtt:UserName"] && e.Password == configuration["Mqtt:Password"];
             if (!(isValidToken || isValidAccount))
             {

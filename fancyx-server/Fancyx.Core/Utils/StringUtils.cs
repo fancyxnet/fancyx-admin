@@ -100,7 +100,7 @@ namespace Fancyx.Core.Utils
                     pascalCase.Append(char.ToUpperInvariant(word[0]));
                     if (word.Length > 1)
                     {
-                        pascalCase.Append(word.Substring(1).ToLowerInvariant());
+                        pascalCase.Append(word.Substring(1).ToLower());
                     }
                 }
             }

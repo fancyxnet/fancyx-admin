@@ -39,9 +39,8 @@ namespace Fancyx.DataAccess
 
         public static Task SoftDeleteAsync<TEntity>(this IQueryable<TEntity> entities, Guid? userId) where TEntity : FullAuditedEntity
         {
-            var now = DateTime.Now;
             return entities.ExecuteUpdateAsync(e => e.SetProperty(s => s.IsDeleted, true)
-                .SetProperty(s => s.DeletionTime, now)
+                .SetProperty(s => s.DeletionTime, DateTime.Now)
                 .SetProperty(s => s.DeleterId, userId));
         }
 

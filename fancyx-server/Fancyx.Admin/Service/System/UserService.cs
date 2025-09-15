@@ -5,6 +5,7 @@ using Fancyx.Core.Extensions;
 using Fancyx.Core.Interfaces;
 using Fancyx.Core.Utils;
 using Fancyx.DataAccess;
+using Fancyx.DataAccess.Aop;
 using Fancyx.DataAccess.Entities.System;
 using Fancyx.DataAccess.Enums;
 using Fancyx.Logger;
@@ -70,6 +71,7 @@ namespace Fancyx.Admin.Service.System
             return user.Id;
         }
 
+        [AsyncTransactional]
         public async Task<bool> AssignRoleAsync(AssignRoleDto dto)
         {
             await _userRoleRepository.DeleteAsync(x => x.UserId == dto.UserId);

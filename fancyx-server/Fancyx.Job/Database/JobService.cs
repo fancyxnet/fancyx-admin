@@ -44,7 +44,6 @@ namespace Fancyx.Job.Database
             {
                 throw new InvalidOperationException($"任务KEY:{key}，已存在");
             }
-
             var entity = new ScheduledTask()
             {
                 TaskKey = key,
@@ -52,9 +51,9 @@ namespace Fancyx.Job.Database
                 Description = description,
                 IsActive = isActive
             };
-            await _scheduledTaskRepository.InsertAsync(entity);
-
+            await _scheduledTaskRepository.InsertAsync(entity, false);
             await this.ScheduleJobAsync(key, cron, isActive);
+            await _unitOfWorkManager.SaveChangeAsync();
         }
 
         public async Task UpdateJobAsync(string oldKey, string key, string cron, string? description, bool isActive = false)
@@ -67,23 +66,32 @@ namespace Fancyx.Job.Database
             {
                 throw new InvalidOperationException($"任务KEY:{key}，已存在");
             }
-            //删除旧Job
-            await _scheduler.DeleteJob(new JobKey(JobKeyUtils.GetJobKey(oldKey)));
-            //调度新Job
-            await this.ScheduleJobAsync(key, cron, isActive);
-            if (!isActive)
+            using var uow = await _unitOfWorkManager.BeginAsync();
+            try
             {
-                await _scheduler.PauseJob(new JobKey(JobKeyUtils.GetJobKey(key)));
-            }
+                //删除旧Job
+                await _scheduler.DeleteJob(new JobKey(JobKeyUtils.GetJobKey(oldKey)));
+                //调度新Job
+                await this.ScheduleJobAsync(key, cron, isActive);
+                if (!isActive)
+                {
+                    await _scheduler.PauseJob(new JobKey(JobKeyUtils.GetJobKey(key)));
+                }
 
-            await _scheduledTaskRepository.GetQueryable()
-                .Where(e => e.TaskKey == oldKey)
-                .ExecuteUpdateAsync(e => e.SetProperty(x => x.TaskKey, key)
-                .SetProperty(x => x.CronExpression, cron)
-                .SetProperty(x => x.IsActive, isActive)
-                .SetProperty(x => x.Description, description)
-                .SetProperty(x => x.LastModificationTime, DateTime.Now)
-                .SetProperty(x => x.LastModifierId, _currentUser.Id));
+                await _scheduledTaskRepository.Where(e => e.TaskKey == oldKey)
+                    .ExecuteUpdateAsync(e => e.SetProperty(x => x.TaskKey, key)
+                    .SetProperty(x => x.CronExpression, cron)
+                    .SetProperty(x => x.IsActive, isActive)
+                    .SetProperty(x => x.Description, description)
+                    .SetProperty(x => x.LastModificationTime, DateTime.Now)
+                    .SetProperty(x => x.LastModifierId, _currentUser.Id));
+                await uow.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await  uow.RollbackAsync();
+                throw;
+            }
         }
 
         public async Task DeleteJobAsync(string key)

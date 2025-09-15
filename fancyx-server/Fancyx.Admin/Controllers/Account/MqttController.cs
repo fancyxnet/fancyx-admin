@@ -1,5 +1,5 @@
 ﻿using Fancyx.Core.Helpers;
-
+using Fancyx.Shared.Keys;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,7 +24,7 @@ namespace Fancyx.Admin.Controllers.Account
         {
             if (string.IsNullOrWhiteSpace(code)) throw new ArgumentNullException(nameof(code));
 
-            var codeKey = $"MqttTokenCode:{code}";
+            var codeKey = MqttCacheKey.MqttTokenCode(code);
 
             if (await redisDb.KeyExistsAsync(codeKey))
             {
@@ -38,7 +38,7 @@ namespace Fancyx.Admin.Controllers.Account
 
             var token = Guid.NewGuid().ToString();
             var expired = TimeHelper.Instance.GetCurrentTimestamp() + 3600;
-            await redisDb.StringSetAsync($"MqttToken:{token}", expired, TimeSpan.FromHours(1));
+            await redisDb.StringSetAsync(MqttCacheKey.MqttToken(token), expired, TimeSpan.FromHours(1));
             await redisDb.StringSetAsync(codeKey, token, TimeSpan.FromHours(1));
             return Result.Data(new MqttToken { Expired = expired, Token = token });
         }
