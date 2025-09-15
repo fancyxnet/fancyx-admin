@@ -1,14 +1,15 @@
-﻿using Fancyx.Core.Authorization;
+﻿using System.Linq.Expressions;
+
+using Fancyx.Core.Authorization;
 using Fancyx.Core.Expressions;
 using Fancyx.Core.Interfaces;
 using Fancyx.DataAccess.BaseEntity;
 using Fancyx.DataAccess.Entities.Job;
 using Fancyx.DataAccess.Entities.Log;
 using Fancyx.DataAccess.Entities.Organization;
-using Fancyx.DataAccess.Entities.Payment;
 using Fancyx.DataAccess.Entities.System;
+
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace Fancyx.DataAccess
 {
@@ -152,8 +153,6 @@ namespace Fancyx.DataAccess
         public DbSet<Dept> Dept { get; set; }
         public DbSet<Position> Position { get; set; }
         public DbSet<PositionGroup> PositionGroup { get; set; }
-        public DbSet<PaymentOrder> PaymentOrder { get; set; }
-        public DbSet<PayProvider> PayProvider { get; set; }
         public DbSet<Config> Config { get; set; }
         public DbSet<Tenant> Tenant { get; set; }
         public DbSet<DictData> DictData { get; set; }

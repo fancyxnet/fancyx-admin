@@ -1,4 +1,7 @@
-﻿using Fancyx.Admin.Filters;
+﻿using System.Reflection;
+using System.Threading.RateLimiting;
+
+using Fancyx.Admin.Filters;
 using Fancyx.Admin.Middlewares;
 using Fancyx.Admin.SharedService;
 using Fancyx.Cap;
@@ -11,18 +14,17 @@ using Fancyx.Job;
 using Fancyx.Logger;
 using Fancyx.Logger.Options;
 using Fancyx.ObjectStorage;
-using Fancyx.Payment;
 using Fancyx.Redis;
 using Fancyx.Shared.Consts;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.OpenApi.Models;
+
 using MQTTnet.AspNetCore;
-using System.Reflection;
-using System.Threading.RateLimiting;
 
 namespace Fancyx.Admin
 {
@@ -32,8 +34,7 @@ namespace Fancyx.Admin
         typeof(FancyxCapModule),
         typeof(FancyxLoggerModule),
         typeof(FancyxObjectStorageModule),
-        typeof(FancyxJobModule),
-        typeof(FancyxPaymentModule)
+        typeof(FancyxJobModule)
         )]
     public class FancyxAdminModule : ModuleBase
     {
