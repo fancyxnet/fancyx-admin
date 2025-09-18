@@ -34,7 +34,7 @@ const StyledTabs = styled(Tabs)`
     margin: 6px 6px !important;
     padding: 4px 10px !important;
     border-radius: 4px !important;
-    font-size: 12px !important;
+    font-size: 13px !important;
   }
 
   .ant-tabs-nav::before {

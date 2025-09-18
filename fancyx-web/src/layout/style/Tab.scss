@@ -1,0 +1,10 @@
+.mini-context-menu {
+  min-width: 120px !important;
+  //tab右键菜单悬浮样式
+  --contexify-activeItem-bgColor: #9575cd;
+  //tab右键菜单间距
+  --contexify-itemContent-padding: 4px;
+  //tab右键菜单文字颜色
+  --contexify-item-color: #403f3f;
+  font-size: 13px !important;
+}
