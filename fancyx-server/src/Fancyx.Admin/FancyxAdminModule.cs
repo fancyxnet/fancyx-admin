@@ -1,12 +1,9 @@
-﻿using System.Reflection;
-using System.Threading.RateLimiting;
-
-using Fancyx.Admin.Filters;
+﻿using Fancyx.Admin.Filters;
+using Fancyx.Admin.JsonConverters;
 using Fancyx.Admin.Middlewares;
 using Fancyx.Admin.SharedService;
 using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
-using Fancyx.Core.Helpers;
 using Fancyx.Core.JsonConverters;
 using Fancyx.DataAccess;
 using Fancyx.EventBus;
@@ -23,8 +20,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.OpenApi.Models;
-
 using MQTTnet.AspNetCore;
+using System.Reflection;
+using System.Threading.RateLimiting;
 
 namespace Fancyx.Admin
 {
@@ -67,6 +65,8 @@ namespace Fancyx.Admin
             {
                 options.JsonSerializerOptions.Converters.Add(new DateTimeNullableJsonConverter());
                 options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
+                options.JsonSerializerOptions.Converters.Add(new StringNullableJsonConverter());
+                options.JsonSerializerOptions.Converters.Add(new StringJsonConverter());
             });
 
             services.AddSingleton<IAuthorizationMiddlewareResultHandler, IdentityMiddlewareResultHandler>();
