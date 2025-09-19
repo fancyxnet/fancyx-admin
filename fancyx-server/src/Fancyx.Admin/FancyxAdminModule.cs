@@ -1,13 +1,14 @@
-﻿using Fancyx.Admin.EfCore;
+﻿using Coravel;
+
+using Fancyx.Admin.EfCore;
 using Fancyx.Admin.Filters;
+using Fancyx.Admin.Jobs;
 using Fancyx.Admin.JsonConverters;
 using Fancyx.Admin.Middlewares;
 using Fancyx.Admin.SharedService;
 using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
-using Fancyx.Core.JsonConverters;
 using Fancyx.EventBus;
-using Fancyx.Job;
 using Fancyx.Logger;
 using Fancyx.Logger.Options;
 using Fancyx.Redis;
@@ -31,8 +32,7 @@ namespace Fancyx.Admin
         typeof(FancyxRedisModule),
         typeof(FancyxEventBusModule),
         typeof(FancyxLoggerModule),
-        typeof(FancyxStorageModule),
-        typeof(FancyxJobModule)
+        typeof(FancyxStorageModule)
         )]
     public class FancyxAdminModule : ModuleBase
     {
@@ -147,6 +147,7 @@ namespace Fancyx.Admin
                     await context.HttpContext.Response.WriteAsJsonAsync(new AppResponse<bool>(ErrorCode.ApiLimit, "操作频繁，请稍后再试").SetData(false), cancellationToken);
                 };
             });
+            services.AddScheduler();
 
             SnowflakeHelper.Init(short.Parse(configuration["Snowflake:WorkerId"]!), short.Parse(configuration["Snowflake:DataCenterId"]!));
         }
@@ -176,6 +177,10 @@ namespace Fancyx.Admin
             });
 
             app.UseRateLimiter(); // 启用限流中间件
+            app.ApplicationServices.UseScheduler(sch =>
+            {
+                sch.Schedule<NotificationJob>().EveryMinute().PreventOverlapping(nameof(NotificationJob));
+            });
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Fancyx.Admin.EfCore.Enums
+﻿namespace Fancyx.Logger
 {
     public enum OperateType
     {

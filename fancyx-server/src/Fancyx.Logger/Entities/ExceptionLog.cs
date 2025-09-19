@@ -1,9 +1,10 @@
 ﻿using Fancyx.Core.Interfaces;
 using Fancyx.EfCore.BaseEntity;
+
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Fancyx.Admin.EfCore.Entities.Log
+namespace Fancyx.Logger.Entities
 {
     /// <summary>
     /// 异常日志实体类

@@ -1,6 +1,4 @@
-﻿using Fancyx.Admin.EfCore.Enums;
-
-namespace Fancyx.Logger.Message
+﻿namespace Fancyx.Logger.Message
 {
     public class ApiAccessLogMessage
     {

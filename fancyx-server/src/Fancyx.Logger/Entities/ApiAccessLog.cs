@@ -2,9 +2,9 @@
 using Fancyx.EfCore.BaseEntity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Fancyx.Admin.EfCore.Enums;
+using Fancyx.Logger;
 
-namespace Fancyx.Admin.EfCore.Entities.Log
+namespace Fancyx.Logger.Entities
 {
     [Table("api_access_log")]
     public class ApiAccessLog : CreationEntity, ITenant

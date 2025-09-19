@@ -3,7 +3,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Fancyx.Core.JsonConverters
+namespace Fancyx.Admin.JsonConverters
 {
     public class StringNullableJsonConverter : JsonConverter<string?>
     {

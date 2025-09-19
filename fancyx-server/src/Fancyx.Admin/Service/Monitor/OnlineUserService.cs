@@ -1,5 +1,4 @@
-﻿using Fancyx.Admin.EfCore.Entities.Log;
-using Fancyx.Admin.EfCore.Entities.System;
+﻿using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.IService.Monitor;
 using Fancyx.Admin.IService.Monitor.Dtos;
 using Fancyx.EfCore;

@@ -1,7 +1,7 @@
 using AutoMapper;
 
 using Fancyx.Admin.EfCore;
-using Fancyx.Admin.EfCore.Entities.Log;
+using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.IService.System.LogManagement;
 using Fancyx.Admin.IService.System.LogManagement.Dtos;
 using Fancyx.EfCore;

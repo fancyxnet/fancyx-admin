@@ -2,11 +2,11 @@
 using Serilog;
 using Microsoft.AspNetCore.Builder;
 
-namespace Fancyx.Logger
+namespace Fancyx.Serilog
 {
     public static class LoggerExtension
     {
-        public static void UseFancyxLogger(this ConfigureHostBuilder builder)
+        public static void UseSerilogSetup(this ConfigureHostBuilder builder)
         {
             string logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs", DateTime.Now.ToString("yyyy-MM"));
             Log.Logger = new LoggerConfiguration()

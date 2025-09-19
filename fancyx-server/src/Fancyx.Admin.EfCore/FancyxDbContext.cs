@@ -1,6 +1,4 @@
-﻿using Fancyx.Admin.EfCore.Entities.Job;
-using Fancyx.Admin.EfCore.Entities.Log;
-using Fancyx.Admin.EfCore.Entities.Organization;
+﻿using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Core;
 using Fancyx.Core.Interfaces;
@@ -65,12 +63,7 @@ namespace Fancyx.Admin.EfCore
             return _currentTenant.TenantId;
         }
 
-        public DbSet<ScheduledTask> ScheduledTask { get; set; }
-        public DbSet<TaskExecutionLog> TaskExecutionLog { get; set; }
-        public DbSet<ApiAccessLog> ApiAccessLog { get; set; }
-        public DbSet<ExceptionLog> ExceptionLog { get; set; }
         public DbSet<LoginLog> LoginLog { get; set; }
-        public DbSet<LogRecord> LogRecord { get; set; }
         public DbSet<Dept> Dept { get; set; }
         public DbSet<Position> Position { get; set; }
         public DbSet<PositionGroup> PositionGroup { get; set; }

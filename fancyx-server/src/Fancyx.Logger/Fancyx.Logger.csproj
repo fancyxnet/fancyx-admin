@@ -7,18 +7,10 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
-		<PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
-	</ItemGroup>
-
-	<ItemGroup>
+	  <ProjectReference Include="..\..\libs\Fancyx.EfCore\Fancyx.EfCore.csproj" />
 	  <ProjectReference Include="..\..\libs\Fancyx.EventBus\Fancyx.EventBus.csproj" />
 	  <ProjectReference Include="..\..\libs\Fancyx.Core\Fancyx.Core.csproj" />
+	  <ProjectReference Include="..\..\libs\Fancyx.Serilog\Fancyx.Serilog.csproj" />
 	  <ProjectReference Include="..\..\libs\Fancyx.Utils\Fancyx.Utils.csproj" />
-	  <ProjectReference Include="..\Fancyx.DataAccess\Fancyx.Admin.EfCore.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Entities\" />
 	</ItemGroup>
 </Project>

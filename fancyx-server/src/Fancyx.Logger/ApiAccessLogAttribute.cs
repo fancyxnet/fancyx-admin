@@ -1,14 +1,16 @@
 ﻿using DotNetCore.CAP;
-using Fancyx.Admin.EfCore.Enums;
 using Fancyx.Core.Authorization;
 using Fancyx.Logger.Consts;
 using Fancyx.Logger.Message;
 using Fancyx.Utils;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 using Newtonsoft.Json;
+
 using System.Diagnostics;
 
 namespace Fancyx.Logger

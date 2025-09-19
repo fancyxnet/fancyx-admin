@@ -1,10 +1,10 @@
 using Fancyx.Admin;
 using Fancyx.Core;
-using Fancyx.Logger;
+using Fancyx.Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseFancyxLogger();
+builder.Host.UseSerilogSetup();
 builder.Host.UseAutofac();
 
 builder.AddApplication<FancyxAdminModule>();

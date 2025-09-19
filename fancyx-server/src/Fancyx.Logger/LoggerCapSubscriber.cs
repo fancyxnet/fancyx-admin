@@ -1,7 +1,7 @@
 ﻿using DotNetCore.CAP;
-using Fancyx.Admin.EfCore;
-using Fancyx.Admin.EfCore.Entities.Log;
+using Fancyx.EfCore;
 using Fancyx.Logger.Consts;
+using Fancyx.Logger.Entities;
 using Fancyx.Logger.Message;
 using Fancyx.Utils;
 
@@ -9,11 +9,16 @@ namespace Fancyx.Logger
 {
     public class LoggerCapSubscriber : ICapSubscribe
     {
-        private readonly FancyxDbContext _context;
+        private readonly IRepository<LogRecord> _logRecordRepository;
+        private readonly IRepository<ApiAccessLog> _apiAccessLogRepository;
+        private readonly IRepository<ExceptionLog> _exceptionLogRepository;
 
-        public LoggerCapSubscriber(FancyxDbContext context)
+        public LoggerCapSubscriber(IRepository<LogRecord> logRecordRepository, IRepository<ApiAccessLog> apiAccessLogRepository
+            , IRepository<ExceptionLog> exceptionLogRepository)
         {
-            _context = context;
+            _logRecordRepository = logRecordRepository;
+            _apiAccessLogRepository = apiAccessLogRepository;
+            _exceptionLogRepository = exceptionLogRepository;
         }
 
         [CapSubscribe(EventBusTopicConsts.LOG_RECORD_EVENT)]
@@ -35,7 +40,7 @@ namespace Fancyx.Logger
                 CreationTime = message.CreationTime
             };
 
-            await _context.SingleInsertAsync(entity);
+            await _logRecordRepository.InsertAsync(entity);
         }
 
         [CapSubscribe(EventBusTopicConsts.API_ACCESS_LOG_EVENT)]
@@ -63,7 +68,7 @@ namespace Fancyx.Logger
                 CreationTime = DateTime.Now
             };
 
-            await _context.SingleInsertAsync(entity);
+            await _apiAccessLogRepository.InsertAsync(entity);
         }
 
         [CapSubscribe(EventBusTopicConsts.EXCEPTION_LOG_EVENT)]
@@ -87,7 +92,7 @@ namespace Fancyx.Logger
                 CreationTime = DateTime.Now
             };
 
-            await _context.SingleInsertAsync(entity);
+            await _exceptionLogRepository.InsertAsync(entity);
         }
     }
 }

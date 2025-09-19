@@ -1,7 +1,6 @@
 using AutoMapper;
 using DotNetCore.CAP;
 using Fancyx.Admin.EfCore;
-using Fancyx.Admin.EfCore.Entities.Log;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
 using Fancyx.Admin.IService.Account;

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Fancyx.Admin.EfCore.Enums;
+
+using Fancyx.Logger;
 
 namespace Fancyx.Admin.IService.Monitor.Dtos
 {

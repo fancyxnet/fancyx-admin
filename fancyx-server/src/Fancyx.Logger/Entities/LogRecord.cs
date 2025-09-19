@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Fancyx.EfCore.BaseEntity;
 
-namespace Fancyx.Admin.EfCore.Entities.Log
+namespace Fancyx.Logger.Entities
 {
     [Table("log_record")]
     public class LogRecord : CreationEntity, ITenant

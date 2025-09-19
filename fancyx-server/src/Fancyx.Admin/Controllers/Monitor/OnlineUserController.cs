@@ -1,8 +1,8 @@
-﻿using Fancyx.Admin.EfCore.Enums;
-using Fancyx.Admin.IService.Monitor;
+﻿using Fancyx.Admin.IService.Monitor;
 using Fancyx.Admin.IService.Monitor.Dtos;
 using Fancyx.Core.Attributes;
 using Fancyx.Logger;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
