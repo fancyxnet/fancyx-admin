@@ -7,7 +7,6 @@ using Fancyx.Admin.EfCore.Enums;
 using Fancyx.Admin.IService.Account;
 using Fancyx.Admin.IService.Account.Dtos;
 using Fancyx.Admin.SharedService;
-using Fancyx.Core.Helpers;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
 using Fancyx.Redis;
@@ -228,7 +227,7 @@ namespace Fancyx.Admin.Service.Account
             var topMap = new List<FrontendMenu>();
             foreach (var item in top)
             {
-                var mapItem = AutoMapperHelper.Instance.Map<Menu, FrontendMenu>(item);
+                var mapItem = _mapper.Map<Menu, FrontendMenu>(item);
                 mapItem.LayerName = item.Title;
                 mapItem.Children = getChildren(mapItem);
                 topMap.Add(mapItem);
@@ -242,7 +241,7 @@ namespace Fancyx.Admin.Service.Account
                 var childrenMap = new List<FrontendMenu>();
                 foreach (var item in children)
                 {
-                    var mapItem = AutoMapperHelper.Instance.Map<Menu, FrontendMenu>(item);
+                    var mapItem = _mapper.Map<Menu, FrontendMenu>(item);
                     mapItem.LayerName = current.LayerName + "/" + item.Title;
                     mapItem.Children = getChildren(mapItem);
                     childrenMap.Add(mapItem);

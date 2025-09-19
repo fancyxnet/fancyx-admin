@@ -1,9 +1,10 @@
+using AutoMapper;
+
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.IService.Organization;
 using Fancyx.Admin.IService.Organization.Dtos;
-using Fancyx.Core.Helpers;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
 using Microsoft.EntityFrameworkCore;
@@ -15,12 +16,14 @@ namespace Fancyx.Admin.Service.Organization
         private readonly IRepository<Dept> _deptRepository;
         private readonly IRepository<User> _userRepository;
         private readonly ICurrentUser _currentUser;
+        private readonly IMapper _mapper;
 
-        public DeptService(IRepository<Dept> deptRepository, IRepository<User> userRepository, ICurrentUser currentUser)
+        public DeptService(IRepository<Dept> deptRepository, IRepository<User> userRepository, ICurrentUser currentUser, IMapper mapper)
         {
             _deptRepository = deptRepository;
             _userRepository = userRepository;
             _currentUser = currentUser;
+            _mapper = mapper;
         }
 
         public async Task<bool> AddDeptAsync(DeptDto dto)
@@ -30,7 +33,7 @@ namespace Fancyx.Admin.Service.Organization
                 throw new BusinessException(message: "部门编号已存在");
             }
 
-            var entity = AutoMapperHelper.Instance.Map<DeptDto, Dept>(dto);
+            var entity = _mapper.Map<DeptDto, Dept>(dto);
             entity.ParentId = dto.ParentId;
             entity.Code = dto.Code;
             entity.SetTreeProperties(await _deptRepository.FindAsync(dto.ParentId));
@@ -63,7 +66,7 @@ namespace Fancyx.Admin.Service.Organization
                     .WhereIf(!string.IsNullOrEmpty(dto.Code), x => x.Code.Contains(dto.Code!)) // ==
                     .WhereIf(dto.Status > 0, x => x.Status == dto.Status) // ==
                     .OrderBy(x => x.Sort).ToListAsync();
-                var result = AutoMapperHelper.Instance.Map<List<Dept>, List<DeptListDto>>(filter);
+                var result = _mapper.Map<List<Dept>, List<DeptListDto>>(filter);
 
                 return result;
             }
@@ -75,7 +78,7 @@ namespace Fancyx.Admin.Service.Organization
 
             foreach (var node in allNodes.Values)
             {
-                var tmp = AutoMapperHelper.Instance.Map<Dept, DeptListDto>(node);
+                var tmp = _mapper.Map<Dept, DeptListDto>(node);
                 nodeDtos[tmp.Id] = tmp;
                 if (node.ParentId.HasValue)
                 {

@@ -1,10 +1,11 @@
+using AutoMapper;
+
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.IService.Organization;
 using Fancyx.Admin.IService.Organization.Dtos;
 using Fancyx.Admin.Service.Organization.Models;
-using Fancyx.Core.Helpers;
 using Fancyx.EfCore;
 using System.Data;
 
@@ -15,13 +16,15 @@ namespace Fancyx.Admin.Service.Organization
         private readonly IRepository<Position> _positionRepository;
         private readonly IRepository<PositionGroup> _positionGroupRepository;
         private readonly IRepository<User> _userRepository;
+        private readonly IMapper _mapper;
 
         public PositionService(IRepository<Position> positionRepository, IRepository<PositionGroup> positionGroupRepository
-            , IRepository<User> userRepository)
+            , IRepository<User> userRepository, IMapper mapper)
         {
             _positionRepository = positionRepository;
             _positionGroupRepository = positionGroupRepository;
             _userRepository = userRepository;
+            _mapper = mapper;
         }
 
         private async Task<List<PosistionLayerNames>> GetPosistionGroupNameAsync(List<Guid> ids)
@@ -58,7 +61,7 @@ namespace Fancyx.Admin.Service.Organization
             {
                 throw new BusinessException("职位编号已存在");
             }
-            var entity = AutoMapperHelper.Instance.Map<PositionDto, Position>(dto);
+            var entity = _mapper.Map<PositionDto, Position>(dto);
             await _positionRepository.InsertAsync(entity);
             return true;
         }
@@ -82,7 +85,7 @@ namespace Fancyx.Admin.Service.Organization
                 .OrderBy(x => x.CreationTime)
                 .PagedAsync(dto.Current, dto.PageSize);
             var ids = pagedResp.Items.Select(x => x.Id).ToList();
-            var list = AutoMapperHelper.Instance.Map<List<Position>, List<PositionListDto>>(pagedResp.Items);
+            var list = _mapper.Map<List<Position>, List<PositionListDto>>(pagedResp.Items);
             var names = await GetPosistionGroupNameAsync(ids);
             foreach (var item in list)
             {

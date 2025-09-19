@@ -1,12 +1,18 @@
-﻿using DotNetCore.CAP;
+﻿using System.Reflection;
+
+using DotNetCore.CAP;
+
 using Fancyx.Core;
 using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
+using Fancyx.Utils;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
 using Npgsql;
+
 using StackExchange.Redis;
-using System.Reflection;
 
 namespace Fancyx.EventBus
 {
@@ -32,7 +38,7 @@ namespace Fancyx.EventBus
 
             //自动以Scoped方式注册ICapSubscribe实现类
             var baseType = typeof(ICapSubscribe);
-            foreach (var assembly in FrameConfiguration.LoadAssemblies)
+            foreach (var assembly in ReflectionUtils.AllAssemblies)
             {
                 IEnumerable<TypeInfo> types = assembly.DefinedTypes.Where(x => !x.IsAbstract && x.IsClass && !x.IsSealed && x != baseType && x.IsAssignableTo(baseType));
                 foreach (var type in types)

@@ -2,6 +2,8 @@
 using Fancyx.Core.Context;
 using Fancyx.EfCore;
 
+using Microsoft.Extensions.Configuration;
+
 namespace Fancyx.Admin.EfCore
 {
     [DependsOn(
@@ -11,6 +13,7 @@ namespace Fancyx.Admin.EfCore
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
+            context.Services.AddEfCore<FancyxDbContext>(context.Configuration.GetConnectionString("Default")!);
         }
 
         public override void Configure(ApplicationInitializationContext context)

@@ -1,8 +1,9 @@
+using AutoMapper;
+
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.Log;
 using Fancyx.Admin.IService.System.LogManagement;
 using Fancyx.Admin.IService.System.LogManagement.Dtos;
-using Fancyx.Core.Extensions;
 using Fancyx.EfCore;
 
 namespace Fancyx.Admin.Service.System.LogManagement
@@ -10,10 +11,12 @@ namespace Fancyx.Admin.Service.System.LogManagement
     public class LoginLogService : ILoginLogService
     {
         private readonly IRepository<LoginLog> _loginLogRepository;
+        private readonly IMapper _mapper;
 
-        public LoginLogService(IRepository<LoginLog> loginLogRepository)
+        public LoginLogService(IRepository<LoginLog> loginLogRepository, IMapper mapper)
         {
             _loginLogRepository = loginLogRepository;
+            _mapper = mapper;
         }
 
         public async Task<PagedResult<LoginLogListDto>> GetLoginLogListAsync(LoginLogQueryDto dto)
@@ -26,7 +29,7 @@ namespace Fancyx.Admin.Service.System.LogManagement
                 .OrderByDescending(x => x.CreationTime)
                 .PagedAsync(dto.Current, dto.PageSize);
 
-            return new PagedResult<LoginLogListDto>(resp.Total, resp.Items.MapperList<LoginLog, LoginLogListDto>());
+            return new PagedResult<LoginLogListDto>(resp.Total, _mapper.Map<List<LoginLog>, List<LoginLogListDto>>(resp.Items));
         }
     }
 }

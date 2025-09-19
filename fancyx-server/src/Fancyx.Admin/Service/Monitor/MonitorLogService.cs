@@ -1,8 +1,9 @@
-﻿using Fancyx.Admin.EfCore;
+﻿using AutoMapper;
+
+using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.Log;
 using Fancyx.Admin.IService.Monitor;
 using Fancyx.Admin.IService.Monitor.Dtos;
-using Fancyx.Core.Extensions;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
 
@@ -13,12 +14,14 @@ namespace Fancyx.Admin.Service.Monitor
         private readonly IRepository<ApiAccessLog> _apiAccessRepository;
         private readonly IRepository<ExceptionLog> _exceptionLogRepository;
         private readonly ICurrentUser _currentUser;
+        private readonly IMapper _mapper;
 
-        public MonitorLogService(IRepository<ApiAccessLog> apiAccessRepository, IRepository<ExceptionLog> exceptionLogRepository, ICurrentUser currentUser)
+        public MonitorLogService(IRepository<ApiAccessLog> apiAccessRepository, IRepository<ExceptionLog> exceptionLogRepository, ICurrentUser currentUser, IMapper mapper)
         {
             _apiAccessRepository = apiAccessRepository;
             _exceptionLogRepository = exceptionLogRepository;
             _currentUser = currentUser;
+            _mapper = mapper;
         }
 
         public async Task<PagedResult<ApiAccessLogListDto>> GetApiAccessLogListAsync(ApiAccessLogQueryDto dto)
@@ -27,7 +30,7 @@ namespace Fancyx.Admin.Service.Monitor
                 .WhereIf(!string.IsNullOrEmpty(dto.Path), x => x.Path.Contains(dto.Path!))
                 .OrderByDescending(x => x.CreationTime)
                 .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<ApiAccessLogListDto>(dto, resp.Total, resp.Items.MapperList<ApiAccessLog, ApiAccessLogListDto>());
+            return new PagedResult<ApiAccessLogListDto>(dto, resp.Total, _mapper.Map<List<ApiAccessLog>, List<ApiAccessLogListDto>>(resp.Items));
         }
 
         public async Task<PagedResult<ExceptionLogListDto>> GetExceptionLogListAsync(ExceptionLogQueryDto dto)
@@ -37,7 +40,7 @@ namespace Fancyx.Admin.Service.Monitor
                 .WhereIf(dto.IsHandled.HasValue, x => x.IsHandled == dto.IsHandled!)
                 .OrderByDescending(x => x.CreationTime)
                 .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<ExceptionLogListDto>(dto, resp.Total, resp.Items.MapperList<ExceptionLog, ExceptionLogListDto>());
+            return new PagedResult<ExceptionLogListDto>(dto, resp.Total, _mapper.Map<List<ExceptionLog>, List<ExceptionLogListDto>>(resp.Items));
         }
 
         public async Task HandleExceptionAsync(Guid exceptionId)

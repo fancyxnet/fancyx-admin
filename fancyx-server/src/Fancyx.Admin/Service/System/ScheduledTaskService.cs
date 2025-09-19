@@ -1,8 +1,9 @@
-﻿using Fancyx.Admin.EfCore;
+﻿using AutoMapper;
+
+using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.Job;
 using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
-using Fancyx.Core.Extensions;
 using Fancyx.EfCore;
 using Fancyx.Job;
 
@@ -13,12 +14,15 @@ namespace Fancyx.Admin.Service.System
         private readonly IRepository<ScheduledTask> _scheduledTaskRepository;
         private readonly IRepository<TaskExecutionLog> _taskExecutionLogRepository;
         private readonly IJobControl _jobControl;
+        private readonly IMapper _mapper;
 
-        public ScheduledTaskService(IRepository<ScheduledTask> scheduledTaskRepository, IRepository<TaskExecutionLog> taskExecutionLogRepository, IJobControl jobControl)
+        public ScheduledTaskService(IRepository<ScheduledTask> scheduledTaskRepository, IRepository<TaskExecutionLog> taskExecutionLogRepository, IJobControl jobControl
+            , IMapper mapper)
         {
             _scheduledTaskRepository = scheduledTaskRepository;
             _taskExecutionLogRepository = taskExecutionLogRepository;
             _jobControl = jobControl;
+            _mapper = mapper;
         }
 
         public Task AddAsync(ScheduledTaskDto dto)
@@ -40,7 +44,7 @@ namespace Fancyx.Admin.Service.System
                 .WhereIf(dto.Cost > 0, x => x.Cost >= dto.Cost)
                 .OrderByDescending(x => x.ExecutionTime)
                 .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<TaskExecutionLogListDto>(dto, resp.Total, resp.Items.MapperList<TaskExecutionLog, TaskExecutionLogListDto>());
+            return new PagedResult<TaskExecutionLogListDto>(dto, resp.Total, _mapper.Map<List<TaskExecutionLog>, List<TaskExecutionLogListDto>>(resp.Items));
         }
 
         public async Task<PagedResult<ScheduledTaskListDto>> GetListAsync(ScheduledTaskQueryDto dto)

@@ -1,8 +1,9 @@
+using AutoMapper;
+
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
 using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
-using Fancyx.Core.Helpers;
 using Fancyx.EfCore;
 using Fancyx.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +13,12 @@ namespace Fancyx.Admin.Service.System
     public class MenuService : IMenuService
     {
         private readonly IRepository<Menu> _menuRepository;
+        private readonly IMapper _mapper;
 
-        public MenuService(IRepository<Menu> menuRepository)
+        public MenuService(IRepository<Menu> menuRepository, IMapper mapper)
         {
             _menuRepository = menuRepository;
+            _mapper = mapper;
         }
 
         public async Task<bool> AddMenuAsync(MenuDto dto)
@@ -46,7 +49,7 @@ namespace Fancyx.Admin.Service.System
                 throw new BusinessException(message: $"已存在【{dto.Path}】菜单路由");
             }
 
-            var entity = AutoMapperHelper.Instance.Map<MenuDto, Menu>(dto);
+            var entity = _mapper.Map<MenuDto, Menu>(dto);
             await _menuRepository.InsertAsync(entity);
             return true;
         }
@@ -76,7 +79,7 @@ namespace Fancyx.Admin.Service.System
                 .ToListAsync();
             var top = all.Where(x => isFilter || !x.ParentId.HasValue || x.ParentId == Guid.Empty).OrderBy(x => x.Sort)
                 .ToList();
-            var topMap = AutoMapperHelper.Instance.Map<List<Menu>, List<MenuListDto>>(top);
+            var topMap = _mapper.Map<List<Menu>, List<MenuListDto>>(top);
             if (isFilter) return topMap;
             foreach (var item in topMap)
             {
@@ -87,7 +90,7 @@ namespace Fancyx.Admin.Service.System
             {
                 var children = all.Where(x => x.ParentId == currentId).OrderBy(x => x.Sort).ToList();
                 if (children.Count == 0) return null;
-                var childrenMap = AutoMapperHelper.Instance.Map<List<Menu>, List<MenuListDto>>(children);
+                var childrenMap = _mapper.Map<List<Menu>, List<MenuListDto>>(children);
                 foreach (var item in childrenMap)
                 {
                     item.Children = getChildren(item.Id);

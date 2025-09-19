@@ -1,7 +1,8 @@
+using AutoMapper;
+
 using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.Admin.IService.Organization;
 using Fancyx.Admin.IService.Organization.Dtos;
-using Fancyx.Core.Helpers;
 using Fancyx.EfCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,17 +12,19 @@ namespace Fancyx.Admin.Service.Organization
     {
         private readonly IRepository<PositionGroup> _positionGroupRepository;
         private readonly IRepository<Position> _positionRepository;
+        private readonly IMapper _mapper;
 
         public PositionGroupService(IRepository<PositionGroup> positionGroupRepository,
-            IRepository<Position> positionRepository)
+            IRepository<Position> positionRepository, IMapper mapper)
         {
             _positionGroupRepository = positionGroupRepository;
             _positionRepository = positionRepository;
+            _mapper = mapper;
         }
 
         public async Task<bool> AddPositionGroupAsync(PositionGroupDto dto)
         {
-            var entity = AutoMapperHelper.Instance.Map<PositionGroupDto, PositionGroup>(dto);
+            var entity = _mapper.Map<PositionGroupDto, PositionGroup>(dto);
             entity.SetTreeProperties(await _positionGroupRepository.FindAsync(dto.ParentId));
 
             await _positionGroupRepository.InsertAsync(entity);
@@ -59,7 +62,7 @@ namespace Fancyx.Admin.Service.Organization
 
             foreach (var node in allNodes.Values)
             {
-                var tmp = AutoMapperHelper.Instance.Map<PositionGroup, PositionGroupListDto>(node);
+                var tmp = _mapper.Map<PositionGroup, PositionGroupListDto>(node);
                 nodeDtos[tmp.Id] = tmp;
                 if (node.ParentId.HasValue)
                 {

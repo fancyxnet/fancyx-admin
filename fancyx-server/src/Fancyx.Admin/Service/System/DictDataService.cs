@@ -1,9 +1,9 @@
+using AutoMapper;
+
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
-using Fancyx.Core.Extensions;
-using Fancyx.Core.Helpers;
 using Fancyx.EfCore;
 using Fancyx.Logger;
 using Fancyx.Shared.Consts;
@@ -13,10 +13,12 @@ namespace Fancyx.Admin.Service.System
     public class DictDataService : IDictDataService
     {
         private readonly IRepository<DictData> _dictRepository;
+        private readonly IMapper _mapper;
 
-        public DictDataService(IRepository<DictData> dictRepository)
+        public DictDataService(IRepository<DictData> dictRepository, IMapper mapper)
         {
             _dictRepository = dictRepository;
+            _mapper = mapper;
         }
 
         public async Task<bool> AddDictDataAsync(DictDataDto dto)
@@ -26,7 +28,7 @@ namespace Fancyx.Admin.Service.System
             {
                 throw new BusinessException("字典值已存在");
             }
-            var entity = AutoMapperHelper.Instance.Map<DictDataDto, DictData>(dto);
+            var entity = _mapper.Map<DictDataDto, DictData>(dto);
             await _dictRepository.InsertAsync(entity);
 
             return true;
@@ -50,7 +52,7 @@ namespace Fancyx.Admin.Service.System
                 .OrderBy(x => x.Sort).OrderByDescending(x => x.CreationTime)
                 .PagedAsync(dto.Current, dto.PageSize);
 
-            return new PagedResult<DictDataListDto>(resp.Total, resp.Items.MapperList<DictData, DictDataListDto>());
+            return new PagedResult<DictDataListDto>(resp.Total, _mapper.Map<List<DictData>, List<DictDataListDto>>(resp.Items));
         }
 
         [AsyncLogRecord(LogRecordConsts.DictData, LogRecordConsts.DictDataUpdateSubType, "{{id}}", LogRecordConsts.DictDataUpdateContent)]

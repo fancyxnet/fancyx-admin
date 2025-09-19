@@ -1,9 +1,10 @@
-﻿using Fancyx.Admin.EfCore;
+﻿using AutoMapper;
+
+using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Admin.SharedService;
-using Fancyx.Core.Extensions;
 using Fancyx.EfCore;
 using Fancyx.Logger;
 using Fancyx.Shared.Consts;
@@ -15,11 +16,13 @@ namespace Fancyx.Admin.Service.System
     {
         private readonly IRepository<Config> _configRepository;
         private readonly ConfigSharedService _configSharedService;
+        private readonly IMapper _mapper;
 
-        public ConfigService(IRepository<Config> configRepository, ConfigSharedService configSharedService)
+        public ConfigService(IRepository<Config> configRepository, ConfigSharedService configSharedService, IMapper mapper)
         {
             _configRepository = configRepository;
             _configSharedService = configSharedService;
+            _mapper = mapper;
         }
 
         public async Task AddConfigAsync(ConfigDto dto)
@@ -47,7 +50,7 @@ namespace Fancyx.Admin.Service.System
                 .WhereIf(!string.IsNullOrEmpty(dto.Key), x => x.Key.ToLower().Contains(dto.Key!.ToLower()))
                 .PagedAsync(dto.Current, dto.PageSize);
 
-            return new PagedResult<ConfigListDto>(resp.Total, resp.Items.MapperList<Config, ConfigListDto>());
+            return new PagedResult<ConfigListDto>(resp.Total, _mapper.Map<List<Config>, List<ConfigListDto>>(resp.Items));
         }
 
         public async Task DeleteConfigAsync(Guid id)

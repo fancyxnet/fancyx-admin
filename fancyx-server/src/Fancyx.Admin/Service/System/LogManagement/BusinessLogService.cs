@@ -1,8 +1,9 @@
-﻿using Fancyx.Admin.EfCore;
+﻿using AutoMapper;
+
+using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.Log;
 using Fancyx.Admin.IService.System.LogManagement;
 using Fancyx.Admin.IService.System.LogManagement.Dtos;
-using Fancyx.Core.Extensions;
 using Fancyx.EfCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,10 +12,12 @@ namespace Fancyx.Admin.Service.System.LogManagement
     public class BusinessLogService : IBusinessLogService
     {
         private readonly IRepository<LogRecord> _logRecordRepository;
+        private readonly IMapper _mapper;
 
-        public BusinessLogService(IRepository<LogRecord> logRecordRepository)
+        public BusinessLogService(IRepository<LogRecord> logRecordRepository, IMapper mapper)
         {
             _logRecordRepository = logRecordRepository;
+            _mapper = mapper;
         }
 
         public async Task<PagedResult<BusinessLogListDto>> GetBusinessLogListAsync(BusinessLogQueryDto dto)
@@ -26,7 +29,7 @@ namespace Fancyx.Admin.Service.System.LogManagement
                 .WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.UserName != null && x.UserName.Contains(dto.UserName!))
                 .OrderByDescending(x => x.CreationTime)
                 .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<BusinessLogListDto>(dto, resp.Total, resp.Items.MapperList<LogRecord, BusinessLogListDto>());
+            return new PagedResult<BusinessLogListDto>(dto, resp.Total, _mapper.Map<List<LogRecord>, List<BusinessLogListDto>>(resp.Items));
         }
 
         public Task<List<AppOption>> GetBusinessTypeOptionsAsync(string? type)

@@ -1,9 +1,13 @@
-﻿using Fancyx.Core;
+﻿using System.Reflection;
+
+using Fancyx.Core;
 using Fancyx.Job.Database;
+using Fancyx.Utils;
+
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Hosting;
+
 using Quartz;
-using System.Reflection;
 
 namespace Fancyx.Job
 {
@@ -24,7 +28,7 @@ namespace Fancyx.Job
         {
             //加载实现IJob接口的任务类
             var baseJobType = typeof(IJob);
-            var jobClasses = FrameConfiguration.LoadAssemblies.SelectMany(x => x.DefinedTypes.Where(t => !t.IsSealed && !t.IsAbstract && t.IsClass && t.IsAssignableTo(baseJobType))).ToList();
+            var jobClasses = ReflectionUtils.AllAssemblies.SelectMany(x => x.DefinedTypes.Where(t => !t.IsSealed && !t.IsAbstract && t.IsClass && t.IsAssignableTo(baseJobType))).ToList();
             var jobClassMap = new Dictionary<string, TypeInfo>();
             foreach (var jobType in jobClasses)
             {

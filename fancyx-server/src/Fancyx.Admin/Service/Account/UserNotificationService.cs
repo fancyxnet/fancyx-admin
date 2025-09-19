@@ -1,8 +1,9 @@
-﻿using Fancyx.Admin.EfCore;
+﻿using AutoMapper;
+
+using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.IService.Account;
 using Fancyx.Admin.IService.Account.Dtos;
-using Fancyx.Core.Extensions;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
 using Microsoft.EntityFrameworkCore;
@@ -13,11 +14,13 @@ namespace Fancyx.Admin.Service.Account
     {
         private readonly IRepository<Notification> _repository;
         private readonly ICurrentUser _currentUser;
+        private readonly IMapper _mapper;
 
-        public UserNotificationService(IRepository<Notification> repository, ICurrentUser currentUser)
+        public UserNotificationService(IRepository<Notification> repository, ICurrentUser currentUser, IMapper mapper)
         {
             _repository = repository;
             _currentUser = currentUser;
+            _mapper = mapper;
         }
 
         public async Task<PagedResult<UserNotificationListDto>> GetMyNotificationListAsync(UserNotificationQueryDto dto)
@@ -31,7 +34,7 @@ namespace Fancyx.Admin.Service.Account
                 .OrderBy(x => x.IsReaded)
                 .OrderByDescending(x => x.CreationTime)
                 .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<UserNotificationListDto>(dto, resp.Total, resp.Items.MapperList<Notification, UserNotificationListDto>());
+            return new PagedResult<UserNotificationListDto>(dto, resp.Total, _mapper.Map<List<Notification>, List<UserNotificationListDto>>(resp.Items));
         }
 
         public async Task<UserNotificationNavbarDto> GetMyNotificationNavbarInfoAsync()

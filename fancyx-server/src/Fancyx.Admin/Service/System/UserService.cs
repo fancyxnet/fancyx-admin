@@ -1,10 +1,11 @@
+using AutoMapper;
+
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
 using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Admin.SharedService;
-using Fancyx.Core.Extensions;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
 using Fancyx.EfCore.Aop;
@@ -23,15 +24,18 @@ namespace Fancyx.Admin.Service.System
         private readonly IdentitySharedService _identityDomainService;
         private readonly ICurrentUser _currentUser;
         private readonly FancyxDbContext _context;
+        private readonly IMapper _mapper;
 
         public UserService(IRepository<User> userRepository, IRepository<UserRole> userRoleRepository
-            , IdentitySharedService identityDomainService, ICurrentUser currentUser, FancyxDbContext context)
+            , IdentitySharedService identityDomainService, ICurrentUser currentUser, FancyxDbContext context
+            , IMapper mapper)
         {
             _userRepository = userRepository;
             _userRoleRepository = userRoleRepository;
             _identityDomainService = identityDomainService;
             _currentUser = currentUser;
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<Guid> AddUserAsync(UserDto dto)
@@ -204,7 +208,7 @@ namespace Fancyx.Admin.Service.System
         public async Task<UserEditInfoDto> GetUserEditInfoAsync(Guid id)
         {
             var user = await _userRepository.FindAsync(id) ?? throw new EntityNotFoundException();
-            return user.Mapper<User, UserEditInfoDto>();
+            return _mapper.Map<User, UserEditInfoDto>(user);
         }
     }
 }

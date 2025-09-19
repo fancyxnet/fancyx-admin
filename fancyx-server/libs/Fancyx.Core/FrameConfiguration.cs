@@ -32,7 +32,7 @@ namespace Fancyx.Core
         /// <summary>
         /// 已加载程序集
         /// </summary>
-        public static List<Assembly> LoadAssemblies { get; private set; } = [];
+        private static readonly List<Assembly> _loadAssemblies = [];
 
         /// <summary>
         /// 用于模块排序的计数器
@@ -106,12 +106,12 @@ namespace Fancyx.Core
             //2. 获取加载程序集
             foreach (var item in modules.Keys)
             {
-                LoadAssemblies.Add(item.Assembly);
+                _loadAssemblies.Add(item.Assembly);
             }
             //3. Autofac动态注册
             builder.Host.ConfigureContainer<ContainerBuilder>(ConfigureAutofacContainer);
             //4. 注册AutoMapper
-            services.AddAutoMapper(LoadAssemblies);
+            services.AddAutoMapper(_loadAssemblies);
         }
 
         /// <summary>
@@ -241,7 +241,7 @@ namespace Fancyx.Core
                 [DenpendencyType.Transient] = transientServiceType
             };
             var autowireType = typeof(AutowiredAttribute);
-            foreach (var assembly in LoadAssemblies)
+            foreach (var assembly in _loadAssemblies)
             {
                 //实现注册接口类注册
                 var curClassTypes = assembly.DefinedTypes.Where(x => !x.IsAbstract && x.IsClass && !x.IsSealed).ToList();
