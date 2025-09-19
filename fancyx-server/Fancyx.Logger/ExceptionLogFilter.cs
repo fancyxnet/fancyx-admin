@@ -1,11 +1,12 @@
 ﻿using DotNetCore.CAP;
+using Fancyx.Core.Authorization;
+using Fancyx.Logger.Consts;
 using Fancyx.Logger.Message;
+using Fancyx.Logger.Options;
+using Fancyx.Utils;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Fancyx.Logger.Consts;
-using Fancyx.Logger.Options;
-using Fancyx.Core.Utils;
 using System.Diagnostics;
 
 namespace Fancyx.Logger
@@ -46,11 +47,11 @@ namespace Fancyx.Logger
                     RequestPath = context.HttpContext.Request.Path,
                     RequestMethod = context.HttpContext.Request.Method,
                     TraceId = Activity.Current?.TraceId.ToString(),
-                    Ip = RequestUtils.GetIp(context.HttpContext),
-                    UserAgent = RequestUtils.GetUserAgent(context.HttpContext)
+                    Ip = HttpUtils.GetIp(context.HttpContext),
+                    UserAgent = context.HttpContext.Request.Headers.UserAgent
                 };
-                var currentUser = RequestUtils.ResolveUser(context.HttpContext);
-                var currentTenant = RequestUtils.ResolveTenant(context.HttpContext);
+                var currentUser = CurrentUser.Parse(context.HttpContext);
+                var currentTenant = CurrentTenant.Parse(context.HttpContext);
                 msg.UserId = currentUser?.Id;
                 msg.UserName = currentUser?.UserName;
                 msg.TenantId = currentTenant?.TenantId;

@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Job", "Fancyx.Job\Fa
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Utils", "Fancyx.Utils\Fancyx.Utils.csproj", "{C9C07FBB-9F73-4C0E-9356-D1A4BE181072}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +72,10 @@ Global
 		{5B435F27-8148-4F3D-8D27-01D199178C08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B435F27-8148-4F3D-8D27-01D199178C08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B435F27-8148-4F3D-8D27-01D199178C08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9C07FBB-9F73-4C0E-9356-D1A4BE181072}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9C07FBB-9F73-4C0E-9356-D1A4BE181072}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9C07FBB-9F73-4C0E-9356-D1A4BE181072}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9C07FBB-9F73-4C0E-9356-D1A4BE181072}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -79,6 +85,7 @@ Global
 		{5364A22C-7C01-4499-903D-1A985B11B30C} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{F6BFCC9E-2239-46CE-AAF5-F7D08B4F4C1D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{5A5DDF67-7FDD-4801-BF74-432B8DDF33F3} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{C9C07FBB-9F73-4C0E-9356-D1A4BE181072} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {28315BFD-90E7-4E14-A2EA-F3D23AF4126F}

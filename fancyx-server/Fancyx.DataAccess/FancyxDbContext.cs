@@ -1,15 +1,14 @@
-﻿using System.Linq.Expressions;
-
+﻿using Fancyx.Core;
 using Fancyx.Core.Authorization;
-using Fancyx.Core.Expressions;
 using Fancyx.Core.Interfaces;
 using Fancyx.DataAccess.BaseEntity;
 using Fancyx.DataAccess.Entities.Job;
 using Fancyx.DataAccess.Entities.Log;
 using Fancyx.DataAccess.Entities.Organization;
 using Fancyx.DataAccess.Entities.System;
-
+using Fancyx.Utils.Expressions;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Fancyx.DataAccess
 {

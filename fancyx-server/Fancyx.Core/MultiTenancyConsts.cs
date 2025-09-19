@@ -1,4 +1,4 @@
-namespace Fancyx.Core.Authorization;
+namespace Fancyx.Core;
 
 public static class MultiTenancyConsts
 {

@@ -1,10 +1,10 @@
 using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Core.Helpers;
-using Fancyx.Core.Utils;
 using Fancyx.DataAccess;
 using Fancyx.DataAccess.Entities.System;
 using Fancyx.DataAccess.Enums;
+using Fancyx.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.Service.System

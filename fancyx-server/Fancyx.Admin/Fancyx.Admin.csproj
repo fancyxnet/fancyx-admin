@@ -9,6 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="ip2region.xdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Fancyx.Cap\Fancyx.EventBus.csproj" />
     <ProjectReference Include="..\Fancyx.Job\Fancyx.Job.csproj" />
     <ProjectReference Include="..\Fancyx.Logger\Fancyx.Logger.csproj" />
@@ -16,6 +22,7 @@
     <ProjectReference Include="..\Fancyx.Redis\Fancyx.Redis.csproj" />
     <ProjectReference Include="..\Fancyx.DataAccess\Fancyx.DataAccess.csproj" />
     <ProjectReference Include="..\Fancyx.Shared\Fancyx.Shared.csproj" />
+    <ProjectReference Include="..\Fancyx.Utils\Fancyx.Utils.csproj" />
   </ItemGroup>
 
 	<ItemGroup>
@@ -24,6 +31,7 @@
 		<PackageReference Include="MQTTnet.Server" Version="5.0.1.1416" />
 		<PackageReference Include="MQTTnet.AspNetCore" Version="5.0.1.1416" />
 		<PackageReference Include="MiniExcel" Version="1.41.3" />
+		<PackageReference Include="IP2Region.Net" Version="2.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>

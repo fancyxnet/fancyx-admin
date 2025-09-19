@@ -3,7 +3,7 @@ using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Admin.SharedService;
 using Fancyx.Core.Extensions;
 using Fancyx.Core.Interfaces;
-using Fancyx.Core.Utils;
+using Fancyx.Utils;
 using Fancyx.DataAccess;
 using Fancyx.DataAccess.Aop;
 using Fancyx.DataAccess.Entities.System;

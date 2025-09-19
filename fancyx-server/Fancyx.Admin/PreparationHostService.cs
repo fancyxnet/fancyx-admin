@@ -1,5 +1,5 @@
-﻿using Fancyx.Core.Utils;
-using Fancyx.Storage;
+﻿using Fancyx.Storage;
+using Fancyx.Utils;
 
 namespace Fancyx.Admin
 {

@@ -1,12 +1,10 @@
-﻿using System.Linq.Expressions;
-using System.Reflection;
-
-using Fancyx.Core.Expressions;
-using Fancyx.Core.Interfaces;
+﻿using Fancyx.Core.Interfaces;
 using Fancyx.DataAccess.BaseEntity;
 using Fancyx.DataAccess.Models;
-
+using Fancyx.Utils.Expressions;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Fancyx.DataAccess
 {

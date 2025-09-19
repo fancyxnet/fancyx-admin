@@ -1,8 +1,9 @@
 using DotNetCore.CAP;
+using Fancyx.Core.Authorization;
 using Fancyx.Core.AutoInject;
-using Fancyx.Core.Utils;
 using Fancyx.Logger.Consts;
 using Fancyx.Logger.Message;
+using Fancyx.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -44,13 +45,13 @@ namespace Fancyx.Logger
                 var httpContext = ServiceProvider.GetService<IHttpContextAccessor>()?.HttpContext;
                 if (httpContext != null)
                 {
-                    var currentUser = RequestUtils.ResolveUser(httpContext);
-                    var currentTenant = RequestUtils.ResolveTenant(httpContext);
+                    var currentUser = CurrentUser.Parse(httpContext);
+                    var currentTenant = CurrentTenant.Parse(httpContext);
                     msg.UserId = currentUser.Id;
                     msg.UserName = currentUser.UserName;
                     msg.TenantId = currentTenant.TenantId;
-                    msg.Ip = RequestUtils.GetIp(httpContext);
-                    msg.UserAgent = RequestUtils.GetUserAgent(httpContext);
+                    msg.Ip = HttpUtils.GetIp(httpContext);
+                    msg.UserAgent = httpContext.Request.Headers.UserAgent;
                     msg.TraceId = Activity.Current?.TraceId.ToString();
                 }
                 LogRecordContext.Dispose();

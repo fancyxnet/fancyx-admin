@@ -1,15 +1,10 @@
-using System.Security.Claims;
-
 using AutoMapper;
-
 using DotNetCore.CAP;
-
 using Fancyx.Admin.IService.Account;
 using Fancyx.Admin.IService.Account.Dtos;
 using Fancyx.Admin.SharedService;
 using Fancyx.Core.Helpers;
 using Fancyx.Core.Interfaces;
-using Fancyx.Core.Utils;
 using Fancyx.DataAccess;
 using Fancyx.DataAccess.Entities.Log;
 using Fancyx.DataAccess.Entities.System;
@@ -17,8 +12,9 @@ using Fancyx.DataAccess.Enums;
 using Fancyx.Redis;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Keys;
-
+using Fancyx.Utils;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Fancyx.Admin.Service.Account
 {
@@ -166,7 +162,7 @@ namespace Fancyx.Admin.Service.Account
             var loginLog = new LoginLog
             {
                 IsSuccess = true,
-                Ip = RequestUtils.GetIp(_httpContext),
+                Ip = HttpUtils.GetIp(_httpContext),
                 OperationMsg = "登录成功",
                 UserName = userName
             };
@@ -213,8 +209,8 @@ namespace Fancyx.Admin.Service.Account
             }
             finally
             {
-                loginLog.Address = RequestUtils.ResolveAddress(loginLog.Ip);
-                loginLog.Browser = RequestUtils.ResolveBrowser(RequestUtils.GetUserAgent(_httpContext));
+                loginLog.Address = IpAddressUtils.ResolveAddress(loginLog.Ip);
+                loginLog.Browser = HttpUtils.GetBrowserByUA(_httpContext.Request.Headers.UserAgent);
                 await _capPublisher.PublishAsync(AdminEventBusTopicConsts.LoginLogEvent, loginLog);
             }
         }

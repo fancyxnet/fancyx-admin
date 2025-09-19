@@ -1,9 +1,9 @@
 ﻿using DotNetCore.CAP;
-using Fancyx.Core.Utils;
 using Fancyx.DataAccess;
+using Fancyx.DataAccess.Entities.Log;
 using Fancyx.Logger.Consts;
 using Fancyx.Logger.Message;
-using Fancyx.DataAccess.Entities.Log;
+using Fancyx.Utils;
 
 namespace Fancyx.Logger
 {
@@ -26,7 +26,7 @@ namespace Fancyx.Logger
                 BizNo = message.BizNo,
                 Content = message.Content,
                 Ip = message.Ip,
-                Browser = RequestUtils.ResolveBrowser(message.UserAgent),
+                Browser = HttpUtils.GetBrowserByUA(message.UserAgent),
                 UserId = message.UserId,
                 UserName = message.UserName,
                 TraceId = message.TraceId,
@@ -54,7 +54,7 @@ namespace Fancyx.Logger
                 ResponseTime = message.ResponseTime,
                 Duration = message.Duration,
                 Ip = message.Ip,
-                Browser = RequestUtils.ResolveBrowser(message.UserAgent),
+                Browser = HttpUtils.GetBrowserByUA(message.UserAgent),
                 UserId = message.UserId,
                 UserName = message.UserName,
                 TraceId = message.TraceId,
@@ -78,7 +78,7 @@ namespace Fancyx.Logger
                 StackTrace = message.StackTrace,
                 InnerException = message.InnerException,
                 Ip = message.Ip,
-                Browser = RequestUtils.ResolveBrowser(message.UserAgent),
+                Browser = HttpUtils.GetBrowserByUA(message.UserAgent),
                 UserId = message.UserId,
                 UserName = message.UserName,
                 TraceId = message.TraceId,

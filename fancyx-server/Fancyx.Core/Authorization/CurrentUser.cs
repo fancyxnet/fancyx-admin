@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 
 using Fancyx.Core.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace Fancyx.Core.Authorization
 {
@@ -41,6 +42,11 @@ namespace Fancyx.Core.Authorization
             if (roles.Length == 0) return false;
             var hasRoles = this.FindClaim(ClaimTypes.Role).Value;
             return roles.All(x => hasRoles.Contains(x));
+        }
+
+        public static ICurrentUser Parse(HttpContext? context)
+        {
+            return context?.Features.Get<CurrentUser>() ?? Default();
         }
     }
 }

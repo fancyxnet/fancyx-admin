@@ -1,8 +1,9 @@
 ﻿using DotNetCore.CAP;
-using Fancyx.Core.Utils;
+using Fancyx.Core.Authorization;
 using Fancyx.DataAccess.Enums;
 using Fancyx.Logger.Consts;
 using Fancyx.Logger.Message;
+using Fancyx.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,16 +43,16 @@ namespace Fancyx.Logger
                     OperateType = OperateType,
                     OperateName = OperateName,
                     TraceId = Activity.Current?.TraceId.ToString(),
-                    Ip = RequestUtils.GetIp(context.HttpContext),
-                    UserAgent = RequestUtils.GetUserAgent(context.HttpContext),
+                    Ip = HttpUtils.GetIp(context.HttpContext),
+                    UserAgent = context.HttpContext.Request.Headers.UserAgent,
                 };
                 if (RequestEnable)
                 {
                     msg.RequestBody = JsonConvert.SerializeObject(context.ActionArguments);
                     msg.QueryString = context.HttpContext.Request.QueryString.Value;
                 }
-                var currentUser = RequestUtils.ResolveUser(context.HttpContext);
-                var currentTenant = RequestUtils.ResolveTenant(context.HttpContext);
+                var currentUser = CurrentUser.Parse(context.HttpContext);
+                var currentTenant = CurrentTenant.Parse(context.HttpContext);
                 msg.UserId = currentUser?.Id;
                 msg.UserName = currentUser?.UserName;
                 msg.TenantId = currentTenant?.TenantId;

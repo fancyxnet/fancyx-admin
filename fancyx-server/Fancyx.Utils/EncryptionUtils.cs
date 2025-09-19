@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Fancyx.Core.Utils
+namespace Fancyx.Utils
 {
     /// <summary>
     /// 加密

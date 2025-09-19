@@ -1,4 +1,4 @@
-namespace Fancyx.Core.Helpers
+namespace Fancyx.Utils
 {
     public class TimeHelper
     {

@@ -16,6 +16,7 @@ using Fancyx.Logger.Options;
 using Fancyx.Redis;
 using Fancyx.Shared.Consts;
 using Fancyx.Storage;
+using Fancyx.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -64,8 +65,6 @@ namespace Fancyx.Admin
             });
             services.Configure<JsonOptions>(options =>
             {
-                options.JsonSerializerOptions.Converters.Add(new StringNullableJsonConverter());
-                options.JsonSerializerOptions.Converters.Add(new StringJsonConverter());
                 options.JsonSerializerOptions.Converters.Add(new DateTimeNullableJsonConverter());
                 options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
             });

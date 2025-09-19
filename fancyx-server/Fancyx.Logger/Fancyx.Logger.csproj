@@ -15,6 +15,7 @@
 	  <ProjectReference Include="..\Fancyx.Cap\Fancyx.EventBus.csproj" />
 	  <ProjectReference Include="..\Fancyx.Core\Fancyx.Core.csproj" />
 	  <ProjectReference Include="..\Fancyx.DataAccess\Fancyx.DataAccess.csproj" />
+	  <ProjectReference Include="..\Fancyx.Utils\Fancyx.Utils.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

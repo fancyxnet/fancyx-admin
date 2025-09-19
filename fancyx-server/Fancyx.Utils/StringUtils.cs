@@ -1,9 +1,7 @@
-using Newtonsoft.Json.Linq;
-
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Fancyx.Core.Utils
+namespace Fancyx.Utils
 {
     public static partial class StringUtils
     {

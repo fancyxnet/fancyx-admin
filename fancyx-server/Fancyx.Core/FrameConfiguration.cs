@@ -8,7 +8,6 @@ using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
 using Fancyx.Core.Interfaces;
 using Fancyx.Core.Middlewares;
-using Fancyx.Core.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -29,6 +28,11 @@ namespace Fancyx.Core
         /// 用于存储所有模块的集合（带顺序）
         /// </summary>
         private static ConcurrentDictionary<Type, (ModuleBase instance, int sort)> modules = [];
+
+        /// <summary>
+        /// 已加载程序集
+        /// </summary>
+        public static List<Assembly> LoadAssemblies { get; private set; } = [];
 
         /// <summary>
         /// 用于模块排序的计数器
@@ -68,13 +72,12 @@ namespace Fancyx.Core
             services.AddJwt(configuration);
             services.AddScoped<ICurrentUser>(sp =>
             {
-                return RequestUtils.ResolveUser(sp.GetRequiredService<IHttpContextAccessor>()?.HttpContext);
+                return CurrentUser.Parse(sp.GetRequiredService<IHttpContextAccessor>()?.HttpContext);
             }); //当前用户
             services.AddScoped<ICurrentTenant>(sp =>
             {
-                return RequestUtils.ResolveTenant(sp.GetRequiredService<IHttpContextAccessor>()?.HttpContext);
+                return CurrentTenant.Parse(sp.GetRequiredService<IHttpContextAccessor>()?.HttpContext);
             }); //当前租户
-            services.AddAutoMapper(ReflectionUtils.AllAssemblies); // AutoMapper
             if (!string.IsNullOrEmpty(configuration["App:CorsOrigins"]))
             {
                 services.AddCors(options =>
@@ -100,8 +103,15 @@ namespace Fancyx.Core
             if (mainModule == null) return;
             InjectModule(context, mainModule);
 
-            //2. Autofac动态注册
+            //2. 获取加载程序集
+            foreach (var item in modules.Keys)
+            {
+                LoadAssemblies.Add(item.Assembly);
+            }
+            //3. Autofac动态注册
             builder.Host.ConfigureContainer<ContainerBuilder>(ConfigureAutofacContainer);
+            //4. 注册AutoMapper
+            services.AddAutoMapper(LoadAssemblies);
         }
 
         /// <summary>
@@ -231,12 +241,7 @@ namespace Fancyx.Core
                 [DenpendencyType.Transient] = transientServiceType
             };
             var autowireType = typeof(AutowiredAttribute);
-            var moduleAssemblies = new List<Assembly>();
-            foreach (var item in modules.Keys)
-            {
-                moduleAssemblies.Add(item.Assembly);
-            }
-            foreach (var assembly in moduleAssemblies)
+            foreach (var assembly in LoadAssemblies)
             {
                 //实现注册接口类注册
                 var curClassTypes = assembly.DefinedTypes.Where(x => !x.IsAbstract && x.IsClass && !x.IsSealed).ToList();
@@ -273,7 +278,7 @@ namespace Fancyx.Core
                 }
 
                 //标记AutowiredAttribute的属性注入
-                registrationBuilder.PropertiesAutowired((propInfo,instance)=> propInfo.IsDefined(autowireType));
+                registrationBuilder.PropertiesAutowired((propInfo, instance) => propInfo.IsDefined(autowireType));
 
                 switch (denpendencyType)
                 {

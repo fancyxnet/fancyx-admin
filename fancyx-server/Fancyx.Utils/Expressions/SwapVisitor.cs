@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Fancyx.Core.Expressions
+namespace Fancyx.Utils.Expressions
 {
     public class SwapVisitor : ExpressionVisitor
     {

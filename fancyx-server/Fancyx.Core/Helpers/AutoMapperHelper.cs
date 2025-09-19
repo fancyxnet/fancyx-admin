@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Fancyx.Core.Utils;
 
 namespace Fancyx.Core.Helpers
 {
@@ -15,7 +14,7 @@ namespace Fancyx.Core.Helpers
         {
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.AddMaps(ReflectionUtils.AllAssemblies);
+                cfg.AddMaps(FrameConfiguration.LoadAssemblies);
             });
 
             _mapper = config.CreateMapper();
