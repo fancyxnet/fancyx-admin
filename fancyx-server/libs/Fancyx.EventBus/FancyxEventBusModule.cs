@@ -2,10 +2,10 @@
 
 using DotNetCore.CAP;
 
+using Fancyx.Assemblies;
 using Fancyx.Core;
 using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
-using Fancyx.Utils;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,7 +38,7 @@ namespace Fancyx.EventBus
 
             //自动以Scoped方式注册ICapSubscribe实现类
             var baseType = typeof(ICapSubscribe);
-            foreach (var assembly in ReflectionUtils.AllAssemblies)
+            foreach (var assembly in AssemblyLoader.All)
             {
                 IEnumerable<TypeInfo> types = assembly.DefinedTypes.Where(x => !x.IsAbstract && x.IsClass && !x.IsSealed && x != baseType && x.IsAssignableTo(baseType));
                 foreach (var type in types)

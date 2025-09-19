@@ -3,7 +3,6 @@ using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Core;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
-using Fancyx.EfCore.BaseEntity;
 using Fancyx.Utils.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

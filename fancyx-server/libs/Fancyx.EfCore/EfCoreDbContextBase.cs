@@ -1,4 +1,5 @@
-﻿using Fancyx.Core.Authorization;
+﻿using Fancyx.Assemblies;
+using Fancyx.Core.Authorization;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore.BaseEntity;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ namespace Fancyx.EfCore
     public class EfCoreDbContextBase : DbContext
     {
         private static readonly Type _softDeleteType = typeof(FullAuditedEntity);
+        private static readonly Type _onModelType = typeof(IDbContextOnModelCreating);
 
         protected IServiceProvider ServiceProvider { get; }
 
@@ -19,6 +21,15 @@ namespace Fancyx.EfCore
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //加载IDbContextOnModelCreating实现类
+            var modelCreatingTypes = AssemblyLoader.All.SelectMany(x => x.ExportedTypes.Where(t => !t.IsInterface && t.IsAssignableTo(_onModelType)));
+            foreach (var modelCreatingType in modelCreatingTypes)
+            {
+                var modelCreatingInstance = Activator.CreateInstance(modelCreatingType);
+                var modelCreatingMethod = _onModelType.GetMethod(nameof(IDbContextOnModelCreating.OnModelCreating));
+                modelCreatingMethod!.Invoke(modelCreatingInstance, [modelBuilder]);
+            }
+
             base.OnModelCreating(modelBuilder);
             ApplyDataQueryFilter(modelBuilder);
         }

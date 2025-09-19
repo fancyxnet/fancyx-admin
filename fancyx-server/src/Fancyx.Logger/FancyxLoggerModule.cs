@@ -1,5 +1,6 @@
 ﻿using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
+using Fancyx.EfCore;
 using Fancyx.EventBus;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
