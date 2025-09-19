@@ -1,4 +1,4 @@
-﻿namespace Fancyx.ObjectStorage.Local
+﻿namespace Fancyx.Storage.Local
 {
     public class LocalStorageOptions : StorageOptions
     {

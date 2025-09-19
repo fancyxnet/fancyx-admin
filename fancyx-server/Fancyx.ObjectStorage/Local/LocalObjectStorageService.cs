@@ -1,4 +1,4 @@
-﻿namespace Fancyx.ObjectStorage.Local
+﻿namespace Fancyx.Storage.Local
 {
     /// <summary>
     /// 本地服务器文件存储

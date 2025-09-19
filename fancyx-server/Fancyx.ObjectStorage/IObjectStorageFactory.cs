@@ -1,6 +1,6 @@
 ﻿using Fancyx.Core.Interfaces;
 
-namespace Fancyx.ObjectStorage
+namespace Fancyx.Storage
 {
     public interface IObjectStorageFactory : ISingletonDependency
     {

@@ -22,7 +22,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Cap", "Fancyx.Cap\Fa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Logger", "Fancyx.Logger\Fancyx.Logger.csproj", "{AA0A1CD5-4F70-4323-91A3-CF9FAE5DA6E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.ObjectStorage", "Fancyx.ObjectStorage\Fancyx.ObjectStorage.csproj", "{5A5DDF67-7FDD-4801-BF74-432B8DDF33F3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Storage", "Fancyx.ObjectStorage\Fancyx.Storage.csproj", "{5A5DDF67-7FDD-4801-BF74-432B8DDF33F3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Job", "Fancyx.Job\Fancyx.Job.csproj", "{5B435F27-8148-4F3D-8D27-01D199178C08}"
 EndProject

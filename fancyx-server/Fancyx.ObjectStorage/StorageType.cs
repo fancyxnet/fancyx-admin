@@ -1,4 +1,4 @@
-﻿namespace Fancyx.ObjectStorage
+﻿namespace Fancyx.Storage
 {
     public enum StorageType
     {

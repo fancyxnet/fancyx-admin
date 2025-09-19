@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fancyx.ObjectStorage
+namespace Fancyx.Storage
 {
-    public class FancyxObjectStorageModule : ModuleBase
+    public class FancyxStorageModule : ModuleBase
     {
         public override void Configure(ApplicationInitializationContext context)
         {

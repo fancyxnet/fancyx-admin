@@ -1,8 +1,8 @@
-﻿using Fancyx.ObjectStorage.Aliyun;
-using Fancyx.ObjectStorage.Local;
+﻿using Fancyx.Storage.Aliyun;
+using Fancyx.Storage.Local;
 using Microsoft.Extensions.Configuration;
 
-namespace Fancyx.ObjectStorage
+namespace Fancyx.Storage
 {
     internal class ObjectStorageFactory : IObjectStorageFactory
     {

@@ -13,10 +13,9 @@ using Fancyx.DataAccess;
 using Fancyx.Job;
 using Fancyx.Logger;
 using Fancyx.Logger.Options;
-using Fancyx.ObjectStorage;
 using Fancyx.Redis;
 using Fancyx.Shared.Consts;
-
+using Fancyx.Storage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +32,7 @@ namespace Fancyx.Admin
         typeof(FancyxRedisModule),
         typeof(FancyxCapModule),
         typeof(FancyxLoggerModule),
-        typeof(FancyxObjectStorageModule),
+        typeof(FancyxStorageModule),
         typeof(FancyxJobModule)
         )]
     public class FancyxAdminModule : ModuleBase

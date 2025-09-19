@@ -12,7 +12,7 @@
     <ProjectReference Include="..\Fancyx.Cap\Fancyx.Cap.csproj" />
     <ProjectReference Include="..\Fancyx.Job\Fancyx.Job.csproj" />
     <ProjectReference Include="..\Fancyx.Logger\Fancyx.Logger.csproj" />
-    <ProjectReference Include="..\Fancyx.ObjectStorage\Fancyx.ObjectStorage.csproj" />
+    <ProjectReference Include="..\Fancyx.ObjectStorage\Fancyx.Storage.csproj" />
     <ProjectReference Include="..\Fancyx.Redis\Fancyx.Redis.csproj" />
     <ProjectReference Include="..\Fancyx.DataAccess\Fancyx.DataAccess.csproj" />
     <ProjectReference Include="..\Fancyx.Shared\Fancyx.Shared.csproj" />

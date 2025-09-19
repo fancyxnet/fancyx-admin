@@ -1,4 +1,4 @@
-﻿namespace Fancyx.ObjectStorage.Aliyun
+﻿namespace Fancyx.Storage.Aliyun
 {
     public class AliyunStorageOptions : StorageOptions
     {

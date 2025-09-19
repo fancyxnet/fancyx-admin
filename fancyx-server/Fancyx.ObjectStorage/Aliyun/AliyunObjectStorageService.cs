@@ -1,7 +1,7 @@
 ﻿using Aliyun.OSS;
 using Aliyun.OSS.Common;
 
-namespace Fancyx.ObjectStorage.Aliyun
+namespace Fancyx.Storage.Aliyun
 {
     internal class AliyunObjectStorageService : IObjectStorageService
     {
