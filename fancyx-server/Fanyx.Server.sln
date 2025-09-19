@@ -8,27 +8,29 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Core", "Fancyx.Core\Fancyx.Core.csproj", "{59BFD2F8-06D0-4A28-83A1-8A8CA6842B37}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Core", "libs\Fancyx.Core\Fancyx.Core.csproj", "{59BFD2F8-06D0-4A28-83A1-8A8CA6842B37}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Shared", "Fancyx.Shared\Fancyx.Shared.csproj", "{E3E6B4B3-2985-4506-8681-806264287BF0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Shared", "src\Fancyx.Shared\Fancyx.Shared.csproj", "{E3E6B4B3-2985-4506-8681-806264287BF0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Admin", "Fancyx.Admin\Fancyx.Admin.csproj", "{C0FB332D-78AF-4230-9750-2914BE0406D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Admin", "src\Fancyx.Admin\Fancyx.Admin.csproj", "{C0FB332D-78AF-4230-9750-2914BE0406D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.DataAccess", "Fancyx.DataAccess\Fancyx.DataAccess.csproj", "{979A8DFF-BAE5-49D7-A6F4-335974873E31}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.DataAccess", "src\Fancyx.DataAccess\Fancyx.DataAccess.csproj", "{979A8DFF-BAE5-49D7-A6F4-335974873E31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Redis", "Fancyx.Redis\Fancyx.Redis.csproj", "{5364A22C-7C01-4499-903D-1A985B11B30C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Redis", "libs\Fancyx.Redis\Fancyx.Redis.csproj", "{5364A22C-7C01-4499-903D-1A985B11B30C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.EventBus", "Fancyx.Cap\Fancyx.EventBus.csproj", "{F6BFCC9E-2239-46CE-AAF5-F7D08B4F4C1D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.EventBus", "libs\Fancyx.EventBus\Fancyx.EventBus.csproj", "{F6BFCC9E-2239-46CE-AAF5-F7D08B4F4C1D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Logger", "Fancyx.Logger\Fancyx.Logger.csproj", "{AA0A1CD5-4F70-4323-91A3-CF9FAE5DA6E9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Logger", "src\Fancyx.Logger\Fancyx.Logger.csproj", "{AA0A1CD5-4F70-4323-91A3-CF9FAE5DA6E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Storage", "Fancyx.ObjectStorage\Fancyx.Storage.csproj", "{5A5DDF67-7FDD-4801-BF74-432B8DDF33F3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Storage", "libs\Fancyx.Storage\Fancyx.Storage.csproj", "{5A5DDF67-7FDD-4801-BF74-432B8DDF33F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Job", "Fancyx.Job\Fancyx.Job.csproj", "{5B435F27-8148-4F3D-8D27-01D199178C08}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Job", "src\Fancyx.Job\Fancyx.Job.csproj", "{5B435F27-8148-4F3D-8D27-01D199178C08}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Utils", "Fancyx.Utils\Fancyx.Utils.csproj", "{C9C07FBB-9F73-4C0E-9356-D1A4BE181072}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Utils", "libs\Fancyx.Utils\Fancyx.Utils.csproj", "{C9C07FBB-9F73-4C0E-9356-D1A4BE181072}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D76D51F8-F767-41EC-A213-4C898DA4B3C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,9 +84,14 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{59BFD2F8-06D0-4A28-83A1-8A8CA6842B37} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{E3E6B4B3-2985-4506-8681-806264287BF0} = {D76D51F8-F767-41EC-A213-4C898DA4B3C4}
+		{C0FB332D-78AF-4230-9750-2914BE0406D1} = {D76D51F8-F767-41EC-A213-4C898DA4B3C4}
+		{979A8DFF-BAE5-49D7-A6F4-335974873E31} = {D76D51F8-F767-41EC-A213-4C898DA4B3C4}
 		{5364A22C-7C01-4499-903D-1A985B11B30C} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{F6BFCC9E-2239-46CE-AAF5-F7D08B4F4C1D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{AA0A1CD5-4F70-4323-91A3-CF9FAE5DA6E9} = {D76D51F8-F767-41EC-A213-4C898DA4B3C4}
 		{5A5DDF67-7FDD-4801-BF74-432B8DDF33F3} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{5B435F27-8148-4F3D-8D27-01D199178C08} = {D76D51F8-F767-41EC-A213-4C898DA4B3C4}
 		{C9C07FBB-9F73-4C0E-9356-D1A4BE181072} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

@@ -11,7 +11,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Fancyx.Core\Fancyx.Core.csproj" />
+	  <ProjectReference Include="..\..\libs\Fancyx.Core\Fancyx.Core.csproj" />
 	  <ProjectReference Include="..\Fancyx.DataAccess\Fancyx.DataAccess.csproj" />
 	</ItemGroup>
 </Project>

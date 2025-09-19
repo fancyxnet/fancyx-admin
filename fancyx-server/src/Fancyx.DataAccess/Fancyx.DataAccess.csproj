@@ -13,7 +13,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Fancyx.Core\Fancyx.Core.csproj" />
-		<ProjectReference Include="..\Fancyx.Utils\Fancyx.Utils.csproj" />
+		<ProjectReference Include="..\..\libs\Fancyx.Core\Fancyx.Core.csproj" />
+		<ProjectReference Include="..\..\libs\Fancyx.Utils\Fancyx.Utils.csproj" />
 	</ItemGroup>
 </Project>
