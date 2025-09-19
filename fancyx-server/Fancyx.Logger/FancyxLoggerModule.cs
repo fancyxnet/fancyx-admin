@@ -1,14 +1,14 @@
-﻿using Fancyx.Cap;
-using Fancyx.Core.AutoInject;
+﻿using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
 using Fancyx.DataAccess;
+using Fancyx.EventBus;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fancyx.Logger
 {
     [DependsOn(
-        typeof(FancyxCapModule),
+        typeof(FancyxEventBusModule),
         typeof(FancyxDataAccessModule)
         )]
     public class FancyxLoggerModule : ModuleBase

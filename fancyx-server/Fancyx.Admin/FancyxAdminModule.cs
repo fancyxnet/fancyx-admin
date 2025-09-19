@@ -4,12 +4,12 @@ using System.Threading.RateLimiting;
 using Fancyx.Admin.Filters;
 using Fancyx.Admin.Middlewares;
 using Fancyx.Admin.SharedService;
-using Fancyx.Cap;
 using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
 using Fancyx.Core.Helpers;
 using Fancyx.Core.JsonConverters;
 using Fancyx.DataAccess;
+using Fancyx.EventBus;
 using Fancyx.Job;
 using Fancyx.Logger;
 using Fancyx.Logger.Options;
@@ -30,7 +30,7 @@ namespace Fancyx.Admin
     [DependsOn(
         typeof(FancyxDataAccessModule),
         typeof(FancyxRedisModule),
-        typeof(FancyxCapModule),
+        typeof(FancyxEventBusModule),
         typeof(FancyxLoggerModule),
         typeof(FancyxStorageModule),
         typeof(FancyxJobModule)

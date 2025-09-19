@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fancyx.Cap\Fancyx.Cap.csproj" />
+    <ProjectReference Include="..\Fancyx.Cap\Fancyx.EventBus.csproj" />
     <ProjectReference Include="..\Fancyx.Job\Fancyx.Job.csproj" />
     <ProjectReference Include="..\Fancyx.Logger\Fancyx.Logger.csproj" />
     <ProjectReference Include="..\Fancyx.ObjectStorage\Fancyx.Storage.csproj" />

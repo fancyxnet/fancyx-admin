@@ -8,9 +8,9 @@ using Npgsql;
 using StackExchange.Redis;
 using System.Reflection;
 
-namespace Fancyx.Cap
+namespace Fancyx.EventBus
 {
-    public class FancyxCapModule : ModuleBase
+    public class FancyxEventBusModule : ModuleBase
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
