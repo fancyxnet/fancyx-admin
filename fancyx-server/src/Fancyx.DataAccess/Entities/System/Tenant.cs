@@ -1,10 +1,10 @@
-﻿using Fancyx.DataAccess.BaseEntity;
+﻿using Fancyx.EfCore.BaseEntity;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Fancyx.DataAccess.Entities.System
+namespace Fancyx.Admin.EfCore.Entities.System
 {
     [Table("tenant")]
     [Index(nameof(TenantId), IsUnique = true)]

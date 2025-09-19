@@ -1,6 +1,6 @@
 ﻿using DotNetCore.CAP;
-using Fancyx.DataAccess;
-using Fancyx.DataAccess.Entities.Log;
+using Fancyx.Admin.EfCore;
+using Fancyx.Admin.EfCore.Entities.Log;
 using Fancyx.Logger.Consts;
 using Fancyx.Logger.Message;
 using Fancyx.Utils;

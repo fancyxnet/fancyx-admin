@@ -1,4 +1,4 @@
-namespace Fancyx.DataAccess.Enums
+namespace Fancyx.Admin.EfCore.Enums
 {
     public enum MenuType
     {

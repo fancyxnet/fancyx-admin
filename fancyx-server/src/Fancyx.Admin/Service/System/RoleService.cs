@@ -1,12 +1,12 @@
+using Fancyx.Admin.EfCore;
+using Fancyx.Admin.EfCore.Entities.Organization;
+using Fancyx.Admin.EfCore.Entities.System;
+using Fancyx.Admin.EfCore.Enums;
 using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Admin.SharedService;
-using Fancyx.DataAccess;
-using Fancyx.DataAccess.Entities.Organization;
-using Fancyx.DataAccess.Entities.System;
-using Fancyx.DataAccess.Enums;
-using Fancyx.DataAccess.Aop;
-using Fancyx.Shared.Consts;
+using Fancyx.EfCore;
+using Fancyx.EfCore.Aop;
 
 namespace Fancyx.Admin.Service.System
 {

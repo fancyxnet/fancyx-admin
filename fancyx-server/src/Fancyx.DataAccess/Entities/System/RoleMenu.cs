@@ -1,8 +1,8 @@
 using Fancyx.Core.Interfaces;
-using Fancyx.DataAccess.BaseEntity;
+using Fancyx.EfCore.BaseEntity;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Fancyx.DataAccess.Entities.System
+namespace Fancyx.Admin.EfCore.Entities.System
 {
     /// <summary>
     /// 角色菜单表

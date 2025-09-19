@@ -1,12 +1,13 @@
 using Fancyx.Core.Interfaces;
-using Fancyx.DataAccess.BaseEntity;
-using Fancyx.DataAccess.Enums;
+using Fancyx.EfCore.BaseEntity;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using Fancyx.Admin.EfCore.Enums;
+using Fancyx.Admin.EfCore;
 
-namespace Fancyx.DataAccess.Entities.System
+namespace Fancyx.Admin.EfCore.Entities.System
 {
     /// <summary>
     /// 用户表

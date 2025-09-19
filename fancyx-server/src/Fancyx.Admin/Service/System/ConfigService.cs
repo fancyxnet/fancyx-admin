@@ -1,9 +1,10 @@
-﻿using Fancyx.Admin.IService.System;
+﻿using Fancyx.Admin.EfCore;
+using Fancyx.Admin.EfCore.Entities.System;
+using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Admin.SharedService;
 using Fancyx.Core.Extensions;
-using Fancyx.DataAccess;
-using Fancyx.DataAccess.Entities.System;
+using Fancyx.EfCore;
 using Fancyx.Logger;
 using Fancyx.Shared.Consts;
 using System.Linq;

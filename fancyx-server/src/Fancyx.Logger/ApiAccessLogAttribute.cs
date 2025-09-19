@@ -1,6 +1,6 @@
 ﻿using DotNetCore.CAP;
+using Fancyx.Admin.EfCore.Enums;
 using Fancyx.Core.Authorization;
-using Fancyx.DataAccess.Enums;
 using Fancyx.Logger.Consts;
 using Fancyx.Logger.Message;
 using Fancyx.Utils;

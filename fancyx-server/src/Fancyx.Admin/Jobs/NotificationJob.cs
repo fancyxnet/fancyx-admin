@@ -1,7 +1,7 @@
-﻿using Fancyx.Admin.SharedService;
+﻿using Fancyx.Admin.EfCore.Entities.System;
+using Fancyx.Admin.SharedService;
 using Fancyx.Core.AutoInject;
-using Fancyx.DataAccess;
-using Fancyx.DataAccess.Entities.System;
+using Fancyx.EfCore;
 using Fancyx.Job;
 using Microsoft.EntityFrameworkCore;
 using Quartz;

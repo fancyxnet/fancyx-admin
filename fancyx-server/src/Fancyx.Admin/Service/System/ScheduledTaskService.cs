@@ -1,8 +1,9 @@
-﻿using Fancyx.Admin.IService.System;
+﻿using Fancyx.Admin.EfCore;
+using Fancyx.Admin.EfCore.Entities.Job;
+using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Core.Extensions;
-using Fancyx.DataAccess;
-using Fancyx.DataAccess.Entities.Job;
+using Fancyx.EfCore;
 using Fancyx.Job;
 
 namespace Fancyx.Admin.Service.System

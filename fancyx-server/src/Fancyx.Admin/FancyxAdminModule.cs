@@ -1,11 +1,11 @@
-﻿using Fancyx.Admin.Filters;
+﻿using Fancyx.Admin.EfCore;
+using Fancyx.Admin.Filters;
 using Fancyx.Admin.JsonConverters;
 using Fancyx.Admin.Middlewares;
 using Fancyx.Admin.SharedService;
 using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
 using Fancyx.Core.JsonConverters;
-using Fancyx.DataAccess;
 using Fancyx.EventBus;
 using Fancyx.Job;
 using Fancyx.Logger;
@@ -27,7 +27,7 @@ using System.Threading.RateLimiting;
 namespace Fancyx.Admin
 {
     [DependsOn(
-        typeof(FancyxDataAccessModule),
+        typeof(FancyxAdminEfCoreModule),
         typeof(FancyxRedisModule),
         typeof(FancyxEventBusModule),
         typeof(FancyxLoggerModule),

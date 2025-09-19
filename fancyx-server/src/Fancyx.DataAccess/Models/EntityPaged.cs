@@ -1,4 +1,4 @@
-﻿namespace Fancyx.DataAccess.Models
+﻿namespace Fancyx.Admin.EfCore.Models
 {
     public class EntityPaged<T>
     {

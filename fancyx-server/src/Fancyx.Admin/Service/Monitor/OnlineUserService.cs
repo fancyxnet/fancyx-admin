@@ -1,8 +1,8 @@
-﻿using Fancyx.Admin.IService.Monitor;
+﻿using Fancyx.Admin.EfCore.Entities.Log;
+using Fancyx.Admin.EfCore.Entities.System;
+using Fancyx.Admin.IService.Monitor;
 using Fancyx.Admin.IService.Monitor.Dtos;
-using Fancyx.DataAccess;
-using Fancyx.DataAccess.Entities.Log;
-using Fancyx.DataAccess.Entities.System;
+using Fancyx.EfCore;
 using Fancyx.Redis;
 using Fancyx.Shared.Keys;
 using Microsoft.EntityFrameworkCore;

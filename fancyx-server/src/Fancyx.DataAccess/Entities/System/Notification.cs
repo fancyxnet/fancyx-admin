@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using Fancyx.Core.Interfaces;
-using Fancyx.DataAccess.BaseEntity;
+using Fancyx.EfCore.BaseEntity;
 
-namespace Fancyx.DataAccess.Entities.System
+namespace Fancyx.Admin.EfCore.Entities.System
 {
     [Table("notification")]
     public class Notification : AuditedEntity, ITenant

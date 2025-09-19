@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Fancyx.DataAccess.BaseEntity
+namespace Fancyx.EfCore.BaseEntity
 {
     public interface ITreeEntity
     {

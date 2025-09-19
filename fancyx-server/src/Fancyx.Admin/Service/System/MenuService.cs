@@ -1,9 +1,9 @@
+using Fancyx.Admin.EfCore.Entities.System;
+using Fancyx.Admin.EfCore.Enums;
 using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Core.Helpers;
-using Fancyx.DataAccess;
-using Fancyx.DataAccess.Entities.System;
-using Fancyx.DataAccess.Enums;
+using Fancyx.EfCore;
 using Fancyx.Utils;
 using Microsoft.EntityFrameworkCore;
 

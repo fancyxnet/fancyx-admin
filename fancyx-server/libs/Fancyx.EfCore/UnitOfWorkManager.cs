@@ -1,12 +1,13 @@
-﻿using System.Transactions;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Transactions;
 
-namespace Fancyx.DataAccess
+namespace Fancyx.EfCore
 {
     internal class UnitOfWorkManager : IUnitOfWorkManager
     {
-        private readonly FancyxDbContext _context;
+        private readonly DbContext _context;
 
-        public UnitOfWorkManager(FancyxDbContext context)
+        public UnitOfWorkManager(DbContext context)
         {
             _context = context;
         }

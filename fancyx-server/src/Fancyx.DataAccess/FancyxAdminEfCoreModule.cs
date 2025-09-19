@@ -5,13 +5,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Fancyx.DataAccess
+namespace Fancyx.Admin.EfCore
 {
-    public class FancyxDataAccessModule : ModuleBase
+    public class FancyxAdminEfCoreModule : ModuleBase
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            context.Services.AddDbContext<FancyxDbContext>((sp, options) =>
+            context.Services.AddDbContext<DbContext, FancyxDbContext>((sp, options) =>
             {
                 options.UseNpgsql(context.Configuration.GetConnectionString("Default"))
                      .LogTo(Console.WriteLine, LogLevel.Information)
@@ -19,15 +19,11 @@ namespace Fancyx.DataAccess
                      .EnableSensitiveDataLogging()
 #endif
                      .EnableDetailedErrors();
-            });
-            context.Services.AddScoped<IUnitOfWorkManager, UnitOfWorkManager>();
-            context.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            }, ServiceLifetime.Scoped);
         }
 
         public override void Configure(ApplicationInitializationContext context)
         {
-            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-            AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
         }
     }
 }

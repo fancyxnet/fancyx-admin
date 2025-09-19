@@ -1,17 +1,17 @@
+using Fancyx.Admin.EfCore;
+using Fancyx.Admin.EfCore.Entities.System;
+using Fancyx.Admin.EfCore.Enums;
 using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Admin.SharedService;
 using Fancyx.Core.Extensions;
 using Fancyx.Core.Interfaces;
-using Fancyx.Utils;
-using Fancyx.DataAccess;
-using Fancyx.DataAccess.Aop;
-using Fancyx.DataAccess.Entities.System;
-using Fancyx.DataAccess.Enums;
+using Fancyx.EfCore;
+using Fancyx.EfCore.Aop;
 using Fancyx.Logger;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Generated;
-
+using Fancyx.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.Service.System

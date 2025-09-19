@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
 
-namespace Fancyx.DataAccess
+namespace Fancyx.EfCore
 {
     internal class UnitOfWork : IUnitOfWork
     {
@@ -8,7 +8,7 @@ namespace Fancyx.DataAccess
 
         public UnitOfWork(Guid id, IDbContextTransaction contextTransaction)
         {
-            this.Id = id;
+            Id = id;
             _contextTransaction = contextTransaction;
         }
 

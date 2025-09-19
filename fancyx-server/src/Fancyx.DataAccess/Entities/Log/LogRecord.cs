@@ -1,9 +1,9 @@
 ﻿using Fancyx.Core.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Fancyx.DataAccess.BaseEntity;
+using Fancyx.EfCore.BaseEntity;
 
-namespace Fancyx.DataAccess.Entities.Log
+namespace Fancyx.Admin.EfCore.Entities.Log
 {
     [Table("log_record")]
     public class LogRecord : CreationEntity, ITenant

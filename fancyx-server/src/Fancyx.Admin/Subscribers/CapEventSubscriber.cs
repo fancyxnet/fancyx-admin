@@ -1,7 +1,7 @@
 ﻿using DotNetCore.CAP;
 using Fancyx.Shared.Consts;
-using Fancyx.DataAccess;
-using Fancyx.DataAccess.Entities.Log;
+using Fancyx.Admin.EfCore;
+using Fancyx.Admin.EfCore.Entities.Log;
 
 namespace Fancyx.Admin.Subscribers
 {

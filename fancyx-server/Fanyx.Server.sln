@@ -14,7 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Shared", "src\Fancyx
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Admin", "src\Fancyx.Admin\Fancyx.Admin.csproj", "{C0FB332D-78AF-4230-9750-2914BE0406D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.DataAccess", "src\Fancyx.DataAccess\Fancyx.DataAccess.csproj", "{979A8DFF-BAE5-49D7-A6F4-335974873E31}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Admin.EfCore", "src\Fancyx.DataAccess\Fancyx.Admin.EfCore.csproj", "{979A8DFF-BAE5-49D7-A6F4-335974873E31}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Redis", "libs\Fancyx.Redis\Fancyx.Redis.csproj", "{5364A22C-7C01-4499-903D-1A985B11B30C}"
 EndProject
@@ -31,6 +31,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Utils", "libs\Fancyx.Utils\Fancyx.Utils.csproj", "{C9C07FBB-9F73-4C0E-9356-D1A4BE181072}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D76D51F8-F767-41EC-A213-4C898DA4B3C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.EfCore", "libs\Fancyx.EfCore\Fancyx.EfCore.csproj", "{820F7B17-E555-4FB4-B76A-A347A73BFC47}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -78,6 +80,10 @@ Global
 		{C9C07FBB-9F73-4C0E-9356-D1A4BE181072}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9C07FBB-9F73-4C0E-9356-D1A4BE181072}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9C07FBB-9F73-4C0E-9356-D1A4BE181072}.Release|Any CPU.Build.0 = Release|Any CPU
+		{820F7B17-E555-4FB4-B76A-A347A73BFC47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{820F7B17-E555-4FB4-B76A-A347A73BFC47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{820F7B17-E555-4FB4-B76A-A347A73BFC47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{820F7B17-E555-4FB4-B76A-A347A73BFC47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -93,6 +99,7 @@ Global
 		{5A5DDF67-7FDD-4801-BF74-432B8DDF33F3} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{5B435F27-8148-4F3D-8D27-01D199178C08} = {D76D51F8-F767-41EC-A213-4C898DA4B3C4}
 		{C9C07FBB-9F73-4C0E-9356-D1A4BE181072} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{820F7B17-E555-4FB4-B76A-A347A73BFC47} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {28315BFD-90E7-4E14-A2EA-F3D23AF4126F}

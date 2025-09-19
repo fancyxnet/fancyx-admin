@@ -1,9 +1,9 @@
-﻿using Fancyx.DataAccess.BaseEntity;
+﻿using Fancyx.EfCore.BaseEntity;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Fancyx.DataAccess.Entities.Job
+namespace Fancyx.Admin.EfCore.Entities.Job
 {
     /// <summary>
     /// 定时任务表实体

@@ -1,10 +1,10 @@
-﻿using Fancyx.Admin.IService.Account;
+﻿using Fancyx.Admin.EfCore;
+using Fancyx.Admin.EfCore.Entities.System;
+using Fancyx.Admin.IService.Account;
 using Fancyx.Admin.IService.Account.Dtos;
 using Fancyx.Core.Extensions;
 using Fancyx.Core.Interfaces;
-using Fancyx.DataAccess;
-using Fancyx.DataAccess.Entities.System;
-
+using Fancyx.EfCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.Service.Account

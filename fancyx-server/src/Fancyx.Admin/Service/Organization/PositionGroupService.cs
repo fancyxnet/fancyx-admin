@@ -1,9 +1,8 @@
+using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.Admin.IService.Organization;
 using Fancyx.Admin.IService.Organization.Dtos;
 using Fancyx.Core.Helpers;
-using Fancyx.DataAccess;
-using Fancyx.DataAccess.Entities.Organization;
-
+using Fancyx.EfCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.Service.Organization

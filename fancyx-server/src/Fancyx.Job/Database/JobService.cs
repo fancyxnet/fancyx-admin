@@ -1,9 +1,8 @@
 ﻿using System.Reflection;
-
+using Fancyx.Admin.EfCore.Entities.Job;
 using Fancyx.Core.AutoInject;
 using Fancyx.Core.Interfaces;
-using Fancyx.DataAccess;
-using Fancyx.DataAccess.Entities.Job;
+using Fancyx.EfCore;
 using Fancyx.Job.Database.Models;
 
 using Microsoft.EntityFrameworkCore;

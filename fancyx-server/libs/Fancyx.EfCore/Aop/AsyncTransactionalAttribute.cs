@@ -1,8 +1,8 @@
 ﻿using Fancyx.Core.AutoInject;
-
+using Fancyx.EfCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fancyx.DataAccess.Aop
+namespace Fancyx.EfCore.Aop
 {
     /// <summary>
     /// 自动将代码块放在事务中执行，异常自动回滚（只适合异步方法）

@@ -1,8 +1,9 @@
-﻿using Fancyx.Admin.IService.System.LogManagement;
+﻿using Fancyx.Admin.EfCore;
+using Fancyx.Admin.EfCore.Entities.Log;
+using Fancyx.Admin.IService.System.LogManagement;
 using Fancyx.Admin.IService.System.LogManagement.Dtos;
 using Fancyx.Core.Extensions;
-using Fancyx.DataAccess;
-using Fancyx.DataAccess.Entities.Log;
+using Fancyx.EfCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.Service.System.LogManagement

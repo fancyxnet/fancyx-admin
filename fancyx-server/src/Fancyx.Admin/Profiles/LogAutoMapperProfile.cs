@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
-
+using Fancyx.Admin.EfCore.Entities.Log;
 using Fancyx.Admin.IService.Monitor.Dtos;
 using Fancyx.Admin.IService.System.LogManagement.Dtos;
-using Fancyx.DataAccess.Entities.Log;
 
 namespace Fancyx.Admin.Profiles
 {

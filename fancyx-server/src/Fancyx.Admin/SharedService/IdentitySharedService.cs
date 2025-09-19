@@ -1,8 +1,9 @@
-﻿using Fancyx.Core.Interfaces;
-using Fancyx.DataAccess;
-using Fancyx.DataAccess.Entities.Organization;
-using Fancyx.DataAccess.Entities.System;
-using Fancyx.DataAccess.Enums;
+﻿using Fancyx.Admin.EfCore;
+using Fancyx.Admin.EfCore.Entities.Organization;
+using Fancyx.Admin.EfCore.Entities.System;
+using Fancyx.Admin.EfCore.Enums;
+using Fancyx.Core.Interfaces;
+using Fancyx.EfCore;
 using Fancyx.Redis;
 using Fancyx.Shared.Keys;
 using Microsoft.EntityFrameworkCore;

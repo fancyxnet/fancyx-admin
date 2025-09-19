@@ -1,21 +1,20 @@
 ﻿using Fancyx.Core.Interfaces;
-using Fancyx.DataAccess.BaseEntity;
-using Fancyx.DataAccess.Models;
+using Fancyx.EfCore.BaseEntity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Linq.Expressions;
 
-namespace Fancyx.DataAccess
+namespace Fancyx.EfCore
 {
     internal class Repository<T> : IRepository<T> where T : class
     {
-        private readonly FancyxDbContext _context;
+        private readonly DbContext _context;
         private readonly ICurrentUser _currentUser;
         private static readonly Type _fullAuditedEntityType = typeof(FullAuditedEntity);
         private static readonly Type _efCoreExtensionType = typeof(EfCoreExtension);
         private static readonly Type _currentType = typeof(T);
 
-        public Repository(FancyxDbContext context, ICurrentUser currentUser)
+        public Repository(DbContext context, ICurrentUser currentUser)
         {
             _context = context;
             _currentUser = currentUser;
@@ -37,7 +36,7 @@ namespace Fancyx.DataAccess
             if (_fullAuditedEntityType.IsAssignableFrom(_currentType))
             {
                 var softDeleteMethod = _efCoreExtensionType.GetMethod(nameof(EfCoreExtension.SoftDeleteAsync), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
-                if(softDeleteMethod != null)
+                if (softDeleteMethod != null)
                 {
                     softDeleteMethod = softDeleteMethod.MakeGenericMethod(_currentType);
                     var task = (Task?)softDeleteMethod.Invoke(null, [query, _currentUser.Id]);
@@ -54,12 +53,6 @@ namespace Fancyx.DataAccess
         public Task<List<T>> GetListAsync(Expression<Func<T, bool>> whereExpression)
         {
             return _context.Set<T>().AsNoTracking().Where(whereExpression).ToListAsync();
-        }
-
-        public async Task<EntityPaged<T>> GetPagedListAsync(int current, int pageSize, Expression<Func<T, bool>> whereExpression)
-        {
-            var query = _context.Set<T>().AsNoTracking().Where(whereExpression);
-            return await query.PagedAsync(current, pageSize);
         }
 
         public IQueryable<T> GetQueryable()

@@ -12,6 +12,6 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\libs\Fancyx.Core\Fancyx.Core.csproj" />
-	  <ProjectReference Include="..\Fancyx.DataAccess\Fancyx.DataAccess.csproj" />
+	  <ProjectReference Include="..\Fancyx.DataAccess\Fancyx.Admin.EfCore.csproj" />
 	</ItemGroup>
 </Project>

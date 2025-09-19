@@ -1,7 +1,6 @@
-﻿using Fancyx.DataAccess.Models;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
-namespace Fancyx.DataAccess
+namespace Fancyx.EfCore
 {
     /// <summary>
     /// 通用仓储类
@@ -25,8 +24,6 @@ namespace Fancyx.DataAccess
         Task<List<T>> GetListAsync(Expression<Func<T, bool>> whereExpression);
 
         Task<List<T>> GetListAsync();
-
-        Task<EntityPaged<T>> GetPagedListAsync(int current, int pageSize, Expression<Func<T, bool>> whereExpression);
 
         Task<bool> AnyAsync(Expression<Func<T, bool>> whereExpression);
 

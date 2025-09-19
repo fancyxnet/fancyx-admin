@@ -1,6 +1,6 @@
-﻿using Fancyx.Core.AutoInject;
+﻿using Fancyx.Admin.EfCore;
+using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
-using Fancyx.DataAccess;
 using Fancyx.EventBus;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +9,7 @@ namespace Fancyx.Logger
 {
     [DependsOn(
         typeof(FancyxEventBusModule),
-        typeof(FancyxDataAccessModule)
+        typeof(FancyxAdminEfCoreModule)
         )]
     public class FancyxLoggerModule : ModuleBase
     {

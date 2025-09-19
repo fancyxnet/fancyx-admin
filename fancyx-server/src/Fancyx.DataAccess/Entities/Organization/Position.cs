@@ -1,10 +1,10 @@
 using Fancyx.Core.Interfaces;
-using Fancyx.DataAccess.BaseEntity;
+using Fancyx.EfCore.BaseEntity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Fancyx.DataAccess.Entities.Organization
+namespace Fancyx.Admin.EfCore.Entities.Organization
 {
     /// <summary>
     /// 职位表

@@ -2,11 +2,10 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
-
 using Fancyx.Core.Interfaces;
-using Fancyx.DataAccess.BaseEntity;
+using Fancyx.EfCore.BaseEntity;
 
-namespace Fancyx.DataAccess.Entities.Organization
+namespace Fancyx.Admin.EfCore.Entities.Organization
 {
     /// <summary>
     /// 职位分组

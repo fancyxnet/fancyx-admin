@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Fancyx.DataAccess.BaseEntity
+namespace Fancyx.EfCore.BaseEntity
 {
     public abstract class FullAuditedEntity : AuditedEntity
     {

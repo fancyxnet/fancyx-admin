@@ -1,5 +1,5 @@
-﻿using Fancyx.DataAccess;
-using Fancyx.DataAccess.Entities.Job;
+﻿using Fancyx.Admin.EfCore.Entities.Job;
+using Fancyx.EfCore;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using System.Collections.Concurrent;

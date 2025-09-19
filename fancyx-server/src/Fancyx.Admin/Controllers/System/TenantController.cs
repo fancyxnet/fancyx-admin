@@ -1,7 +1,7 @@
-﻿using Fancyx.Admin.IService.System;
+﻿using Fancyx.Admin.EfCore.Enums;
+using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Core.Attributes;
-using Fancyx.DataAccess.Enums;
 using Fancyx.Logger;
 using Fancyx.Shared.Consts;
 

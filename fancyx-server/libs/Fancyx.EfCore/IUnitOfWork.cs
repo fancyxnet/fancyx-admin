@@ -1,4 +1,4 @@
-﻿namespace Fancyx.DataAccess
+﻿namespace Fancyx.EfCore
 {
     public interface IUnitOfWork : IDisposable, IAsyncDisposable
     {

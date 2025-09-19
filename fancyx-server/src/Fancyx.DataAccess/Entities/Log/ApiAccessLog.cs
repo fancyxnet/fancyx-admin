@@ -1,10 +1,10 @@
 ﻿using Fancyx.Core.Interfaces;
-using Fancyx.DataAccess.BaseEntity;
-using Fancyx.DataAccess.Enums;
+using Fancyx.EfCore.BaseEntity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Fancyx.Admin.EfCore.Enums;
 
-namespace Fancyx.DataAccess.Entities.Log
+namespace Fancyx.Admin.EfCore.Entities.Log
 {
     [Table("api_access_log")]
     public class ApiAccessLog : CreationEntity, ITenant

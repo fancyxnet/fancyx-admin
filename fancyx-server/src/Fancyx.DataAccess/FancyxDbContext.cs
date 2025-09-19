@@ -1,26 +1,26 @@
-﻿using Fancyx.Core;
-using Fancyx.Core.Authorization;
+﻿using Fancyx.Admin.EfCore.Entities.Job;
+using Fancyx.Admin.EfCore.Entities.Log;
+using Fancyx.Admin.EfCore.Entities.Organization;
+using Fancyx.Admin.EfCore.Entities.System;
+using Fancyx.Core;
 using Fancyx.Core.Interfaces;
-using Fancyx.DataAccess.BaseEntity;
-using Fancyx.DataAccess.Entities.Job;
-using Fancyx.DataAccess.Entities.Log;
-using Fancyx.DataAccess.Entities.Organization;
-using Fancyx.DataAccess.Entities.System;
+using Fancyx.EfCore;
+using Fancyx.EfCore.BaseEntity;
 using Fancyx.Utils.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Linq.Expressions;
 
-namespace Fancyx.DataAccess
+namespace Fancyx.Admin.EfCore
 {
-    public class FancyxDbContext : DbContext
+    public class FancyxDbContext : EfCoreDbContextBase
     {
-        private static readonly Type _softDeleteType = typeof(FullAuditedEntity);
         private static readonly Type _tenantType = typeof(ITenant);
         private readonly ICurrentTenant _currentTenant;
 
-        public FancyxDbContext(DbContextOptions<FancyxDbContext> options, ICurrentTenant currentTenant) : base(options)
+        public FancyxDbContext(DbContextOptions<FancyxDbContext> options, IServiceProvider serviceProvider) : base(options, serviceProvider)
         {
-            _currentTenant = currentTenant;
+            _currentTenant = serviceProvider.GetRequiredService<ICurrentTenant>();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -29,93 +29,15 @@ namespace Fancyx.DataAccess
             ApplyDataQueryFilter(modelBuilder);
         }
 
-        public override int SaveChanges()
-        {
-            ApplyAuditValues();
-            return base.SaveChanges();
-        }
-
-        public override int SaveChanges(bool acceptAllChangesOnSuccess)
-        {
-            ApplyAuditValues();
-            return base.SaveChanges(acceptAllChangesOnSuccess);
-        }
-
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        {
-            ApplyAuditValues();
-            return base.SaveChangesAsync(cancellationToken);
-        }
-
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
-        {
-            ApplyAuditValues();
-            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-        }
-
-        /// <summary>
-        /// 应用审计值填充
-        /// </summary>
-        private void ApplyAuditValues()
-        {
-            foreach (var entry in ChangeTracker.Entries())
-            {
-                var entity = entry.Entity;
-                switch (entry.State)
-                {
-                    case EntityState.Added:
-                        if (entity is CreationEntity creationEntity)
-                        {
-                            if (creationEntity.CreationTime == default)
-                            {
-                                creationEntity.CreationTime = DateTime.Now;
-                            }
-
-                            creationEntity.CreatorId ??= UserManager.Current;
-                        }
-                        if (entity is ITenant entityWithTenant)
-                        {
-                            entityWithTenant.TenantId ??= TenantManager.Current;
-                        }
-                        break;
-
-                    case EntityState.Modified:
-                        if (entity is AuditedEntity auditedEntity)
-                        {
-                            auditedEntity.LastModificationTime = DateTime.Now;
-                            auditedEntity.LastModifierId = UserManager.Current;
-                        }
-                        break;
-
-                    case EntityState.Deleted:
-                        if (entity is FullAuditedEntity fullAuditedEntity)
-                        {
-                            fullAuditedEntity.IsDeleted = true;
-                            fullAuditedEntity.DeletionTime = DateTime.Now;
-                            fullAuditedEntity.DeleterId = UserManager.Current;
-                        }
-                        break;
-                }
-            }
-        }
-
         /// <summary>
         /// 应用查询过滤器
         /// </summary>
         /// <param name="modelBuilder"></param>
-        private void ApplyDataQueryFilter(ModelBuilder modelBuilder)
+        protected override void ApplyDataQueryFilter(ModelBuilder modelBuilder)
         {
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
-                LambdaExpression? lambda = null;
-                if (_softDeleteType.IsAssignableFrom(entityType.ClrType))
-                {
-                    var parameter = Expression.Parameter(entityType.ClrType, "e");
-                    var property = Expression.Property(parameter, nameof(FullAuditedEntity.IsDeleted));
-                    var condition = Expression.Equal(property, Expression.Constant(false));
-                    lambda = Expression.Lambda(condition, parameter);
-                    modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
-                }
+                LambdaExpression? lambda = GetSoftDeleteQueryFitler(entityType.ClrType);
                 if (MultiTenancyConsts.IsEnabled && _tenantType.IsAssignableFrom(entityType.ClrType))
                 {
                     var parameter = Expression.Parameter(entityType.ClrType, "e");

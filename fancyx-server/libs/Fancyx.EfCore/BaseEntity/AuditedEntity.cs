@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Fancyx.DataAccess.BaseEntity
+namespace Fancyx.EfCore.BaseEntity
 {
     public abstract class AuditedEntity : CreationEntity
     {

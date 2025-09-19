@@ -1,6 +1,6 @@
-﻿using Fancyx.Core.Interfaces;
-using Fancyx.DataAccess;
-using Fancyx.DataAccess.Entities.System;
+﻿using Fancyx.Admin.EfCore.Entities.System;
+using Fancyx.Core.Interfaces;
+using Fancyx.EfCore;
 using Fancyx.Shared.Keys;
 
 using StackExchange.Redis;

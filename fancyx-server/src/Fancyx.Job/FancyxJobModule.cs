@@ -1,6 +1,6 @@
-﻿using Fancyx.Core.AutoInject;
+﻿using Fancyx.Admin.EfCore;
+using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
-using Fancyx.DataAccess;
 using Fancyx.Job.Database;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
@@ -10,7 +10,7 @@ using Quartz.Impl.Matchers;
 namespace Fancyx.Job
 {
     [DependsOn(
-        typeof(FancyxDataAccessModule)
+        typeof(FancyxAdminEfCoreModule)
         )]
     public class FancyxJobModule : ModuleBase
     {

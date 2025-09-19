@@ -1,6 +1,6 @@
 ﻿using System.Transactions;
 
-namespace Fancyx.DataAccess
+namespace Fancyx.EfCore
 {
     public interface IUnitOfWorkManager
     {

@@ -1,12 +1,13 @@
 ﻿using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Core.Interfaces;
-using Fancyx.DataAccess;
-using Fancyx.DataAccess.Aop;
-using Fancyx.DataAccess.Entities.System;
+using Fancyx.EfCore.Aop;
+using Fancyx.EfCore;
 using Fancyx.Logger;
 using Fancyx.Shared.Consts;
 using Microsoft.EntityFrameworkCore;
+using Fancyx.Admin.EfCore.Entities.System;
+using Fancyx.Admin.EfCore;
 
 namespace Fancyx.Admin.Service.System;
 
