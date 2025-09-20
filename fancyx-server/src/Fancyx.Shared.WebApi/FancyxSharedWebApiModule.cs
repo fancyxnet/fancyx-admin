@@ -1,5 +1,6 @@
 ﻿using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
+using Fancyx.EventBus;
 using Fancyx.Logger;
 using Fancyx.Redis;
 using Fancyx.Shared.WebApi.Filters;
@@ -14,6 +15,7 @@ namespace Fancyx.Shared.WebApi
 {
     [DependsOn(
         typeof(FancyxRedisModule),
+        typeof(FancyxEventBusModule),
         typeof(FancyxSharedLoggerModule)
         )]
     public class FancyxSharedWebApiModule : ModuleBase

@@ -1,7 +1,10 @@
-﻿using Fancyx.EfCore.BaseEntity;
-using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Reflection;
+
+using Fancyx.EfCore.BaseEntity;
+using Fancyx.EfCore.Models;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.EfCore
 {
@@ -45,6 +48,15 @@ namespace Fancyx.EfCore
             }
             entity.TreePath = entity.Id.ToString();
             entity.TreeLevel = 1;
+        }
+
+        public static async Task<EntityPaged<TEntity>> PagedAsync<TEntity>(this IQueryable<TEntity> query, int current, int pageSize) where TEntity : class
+        {
+            return new EntityPaged<TEntity>()
+            {
+                Total = await query.AsNoTracking().CountAsync(),
+                Items = await query.AsNoTracking().Skip((current - 1) * pageSize).Take(pageSize).ToListAsync()
+            };
         }
     }
 }

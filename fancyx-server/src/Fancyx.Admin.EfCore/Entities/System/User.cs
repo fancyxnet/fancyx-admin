@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using Fancyx.Admin.EfCore.Enums;
-using Fancyx.Admin.EfCore;
+using Fancyx.Shared.EfCore;
 
 namespace Fancyx.Admin.EfCore.Entities.System
 {

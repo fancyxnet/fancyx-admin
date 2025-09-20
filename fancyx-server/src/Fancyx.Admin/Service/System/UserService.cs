@@ -11,8 +11,10 @@ using Fancyx.EfCore;
 using Fancyx.EfCore.Aop;
 using Fancyx.Logger;
 using Fancyx.Shared.Consts;
+using Fancyx.Shared.EfCore;
 using Fancyx.Shared.Generated;
 using Fancyx.Utils;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.Service.System

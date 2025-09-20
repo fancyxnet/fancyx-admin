@@ -1,25 +1,14 @@
-﻿using Fancyx.Core.Interfaces;
-using Fancyx.EfCore.BaseEntity;
-using Fancyx.Utils.Expressions;
-using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Reflection;
-using Fancyx.Admin.EfCore.Models;
 
-namespace Fancyx.Admin.EfCore
+using Fancyx.Core.Interfaces;
+using Fancyx.Utils.Expressions;
+
+namespace Fancyx.Shared.EfCore
 {
-    public static class AdminEfCoreExtension
+    public static class SharedEfCoreExtension
     {
         private static readonly MethodInfo containsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) })!;
-
-        public static async Task<EntityPaged<TEntity>> PagedAsync<TEntity>(this IQueryable<TEntity> query, int current, int pageSize) where TEntity : class
-        {
-            return new EntityPaged<TEntity>()
-            {
-                Total = await query.AsNoTracking().CountAsync(),
-                Items = await query.AsNoTracking().Skip((current - 1) * pageSize).Take(pageSize).ToListAsync()
-            };
-        }
 
         public static IQueryable<TEntity> PowerFilter<TEntity>(this IQueryable<TEntity> query, ICurrentUser currentUser)
         {

@@ -1,12 +1,13 @@
 using AutoMapper;
 
-using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.IService.Organization;
 using Fancyx.Admin.IService.Organization.Dtos;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
+using Fancyx.Shared.EfCore;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.Service.Organization

@@ -1,4 +1,3 @@
-using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
@@ -7,6 +6,7 @@ using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Admin.SharedService;
 using Fancyx.EfCore;
 using Fancyx.EfCore.Aop;
+using Fancyx.Shared.EfCore;
 
 namespace Fancyx.Admin.Service.System
 {

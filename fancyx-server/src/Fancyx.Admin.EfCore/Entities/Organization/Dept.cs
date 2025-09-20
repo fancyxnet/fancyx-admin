@@ -2,8 +2,10 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore.BaseEntity;
+using Fancyx.Shared.EfCore;
 
 namespace Fancyx.Admin.EfCore.Entities.Organization
 {

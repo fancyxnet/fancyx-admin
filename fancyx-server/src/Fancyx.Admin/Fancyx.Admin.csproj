@@ -9,15 +9,20 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Entities\**" />
+	  <Content Remove="Entities\**" />
+	  <EmbeddedResource Remove="Entities\**" />
+	  <None Remove="Entities\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Content Include="ip2region.xdb">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\libs\Fancyx.EventBus\Fancyx.EventBus.csproj" />
 		<ProjectReference Include="..\..\libs\Fancyx.Storage\Fancyx.Storage.csproj" />
-		<ProjectReference Include="..\..\libs\Fancyx.Utils\Fancyx.Utils.csproj" />
 		<ProjectReference Include="..\Fancyx.Admin.EfCore\Fancyx.Admin.EfCore.csproj" />
 		<ProjectReference Include="..\Fancyx.Shared.WebApi\Fancyx.Shared.WebApi.csproj" />
 	</ItemGroup>
@@ -33,7 +38,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Entities\" />
 		<Folder Include="wwwroot\" />
 	</ItemGroup>
 

@@ -7,8 +7,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\libs\Fancyx.Core\Fancyx.Core.csproj" />
-		<ProjectReference Include="..\..\libs\Fancyx.EfCore\Fancyx.EfCore.csproj" />
-		<ProjectReference Include="..\..\libs\Fancyx.Utils\Fancyx.Utils.csproj" />
+		<ProjectReference Include="..\Fancyx.Shared.EfCore\Fancyx.Shared.EfCore.csproj" />
 	</ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace Fancyx.Admin.EfCore
+﻿namespace Fancyx.Shared.EfCore
 {
     /// <summary>
     /// 数据权限字段名标记

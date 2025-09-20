@@ -1,13 +1,15 @@
-﻿using Fancyx.Admin.EfCore;
-using Fancyx.Admin.EfCore.Entities.Organization;
+﻿using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
 using Fancyx.Redis;
+using Fancyx.Shared.EfCore;
 using Fancyx.Shared.Keys;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
