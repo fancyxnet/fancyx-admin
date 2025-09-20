@@ -1,13 +1,13 @@
-﻿using Coravel;
+﻿using System.Reflection;
+using System.Threading.RateLimiting;
+
+using Coravel;
 
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.Jobs;
 using Fancyx.Admin.SharedService;
 using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
-using Fancyx.EventBus;
-using Fancyx.Logger;
-using Fancyx.Redis;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.WebApi;
 using Fancyx.Shared.WebApi.JsonConverters;
@@ -20,9 +20,6 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.OpenApi.Models;
 
 using MQTTnet.AspNetCore;
-
-using System.Reflection;
-using System.Threading.RateLimiting;
 
 namespace Fancyx.Admin
 {
@@ -41,13 +38,11 @@ namespace Fancyx.Admin
             services.Configure<KestrelServerOptions>(options =>
             {
                 options.ListenAnyIP(port: int.Parse(configuration["Mqtt:Port"]!), l => l.UseMqtt());
-                options.ListenAnyIP(port: int.Parse(Environment.GetEnvironmentVariable("ASPNETCORE_PORT")!));
             });
-            services.AddHostedMqttServer(
-                optionsBuilder =>
-                {
-                    optionsBuilder.WithDefaultEndpoint();
-                });
+            services.AddHostedMqttServer(optionsBuilder =>
+            {
+                optionsBuilder.WithDefaultEndpoint();
+            });
             services.AddMqttConnectionHandler();
             services.Configure<JsonOptions>(options =>
             {

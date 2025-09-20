@@ -22,6 +22,7 @@ namespace Fancyx.Shared.WebApi
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
+            var configuration = context.Configuration;
             context.Services.Configure<MvcOptions>(options =>
             {
                 options.Filters.Add<HttpRequestValidationFilter>();

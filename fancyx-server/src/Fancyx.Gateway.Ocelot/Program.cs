@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var serviceMode = builder.Configuration["ServiceMode"];
 var configurationBuilder = new ConfigurationBuilder();
-if (serviceMode == "direct")
+if (serviceMode == "Direct")
 {
     configurationBuilder.AddJsonFile("ocelot.direct.json");
     builder.Services.AddOcelot(configurationBuilder.Build());

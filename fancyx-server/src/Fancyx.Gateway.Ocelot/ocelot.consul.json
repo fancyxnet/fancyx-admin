@@ -2,7 +2,7 @@
   "Routes": [
     {
       "UpstreamPathTemplate": "/admin-api/{url}",
-      "ServiceName": "fancyx.admin",
+      "ServiceName": "fancyx-admin-api",
       "UseServiceDiscovery": true,
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
@@ -11,7 +11,7 @@
     },
     {
       "UpstreamPathTemplate": "/erp-api/{url}",
-      "ServiceName": "fancyx.erp",
+      "ServiceName": "fancyx-erp-api",
       "UseServiceDiscovery": true,
       "LoadBalancerOptions": {
         "Type": "RoundRobin"

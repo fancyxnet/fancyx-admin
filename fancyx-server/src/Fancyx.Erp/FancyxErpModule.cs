@@ -13,8 +13,8 @@ using Microsoft.OpenApi.Models;
 namespace Fancyx.Erp
 {
     [DependsOn(
-    typeof(FancyxErpEfCoreModule),
-    typeof(FancyxSharedWebApiModule)
+        typeof(FancyxErpEfCoreModule),
+        typeof(FancyxSharedWebApiModule)
     )]
     public class FancyxErpModule : ModuleBase
     {
