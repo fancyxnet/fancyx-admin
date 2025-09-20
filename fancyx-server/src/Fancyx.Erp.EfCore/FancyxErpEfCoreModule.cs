@@ -3,16 +3,16 @@ using Fancyx.Core.Context;
 using Fancyx.EfCore;
 using Fancyx.Shared.EfCore;
 
-namespace Fancyx.Admin.EfCore
+namespace Fancyx.Erp.EfCore
 {
     [DependsOn(
-        typeof(FancyxSharedEfCoreModule)
-        )]
-    public class FancyxAdminEfCoreModule : ModuleBase
+    typeof(FancyxSharedEfCoreModule)
+    )]
+    public class FancyxErpEfCoreModule : ModuleBase
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            context.Services.AddEfCore<FancyxDbContext>(context.Configuration);
+            context.Services.AddEfCore<FancyxErpDbContext>(context.Configuration);
         }
 
         public override void Configure(ApplicationInitializationContext context)

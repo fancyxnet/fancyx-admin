@@ -1,6 +1,0 @@
-@Fancyx.Erp_HostAddress = http://localhost:5250
-
-GET {{Fancyx.Erp_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

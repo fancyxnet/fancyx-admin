@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Fancyx.Shared.EfCore\Fancyx.Shared.EfCore.csproj" />
+  </ItemGroup>
+
 </Project>

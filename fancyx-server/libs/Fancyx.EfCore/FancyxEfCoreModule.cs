@@ -1,6 +1,7 @@
 ﻿using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
@@ -22,8 +23,9 @@ namespace Fancyx.EfCore
 
     public static class DbContextSetup
     {
-        public static void AddEfCore<TDbContext>(this IServiceCollection services, string connectionString) where TDbContext : EfCoreDbContextBase
+        public static void AddEfCore<TDbContext>(this IServiceCollection services, IConfiguration configuration) where TDbContext : EfCoreDbContextBase
         {
+            var connectionString = configuration.GetConnectionString("Default")!;
             services.AddDbContext<DbContext, TDbContext>(options
                 => options.UseNpgsql(connectionString)
                      .LogTo(Console.WriteLine, LogLevel.Information)

@@ -1,18 +1,16 @@
 ﻿using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
 using Fancyx.EfCore;
-using Fancyx.Shared.EfCore;
 
-namespace Fancyx.Admin.EfCore
+namespace Fancyx.Shared.EfCore
 {
     [DependsOn(
-        typeof(FancyxSharedEfCoreModule)
+        typeof(FancyxEfCoreModule)
         )]
-    public class FancyxAdminEfCoreModule : ModuleBase
+    public class FancyxSharedEfCoreModule : ModuleBase
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            context.Services.AddEfCore<FancyxDbContext>(context.Configuration);
         }
 
         public override void Configure(ApplicationInitializationContext context)

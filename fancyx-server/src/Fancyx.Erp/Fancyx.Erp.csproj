@@ -6,4 +6,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Fancyx.Erp.EfCore\Fancyx.Erp.EfCore.csproj" />
+    <ProjectReference Include="..\Fancyx.Shared.WebApi\Fancyx.Shared.WebApi.csproj" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.1" />
+	</ItemGroup>
 </Project>
