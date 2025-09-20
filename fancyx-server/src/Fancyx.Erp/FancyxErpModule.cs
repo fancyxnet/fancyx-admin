@@ -1,11 +1,12 @@
 ﻿using System.Reflection;
 
-using Autofac.Core;
-
 using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
 using Fancyx.Erp.EfCore;
+using Fancyx.Erp.Remote;
+using Fancyx.Shared.Consts;
 using Fancyx.Shared.WebApi;
+using Fancyx.Shared.WebApi.Micro;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
@@ -65,6 +66,10 @@ namespace Fancyx.Erp
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+            });
+            context.Services.AddRemoteClient(context.Configuration, client =>
+            {
+                client.AddHttp<ITestApi>(MicroServiceConsts.AdminApi);
             });
         }
 
