@@ -1,0 +1,32 @@
+{
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/admin-api/{url}",
+      "ServiceName": "fancyx.admin",
+      "UseServiceDiscovery": true,
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "DownstreamPathTemplate": "/api/{url}"
+    },
+    {
+      "UpstreamPathTemplate": "/erp-api/{url}",
+      "ServiceName": "fancyx.erp",
+      "UseServiceDiscovery": true,
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "DownstreamPathTemplate": "/api/{url}"
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:9000",
+    "ServiceDiscoveryProvider": {
+      "Host": "localhost",
+      "Port": 8500,
+      "Type": "Consul",
+      "Token": "99abbc21-ddaf-1cd4-a301-51c0df690841",
+      "UseOnlyHealthyServices": true
+    }
+  }
+}

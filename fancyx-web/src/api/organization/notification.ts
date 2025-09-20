@@ -6,7 +6,7 @@ import type { AppResponse, PagedResult, PageSearch } from '@/types/api';
  * @param dto
  */
 export function addNotification(dto: NotificationDto) {
-  return httpClient.post<NotificationDto, AppResponse<boolean>>('/api/notification/add', dto);
+  return httpClient.post<NotificationDto, AppResponse<boolean>>('/admin-api/notification/add', dto);
 }
 
 /**
@@ -14,7 +14,7 @@ export function addNotification(dto: NotificationDto) {
  * @param dto
  */
 export function getNotificationList(dto: NotificationQueryDto) {
-  return httpClient.get<NotificationQueryDto, AppResponse<PagedResult<NotificationListDto>>>('/api/notification/list', {
+  return httpClient.get<NotificationQueryDto, AppResponse<PagedResult<NotificationListDto>>>('/admin-api/notification/list', {
     params: dto,
   });
 }
@@ -24,7 +24,7 @@ export function getNotificationList(dto: NotificationQueryDto) {
  * @param dto
  */
 export function updateNotification(dto: NotificationDto) {
-  return httpClient.put<NotificationDto, AppResponse<boolean>>('/api/notification/update', dto);
+  return httpClient.put<NotificationDto, AppResponse<boolean>>('/admin-api/notification/update', dto);
 }
 
 /**

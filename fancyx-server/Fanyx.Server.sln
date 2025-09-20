@@ -48,6 +48,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Erp.EfCore", "src\Fa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Shared.EfCore", "src\Fancyx.Shared.EfCore\Fancyx.Shared.EfCore.csproj", "{763E2101-6E62-4F4B-8932-94652FAB56D4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "gateway", "gateway", "{B4C98DE3-50E7-4DE7-9DF6-2CCB1A4F4564}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Gateway.Ocelot", "src\Fancyx.Gateway.Ocelot\Fancyx.Gateway.Ocelot.csproj", "{5EEFE8B5-25E0-4B68-B121-E58729328333}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,6 +118,10 @@ Global
 		{763E2101-6E62-4F4B-8932-94652FAB56D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{763E2101-6E62-4F4B-8932-94652FAB56D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{763E2101-6E62-4F4B-8932-94652FAB56D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EEFE8B5-25E0-4B68-B121-E58729328333}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EEFE8B5-25E0-4B68-B121-E58729328333}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EEFE8B5-25E0-4B68-B121-E58729328333}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EEFE8B5-25E0-4B68-B121-E58729328333}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -137,6 +145,8 @@ Global
 		{9C0F2E51-0C2C-410D-B9BD-ED781E75853A} = {7D2BD61A-F49D-47FF-87B2-E63CCAD9C875}
 		{C42CFF0B-47CE-4AAA-B3A0-3833E9E3F725} = {7D2BD61A-F49D-47FF-87B2-E63CCAD9C875}
 		{763E2101-6E62-4F4B-8932-94652FAB56D4} = {3D12FE73-7536-4EC0-BFE7-2DE359C2E96D}
+		{B4C98DE3-50E7-4DE7-9DF6-2CCB1A4F4564} = {D76D51F8-F767-41EC-A213-4C898DA4B3C4}
+		{5EEFE8B5-25E0-4B68-B121-E58729328333} = {B4C98DE3-50E7-4DE7-9DF6-2CCB1A4F4564}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {28315BFD-90E7-4E14-A2EA-F3D23AF4126F}

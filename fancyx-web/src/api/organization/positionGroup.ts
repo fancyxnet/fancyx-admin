@@ -6,7 +6,7 @@ import type { AppResponse } from '@/types/api';
  * @param dto
  */
 export function addPositionGroup(dto: PositionGroupDto) {
-  return httpClient.post<PositionGroupDto, AppResponse<boolean>>('/api/positionGroup/add', dto);
+  return httpClient.post<PositionGroupDto, AppResponse<boolean>>('/admin-api/positionGroup/add', dto);
 }
 
 /**
@@ -14,7 +14,7 @@ export function addPositionGroup(dto: PositionGroupDto) {
  * @param dto
  */
 export function getPositionGroupList(dto?: PositionGroupQueryDto) {
-  return httpClient.get<PositionGroupQueryDto, AppResponse<PositionGroupListDto[]>>('/api/positionGroup/list', {
+  return httpClient.get<PositionGroupQueryDto, AppResponse<PositionGroupListDto[]>>('/admin-api/positionGroup/list', {
     params: dto,
   });
 }
@@ -24,7 +24,7 @@ export function getPositionGroupList(dto?: PositionGroupQueryDto) {
  * @param dto
  */
 export function updatePositionGroup(dto: PositionGroupDto) {
-  return httpClient.put<PositionGroupDto, AppResponse<boolean>>('/api/positionGroup/update', dto);
+  return httpClient.put<PositionGroupDto, AppResponse<boolean>>('/admin-api/positionGroup/update', dto);
 }
 
 /**

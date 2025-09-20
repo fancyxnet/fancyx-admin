@@ -5,7 +5,7 @@ import type { AppResponse, PageSearch, PagedResult } from '@/types/api';
  * 新增字典数据
  */
 export function addDictData(dto: DictDataDto) {
-  return httpClient.post<DictDataDto, AppResponse<boolean>>('/api/DictData/Add', dto);
+  return httpClient.post<DictDataDto, AppResponse<boolean>>('/admin-api/DictData/Add', dto);
 }
 
 /**
@@ -14,7 +14,7 @@ export function addDictData(dto: DictDataDto) {
  * @returns
  */
 export function getDictDataList(dto: DictDataQueryDto) {
-  return httpClient.get<DictDataQueryDto, AppResponse<PagedResult<DictDataListDto>>>('/api/DictData/list', {
+  return httpClient.get<DictDataQueryDto, AppResponse<PagedResult<DictDataListDto>>>('/admin-api/DictData/list', {
     params: dto,
   });
 }
@@ -23,7 +23,7 @@ export function getDictDataList(dto: DictDataQueryDto) {
  * 修改字典数据
  */
 export function updateDictData(dto: DictDataDto) {
-  return httpClient.put<DictDataDto, AppResponse<boolean>>('/api/DictData/Update', dto);
+  return httpClient.put<DictDataDto, AppResponse<boolean>>('/admin-api/DictData/Update', dto);
 }
 
 /**
@@ -32,7 +32,7 @@ export function updateDictData(dto: DictDataDto) {
  * @returns
  */
 export function deleteDictData(ids: string[]) {
-  return httpClient.delete<string[], AppResponse<boolean>>('/api/DictData/Delete', {
+  return httpClient.delete<string[], AppResponse<boolean>>('/admin-api/DictData/Delete', {
     data: ids,
   });
 }

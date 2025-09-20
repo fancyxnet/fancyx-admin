@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 
 class HttpClient {
   private readonly instance: AxiosInstance;
-  allowAnonymousApis: string[] = ['/api/account/login']; //允许匿名访问接口
+  allowAnonymousApis: string[] = ['/admin-api/account/login']; //允许匿名访问接口
 
   constructor(config?: AxiosRequestConfig) {
     this.instance = axios.create(config);
