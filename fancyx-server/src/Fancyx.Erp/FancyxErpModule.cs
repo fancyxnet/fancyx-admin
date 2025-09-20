@@ -1,0 +1,85 @@
+﻿using System.Reflection;
+
+using Autofac.Core;
+
+using Fancyx.Core.AutoInject;
+using Fancyx.Core.Context;
+using Fancyx.Erp.EfCore;
+using Fancyx.Shared.WebApi;
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Models;
+
+namespace Fancyx.Erp
+{
+    [DependsOn(
+    typeof(FancyxErpEfCoreModule),
+    typeof(FancyxSharedWebApiModule)
+    )]
+    public class FancyxErpModule : ModuleBase
+    {
+        public override void ConfigureServices(ServiceConfigurationContext context)
+        {
+            //Swagger
+            context.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Fancyx Erp API", Version = "v1" });
+
+                // 添加 JWT 认证支持到 Swagger
+                var securityScheme = new OpenApiSecurityScheme
+                {
+                    Name = "JWT Authentication",
+                    Description = "Enter JWT Bearer token **_only_**",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer", // 必须小写
+                    BearerFormat = "JWT",
+                    Reference = new OpenApiReference
+                    {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+                var tenantScheme = new OpenApiSecurityScheme
+                {
+                    Name = "X-Tenant",
+                    Description = "租户ID",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Reference = new OpenApiReference
+                    {
+                        Id = "X-Tenant",
+                        Type = ReferenceType.SecurityScheme,
+                    },
+                };
+
+                c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+                c.AddSecurityDefinition(tenantScheme.Reference.Id, tenantScheme);
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {securityScheme, Array.Empty<string>()},
+                    {tenantScheme, Array.Empty<string>()},
+                });
+
+                // 设置Swagger读取XML注释
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+            });
+        }
+
+        public override void Configure(ApplicationInitializationContext context)
+        {
+            var app = context.GetApplicationBuilder();
+
+            if (context.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fancyx Erp API V1");
+                });
+            }
+        }
+    }
+}
