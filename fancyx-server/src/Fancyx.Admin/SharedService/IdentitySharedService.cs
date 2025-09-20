@@ -104,34 +104,6 @@ namespace Fancyx.Admin.SharedService
         }
 
         /// <summary>
-        /// 检查Token是否存在
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="sessionId"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        public async Task<bool> CheckTokenAsync(string userId, string sessionId, string token)
-        {
-            string key = SystemCacheKey.AccessToken(userId, sessionId);
-            var existToken = await _hybridCache.GetAsync<string>(key);
-            return existToken == token;
-        }
-
-        /// <summary>
-        /// 检查用户是否有权限
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="code"></param>
-        /// <returns></returns>
-        public async Task<bool> CheckPermissionAsync(string userId, string code)
-        {
-            var permission = await GetUserPermissionAsync(Guid.Parse(userId));
-            if (permission == null || permission.Auths == null) return false;
-
-            return permission.Auths.Contains(code) || permission.IsSuperAdmin;
-        }
-
-        /// <summary>
         /// 生成Token
         /// </summary>
         /// <param name="claims"></param>

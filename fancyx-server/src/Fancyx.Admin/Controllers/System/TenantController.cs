@@ -1,6 +1,6 @@
 ﻿using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
-using Fancyx.Core.Attributes;
+using Fancyx.Shared.WebApi.Attributes;
 using Fancyx.Logger;
 using Fancyx.Shared.Consts;
 
@@ -12,7 +12,6 @@ namespace Fancyx.Admin.Controllers.System
 {
     [Authorize]
     [ApiController]
-    [MustMainPower]
     [Route("api/[controller]")]
     public class TenantController : ControllerBase
     {

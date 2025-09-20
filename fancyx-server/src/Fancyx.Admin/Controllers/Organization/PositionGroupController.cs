@@ -1,6 +1,6 @@
 using Fancyx.Admin.IService.Organization;
 using Fancyx.Admin.IService.Organization.Dtos;
-using Fancyx.Core.Attributes;
+using Fancyx.Shared.WebApi.Attributes;
 using Fancyx.Logger;
 using Fancyx.Shared.Consts;
 

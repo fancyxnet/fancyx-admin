@@ -12,5 +12,6 @@
 	  <ProjectReference Include="..\..\libs\Fancyx.Core\Fancyx.Core.csproj" />
 	  <ProjectReference Include="..\..\libs\Fancyx.Serilog\Fancyx.Serilog.csproj" />
 	  <ProjectReference Include="..\..\libs\Fancyx.Utils\Fancyx.Utils.csproj" />
+	  <ProjectReference Include="..\Fancyx.Shared\Fancyx.Shared.csproj" />
 	</ItemGroup>
 </Project>

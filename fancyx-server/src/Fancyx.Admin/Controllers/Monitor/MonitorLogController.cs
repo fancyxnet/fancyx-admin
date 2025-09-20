@@ -1,6 +1,6 @@
 ﻿using Fancyx.Admin.IService.Monitor;
 using Fancyx.Admin.IService.Monitor.Dtos;
-using Fancyx.Core.Attributes;
+using Fancyx.Shared.WebApi.Attributes;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

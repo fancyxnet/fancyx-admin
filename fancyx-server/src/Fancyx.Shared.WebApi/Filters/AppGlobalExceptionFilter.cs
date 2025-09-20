@@ -1,8 +1,12 @@
 using Fancyx.Shared.Consts;
+using Fancyx.Shared.Exceptions;
+using Fancyx.Shared.Models;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Logging;
 
-namespace Fancyx.Admin.Filters
+namespace Fancyx.Shared.WebApi.Filters
 {
     public class AppGlobalExceptionFilter : IExceptionFilter
     {

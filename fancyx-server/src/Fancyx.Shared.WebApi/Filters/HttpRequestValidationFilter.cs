@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Fancyx.Shared.Models;
+
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Fancyx.Admin.Filters
+namespace Fancyx.Shared.WebApi.Filters
 {
     public class HttpRequestValidationFilter : IActionFilter
     {

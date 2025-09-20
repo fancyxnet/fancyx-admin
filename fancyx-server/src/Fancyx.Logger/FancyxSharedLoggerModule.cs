@@ -10,7 +10,7 @@ namespace Fancyx.Logger
     [DependsOn(
         typeof(FancyxEventBusModule)
         )]
-    public class FancyxLoggerModule : ModuleBase
+    public class FancyxSharedLoggerModule : ModuleBase
     {
         public override void Configure(ApplicationInitializationContext context)
         {

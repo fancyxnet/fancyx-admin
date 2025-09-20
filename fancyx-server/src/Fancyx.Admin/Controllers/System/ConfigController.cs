@@ -1,7 +1,7 @@
 ﻿using Fancyx.Admin.IService.System;
 using Fancyx.Admin.IService.System.Dtos;
 using Fancyx.Admin.SharedService;
-using Fancyx.Core.Attributes;
+using Fancyx.Shared.WebApi.Attributes;
 using Fancyx.Logger;
 using Fancyx.Shared.Consts;
 

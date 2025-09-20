@@ -1,4 +1,4 @@
-namespace Fancyx.Core.Attributes
+namespace Fancyx.Shared.WebApi.Attributes
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public sealed class HasPermissionAttribute : Attribute

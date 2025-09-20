@@ -1,21 +1,25 @@
-﻿using Fancyx.Admin.SharedService;
-using Fancyx.Core.Attributes;
+﻿
+using System.Security.Claims;
+
 using Fancyx.Shared.Consts;
+using Fancyx.Shared.Models;
+using Fancyx.Shared.WebApi.Attributes;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Policy;
-using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
-namespace Fancyx.Admin.Middlewares
+namespace Fancyx.Shared.WebApi.Handlers
 {
-    public class IdentityMiddlewareResultHandler : IAuthorizationMiddlewareResultHandler
+    internal class CommonAuthorizationMiddlewareResultHandler : IAuthorizationMiddlewareResultHandler
     {
         private readonly AuthorizationMiddlewareResultHandler _defaultHandler = new();
-        private readonly IdentitySharedService _identitySharedService;
+        private readonly PermissionCacheHandler _permissionCache;
 
-        public IdentityMiddlewareResultHandler(IdentitySharedService identitySharedService)
+        public CommonAuthorizationMiddlewareResultHandler(PermissionCacheHandler permissionCache)
         {
-            _identitySharedService = identitySharedService;
+            _permissionCache = permissionCache;
         }
 
         public async Task HandleAsync(RequestDelegate next, HttpContext context, AuthorizationPolicy policy, PolicyAuthorizationResult authorizeResult)
@@ -26,8 +30,8 @@ namespace Fancyx.Admin.Middlewares
                 var subjectId = context.User.FindFirst(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
                 var sessionId = context.User.FindFirst(x => x.Type == AdminConsts.SessionId)?.Value;
 
-                var requestToken = context.Request.Headers["Authorization"].ToString().Replace(JwtBearerDefaults.AuthenticationScheme, "").Trim();
-                var isValid = await _identitySharedService.CheckTokenAsync(subjectId!, sessionId!, requestToken);
+                var requestToken = context.Request.Headers.Authorization.ToString().Replace(JwtBearerDefaults.AuthenticationScheme, "").Trim();
+                var isValid = await _permissionCache.CheckTokenAsync(subjectId!, sessionId!, requestToken);
                 if (!isValid)
                 {
                     context.Response.StatusCode = StatusCodes.Status401Unauthorized;
@@ -38,15 +42,10 @@ namespace Fancyx.Admin.Middlewares
                 //检查权限
                 var endpoint = context.GetEndpoint();
                 var auth = endpoint?.Metadata.GetMetadata<HasPermissionAttribute>();
-                var mustMain = endpoint?.Metadata.GetMetadata<MustMainPowerAttribute>();
                 var hasPower = true;
-                if (mustMain != null)
-                {
-                    hasPower = await _identitySharedService.UserIsFromMainDbAsync(subjectId!);
-                }
                 if (hasPower && auth != null)
                 {
-                    hasPower = await _identitySharedService.CheckPermissionAsync(subjectId!, auth.Code);
+                    hasPower = await _permissionCache.CheckPermissionAsync(subjectId!, auth.Code);
                 }
 
                 if (!hasPower)

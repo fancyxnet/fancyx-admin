@@ -17,11 +17,9 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\libs\Fancyx.EventBus\Fancyx.EventBus.csproj" />
 		<ProjectReference Include="..\..\libs\Fancyx.Storage\Fancyx.Storage.csproj" />
-		<ProjectReference Include="..\..\libs\Fancyx.Redis\Fancyx.Redis.csproj" />
 		<ProjectReference Include="..\..\libs\Fancyx.Utils\Fancyx.Utils.csproj" />
-		<ProjectReference Include="..\Fancyx.Logger\Fancyx.Logger.csproj" />
 		<ProjectReference Include="..\Fancyx.Admin.EfCore\Fancyx.Admin.EfCore.csproj" />
-		<ProjectReference Include="..\Fancyx.Shared\Fancyx.Shared.csproj" />
+		<ProjectReference Include="..\Fancyx.Shared.WebApi\Fancyx.Shared.WebApi.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

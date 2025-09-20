@@ -68,6 +68,13 @@
         public static string UserPermission(Guid userId) => WithTenantPrefix($"user_permission:{userId}");
 
         /// <summary>
+        /// 用户权限信息
+        /// </summary>
+        /// <param name="userId">用户ID</param>
+        /// <returns></returns>
+        public static string UserPermission(string userId) => WithTenantPrefix($"user_permission:{userId}");
+
+        /// <summary>
         /// 用户会话ID
         /// </summary>
         /// <param name="userId"></param>

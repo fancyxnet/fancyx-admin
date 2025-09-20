@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\libs\Fancyx.Core\Fancyx.Core.csproj" />
+		<ProjectReference Include="..\..\libs\Fancyx.Utils\Fancyx.Utils.csproj" />
+		<ProjectReference Include="..\..\libs\Fancyx.Redis\Fancyx.Redis.csproj" />
+		<ProjectReference Include="..\Fancyx.Shared\Fancyx.Shared.csproj" />
+		<ProjectReference Include="..\Fancyx.Logger\Fancyx.Shared.Logger.csproj" />
+	</ItemGroup>
+</Project>

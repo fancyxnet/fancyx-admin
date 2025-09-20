@@ -1,38 +1,38 @@
 ﻿using Coravel;
 
 using Fancyx.Admin.EfCore;
-using Fancyx.Admin.Filters;
 using Fancyx.Admin.Jobs;
-using Fancyx.Admin.JsonConverters;
-using Fancyx.Admin.Middlewares;
 using Fancyx.Admin.SharedService;
 using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
 using Fancyx.EventBus;
 using Fancyx.Logger;
-using Fancyx.Logger.Options;
 using Fancyx.Redis;
 using Fancyx.Shared.Consts;
+using Fancyx.Shared.WebApi;
+using Fancyx.Shared.WebApi.JsonConverters;
 using Fancyx.Storage;
-using Fancyx.Utils;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.OpenApi.Models;
+
 using MQTTnet.AspNetCore;
+
 using System.Reflection;
 using System.Threading.RateLimiting;
 
 namespace Fancyx.Admin
 {
     [DependsOn(
-        typeof(FancyxAdminEfCoreModule),
         typeof(FancyxRedisModule),
         typeof(FancyxEventBusModule),
-        typeof(FancyxLoggerModule),
-        typeof(FancyxStorageModule)
+        typeof(FancyxSharedLoggerModule),
+        typeof(FancyxStorageModule),
+        typeof(FancyxAdminEfCoreModule),
+        typeof(FancyxSharedWebApiModule)
         )]
     public class FancyxAdminModule : ModuleBase
     {
@@ -52,15 +52,6 @@ namespace Fancyx.Admin
                     optionsBuilder.WithDefaultEndpoint();
                 });
             services.AddMqttConnectionHandler();
-            services.Configure<FancyxLoggerOption>(options =>
-            {
-                options.IgnoreExceptionTypes = [typeof(BusinessException), typeof(EntityNotFoundException)];
-            });
-            services.Configure<MvcOptions>(options =>
-            {
-                options.Filters.Add<HttpRequestValidationFilter>();
-                options.Filters.Add<AppGlobalExceptionFilter>(1);
-            });
             services.Configure<JsonOptions>(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new DateTimeNullableJsonConverter());
@@ -68,8 +59,6 @@ namespace Fancyx.Admin
                 options.JsonSerializerOptions.Converters.Add(new StringNullableJsonConverter());
                 options.JsonSerializerOptions.Converters.Add(new StringJsonConverter());
             });
-
-            services.AddSingleton<IAuthorizationMiddlewareResultHandler, IdentityMiddlewareResultHandler>();
 
             //Swagger
             services.AddSwaggerGen(c =>
@@ -148,8 +137,6 @@ namespace Fancyx.Admin
                 };
             });
             services.AddScheduler();
-
-            SnowflakeHelper.Init(short.Parse(configuration["Snowflake:WorkerId"]!), short.Parse(configuration["Snowflake:DataCenterId"]!));
         }
 
         public override void Configure(ApplicationInitializationContext context)

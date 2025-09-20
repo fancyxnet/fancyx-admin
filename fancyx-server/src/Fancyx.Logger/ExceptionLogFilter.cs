@@ -2,11 +2,10 @@
 using Fancyx.Core.Authorization;
 using Fancyx.Logger.Consts;
 using Fancyx.Logger.Message;
-using Fancyx.Logger.Options;
+using Fancyx.Shared.Exceptions;
 using Fancyx.Utils;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System.Diagnostics;
 
 namespace Fancyx.Logger
@@ -18,13 +17,12 @@ namespace Fancyx.Logger
     {
         private readonly ICapPublisher _capPublisher;
         private readonly ILogger<ExceptionLogFilter> _logger;
-        private readonly FancyxLoggerOption _options;
+        private static Type[] IgnoreExceptionTypes = [typeof(BusinessException), typeof(EntityNotFoundException)];
 
-        public ExceptionLogFilter(ICapPublisher capPublisher, ILogger<ExceptionLogFilter> logger, IOptions<FancyxLoggerOption> options)
+        public ExceptionLogFilter(ICapPublisher capPublisher, ILogger<ExceptionLogFilter> logger)
         {
             _capPublisher = capPublisher;
             _logger = logger;
-            _options = options.Value;
         }
 
         public async Task OnExceptionAsync(ExceptionContext context)
@@ -32,7 +30,7 @@ namespace Fancyx.Logger
             try
             {
                 var exceptionType = context.Exception.GetType();
-                if (_options.IgnoreExceptionTypes != null && _options.IgnoreExceptionTypes.Contains(exceptionType))
+                if (IgnoreExceptionTypes.Contains(exceptionType))
                 {
                     // 忽略指定的异常类型
                     return;

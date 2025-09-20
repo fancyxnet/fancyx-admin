@@ -1,5 +1,7 @@
 using AutoMapper;
+
 using DotNetCore.CAP;
+
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
@@ -10,9 +12,12 @@ using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
 using Fancyx.Redis;
 using Fancyx.Shared.Consts;
+using Fancyx.Shared.Exceptions;
 using Fancyx.Shared.Keys;
 using Fancyx.Utils;
+
 using Microsoft.EntityFrameworkCore;
+
 using System.Security.Claims;
 
 namespace Fancyx.Admin.Service.Account

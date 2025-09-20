@@ -1,4 +1,4 @@
-﻿namespace Fancyx.Admin.Exceptions
+﻿namespace Fancyx.Shared.Exceptions
 {
     public class EntityNotFoundException : Exception
     {

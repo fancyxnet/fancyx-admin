@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Fancyx.Admin.JsonConverters
+namespace Fancyx.Shared.WebApi.JsonConverters
 {
     public class DateTimeNullableJsonConverter : JsonConverter<DateTime?>
     {
