@@ -13,7 +13,7 @@ using Fancyx.Shared.Consts;
 using Fancyx.Shared.WebApi;
 using Fancyx.Shared.WebApi.JsonConverters;
 using Fancyx.Storage;
-
+using Fancyx.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -54,10 +54,8 @@ namespace Fancyx.Admin
             });
 
             //Swagger
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGenPro("Fancyx Admin Api", c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Fancyx Admin API", Version = "v1" });
-
                 // 添加 JWT 认证支持到 Swagger
                 var securityScheme = new OpenApiSecurityScheme
                 {
@@ -138,11 +136,7 @@ namespace Fancyx.Admin
 
             if (context.Environment.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fancyx Admin API V1");
-                });
+                app.UseSwaggerPro();
             }
 
             app.UseStaticFiles();

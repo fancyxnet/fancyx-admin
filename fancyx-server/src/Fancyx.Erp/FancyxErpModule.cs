@@ -7,7 +7,7 @@ using Fancyx.Internal.Grpc;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.WebApi;
 using Fancyx.Shared.WebApi.Micro;
-
+using Fancyx.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 
@@ -22,10 +22,8 @@ namespace Fancyx.Erp
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
             //Swagger
-            context.Services.AddSwaggerGen(c =>
+            context.Services.AddSwaggerGenPro("Fancyx Erp Api", c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Fancyx Erp API", Version = "v1" });
-
                 // 添加 JWT 认证支持到 Swagger
                 var securityScheme = new OpenApiSecurityScheme
                 {
@@ -80,11 +78,7 @@ namespace Fancyx.Erp
 
             if (context.Environment.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fancyx Erp API V1");
-                });
+                app.UseSwaggerPro();
             }
         }
     }
