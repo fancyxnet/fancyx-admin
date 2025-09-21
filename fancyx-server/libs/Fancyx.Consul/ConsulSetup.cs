@@ -1,5 +1,7 @@
 ﻿using Consul;
 
+using Fancyx.Consul.Discover;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,6 +24,7 @@ namespace Fancyx.Consul
             services.AddMemoryCache();
             services.AddSingleton<IConsulClient>(sp => new ConsulClient(ConfigureConsul));
             services.AddSingleton<ConsulHelper>();
+            services.AddSingleton<ConsulDiscoverHttpHandler>();
             services.AddHealthChecks().AddCheck<ServiceHealthCheck>("service_health");
             return;
 

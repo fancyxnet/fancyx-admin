@@ -1,13 +1,15 @@
 ﻿using Autofac.Core;
 
-using Fancyx.Consul;
+using Fancyx.Consul.Discover;
 using Fancyx.Shared.Models;
 
 using Grpc.Core;
+using Grpc.Net.Client.Balancer;
 using Grpc.Net.Client.Configuration;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using Refit;
 
@@ -35,7 +37,7 @@ namespace Fancyx.Shared.WebApi.Micro
                     clientBuilder.ConfigureHttpClient(httpClient => httpClient.BaseAddress = new Uri(addressNode.Http!));
                     break;
                 case "Consul":
-                    clientBuilder.ConfigureHttpClient(httpClient => httpClient.BaseAddress = new Uri(serviceName))
+                    clientBuilder.ConfigureHttpClient(httpClient => httpClient.BaseAddress = new Uri($"http://{serviceName}"))
                     .AddHttpMessageHandler<ConsulDiscoverHttpHandler>();
                     break;
                 default:
@@ -46,7 +48,7 @@ namespace Fancyx.Shared.WebApi.Micro
 
         public RemoteClient AddGrpc<TGrpcClient>(string serviceName) where TGrpcClient : ClientBase<TGrpcClient>
         {
-            var clientBuilder = _services.AddGrpcClient<TGrpcClient>(serviceName)
+            var clientBuilder = _services.AddGrpcClient<TGrpcClient>()
              .ConfigureChannel(options =>
              {
                  options.Credentials = ChannelCredentials.Insecure;
@@ -61,7 +63,8 @@ namespace Fancyx.Shared.WebApi.Micro
                     clientBuilder.ConfigureHttpClient(httpClient => httpClient.BaseAddress = new Uri(addressNode.Grpc!));
                     break;
                 case "Consul":
-                    clientBuilder.AddHttpMessageHandler<ConsulDiscoverGrpcHandler>();
+                    _services.TryAddSingleton<ResolverFactory, ConsulGrpcResolverFactory>();
+                    clientBuilder.ConfigureHttpClient(httpClient => httpClient.BaseAddress = new Uri($"consul://{serviceName}"));
                     break;
                 default:
                     throw new NotSupportedException($"不支持的服务注册与发现模式 => {options.Mode}");

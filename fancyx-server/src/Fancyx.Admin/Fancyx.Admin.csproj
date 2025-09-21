@@ -5,15 +5,7 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<UserSecretsId>01209eb2-a139-4e3a-b3fc-5c56b5a81471</UserSecretsId>
 	</PropertyGroup>
-
-	<ItemGroup>
-	  <Compile Remove="Entities\**" />
-	  <Content Remove="Entities\**" />
-	  <EmbeddedResource Remove="Entities\**" />
-	  <None Remove="Entities\**" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<Content Include="ip2region.xdb">

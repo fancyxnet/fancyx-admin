@@ -22,7 +22,7 @@ namespace Fancyx.EventBus
                     opt.Configuration = ConfigurationOptions.Parse(context.Configuration["Cap:RedisConnection"]!);
                 });
                 var tableSchema = context.Configuration["Cap:TableSchema"]!;
-                var dbOptions = context.Configuration.GetRequiredSection("Cap:ConnectionStrings").Get<ConnectionStringOption>()!;
+                var dbOptions = context.Configuration.GetRequiredSection("ConnectionStrings").Get<ConnectionStringOption>()!;
                 var connectionString = dbOptions.GetConnectionString();
                 switch(dbOptions.DatabaseType)
                 {

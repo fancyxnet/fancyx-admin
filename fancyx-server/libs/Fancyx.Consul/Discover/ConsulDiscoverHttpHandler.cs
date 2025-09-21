@@ -1,8 +1,6 @@
-﻿using Consul;
+﻿using Microsoft.Extensions.Logging;
 
-using Microsoft.Extensions.Logging;
-
-namespace Fancyx.Consul
+namespace Fancyx.Consul.Discover
 {
     public class ConsulDiscoverHttpHandler: DelegatingHandler
     {
@@ -18,14 +16,13 @@ namespace Fancyx.Consul
         {
             var currentUri = request.RequestUri ?? throw new InvalidDataException("RequestUri is null");
             var healthNode = await _consulHelper.GetNodeAsync(currentUri.Host);
-            var baseUri = $"http://{healthNode.Address}:{healthNode.HttpPort}";
-            if (string.IsNullOrWhiteSpace(baseUri))
+            if (string.IsNullOrWhiteSpace(healthNode.Address))
             {
                 throw new ArgumentNullException($"{currentUri.Host} does not contain helath service address!");
             }
             else
             {
-                var realRequestUri = new Uri($"{currentUri.Scheme}://{baseUri}{currentUri.PathAndQuery}");
+                var realRequestUri = new Uri($"{currentUri.Scheme}://{healthNode.Address}:{healthNode.HttpPort}{currentUri.PathAndQuery}");
                 request.RequestUri = realRequestUri;
                 _logger.LogDebug("RequestUri:{realRequestUri}", realRequestUri);
             }

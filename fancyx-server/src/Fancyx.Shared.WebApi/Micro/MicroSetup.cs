@@ -19,6 +19,7 @@ namespace Fancyx.Shared.WebApi.Micro
         public static void AddMicroService(this IServiceCollection services, IConfiguration configuration)
         {
             EnabledGrpc = int.TryParse(configuration["Consul:GrpcPort"], out var grpcPort) && grpcPort > 0;
+            EnabledConsul = configuration["Services:Mode"] == "Consul";
             services.Configure<KestrelServerOptions>(options =>
             {
                 options.ListenLocalhost(int.Parse(configuration["Consul:HttpPort"]!), listenOptions => listenOptions.Protocols = HttpProtocols.Http1);
@@ -28,8 +29,7 @@ namespace Fancyx.Shared.WebApi.Micro
                 }
             });
             services.Configure<MicroServiceOption>(configuration.GetSection("Services"));
-            var ServiceMode = configuration["Services:Mode"] == "Consul";
-            if (ServiceMode)
+            if (EnabledConsul)
             {
                 services.AddConsulSetup(configuration);
             }
