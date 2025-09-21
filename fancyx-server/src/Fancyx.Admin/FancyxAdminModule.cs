@@ -4,6 +4,7 @@ using System.Threading.RateLimiting;
 using Coravel;
 
 using Fancyx.Admin.EfCore;
+using Fancyx.Admin.Grpc;
 using Fancyx.Admin.Jobs;
 using Fancyx.Admin.SharedService;
 using Fancyx.Core.AutoInject;
@@ -160,6 +161,7 @@ namespace Fancyx.Admin
             {
                 sch.Schedule<NotificationJob>().EveryMinute().PreventOverlapping(nameof(NotificationJob));
             });
+            context.Endpoint.MapGrpcService<TestGrpcServiceHandler>();
         }
     }
 }

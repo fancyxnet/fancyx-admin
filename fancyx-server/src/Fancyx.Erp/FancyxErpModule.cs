@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
-
 using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
 using Fancyx.Erp.EfCore;
 using Fancyx.Erp.Remote;
+using Fancyx.Internal.Grpc;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.WebApi;
 using Fancyx.Shared.WebApi.Micro;
@@ -69,7 +69,8 @@ namespace Fancyx.Erp
             });
             context.Services.AddRemoteClient(context.Configuration, client =>
             {
-                client.AddHttp<ITestApi>(MicroServiceConsts.AdminApi);
+                client.AddHttp<ITestApi>(MicroServiceConsts.AdminApi)
+                      .AddGrpc<Test.TestClient>(MicroServiceConsts.AdminApi);
             });
         }
 

@@ -6,7 +6,7 @@ namespace Fancyx.Admin.Controllers
     [Route("/private-api/test")]
     public class TestController : ControllerBase
     {
-        [HttpGet]
+        [HttpGet("hello")]
         public AppResponse<string> Hello()
         {
             return Result.Data("hello");

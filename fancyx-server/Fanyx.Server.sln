@@ -54,6 +54,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Gateway.Ocelot", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Consul", "libs\Fancyx.Consul\Fancyx.Consul.csproj", "{A12260DB-5695-46C9-7180-C7097B313A52}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Shared.Proto", "src\Fancyx.Shared.Proto\Fancyx.Shared.Proto.csproj", "{D1C9F7F7-0D2E-41A8-9275-0D514202B8C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -128,6 +130,10 @@ Global
 		{A12260DB-5695-46C9-7180-C7097B313A52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A12260DB-5695-46C9-7180-C7097B313A52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A12260DB-5695-46C9-7180-C7097B313A52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1C9F7F7-0D2E-41A8-9275-0D514202B8C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1C9F7F7-0D2E-41A8-9275-0D514202B8C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1C9F7F7-0D2E-41A8-9275-0D514202B8C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1C9F7F7-0D2E-41A8-9275-0D514202B8C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -154,6 +160,7 @@ Global
 		{B4C98DE3-50E7-4DE7-9DF6-2CCB1A4F4564} = {D76D51F8-F767-41EC-A213-4C898DA4B3C4}
 		{5EEFE8B5-25E0-4B68-B121-E58729328333} = {B4C98DE3-50E7-4DE7-9DF6-2CCB1A4F4564}
 		{A12260DB-5695-46C9-7180-C7097B313A52} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{D1C9F7F7-0D2E-41A8-9275-0D514202B8C9} = {3D12FE73-7536-4EC0-BFE7-2DE359C2E96D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {28315BFD-90E7-4E14-A2EA-F3D23AF4126F}
