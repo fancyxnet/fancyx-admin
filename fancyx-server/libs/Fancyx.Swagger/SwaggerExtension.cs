@@ -17,11 +17,24 @@ namespace Fancyx.Swagger
             var controllerType = typeof(ControllerBase);
             var types = AssemblyLoader.All.SelectMany(x => x.ExportedTypes.Where(t => !t.IsAbstract && !t.IsInterface && t.IsClass && t.IsAssignableTo(controllerType))).ToList();
             Groups.Add(title, "v1");
+            var sameNameGroups = new List<Tuple<string, string>>();
             foreach (var type in types)
             {
-                var groupAttr = type.GetCustomAttribute<SwaggerGroupAttribute>();
-                if (groupAttr == null) continue;
-                Groups.TryAdd(groupAttr.Name, groupAttr.Version);
+                var attr = type.GetCustomAttribute<SwaggerGroupAttribute>();
+                if (attr == null) continue;
+
+                if (Groups.TryGetValue(attr.Name, out var version) && !version.Equals(attr.Version, StringComparison.OrdinalIgnoreCase))
+                {
+                    Groups.Remove(attr.Name);
+                    sameNameGroups.Add(new Tuple<string, string>(attr.Name, version));
+                    sameNameGroups.Add(new Tuple<string, string>(attr.Name, attr.Version));
+                    continue;
+                }
+                Groups.TryAdd(attr.Name, attr.Version);
+            }
+            foreach (var item in sameNameGroups.OrderBy(s => s.Item2))
+            {
+                Groups.Add($"{item.Item1}_{item.Item2}", item.Item2);
             }
             services.AddSwaggerGen(c =>
             {
@@ -36,6 +49,14 @@ namespace Fancyx.Swagger
                     {
                         api.GroupName = title;
                         return true;
+                    }
+                    if (doc.Contains('_'))
+                    {
+                        var group = api.ActionDescriptor.EndpointMetadata.FirstOrDefault(x => x is SwaggerGroupAttribute);
+                        if (group is SwaggerGroupAttribute attr)
+                        {
+                            return doc == $"{attr.Name}_{attr.Version}";
+                        }
                     }
                     return doc == api.GroupName;
                 });
