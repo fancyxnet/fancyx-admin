@@ -1,18 +1,13 @@
-﻿using System.Reflection;
-
-using DotNetCore.CAP;
-
+﻿using DotNetCore.CAP;
 using Fancyx.Assemblies;
-using Fancyx.Core;
 using Fancyx.Core.AutoInject;
+using Fancyx.Core.Connection;
 using Fancyx.Core.Context;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
 using Npgsql;
-
 using StackExchange.Redis;
+using System.Reflection;
 
 namespace Fancyx.EventBus
 {
@@ -26,11 +21,26 @@ namespace Fancyx.EventBus
                 {
                     opt.Configuration = ConfigurationOptions.Parse(context.Configuration["Cap:RedisConnection"]!);
                 });
-                x.UsePostgreSql(opt =>
+                var tableSchema = context.Configuration["Cap:TableSchema"]!;
+                var dbOptions = context.Configuration.GetRequiredSection("Cap:ConnectionStrings").Get<ConnectionStringOption>()!;
+                var connectionString = dbOptions.GetConnectionString();
+                switch(dbOptions.DatabaseType)
                 {
-                    opt.Schema = "cap";
-                    opt.DataSource = NpgsqlDataSource.Create(context.Configuration.GetConnectionString("Default")!);
-                });
+                    case DbType.PostgreSql:
+                        x.UsePostgreSql(opt =>
+                        {
+                            opt.Schema = tableSchema;
+                            opt.DataSource = NpgsqlDataSource.Create(connectionString);
+                        });
+                        break;
+                    case DbType.MySql:
+                        x.UseMySql(opt =>
+                        {
+                            opt.TableNamePrefix = tableSchema;
+                            opt.ConnectionString = connectionString;
+                        });
+                        break;
+                }
 #if DEBUG
                 x.UseDashboard();
 #endif

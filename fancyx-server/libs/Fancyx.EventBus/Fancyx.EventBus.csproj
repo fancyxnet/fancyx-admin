@@ -7,10 +7,11 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DotNetCore.CAP" Version="8.3.4" />
-		<PackageReference Include="DotNetCore.CAP.RedisStreams" Version="8.3.4" />
-		<PackageReference Include="DotNetCore.CAP.PostgreSql" Version="8.3.4" />
-		<PackageReference Include="DotNetCore.CAP.Dashboard" Version="8.3.4" />
+		<PackageReference Include="DotNetCore.CAP" Version="8.4.0" />
+		<PackageReference Include="DotNetCore.CAP.RedisStreams" Version="8.4.0" />
+		<PackageReference Include="DotNetCore.CAP.Dashboard" Version="8.4.0" />
+		<PackageReference Include="DotNetCore.CAP.PostgreSql" Version="8.4.0" />
+		<PackageReference Include="DotNetCore.CAP.MySql" Version="8.4.0" />
 		<PackageReference Include="Fancyx.Assemblies" Version="1.0.0" />
 	</ItemGroup>
 

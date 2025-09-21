@@ -1,4 +1,5 @@
 ﻿using Fancyx.Core.AutoInject;
+using Fancyx.Core.Connection;
 using Fancyx.Core.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -25,14 +26,27 @@ namespace Fancyx.EfCore
     {
         public static void AddEfCore<TDbContext>(this IServiceCollection services, IConfiguration configuration) where TDbContext : EfCoreDbContextBase
         {
-            var connectionString = configuration.GetConnectionString("Default")!;
+            var dbOptions = configuration.GetRequiredSection("ConnectionStrings").Get<ConnectionStringOption>()!;
+            var connectionString = dbOptions.GetConnectionString();
             services.AddDbContext<DbContext, TDbContext>(options
-                => options.UseNpgsql(connectionString)
-                     .LogTo(Console.WriteLine, LogLevel.Information)
+                =>
+            {
+                switch (dbOptions.DatabaseType)
+                {
+                    case DbType.PostgreSql:
+                        options.UseNpgsql(connectionString);
+                        break;
+                    case DbType.MySql:
+                        var version = ServerVersion.AutoDetect(connectionString);
+                        options.UseMySql(connectionString, version);
+                        break;
+                }
+                options.LogTo(Console.WriteLine, LogLevel.Information)
 #if DEBUG
-                     .EnableSensitiveDataLogging()
+                       .EnableSensitiveDataLogging()
 #endif
-                     .EnableDetailedErrors());
+                       .EnableDetailedErrors();
+            });
             services.TryAddScoped<IUnitOfWorkManager, UnitOfWorkManager>();
             services.TryAddScoped(typeof(IRepository<>), typeof(Repository<>));
         }

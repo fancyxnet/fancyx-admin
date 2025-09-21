@@ -7,6 +7,6 @@ namespace Fancyx.Erp.Remote
     public interface ITestApi
     {
         [Get("/private-api/test/hello")]
-        AppResponse<string> Hello();
+        Task<AppResponse<string>> Hello();
     }
 }

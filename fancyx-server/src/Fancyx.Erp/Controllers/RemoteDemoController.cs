@@ -17,9 +17,9 @@ namespace Fancyx.Erp.Controllers
         }
 
         [HttpGet]
-        public AppResponse<string> Hello()
+        public async Task<AppResponse<string>> HelloAsync()
         {
-            return _testApi.Hello();
+            return await _testApi.Hello();
         }
     }
 }
