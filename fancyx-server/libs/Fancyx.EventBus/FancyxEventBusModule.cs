@@ -42,7 +42,10 @@ namespace Fancyx.EventBus
                         break;
                 }
 #if DEBUG
-                x.UseDashboard();
+                x.UseDashboard(options =>
+                {
+                    options.PathBase = context.Configuration["Cap:PathBase"] ?? "/Cap";
+                });
 #endif
             });
 
