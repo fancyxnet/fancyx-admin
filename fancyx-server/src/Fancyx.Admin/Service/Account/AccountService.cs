@@ -87,7 +87,7 @@ namespace Fancyx.Admin.Service.Account
                 RefreshToken = refreshToken
             };
 
-            if (!bool.Parse(_configuration["App:AccountManyLogin"]!))
+            if (!bool.Parse(_configuration["AccountManyLogin"]!))
             {
                 //移除其它记录token
                 await _hybridCache.RemoveByPatternAsync(SystemCacheKey.AccessToken(userId, "*"));

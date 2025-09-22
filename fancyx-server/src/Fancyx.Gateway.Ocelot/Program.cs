@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var serviceMode = builder.Configuration["ServiceMode"];
 var configurationBuilder = new ConfigurationBuilder();
+// OcelotÍø¹ØÅäÖÃ
 if (serviceMode == "Direct")
 {
     configurationBuilder.AddJsonFile("ocelot.direct.json");
@@ -16,6 +17,24 @@ else
     configurationBuilder.AddJsonFile("ocelot.consul.json");
     builder.Services.AddOcelot(configurationBuilder.Build()).AddConsul();
 }
+// Íø¹Ø¿çÓò
+if (!string.IsNullOrEmpty(builder.Configuration["CorsOrigins"]))
+{
+    builder.Services.AddCors(options =>
+    {
+        options.AddDefaultPolicy(policy =>
+        {
+            policy
+                .WithOrigins(builder.Configuration["CorsOrigins"]?
+                    .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                    .ToArray() ?? [])
+                .SetIsOriginAllowedToAllowWildcardSubdomains()
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        });
+    });
+}
 
 if (builder.Environment.IsDevelopment())
 {
@@ -24,6 +43,7 @@ if (builder.Environment.IsDevelopment())
 
 var app = builder.Build();
 
+app.UseCors();
 await app.UseOcelot();
 
 app.Run();

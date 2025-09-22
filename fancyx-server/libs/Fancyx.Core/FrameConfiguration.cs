@@ -78,23 +78,6 @@ namespace Fancyx.Core
             {
                 return CurrentTenant.Parse(sp.GetRequiredService<IHttpContextAccessor>()?.HttpContext);
             }); //当前租户
-            if (!string.IsNullOrEmpty(configuration["App:CorsOrigins"]))
-            {
-                services.AddCors(options =>
-                {
-                    options.AddDefaultPolicy(policy =>
-                    {
-                        policy
-                            .WithOrigins(configuration["App:CorsOrigins"]?
-                                .Split(",", StringSplitOptions.RemoveEmptyEntries)
-                                .ToArray() ?? [])
-                            .SetIsOriginAllowedToAllowWildcardSubdomains()
-                            .AllowAnyHeader()
-                            .AllowAnyMethod()
-                            .AllowCredentials();
-                    });
-                }); //跨域
-            }
 
             //1. 扫描模块，调用ConfigureServices方法
             ServiceConfigurationContext context = new ServiceConfigurationContext(builder.Services, builder.Configuration);
@@ -131,7 +114,6 @@ namespace Fancyx.Core
             }
 
             app.MapControllerRoute(name: "default", pattern: "{controller}/{action}/{param:regex(.*+)}");
-            app.UseCors();
             app.UseRouting();
 
             if (MultiTenancyConsts.IsEnabled)
