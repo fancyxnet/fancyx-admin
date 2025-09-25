@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\libs\Fancyx.EventBus\Fancyx.EventBus.csproj" />
+		<ProjectReference Include="..\..\libs\Fancyx.Core\Fancyx.Core.csproj" />
+		<ProjectReference Include="..\..\libs\Fancyx.Redis\Fancyx.Redis.csproj" />
+		<ProjectReference Include="..\Fancyx.Shared\Fancyx.Shared.csproj" />
+		<ProjectReference Include="..\Fancyx.Shared.Proto\Fancyx.Shared.Proto.csproj" />
+		<ProjectReference Include="..\Fancyx.Shared.Logger\Fancyx.Shared.Logger.csproj" />
+		<ProjectReference Include="..\Fancyx.Erp.EfCore\Fancyx.Erp.EfCore.csproj" />
+	</ItemGroup>
+</Project>

@@ -1,5 +1,5 @@
-﻿using Fancyx.Erp.IService.BaseInfo;
-using Fancyx.Erp.IService.BaseInfo.Dtos;
+﻿using Fancyx.Erp.Application.IService.BaseInfo;
+using Fancyx.Erp.Application.IService.BaseInfo.Dtos;
 using Fancyx.Shared.Models;
 
 using Microsoft.AspNetCore.Authorization;

@@ -1,12 +1,6 @@
 ﻿using System.Reflection;
 using System.Threading.RateLimiting;
-
-using Coravel;
-
-using Fancyx.Admin.EfCore;
-using Fancyx.Admin.Grpc;
-using Fancyx.Admin.Jobs;
-using Fancyx.Admin.SharedService;
+using Fancyx.Admin.Application;
 using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
 using Fancyx.Shared.Consts;
@@ -17,17 +11,14 @@ using Fancyx.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.OpenApi.Models;
-
-using MQTTnet.AspNetCore;
 
 namespace Fancyx.Admin
 {
     [DependsOn(
         typeof(FancyxStorageModule),
-        typeof(FancyxAdminEfCoreModule),
-        typeof(FancyxSharedWebApiModule)
+        typeof(FancyxSharedWebApiModule),
+        typeof(FancyxAdminApplicationModule)
         )]
     public class FancyxAdminModule : ModuleBase
     {
@@ -36,15 +27,6 @@ namespace Fancyx.Admin
             var services = context.Services;
             var configuration = context.Configuration;
 
-            services.Configure<KestrelServerOptions>(options =>
-            {
-                options.ListenAnyIP(port: int.Parse(configuration["Mqtt:Port"]!), l => l.UseMqtt());
-            });
-            services.AddHostedMqttServer(optionsBuilder =>
-            {
-                optionsBuilder.WithDefaultEndpoint();
-            });
-            services.AddMqttConnectionHandler();
             services.Configure<JsonOptions>(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new DateTimeNullableJsonConverter());
@@ -97,7 +79,6 @@ namespace Fancyx.Admin
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
             });
-
             services.AddHostedService<PreparationHostService>();
             //限流
             services.AddRateLimiter(options =>
@@ -127,7 +108,6 @@ namespace Fancyx.Admin
                     await context.HttpContext.Response.WriteAsJsonAsync(new AppResponse<bool>(ErrorCode.ApiLimit, "操作频繁，请稍后再试").SetData(false), cancellationToken);
                 };
             });
-            services.AddScheduler();
         }
 
         public override void Configure(ApplicationInitializationContext context)
@@ -140,22 +120,7 @@ namespace Fancyx.Admin
             }
 
             app.UseStaticFiles();
-
-            context.Endpoint.MapConnectionHandler<MqttConnectionHandler>(
-                    "/mqtt", httpConnectionDispatcherOptions => httpConnectionDispatcherOptions.WebSockets.SubProtocolSelector =
-                        protocolList => protocolList.FirstOrDefault() ?? string.Empty);
-            app.UseMqttServer(server =>
-            {
-                var mqttService = context.ServiceProvider.GetRequiredService<MqttSharedService>();
-                server.ValidatingConnectionAsync += mqttService.ValidatingConnectionAsync;
-            });
-
             app.UseRateLimiter(); // 启用限流中间件
-            app.ApplicationServices.UseScheduler(sch =>
-            {
-                sch.Schedule<NotificationJob>().EveryMinute().PreventOverlapping(nameof(NotificationJob));
-            });
-            context.Endpoint.MapGrpcService<TestGrpcServiceHandler>();
         }
     }
 }

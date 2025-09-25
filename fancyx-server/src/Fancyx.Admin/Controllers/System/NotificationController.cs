@@ -1,5 +1,5 @@
-﻿using Fancyx.Admin.IService.System;
-using Fancyx.Admin.IService.System.Dtos;
+﻿using Fancyx.Admin.Application.IService.System;
+using Fancyx.Admin.Application.IService.System.Dtos;
 using Fancyx.Shared.WebApi.Attributes;
 
 using Microsoft.AspNetCore.Authorization;

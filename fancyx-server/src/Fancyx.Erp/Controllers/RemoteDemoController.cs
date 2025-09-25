@@ -1,4 +1,4 @@
-﻿using Fancyx.Erp.Remote;
+﻿using Fancyx.Erp.Application.Remote;
 using Fancyx.Internal.Grpc;
 using Fancyx.Shared.Models;
 

@@ -1,5 +1,5 @@
-﻿using Fancyx.Admin.IService.Account;
-using Fancyx.Admin.IService.Account.Dtos;
+﻿using Fancyx.Admin.Application.IService.Account;
+using Fancyx.Admin.Application.IService.Account.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

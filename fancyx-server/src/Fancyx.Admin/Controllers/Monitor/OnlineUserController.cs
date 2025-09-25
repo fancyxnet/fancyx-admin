@@ -1,10 +1,10 @@
-﻿using Fancyx.Admin.IService.Monitor;
-using Fancyx.Admin.IService.Monitor.Dtos;
-using Fancyx.Shared.WebApi.Attributes;
+﻿using Fancyx.Shared.WebApi.Attributes;
 using Fancyx.Logger;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Fancyx.Admin.Application.IService.Monitor;
+using Fancyx.Admin.Application.IService.Monitor.Dtos;
 
 namespace Fancyx.Admin.Controllers.Monitor
 {

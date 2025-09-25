@@ -1,4 +1,4 @@
-using Fancyx.Admin.SharedService;
+using Fancyx.Admin.Application.SharedService;
 using Fancyx.Shared.Keys;
 using Fancyx.Storage;
 using Fancyx.Utils;

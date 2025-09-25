@@ -1,8 +1,7 @@
-﻿using System.Reflection;
-using Fancyx.Core.AutoInject;
+﻿using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
-using Fancyx.Erp.EfCore;
-using Fancyx.Erp.Remote;
+using Fancyx.Erp.Application;
+using Fancyx.Erp.Application.Remote;
 using Fancyx.Internal.Grpc;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.WebApi;
@@ -10,18 +9,18 @@ using Fancyx.Shared.WebApi.Micro;
 using Fancyx.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace Fancyx.Erp
 {
     [DependsOn(
-        typeof(FancyxErpEfCoreModule),
-        typeof(FancyxSharedWebApiModule)
-    )]
+        typeof(FancyxSharedWebApiModule),
+        typeof(FancyxErpApplicationModule)
+        )]
     public class FancyxErpModule : ModuleBase
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            //Swagger
             context.Services.AddSwaggerGenPro("Fancyx Erp Api", c =>
             {
                 // 添加 JWT 认证支持到 Swagger

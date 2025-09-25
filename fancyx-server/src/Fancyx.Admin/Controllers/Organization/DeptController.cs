@@ -1,5 +1,3 @@
-using Fancyx.Admin.IService.Organization;
-using Fancyx.Admin.IService.Organization.Dtos;
 using Fancyx.Shared.WebApi.Attributes;
 using Fancyx.Logger;
 using Fancyx.Shared.Consts;
@@ -7,6 +5,8 @@ using Fancyx.Shared.Consts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Fancyx.Admin.Application.IService.Organization;
+using Fancyx.Admin.Application.IService.Organization.Dtos;
 
 namespace Fancyx.Admin.Controllers.Organization
 {
