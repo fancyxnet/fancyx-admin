@@ -5,9 +5,11 @@ using Fancyx.Erp.Application.Remote;
 using Fancyx.Internal.Grpc;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.WebApi;
+using Fancyx.Shared.WebApi.JsonConverters;
 using Fancyx.Shared.WebApi.Micro;
 using Fancyx.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 
@@ -21,6 +23,16 @@ namespace Fancyx.Erp
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
+            context.Services.Configure<JsonOptions>(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
+                options.JsonSerializerOptions.Converters.Add(new DateTimeNullableJsonConverter());
+                options.JsonSerializerOptions.Converters.Add(new StringJsonConverter());
+                options.JsonSerializerOptions.Converters.Add(new StringNullableJsonConverter());
+                options.JsonSerializerOptions.Converters.Add(new LongJsonConverter());
+                options.JsonSerializerOptions.Converters.Add(new LongNullableJsonConverter());
+            });
+
             context.Services.AddSwaggerGenPro("Fancyx Erp Api", c =>
             {
                 // 添加 JWT 认证支持到 Swagger

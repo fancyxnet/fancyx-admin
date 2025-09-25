@@ -29,10 +29,12 @@ namespace Fancyx.Admin
 
             services.Configure<JsonOptions>(options =>
             {
-                options.JsonSerializerOptions.Converters.Add(new DateTimeNullableJsonConverter());
                 options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
-                options.JsonSerializerOptions.Converters.Add(new StringNullableJsonConverter());
+                options.JsonSerializerOptions.Converters.Add(new DateTimeNullableJsonConverter());
                 options.JsonSerializerOptions.Converters.Add(new StringJsonConverter());
+                options.JsonSerializerOptions.Converters.Add(new StringNullableJsonConverter());
+                options.JsonSerializerOptions.Converters.Add(new LongJsonConverter());
+                options.JsonSerializerOptions.Converters.Add(new LongNullableJsonConverter());
             });
 
             //Swagger
