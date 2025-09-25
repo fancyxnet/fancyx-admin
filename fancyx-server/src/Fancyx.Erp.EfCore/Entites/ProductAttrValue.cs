@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fancyx.Erp.EfCore.Entites
 {
-    [Table("good_attr")]
+    [Table("product_attr_value")]
     [Index(nameof(Code), IsUnique = true)]
-    public class GoodAttr : FullAuditedEntity
+    public class ProductAttrValue : FullAuditedEntity
     {
         [Column("code")]
         public string Code { get; set; } = null!;
@@ -20,19 +20,7 @@ namespace Fancyx.Erp.EfCore.Entites
         [Column("is_enabled")]
         public bool IsEnabled { get; set; }
 
-        [Column("is_required")]
-        public bool IsRequired { get; set; }
-
-        /// <summary>
-        /// 多选/单选/手动录入
-        /// </summary>
-        [Column("input_type")]
-        public string InputType { get; set; } = null!;
-
-        /// <summary>
-        /// 指定分类/所有分类
-        /// </summary>
-        [Column("attr_type")]
-        public int AttrType { get; set; }
+        [Column("attr_id")]
+        public long AttrId { get; set; }
     }
 }

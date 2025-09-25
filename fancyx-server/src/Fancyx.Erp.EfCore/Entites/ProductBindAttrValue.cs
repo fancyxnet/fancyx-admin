@@ -2,11 +2,11 @@
 
 namespace Fancyx.Erp.EfCore.Entites
 {
-    [Table("good_bind_attr_value")]
-    public class GoodBindAttrValue
+    [Table("product_bind_attr_value")]
+    public class ProductBindAttrValue
     {
-        [Column("good_id")]
-        public long GoodId { get; set; }
+        [Column("product_id")]
+        public long ProductId { get; set; }
 
         [Column("attr_id")]
         public long AttrId { get; set; }

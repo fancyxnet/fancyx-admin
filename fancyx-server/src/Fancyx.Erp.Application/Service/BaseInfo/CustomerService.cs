@@ -30,6 +30,11 @@ namespace Fancyx.Erp.Application.Service.BaseInfo
             await _customerRepository.InsertAsync(entity);
         }
 
+        public Task DeleteCustomerAsync(long id)
+        {
+            return _customerRepository.DeleteAsync(x => x.Id == id);
+        }
+
         public async Task<PagedResult<CustomerListDto>> GetCustomerListAsync(CustomerQueryDto dto)
         {
             var resp = await _customerRepository.GetQueryable()
@@ -44,6 +49,23 @@ namespace Fancyx.Erp.Application.Service.BaseInfo
                     ContactPhone = x.ContactPhone
                 }).PagedAsync(dto.Current, dto.PageSize);
             return new PagedResult<CustomerListDto>(dto, resp.Total, resp.Items);
+        }
+
+        public async Task UpdateCustomerAsync(CustomerDto dto)
+        {
+            var entity = await _customerRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
+            var codeIsExist = await _customerRepository.AnyAsync(x => x.Code == dto.Code);
+            if (codeIsExist && entity.Code != dto.Code)
+            {
+                throw new BusinessException("客户编号已存在");
+            }
+            entity.Code = dto.Code;
+            entity.Name = dto.Name;
+            entity.Remark = dto.Remark;
+            entity.CodeSlim = dto.CodeSlim;
+            entity.ContactName = dto.ContactName;
+            entity.ContactPhone = dto.ContactPhone;
+            await _customerRepository.UpdateAsync(entity);
         }
     }
 }

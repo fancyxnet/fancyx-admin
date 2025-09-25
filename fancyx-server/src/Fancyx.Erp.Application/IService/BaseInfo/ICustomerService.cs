@@ -19,5 +19,8 @@ namespace Fancyx.Erp.Application.IService.BaseInfo
         /// <param name="dto"></param>
         /// <returns></returns>
         Task<PagedResult<CustomerListDto>> GetCustomerListAsync(CustomerQueryDto dto);
+
+        Task UpdateCustomerAsync(CustomerDto dto);
+        Task DeleteCustomerAsync(long id);
     }
 }
