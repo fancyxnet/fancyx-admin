@@ -64,6 +64,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Erp.Application", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.SnowflakeId", "libs\Fancyx.SnowflakeId\Fancyx.SnowflakeId.csproj", "{CBC29958-30CB-4239-8A5B-0461A7D21717}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancyx.Orleans", "libs\Fancyx.Orleans\Fancyx.Orleans.csproj", "{29BA6C70-1180-4697-8A18-DF4098215E53}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -158,6 +160,10 @@ Global
 		{CBC29958-30CB-4239-8A5B-0461A7D21717}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBC29958-30CB-4239-8A5B-0461A7D21717}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBC29958-30CB-4239-8A5B-0461A7D21717}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29BA6C70-1180-4697-8A18-DF4098215E53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29BA6C70-1180-4697-8A18-DF4098215E53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29BA6C70-1180-4697-8A18-DF4098215E53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29BA6C70-1180-4697-8A18-DF4098215E53}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -189,6 +195,7 @@ Global
 		{562F0819-D8BB-4502-860C-34C265726A8B} = {53850CC8-2EA9-42DE-8997-B3E31D4A843A}
 		{6A65DCC9-4245-436C-AD20-35B0131EE22E} = {7D2BD61A-F49D-47FF-87B2-E63CCAD9C875}
 		{CBC29958-30CB-4239-8A5B-0461A7D21717} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{29BA6C70-1180-4697-8A18-DF4098215E53} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {28315BFD-90E7-4E14-A2EA-F3D23AF4126F}
