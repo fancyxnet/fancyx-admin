@@ -14,13 +14,13 @@ namespace Fancyx.Admin.EfCore.Entities.System
         /// 用户ID
         /// </summary>
         [Column("user_id")]
-        public Guid UserId { get; set; }
+        public long UserId { get; set; }
 
         /// <summary>
         /// 角色ID
         /// </summary>
         [Column("role_id")]
-        public Guid RoleId { get; set; }
+        public long RoleId { get; set; }
 
         /// <summary>
         /// 租户ID

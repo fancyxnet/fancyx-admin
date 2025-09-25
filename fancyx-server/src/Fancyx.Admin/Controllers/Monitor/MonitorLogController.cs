@@ -52,7 +52,7 @@ namespace Fancyx.Admin.Controllers.Monitor
         /// <returns></returns>
         [HttpPost("HandleException")]
         [HasPermission("Monitor.ExceptionLog.HandleException")]
-        public async Task<AppResponse<bool>> HandleExceptionAsync(Guid exceptionId)
+        public async Task<AppResponse<bool>> HandleExceptionAsync(long exceptionId)
         {
             await _monitorLogService.HandleExceptionAsync(exceptionId);
             return Result.Ok();

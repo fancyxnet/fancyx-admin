@@ -73,7 +73,7 @@ namespace Fancyx.Admin.Application.Service.System
             return true;
         }
 
-        public async Task<bool> DeleteRoleAsync(Guid id)
+        public async Task<bool> DeleteRoleAsync(long id)
         {
             var hasUsers = await _userRoleRepository.AnyAsync(x => x.RoleId == id);
             if (hasUsers) throw new BusinessException(message: "角色已分配给用户，不能删除");
@@ -137,12 +137,12 @@ namespace Fancyx.Admin.Application.Service.System
             return true;
         }
 
-        public async Task<Guid[]> GetRoleMenuIdsAsync(Guid id)
+        public async Task<long[]> GetRoleMenuIdsAsync(long id)
         {
             return [.. await _roleMenuRepository.Where(x => x.RoleId == id).SelectToListAsync(x => x.MenuId)];
         }
 
-        public async Task<(RolePowerInfoDto, List<DeptTreeOptionDto>)> GetRoleDeptPowerInfoAsync(Guid roleId)
+        public async Task<(RolePowerInfoDto, List<DeptTreeOptionDto>)> GetRoleDeptPowerInfoAsync(long roleId)
         {
             var role = await _roleRepository.FindAsync(roleId);
             if (role == null) return (new RolePowerInfoDto(), []);
@@ -173,7 +173,7 @@ namespace Fancyx.Admin.Application.Service.System
 
             return (info, resultList);
 
-            List<DeptTreeOptionDto>? GetChildren(Guid itemId)
+            List<DeptTreeOptionDto>? GetChildren(long itemId)
             {
                 var subDeptList = allDept.Where(x => x.ParentId == itemId).ToList();
                 if (subDeptList.Count == 0) return null;

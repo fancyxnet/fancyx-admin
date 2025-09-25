@@ -2,7 +2,7 @@
 {
     public class DeptSimpleInfoDto
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// 部门编号

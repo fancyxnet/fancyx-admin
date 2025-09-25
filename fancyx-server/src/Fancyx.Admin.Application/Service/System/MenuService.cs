@@ -53,7 +53,7 @@ namespace Fancyx.Admin.Application.Service.System
             return true;
         }
 
-        public async Task<bool> DeleteMenusAsync(Guid[] ids)
+        public async Task<bool> DeleteMenusAsync(long[] ids)
         {
             var hasChildren =
                 await _menuRepository.AnyAsync(x => x.ParentId.HasValue && ids.Contains(x.ParentId.Value));
@@ -76,7 +76,7 @@ namespace Fancyx.Admin.Application.Service.System
                 .WhereIf(!string.IsNullOrEmpty(dto.Path),
                     x => !string.IsNullOrEmpty(x.Path) && x.Path.Contains(dto.Path!))
                 .ToListAsync();
-            var top = all.Where(x => isFilter || !x.ParentId.HasValue || x.ParentId == Guid.Empty).OrderBy(x => x.Sort)
+            var top = all.Where(x => isFilter || !x.ParentId.HasValue).OrderBy(x => x.Sort)
                 .ToList();
             var topMap = _mapper.Map<List<Menu>, List<MenuListDto>>(top);
             if (isFilter) return topMap;
@@ -85,7 +85,7 @@ namespace Fancyx.Admin.Application.Service.System
                 item.Children = getChildren(item.Id);
             }
 
-            List<MenuListDto>? getChildren(Guid currentId)
+            List<MenuListDto>? getChildren(long currentId)
             {
                 var children = all.Where(x => x.ParentId == currentId).OrderBy(x => x.Sort).ToList();
                 if (children.Count == 0) return null;
@@ -117,7 +117,7 @@ namespace Fancyx.Admin.Application.Service.System
                 return (keys, list);
             }
 
-            var top = all.Where(x => !x.ParentId.HasValue || x.ParentId == Guid.Empty && x.MenuType == MenuType.Menu)
+            var top = all.Where(x => !x.ParentId.HasValue && x.MenuType == MenuType.Menu)
                 .OrderBy(x => x.Sort).ToList();
             var topMap = new List<MenuOptionTreeDto>();
             foreach (var item in top)
@@ -131,7 +131,7 @@ namespace Fancyx.Admin.Application.Service.System
                 });
             }
 
-            List<MenuOptionTreeDto>? getChildren(Guid currentId)
+            List<MenuOptionTreeDto>? getChildren(long currentId)
             {
                 var children = all.Where(x => x.ParentId == currentId).OrderBy(x => x.Sort).ToList();
                 if (children.Count == 0) return null;

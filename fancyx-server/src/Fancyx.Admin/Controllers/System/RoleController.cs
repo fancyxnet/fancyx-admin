@@ -68,10 +68,10 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("delete/{id:Guid}")]
+        [HttpDelete("delete/{id:long}")]
         [HasPermission("Sys.Role.Delete")]
         [ApiAccessLog(operateName: "删除角色", operateType: [OperateType.Delete], reponseEnable: true)]
-        public async Task<AppResponse<bool>> DeleteRoleAsync(Guid id)
+        public async Task<AppResponse<bool>> DeleteRoleAsync(long id)
         {
             await _roleService.DeleteRoleAsync(id);
             return Result.Ok();
@@ -107,8 +107,8 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("menus/{id:Guid}")]
-        public async Task<AppResponse<Guid[]>> GetRoleMenuIdsAsync(Guid id)
+        [HttpGet("menus/{id:long}")]
+        public async Task<AppResponse<long[]>> GetRoleMenuIdsAsync(long id)
         {
             var data = await _roleService.GetRoleMenuIdsAsync(id);
             return Result.Data(data);
@@ -120,7 +120,7 @@ namespace Fancyx.Admin.Controllers.System
         /// <param name="roleId">角色ID</param>
         /// <returns></returns>
         [HttpGet("GetRoleDeptPowerInfo")]
-        public async Task<AppResponse<dynamic>> GetRoleDeptPowerInfoAsync(Guid roleId)
+        public async Task<AppResponse<dynamic>> GetRoleDeptPowerInfoAsync(long roleId)
         {
             var data = await _roleService.GetRoleDeptPowerInfoAsync(roleId);
             return Result.Data<dynamic>(new { powerInfo = data.Item1, deptOptions = data.Item2 });

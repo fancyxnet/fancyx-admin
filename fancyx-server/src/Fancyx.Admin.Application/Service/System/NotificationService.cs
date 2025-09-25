@@ -30,7 +30,7 @@ namespace Fancyx.Admin.Application.Service.System
             return _repository.InsertAsync(entity);
         }
 
-        public Task DeleteNotificationAsync(Guid[] ids)
+        public Task DeleteNotificationAsync(long[] ids)
         {
             return _repository.DeleteAsync(x => ids.Contains(x.Id));
         }

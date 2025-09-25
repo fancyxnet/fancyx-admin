@@ -6,10 +6,10 @@ namespace Fancyx.Erp.EfCore.Entites
     public class GoodBindAttrValue
     {
         [Column("good_id")]
-        public Guid GoodId { get; set; }
+        public long GoodId { get; set; }
 
         [Column("attr_id")]
-        public Guid AttrId { get; set; }
+        public long AttrId { get; set; }
 
         [Column("attr_value")]
         public string? AttrValue { get; set; }

@@ -12,6 +12,7 @@ using Fancyx.Redis;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.EfCore;
 using Fancyx.Shared.Keys;
+using Fancyx.SnowflakeId;
 using Fancyx.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -57,11 +58,11 @@ namespace Fancyx.Admin.Application.Service.Account
         /// <param name="sessionId">会话ID</param>
         /// <param name="otherClaims">其它证件单元</param>
         /// <returns></returns>
-        private async Task<(TokenResultDto tokenRes, string sessionId)> GenerateTokenAsync(Guid userId, string userName, string? sessionId = null, IEnumerable<Claim>? otherClaims = null)
+        private async Task<(TokenResultDto tokenRes, string sessionId)> GenerateTokenAsync(long userId, string userName, string? sessionId = null, IEnumerable<Claim>? otherClaims = null)
         {
             var time = DateTime.Now;
             var refreshToken = Guid.NewGuid().ToString("N").ToLower();
-            sessionId ??= SnowflakeHelper.Instance.NextId().ToString();
+            sessionId ??= IdGenerater.Instance.NextId().ToString();
             var claims = new List<Claim> {
                 new(ClaimTypes.NameIdentifier, userId.ToString()),
                 new(ClaimTypes.Name, userName),
@@ -225,7 +226,7 @@ namespace Fancyx.Admin.Application.Service.Account
 
             var all = await _menuRepository
                 .Where(x => permission.MenuIds.Contains(x.Id) && (x.MenuType == MenuType.Menu || x.MenuType == MenuType.Folder)).ToListAsync();
-            var top = all.Where(x => !x.ParentId.HasValue || x.ParentId == Guid.Empty).OrderBy(x => x.Sort).ToList();
+            var top = all.Where(x => !x.ParentId.HasValue).OrderBy(x => x.Sort).ToList();
             var topMap = new List<FrontendMenu>();
             foreach (var item in top)
             {

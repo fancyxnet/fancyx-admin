@@ -5,7 +5,7 @@ namespace Fancyx.Admin.Application.IService.Monitor.Dtos
 {
     public class ApiAccessLogListDto
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// 请求路径
@@ -40,7 +40,7 @@ namespace Fancyx.Admin.Application.IService.Monitor.Dtos
         /// <summary>
         /// 用户ID (可为空，未登录用户)
         /// </summary>
-        public Guid? UserId { get; set; }
+        public long? UserId { get; set; }
 
         /// <summary>
         /// 用户名

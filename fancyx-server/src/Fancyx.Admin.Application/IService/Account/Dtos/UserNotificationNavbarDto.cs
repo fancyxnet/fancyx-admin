@@ -9,7 +9,7 @@
 
     public class UserNotificationNavbarItemDto
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// 通知标题

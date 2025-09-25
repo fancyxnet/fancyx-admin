@@ -56,7 +56,7 @@ namespace Fancyx.Admin.EfCore.Entities.Organization
         /// 职位分组
         /// </summary>
         [Column("group_id")]
-        public Guid? GroupId { get; set; }
+        public long? GroupId { get; set; }
 
         /// <summary>
         /// 租户ID

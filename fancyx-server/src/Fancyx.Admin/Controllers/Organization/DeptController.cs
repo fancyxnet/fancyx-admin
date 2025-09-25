@@ -70,7 +70,7 @@ namespace Fancyx.Admin.Controllers.Organization
         [HttpDelete("delete/{id:guid}")]
         [HasPermission("Org.Dept.Delete")]
         [ApiAccessLog(operateName: "删除部门", operateType: [OperateType.Delete], reponseEnable: true)]
-        public async Task<AppResponse<bool>> DeleteDeptAsync(Guid id)
+        public async Task<AppResponse<bool>> DeleteDeptAsync(long id)
         {
             await _deptService.DeleteDeptAsync(id);
             return Result.Ok();

@@ -7,7 +7,7 @@ namespace Fancyx.Admin.Application.IService.Organization.Dtos
         /// <summary>
         /// 用户ID
         /// </summary>
-        public Guid? Id { get; set; }
+        public long? Id { get; set; }
 
         /// <summary>
         /// 部门名称
@@ -43,7 +43,7 @@ namespace Fancyx.Admin.Application.IService.Organization.Dtos
         /// <summary>
         /// 负责人
         /// </summary>
-        public Guid? CuratorId { get; set; }
+        public long? CuratorId { get; set; }
 
         /// <summary>
         /// 邮箱
@@ -60,6 +60,6 @@ namespace Fancyx.Admin.Application.IService.Organization.Dtos
         /// <summary>
         /// 父ID
         /// </summary>
-        public Guid? ParentId { get; set; }
+        public long? ParentId { get; set; }
     }
 }

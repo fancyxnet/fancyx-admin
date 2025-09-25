@@ -8,11 +8,11 @@ namespace Fancyx.Admin.Application.IService.System.Dtos
         /// 角色ID
         /// </summary>
         [Required]
-        public Guid RoleId { get; set; }
+        public long RoleId { get; set; }
 
         /// <summary>
         /// 菜单ID
         /// </summary>
-        public Guid[]? MenuIds { get; set; }
+        public long[]? MenuIds { get; set; }
     }
 }

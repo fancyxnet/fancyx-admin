@@ -2,7 +2,7 @@ namespace Fancyx.Admin.Application.IService.Organization.Dtos
 {
     public class PositionListDto
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// 职位编号
@@ -32,7 +32,7 @@ namespace Fancyx.Admin.Application.IService.Organization.Dtos
         /// <summary>
         /// 职位分组
         /// </summary>
-        public Guid? GroupId { get; set; }
+        public long? GroupId { get; set; }
 
         /// <summary>
         /// 层级分组名

@@ -11,6 +11,6 @@ namespace Fancyx.Admin.Application.IService.System
 
         Task UpdateTenantAsync(TenantDto dto);
 
-        Task DeleteTenantAsync(Guid id);
+        Task DeleteTenantAsync(long id);
     }
 }

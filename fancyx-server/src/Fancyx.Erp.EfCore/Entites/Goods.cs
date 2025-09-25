@@ -24,9 +24,9 @@ namespace Fancyx.Erp.EfCore.Entites
         public bool IsEnabled { get; set; }
 
         [Column("brand_id")]
-        public Guid BrandId { get; set; }
+        public long BrandId { get; set; }
 
         [Column("classify_id")]
-        public Guid ClassifyId { get; set; }
+        public long ClassifyId { get; set; }
     }
 }

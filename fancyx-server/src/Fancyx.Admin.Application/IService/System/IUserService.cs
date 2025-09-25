@@ -10,7 +10,7 @@ namespace Fancyx.Admin.Application.IService.System
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<Guid> AddUserAsync(UserDto dto);
+        Task<long> AddUserAsync(UserDto dto);
 
         /// <summary>
         /// 用户分页列表
@@ -24,7 +24,7 @@ namespace Fancyx.Admin.Application.IService.System
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<bool> DeleteUserAsync(Guid id);
+        Task<bool> DeleteUserAsync(long id);
 
         /// <summary>
         /// 分配角色
@@ -38,14 +38,14 @@ namespace Fancyx.Admin.Application.IService.System
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<bool> SwitchUserEnabledStatusAsync(Guid id);
+        Task<bool> SwitchUserEnabledStatusAsync(long id);
 
         /// <summary>
         /// 获取指定用户角色
         /// </summary>
         /// <param name="uid"></param>
         /// <returns></returns>
-        Task<Guid[]> GetUserRoleIdsAsync(Guid uid);
+        Task<long[]> GetUserRoleIdsAsync(long uid);
 
         /// <summary>
         /// 重置用户密码
@@ -80,6 +80,6 @@ namespace Fancyx.Admin.Application.IService.System
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<UserEditInfoDto> GetUserEditInfoAsync(Guid id); 
+        Task<UserEditInfoDto> GetUserEditInfoAsync(long id); 
     }
 }

@@ -42,7 +42,7 @@ namespace Fancyx.Admin.Application.Service.Monitor
             return new PagedResult<ExceptionLogListDto>(dto, resp.Total, _mapper.Map<List<ExceptionLog>, List<ExceptionLogListDto>>(resp.Items));
         }
 
-        public async Task HandleExceptionAsync(Guid exceptionId)
+        public async Task HandleExceptionAsync(long exceptionId)
         {
             var entity = await _exceptionLogRepository.FindAsync(exceptionId) ?? throw new EntityNotFoundException();
             entity.IsHandled = true;

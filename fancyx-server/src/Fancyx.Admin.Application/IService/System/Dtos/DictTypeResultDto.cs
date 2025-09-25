@@ -9,7 +9,7 @@ public class DictTypeResultDto
 
     [NotNull]
     [Required]
-    public Guid Id { get; set; }
+    public long Id { get; set; }
 
     [NotNull]
     [Required]

@@ -6,7 +6,7 @@ namespace Fancyx.Admin.Application.IService.Account
     {
         Task<PagedResult<UserNotificationListDto>> GetMyNotificationListAsync(UserNotificationQueryDto dto);
 
-        Task ReadedAsync(Guid[] ids);
+        Task ReadedAsync(long[] ids);
 
         Task<UserNotificationNavbarDto> GetMyNotificationNavbarInfoAsync();
     }

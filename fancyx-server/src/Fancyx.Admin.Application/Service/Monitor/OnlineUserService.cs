@@ -26,7 +26,7 @@ namespace Fancyx.Admin.Application.Service.Monitor
             var pattern = SystemCacheKey.AccessToken("*:*");
             if (!string.IsNullOrEmpty(dto.UserName))
             {
-                Guid? queryUserId = await _userRepository.Where(x => x.UserName == dto.UserName).ToOneAsync(x => x.Id);
+                long? queryUserId = await _userRepository.Where(x => x.UserName == dto.UserName).ToOneAsync(x => x.Id);
                 if (queryUserId.HasValue)
                 {
                     pattern = SystemCacheKey.AccessToken($"{queryUserId}:*");

@@ -8,7 +8,7 @@ namespace Fancyx.Admin.Application.IService.System.Dtos
         /// 用户ID
         /// </summary>
         [ExcelIgnore]
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// 用户名

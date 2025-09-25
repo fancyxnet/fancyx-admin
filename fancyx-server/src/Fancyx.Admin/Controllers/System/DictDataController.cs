@@ -67,7 +67,7 @@ namespace Fancyx.Admin.Controllers.System
         [HttpDelete("delete")]
         [HasPermission("Sys.DictData.Delete")]
         [ApiAccessLog(operateName: "删除字典数据", operateType: [OperateType.Delete], reponseEnable: true)]
-        public async Task<AppResponse<bool>> DeleteDictDataAsync([FromBody] Guid[] ids)
+        public async Task<AppResponse<bool>> DeleteDictDataAsync([FromBody] long[] ids)
         {
             await _dictService.DeleteDictDataAsync(ids);
             return Result.Ok();

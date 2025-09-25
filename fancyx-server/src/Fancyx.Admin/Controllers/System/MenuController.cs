@@ -72,7 +72,7 @@ namespace Fancyx.Admin.Controllers.System
         [HttpDelete("delete")]
         [HasPermission("Sys.Menu.Delete")]
         [ApiAccessLog(operateName: "删除菜单", operateType: [OperateType.Delete], reponseEnable: true)]
-        public async Task<AppResponse<bool>> DeleteMenusAsync([FromBody] Guid[] ids)
+        public async Task<AppResponse<bool>> DeleteMenusAsync([FromBody] long[] ids)
         {
             await _menuService.DeleteMenusAsync(ids);
             return Result.Ok();

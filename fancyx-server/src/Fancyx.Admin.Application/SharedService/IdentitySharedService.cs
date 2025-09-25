@@ -51,7 +51,7 @@ namespace Fancyx.Admin.Application.SharedService
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<UserPermission> GetUserPermissionAsync(Guid userId)
+        public async Task<UserPermission> GetUserPermissionAsync(long userId)
         {
             var key = SystemCacheKey.UserPermission(userId);
             if (await _hybridCache.ExistsAsync(key))
@@ -87,7 +87,7 @@ namespace Fancyx.Admin.Application.SharedService
         /// </summary>
         /// <param name="roleId"></param>
         /// <returns></returns>
-        public async Task DelUserPermissionCacheByRoleIdAsync(Guid roleId)
+        public async Task DelUserPermissionCacheByRoleIdAsync(long roleId)
         {
             var userRoles = await _userRoleRepository.Where(x => x.RoleId == roleId).ToListAsync();
             foreach (var item in userRoles)
@@ -101,7 +101,7 @@ namespace Fancyx.Admin.Application.SharedService
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public Task DelUserPermissionCacheByUserIdAsync(Guid userId)
+        public Task DelUserPermissionCacheByUserIdAsync(long userId)
         {
             return _hybridCache.RemoveAsync(SystemCacheKey.UserPermission(userId));
         }
@@ -170,7 +170,7 @@ namespace Fancyx.Admin.Application.SharedService
         /// 初始化用户部门数据权限
         /// </summary>
         /// <returns></returns>
-        public async Task<DeptPowerData?> GetUserDeptPowerAsync(Guid userId, Guid? curDeptId)
+        public async Task<DeptPowerData?> GetUserDeptPowerAsync(long userId, long? curDeptId)
         {
             var key = SystemCacheKey.UserDeptPower(userId);
             if (await _hybridCache.ExistsAsync(key)) return await _hybridCache.GetAsync<DeptPowerData>(key);
@@ -180,8 +180,8 @@ namespace Fancyx.Admin.Application.SharedService
             var powerTypes = await _roleRepository.Where(x => userPermission.RoleIds.Contains(x.Id)).Distinct().SelectToListAsync(x => x.DeptPowerType);
             if (powerTypes == null || powerTypes.Count == 0) return null;
 
-            var deptIds = new List<Guid>();
-            var userIds = new List<Guid>();
+            var deptIds = new List<long>();
+            var userIds = new List<long>();
             var isAll = powerTypes.Any(x => x == DeptPowerType.All);
             if (isAll)
             {

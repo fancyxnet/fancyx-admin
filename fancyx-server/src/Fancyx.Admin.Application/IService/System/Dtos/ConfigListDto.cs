@@ -4,7 +4,7 @@ namespace Fancyx.Admin.Application.IService.System.Dtos
 {
     public class ConfigListDto
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         public string? Name { get; set; }
 

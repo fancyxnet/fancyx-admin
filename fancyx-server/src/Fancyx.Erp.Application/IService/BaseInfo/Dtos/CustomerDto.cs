@@ -2,7 +2,7 @@
 {
     public class CustomerDto
     {
-        public virtual Guid? Id { get; set; }
+        public virtual long? Id { get; set; }
 
         /// <summary>
         /// 编号

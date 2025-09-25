@@ -2,7 +2,7 @@
 {
     public class UserPermission
     {
-        public Guid UserId { get; set; }
+        public long UserId { get; set; }
 
         /// <summary>
         /// 角色
@@ -17,12 +17,12 @@
         /// <summary>
         /// 角色ID
         /// </summary>
-        public Guid[]? RoleIds { get; set; }
+        public long[]? RoleIds { get; set; }
 
         /// <summary>
         /// 菜单ID
         /// </summary>
-        public Guid[]? MenuIds { get; set; }
+        public long[]? MenuIds { get; set; }
 
         /// <summary>
         /// 是否超级管理员

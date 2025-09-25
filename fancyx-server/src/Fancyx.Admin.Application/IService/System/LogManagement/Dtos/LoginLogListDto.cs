@@ -5,7 +5,7 @@ namespace Fancyx.Admin.Application.IService.System.LogManagement.Dtos
         /// <summary>
         /// 日志ID
         /// </summary>
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// 账号

@@ -52,7 +52,7 @@ namespace Fancyx.Admin.Application.Service.System
             return new PagedResult<ConfigListDto>(resp.Total, _mapper.Map<List<Config>, List<ConfigListDto>>(resp.Items));
         }
 
-        public async Task DeleteConfigAsync(Guid id)
+        public async Task DeleteConfigAsync(long id)
         {
             var entity = await _configRepository.FindAsync(id);
             if (entity == null)

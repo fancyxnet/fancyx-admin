@@ -10,6 +10,6 @@ namespace Fancyx.EfCore.BaseEntity
         [NotNull]
         [Required]
         [Column("id")]
-        public virtual Guid Id { get; set; }
+        public virtual long Id { get; set; }
     }
 }

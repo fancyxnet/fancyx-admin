@@ -9,7 +9,7 @@ namespace Fancyx.Admin.Application.IService.System.Dtos
         /// <summary>
         /// 用户ID
         /// </summary>
-        public Guid? Id { get; set; }
+        public long? Id { get; set; }
 
         /// <summary>
         /// 昵称
@@ -22,12 +22,12 @@ namespace Fancyx.Admin.Application.IService.System.Dtos
         /// <summary>
         /// 部门ID
         /// </summary>
-        public Guid? DeptId { get; set; }
+        public long? DeptId { get; set; }
 
         /// <summary>
         /// 岗位ID
         /// </summary>
-        public Guid? PostId { get; set; }
+        public long? PostId { get; set; }
 
         /// <summary>
         /// 性别

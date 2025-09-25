@@ -5,7 +5,7 @@ namespace Fancyx.Admin.Application.IService.System.Dtos
         /// <summary>
         /// 角色ID
         /// </summary>
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// 角色名

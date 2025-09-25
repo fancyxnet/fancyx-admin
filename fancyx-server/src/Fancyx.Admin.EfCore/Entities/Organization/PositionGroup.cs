@@ -33,7 +33,7 @@ namespace Fancyx.Admin.EfCore.Entities.Organization
         /// 父ID
         /// </summary>
         [Column("parent_id")]
-        public Guid? ParentId { get; set; }
+        public long? ParentId { get; set; }
 
         /// <summary>
         /// 树形路径

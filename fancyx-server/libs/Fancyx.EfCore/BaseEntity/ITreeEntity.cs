@@ -10,7 +10,7 @@ namespace Fancyx.EfCore.BaseEntity
         /// 父ID
         /// </summary>
         [Column("parent_id")]
-        Guid? ParentId { get; set; }
+        long? ParentId { get; set; }
 
         /// <summary>
         /// 树形路径

@@ -6,11 +6,11 @@ namespace Fancyx.Admin.Application.IService.System.Dtos
     public class AssignDataScopeDto
     {
         [Required]
-        public Guid RoleId { get; set; }
+        public long RoleId { get; set; }
 
         [Required]
         public DeptPowerType DeptPowerType { get; set; }
 
-        public Guid[]? DeptIds { get; set; }
+        public long[]? DeptIds { get; set; }
     }
 }

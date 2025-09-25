@@ -62,7 +62,7 @@ namespace Fancyx.Logger.Entities
         /// 用户ID
         /// </summary>
         [Column("user_id")]
-        public Guid? UserId { get; set; }
+        public long? UserId { get; set; }
 
         /// <summary>
         /// 用户名

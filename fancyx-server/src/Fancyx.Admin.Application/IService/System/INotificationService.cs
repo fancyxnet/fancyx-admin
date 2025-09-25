@@ -11,6 +11,6 @@ namespace Fancyx.Admin.Application.IService.System
 
         Task UpdateNotificationAsync(NotificationDto dto);
 
-        Task DeleteNotificationAsync(Guid[] ids);
+        Task DeleteNotificationAsync(long[] ids);
     }
 }

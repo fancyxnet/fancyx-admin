@@ -2,7 +2,7 @@
 {
     public class TaskExecutionLogListDto
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// 任务KEY

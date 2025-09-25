@@ -31,7 +31,7 @@ namespace Fancyx.Admin.Application.IService.Organization
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<bool> DeleteDeptAsync(Guid id);
+        Task<bool> DeleteDeptAsync(long id);
 
         /// <summary>
         /// 获取部门简单信息列表

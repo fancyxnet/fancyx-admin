@@ -32,7 +32,7 @@ namespace Fancyx.Admin.Application.Service.System
             await _tenantRepository.InsertAsync(entity);
         }
 
-        public async Task DeleteTenantAsync(Guid tenantId)
+        public async Task DeleteTenantAsync(long tenantId)
         {
             await _tenantRepository.DeleteAsync(x => x.Id == tenantId);
         }

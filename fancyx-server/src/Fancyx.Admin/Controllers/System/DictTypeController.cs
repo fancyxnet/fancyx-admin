@@ -93,7 +93,7 @@ public class DictTypeController : ControllerBase
     [HttpDelete]
     [HasPermission("Sys.DictType.Delete")]
     [ApiAccessLog(operateName: "批量删除字典类型", operateType: [OperateType.Delete], reponseEnable: true)]
-    public async Task<AppResponse<bool>> DeleteDictTypesAsync([FromBody] Guid[] ids)
+    public async Task<AppResponse<bool>> DeleteDictTypesAsync([FromBody] long[] ids)
     {
         await _dictTypeService.DeleteDictTypesAsync(ids);
         return Result.Ok();

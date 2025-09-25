@@ -5,7 +5,7 @@ namespace Fancyx.Shared.Models
         /// <summary>
         /// 菜单ID
         /// </summary>
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// 标题

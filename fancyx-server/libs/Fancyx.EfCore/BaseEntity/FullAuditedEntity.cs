@@ -8,12 +8,12 @@ namespace Fancyx.EfCore.BaseEntity
         public bool IsDeleted { get; set; } = false;
 
         [Column("deleter_id")]
-        public Guid? DeleterId { get; set; }
+        public long? DeleterId { get; set; }
 
         [Column("deletion_time")]
         public DateTime? DeletionTime { get; set; }
 
-        public void Delete(Guid deleterId)
+        public void Delete(long deleterId)
         {
             IsDeleted = true;
             DeleterId = deleterId;

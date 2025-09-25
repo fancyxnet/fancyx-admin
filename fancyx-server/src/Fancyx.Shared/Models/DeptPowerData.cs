@@ -2,7 +2,7 @@
 {
     public class DeptPowerData
     {
-        public List<Guid> DeptIds { get; set; } = null!;
-        public List<Guid> UserIds { get; set; } = null!;
+        public List<long> DeptIds { get; set; } = null!;
+        public List<long> UserIds { get; set; } = null!;
     }
 }

@@ -20,7 +20,7 @@ namespace Fancyx.Admin.EfCore.Entities.System
         [Required]
         [Column("id")]
         [DataPower(DataPower.UserId)]
-        public override Guid Id { get; set; }
+        public override long Id { get; set; }
 
         /// <summary>
         /// 用户名
@@ -99,12 +99,12 @@ namespace Fancyx.Admin.EfCore.Entities.System
         /// 部门ID
         /// </summary>
         [Column("dept_id")]
-        public Guid? DeptId { get; set; }
+        public long? DeptId { get; set; }
 
         /// <summary>
         /// 职位ID
         /// </summary>
         [Column("post_id")]
-        public Guid? PostId { get; set; }
+        public long? PostId { get; set; }
     }
 }

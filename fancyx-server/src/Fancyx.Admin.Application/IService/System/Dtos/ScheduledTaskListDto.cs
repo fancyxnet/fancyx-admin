@@ -2,7 +2,7 @@
 {
     public class ScheduledTaskListDto
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// 任务KEY（唯一标识）

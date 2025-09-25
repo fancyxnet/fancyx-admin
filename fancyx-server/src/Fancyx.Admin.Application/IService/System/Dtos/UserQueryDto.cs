@@ -4,6 +4,6 @@ namespace Fancyx.Admin.Application.IService.System.Dtos
     {
         public string? UserName { get; set; }
 
-        public Guid? DeptId { get; set; }
+        public long? DeptId { get; set; }
     }
 }

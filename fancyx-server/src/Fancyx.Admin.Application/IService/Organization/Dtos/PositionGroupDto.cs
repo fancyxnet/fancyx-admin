@@ -7,12 +7,12 @@ namespace Fancyx.Admin.Application.IService.Organization.Dtos
         /// <summary>
         /// ID
         /// </summary>
-        public Guid? Id { get; set; }
+        public long? Id { get; set; }
 
         /// <summary>
         /// 上级分组ID
         /// </summary>
-        public Guid? ParentId { get; set; }
+        public long? ParentId { get; set; }
 
         /// <summary>
         /// 分组名称

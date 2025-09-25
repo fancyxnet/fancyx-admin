@@ -4,7 +4,7 @@ namespace Fancyx.Admin.Application.IService.System.LogManagement.Dtos
 {
     public class BusinessLogListDto
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// 日志类型
@@ -46,7 +46,7 @@ namespace Fancyx.Admin.Application.IService.System.LogManagement.Dtos
         /// <summary>
         /// 用户ID
         /// </summary>
-        public Guid? UserId { get; set; }
+        public long? UserId { get; set; }
 
         /// <summary>
         /// 用户名

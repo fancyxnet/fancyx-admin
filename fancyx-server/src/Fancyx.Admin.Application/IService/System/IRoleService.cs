@@ -31,7 +31,7 @@ namespace Fancyx.Admin.Application.IService.System
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<bool> DeleteRoleAsync(Guid id);
+        Task<bool> DeleteRoleAsync(long id);
 
         /// <summary>
         /// 分配菜单
@@ -51,14 +51,14 @@ namespace Fancyx.Admin.Application.IService.System
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<Guid[]> GetRoleMenuIdsAsync(Guid id);
+        Task<long[]> GetRoleMenuIdsAsync(long id);
 
         /// <summary>
         /// 获取角色部门权限编码
         /// </summary>
         /// <param name="roleId">角色ID</param>
         /// <returns></returns>
-        Task<(RolePowerInfoDto, List<DeptTreeOptionDto>)> GetRoleDeptPowerInfoAsync(Guid roleId);
+        Task<(RolePowerInfoDto, List<DeptTreeOptionDto>)> GetRoleDeptPowerInfoAsync(long roleId);
 
         /// <summary>
         /// 分配角色数据权限

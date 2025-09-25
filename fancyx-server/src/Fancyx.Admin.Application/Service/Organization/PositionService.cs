@@ -26,7 +26,7 @@ namespace Fancyx.Admin.Application.Service.Organization
             _mapper = mapper;
         }
 
-        private async Task<List<PosistionLayerNames>> GetPosistionGroupNameAsync(List<Guid> ids)
+        private async Task<List<PosistionLayerNames>> GetPosistionGroupNameAsync(List<long> ids)
         {
             var positions = await _positionRepository.Where(x => ids.Contains(x.Id)).SelectToListAsync(x => new { x.Id, x.GroupId });
             var groups = await _positionGroupRepository.GetListAsync(x => true);
@@ -65,7 +65,7 @@ namespace Fancyx.Admin.Application.Service.Organization
             return true;
         }
 
-        public async Task<bool> DeletePositionAsync(Guid id)
+        public async Task<bool> DeletePositionAsync(long id)
         {
             var hasEmployees = await _userRepository.AnyAsync(x => x.PostId == id);
             if (hasEmployees) throw new BusinessException(message: "职位正在使用，不能删除");

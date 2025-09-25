@@ -5,7 +5,7 @@ namespace Fancyx.Admin.Application.IService.System.Dtos
 {
     public class ScheduledTaskDto
     {
-        public Guid? Id { get; set; }
+        public long? Id { get; set; }
 
         /// <summary>
         /// 任务KEY（唯一标识）

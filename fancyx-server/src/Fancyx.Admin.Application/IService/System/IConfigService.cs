@@ -11,6 +11,6 @@ namespace Fancyx.Admin.Application.IService.System
 
         Task UpdateConfigAsync(ConfigDto dto);
 
-        Task DeleteConfigAsync(Guid id);
+        Task DeleteConfigAsync(long id);
     }
 }

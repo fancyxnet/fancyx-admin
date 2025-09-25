@@ -2,6 +2,7 @@
 using Fancyx.Core.Authorization;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore.BaseEntity;
+using Fancyx.SnowflakeId;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -91,6 +92,13 @@ namespace Fancyx.EfCore
                         if (entity is ITenant entityWithTenant)
                         {
                             entityWithTenant.TenantId ??= TenantManager.Current;
+                        }
+                        if (entity is Entity baseEntity)
+                        {
+                            if (baseEntity.Id == default)
+                            {
+                                baseEntity.Id = IdGenerater.Instance.NextId();
+                            }
                         }
                         break;
 

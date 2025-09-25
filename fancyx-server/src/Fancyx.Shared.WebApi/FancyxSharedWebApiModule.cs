@@ -3,7 +3,7 @@ using Fancyx.Core.Context;
 using Fancyx.Redis;
 using Fancyx.Shared.WebApi.Filters;
 using Fancyx.Shared.WebApi.Handlers;
-using Fancyx.Utils;
+using Fancyx.SnowflakeId;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +27,7 @@ namespace Fancyx.Shared.WebApi
             context.Services.AddSingleton<PermissionCacheHandler>();
             context.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CommonAuthorizationMiddlewareResultHandler>();
 
-            SnowflakeHelper.Init(short.Parse(context.Configuration["Snowflake:WorkerId"]!), short.Parse(context.Configuration["Snowflake:DataCenterId"]!));
+            IdGenerater.Init(short.Parse(context.Configuration["Snowflake:WorkerId"]!), short.Parse(context.Configuration["Snowflake:DataCenterId"]!));
         }
 
         public override void Configure(ApplicationInitializationContext context)

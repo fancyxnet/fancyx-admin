@@ -60,7 +60,7 @@ namespace Fancyx.Admin.EfCore.Entities.System
         /// 父级ID
         /// </summary>
         [Column("parent_id")]
-        public Guid? ParentId { get; set; }
+        public long? ParentId { get; set; }
 
         /// <summary>
         /// 排序

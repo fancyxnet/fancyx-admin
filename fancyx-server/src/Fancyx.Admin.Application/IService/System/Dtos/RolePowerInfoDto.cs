@@ -7,7 +7,7 @@ namespace Fancyx.Admin.Application.IService.System.Dtos
         /// <summary>
         /// 指定的部门ID
         /// </summary>
-        public List<Guid>? DeptIds { get; set; }
+        public List<long>? DeptIds { get; set; }
 
         /// <summary>
         /// 部门权限类型
@@ -17,6 +17,6 @@ namespace Fancyx.Admin.Application.IService.System.Dtos
         /// <summary>
         /// 所有部门ID
         /// </summary>
-        public List<Guid>? AllDeptIds { get; set; }
+        public List<long>? AllDeptIds { get; set; }
     }
 }

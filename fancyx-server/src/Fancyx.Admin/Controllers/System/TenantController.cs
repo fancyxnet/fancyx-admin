@@ -64,10 +64,10 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("Delete/{id:Guid}")]
+        [HttpDelete("Delete/{id:long}")]
         [HasPermission("Sys.Tenant.Delete")]
         [ApiAccessLog(operateName: "删除租户", operateType: [OperateType.Delete], reponseEnable: true)]
-        public async Task<AppResponse<bool>> DeleteTenantAsync(Guid id)
+        public async Task<AppResponse<bool>> DeleteTenantAsync(long id)
         {
             await tenantService.DeleteTenantAsync(id);
             return Result.Ok();

@@ -54,7 +54,7 @@ namespace Fancyx.Admin.Controllers.System
         [HttpDelete("Delete/{id}")]
         [HasPermission("Sys.Config.Delete")]
         [ApiAccessLog(operateName: "删除配置", operateType: [OperateType.Delete], reponseEnable: true)]
-        public async Task<AppResponse<bool>> DeleteConfigAsync(Guid id)
+        public async Task<AppResponse<bool>> DeleteConfigAsync(long id)
         {
             await _configService.DeleteConfigAsync(id);
             return Result.Data(true);

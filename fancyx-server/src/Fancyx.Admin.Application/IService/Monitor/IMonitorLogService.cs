@@ -23,6 +23,6 @@ namespace Fancyx.Admin.Application.IService.Monitor
         /// </summary>
         /// <param name="exceptionId">异常日志ID</param>
         /// <returns></returns>
-        Task HandleExceptionAsync(Guid exceptionId);
+        Task HandleExceptionAsync(long exceptionId);
     }
 }

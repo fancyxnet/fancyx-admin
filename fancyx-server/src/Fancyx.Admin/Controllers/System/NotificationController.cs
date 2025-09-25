@@ -45,7 +45,7 @@ namespace Fancyx.Admin.Controllers.System
 
         [HttpDelete("BatchDelete")]
         [HasPermission("Sys.Notification.Delete")]
-        public async Task<AppResponse<bool>> DeleteNotificationAsync([FromBody] Guid[] ids)
+        public async Task<AppResponse<bool>> DeleteNotificationAsync([FromBody] long[] ids)
         {
             await notificationService.DeleteNotificationAsync(ids);
             return Result.Ok();

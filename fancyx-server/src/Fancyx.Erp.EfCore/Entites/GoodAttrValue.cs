@@ -21,6 +21,6 @@ namespace Fancyx.Erp.EfCore.Entites
         public bool IsEnabled { get; set; }
 
         [Column("attr_id")]
-        public Guid AttrId { get; set; }
+        public long AttrId { get; set; }
     }
 }

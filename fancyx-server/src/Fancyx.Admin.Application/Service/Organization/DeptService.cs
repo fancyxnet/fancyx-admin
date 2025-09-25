@@ -42,7 +42,7 @@ namespace Fancyx.Admin.Application.Service.Organization
             return true;
         }
 
-        public async Task<bool> DeleteDeptAsync(Guid id)
+        public async Task<bool> DeleteDeptAsync(long id)
         {
             var hasChildren = await _deptRepository.AnyAsync(x => x.ParentId == id);
             if (hasChildren)
@@ -73,7 +73,7 @@ namespace Fancyx.Admin.Application.Service.Organization
 
             var allNodes = await _deptRepository.GetQueryable().PowerFilter(_currentUser).OrderBy(x => x.TreePath).ToDictionaryAsync(k => k.Id);
             var tree = new List<DeptListDto>();
-            var nodeDtos = new Dictionary<Guid, DeptListDto>();
+            var nodeDtos = new Dictionary<long, DeptListDto>();
             var endDtos = new List<DeptListDto>();
 
             foreach (var node in allNodes.Values)
@@ -147,7 +147,7 @@ namespace Fancyx.Admin.Application.Service.Organization
                 .SelectToListAsync(x => new { x.Id, x.Name, x.Code, x.ParentId, x.Sort, x.CreationTime, x.TreeLevel });
             var list = new List<DeptSimpleInfoDto>();
             //顶级部门放前面
-            var topDepts = depts.Where(x => !x.ParentId.HasValue || x.ParentId == Guid.Empty).OrderBy(x => x.TreeLevel)
+            var topDepts = depts.Where(x => !x.ParentId.HasValue).OrderBy(x => x.TreeLevel)
                 .ThenBy(x => x.Sort).ThenBy(x => x.CreationTime).ToList();
             topDepts.ForEach(x => { list.Add(new DeptSimpleInfoDto { Id = x.Id, Name = x.Name, Code = x.Code }); });
             //子部门放后面

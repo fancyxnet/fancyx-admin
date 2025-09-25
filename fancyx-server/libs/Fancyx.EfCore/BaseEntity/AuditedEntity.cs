@@ -10,6 +10,6 @@ namespace Fancyx.EfCore.BaseEntity
 
         [AllowNull]
         [Column("last_modifier_id")]
-        public Guid? LastModifierId { get; set; }
+        public long? LastModifierId { get; set; }
     }
 }

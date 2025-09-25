@@ -2,7 +2,7 @@
 {
     public class NotificationResultDto
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// 通知标题
@@ -17,7 +17,7 @@
         /// <summary>
         /// 通知用户
         /// </summary>
-        public Guid UserId { get; set; }
+        public long UserId { get; set; }
 
         /// <summary>
         /// 是否已读(1已读0未读)

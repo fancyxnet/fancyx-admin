@@ -7,7 +7,7 @@ namespace Fancyx.Admin.Application.IService.System.Dtos
         /// <summary>
         /// 菜单ID
         /// </summary>
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// 显示标题/名称
@@ -38,7 +38,7 @@ namespace Fancyx.Admin.Application.IService.System.Dtos
         /// <summary>
         /// 父级ID
         /// </summary>
-        public Guid? ParentId { get; set; }
+        public long? ParentId { get; set; }
 
         /// <summary>
         /// 排序

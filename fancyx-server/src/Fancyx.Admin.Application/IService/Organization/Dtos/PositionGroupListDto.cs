@@ -5,7 +5,7 @@ namespace Fancyx.Admin.Application.IService.Organization.Dtos
         /// <summary>
         /// 数据ID
         /// </summary>
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// 分组名
@@ -20,7 +20,7 @@ namespace Fancyx.Admin.Application.IService.Organization.Dtos
         /// <summary>
         /// 父ID
         /// </summary>
-        public Guid? ParentId { get; set; }
+        public long? ParentId { get; set; }
 
         /// <summary>
         /// 树形路径

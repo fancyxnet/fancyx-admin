@@ -50,7 +50,7 @@ namespace Fancyx.Logger.Entities
         /// 用户ID (可为空，未登录用户)
         /// </summary>
         [Column("user_id")]
-        public Guid? UserId { get; set; }
+        public long? UserId { get; set; }
 
         /// <summary>
         /// 用户名

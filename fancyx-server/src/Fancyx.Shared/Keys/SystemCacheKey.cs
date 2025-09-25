@@ -25,10 +25,10 @@
         /// <summary>
         /// 访问令牌
         /// </summary>
-        /// <param name="userId">用户ID(Guid)</param>
+        /// <param name="userId">用户ID(long)</param>
         /// <param name="sessionId">会话ID</param>
         /// <returns></returns>
-        public static string AccessToken(Guid userId, string sessionId) => WithTenantPrefix($"access_token:{userId}:{sessionId}");
+        public static string AccessToken(long userId, string sessionId) => WithTenantPrefix($"access_token:{userId}:{sessionId}");
 
         /// <summary>
         /// 访问令牌
@@ -51,7 +51,7 @@
         /// <param name="userId">用户ID</param>
         /// <param name="sessionId">会话ID</param>
         /// <returns></returns>
-        public static string RefreshToken(Guid userId, string sessionId) => WithTenantPrefix($"refresh_token:{userId}:{sessionId}");
+        public static string RefreshToken(long userId, string sessionId) => WithTenantPrefix($"refresh_token:{userId}:{sessionId}");
 
         /// <summary>
         /// 刷新令牌
@@ -65,7 +65,7 @@
         /// </summary>
         /// <param name="userId">用户ID</param>
         /// <returns></returns>
-        public static string UserPermission(Guid userId) => WithTenantPrefix($"user_permission:{userId}");
+        public static string UserPermission(long userId) => WithTenantPrefix($"user_permission:{userId}");
 
         /// <summary>
         /// 用户权限信息
@@ -79,7 +79,7 @@
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public static string UserSessionId(Guid userId) => WithTenantPrefix($"user_session:{userId}");
+        public static string UserSessionId(long userId) => WithTenantPrefix($"user_session:{userId}");
 
         /// <summary>
         /// 登录验证码
@@ -93,6 +93,6 @@
         /// </summary>
         /// <param name="UserId"></param>
         /// <returns></returns>
-        public static string UserDeptPower(Guid UserId) => WithTenantPrefix($"user_dept_power:{UserId}");
+        public static string UserDeptPower(long UserId) => WithTenantPrefix($"user_dept_power:{UserId}");
     }
 }

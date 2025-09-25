@@ -4,7 +4,7 @@ namespace Fancyx.Admin.Application.IService.Monitor.Dtos
 {
     public class ExceptionLogListDto
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// 异常类型
@@ -39,7 +39,7 @@ namespace Fancyx.Admin.Application.IService.Monitor.Dtos
         /// <summary>
         /// 用户ID
         /// </summary>
-        public Guid? UserId { get; set; }
+        public long? UserId { get; set; }
 
         /// <summary>
         /// 用户名

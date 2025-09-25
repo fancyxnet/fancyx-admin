@@ -4,7 +4,7 @@ namespace Fancyx.Core.Interfaces
 {
     public interface ICurrentUser
     {
-        Guid? Id { get; }
+        long? Id { get; }
 
         string? UserName { get; }
 

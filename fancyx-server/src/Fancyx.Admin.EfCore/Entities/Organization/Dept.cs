@@ -20,7 +20,7 @@ namespace Fancyx.Admin.EfCore.Entities.Organization
         [Required]
         [Column("id")]
         [DataPower(DataPower.DeptId)]
-        public override Guid Id { get; set; }
+        public override long Id { get; set; }
 
         /// <summary>
         /// 部门编号
@@ -63,7 +63,7 @@ namespace Fancyx.Admin.EfCore.Entities.Organization
         /// 负责人
         /// </summary>
         [Column("curator_id")]
-        public Guid? CuratorId { get; set; }
+        public long? CuratorId { get; set; }
 
         /// <summary>
         /// 邮箱
@@ -83,7 +83,7 @@ namespace Fancyx.Admin.EfCore.Entities.Organization
         /// 父ID
         /// </summary>
         [Column("parent_id")]
-        public Guid? ParentId { get; set; }
+        public long? ParentId { get; set; }
 
         /// <summary>
         /// 树形路径

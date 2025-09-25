@@ -20,6 +20,6 @@ namespace Fancyx.Admin.Application.IService.Organization.Dtos
         /// <summary>
         /// 职位分组
         /// </summary>
-        public Guid? GroupId { get; set; }
+        public long? GroupId { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace Fancyx.Admin.Application.IService.System.Dtos
         /// 用户ID
         /// </summary>
         [Required]
-        public Guid UserId { get; set; }
+        public long UserId { get; set; }
 
         /// <summary>
         /// 密码

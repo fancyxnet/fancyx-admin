@@ -39,7 +39,7 @@ namespace Fancyx.Admin.Application.Service.System
             _mapper = mapper;
         }
 
-        public async Task<Guid> AddUserAsync(UserDto dto)
+        public async Task<long> AddUserAsync(UserDto dto)
         {
             var userNameIsExist = await _userRepository.AnyAsync(x => x.UserName.ToLower() == dto.UserName.ToLower());
             if (userNameIsExist)
@@ -56,7 +56,6 @@ namespace Fancyx.Admin.Application.Service.System
             }
             var user = new User
             {
-                Id = Guid.NewGuid(),
                 UserName = dto.UserName,
                 PasswordSalt = EncryptionUtils.GetPasswordSalt(),
                 Avatar = dto.Avatar,
@@ -99,7 +98,7 @@ namespace Fancyx.Admin.Application.Service.System
             return true;
         }
 
-        public async Task<bool> DeleteUserAsync(Guid id)
+        public async Task<bool> DeleteUserAsync(long id)
         {
             if (_currentUser.Id == id)
             {
@@ -134,12 +133,12 @@ namespace Fancyx.Admin.Application.Service.System
             return new PagedResult<UserListDto>(resp.Total, resp.Items);
         }
 
-        public async Task<Guid[]> GetUserRoleIdsAsync(Guid uid)
+        public async Task<long[]> GetUserRoleIdsAsync(long uid)
         {
             return [.. await _userRoleRepository.Where(x => x.UserId == uid).SelectToListAsync(x => x.RoleId)];
         }
 
-        public async Task<bool> SwitchUserEnabledStatusAsync(Guid id)
+        public async Task<bool> SwitchUserEnabledStatusAsync(long id)
         {
             var entity = await _userRepository.Where(x => x.Id == id).FirstAsync()
                 ?? throw new BusinessException("数据不存在");
@@ -206,7 +205,7 @@ namespace Fancyx.Admin.Application.Service.System
             await _userRepository.UpdateAsync(user);
         }
 
-        public async Task<UserEditInfoDto> GetUserEditInfoAsync(Guid id)
+        public async Task<UserEditInfoDto> GetUserEditInfoAsync(long id)
         {
             var user = await _userRepository.FindAsync(id) ?? throw new EntityNotFoundException();
             return _mapper.Map<User, UserEditInfoDto>(user);

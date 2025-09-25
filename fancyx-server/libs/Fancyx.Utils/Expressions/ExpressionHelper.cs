@@ -5,7 +5,7 @@ namespace Fancyx.Utils.Expressions
     public static class ExpressionHelper
     {
         /// <summary>
-        /// 将表达式属性转换为字符串表达式，支持Guid转换
+        /// 将表达式属性转换为字符串表达式，支持long转换
         /// </summary>
         public static Expression ConvertPropertyToString(Expression propertyExpression)
         {
@@ -14,15 +14,15 @@ namespace Fancyx.Utils.Expressions
                 return propertyExpression;
             }
 
-            // Guid类型
-            if (propertyExpression.Type == typeof(Guid))
+            // long类型
+            if (propertyExpression.Type == typeof(long))
             {
-                var toStringMethod = typeof(Guid).GetMethod("ToString", new Type[0]);
+                var toStringMethod = typeof(long).GetMethod("ToString", new Type[0]);
                 return Expression.Call(propertyExpression, toStringMethod!);
             }
 
-            // Nullable<Guid>类型
-            if (propertyExpression.Type == typeof(Guid?))
+            // Nullable<long>类型
+            if (propertyExpression.Type == typeof(long?))
             {
                 return ConvertNullableGuidToString(propertyExpression);
             }
@@ -33,17 +33,17 @@ namespace Fancyx.Utils.Expressions
         }
 
         /// <summary>
-        /// 处理Nullable<Guid>到字符串的转换
+        /// 处理Nullable<long>到字符串的转换
         /// </summary>
         private static Expression ConvertNullableGuidToString(Expression propertyExpression)
         {
-            var valueProperty = typeof(Guid?).GetProperty("Value");
-            var hasValueProperty = typeof(Guid?).GetProperty("HasValue");
+            var valueProperty = typeof(long?).GetProperty("Value");
+            var hasValueProperty = typeof(long?).GetProperty("HasValue");
 
             var hasValueExpr = Expression.Property(propertyExpression, hasValueProperty!);
             var valueExpr = Expression.Property(propertyExpression, valueProperty!);
 
-            var toStringMethod = typeof(Guid).GetMethod("ToString", new Type[0]);
+            var toStringMethod = typeof(long).GetMethod("ToString", new Type[0]);
             var toStringExpr = Expression.Call(valueExpr, toStringMethod!);
 
             // 三元表达式：HasValue ? Value.ToString() : null

@@ -1,9 +1,8 @@
 ﻿using System.Linq.Expressions;
-using System.Reflection;
 
 using Fancyx.EfCore.BaseEntity;
 using Fancyx.EfCore.Models;
-
+using Fancyx.SnowflakeId;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.EfCore
@@ -27,7 +26,7 @@ namespace Fancyx.EfCore
             return await query.Select(selector).ToListAsync();
         }
 
-        public static Task SoftDeleteAsync<TEntity>(this IQueryable<TEntity> entities, Guid? userId) where TEntity : FullAuditedEntity
+        public static Task SoftDeleteAsync<TEntity>(this IQueryable<TEntity> entities, long? userId) where TEntity : FullAuditedEntity
         {
             return entities.ExecuteUpdateAsync(e => e.SetProperty(s => s.IsDeleted, true)
                 .SetProperty(s => s.DeletionTime, DateTime.Now)
@@ -38,7 +37,7 @@ namespace Fancyx.EfCore
         {
             if (entity.Id == default)
             {
-                entity.Id = Guid.NewGuid();
+                entity.Id = IdGenerater.Instance.NextId();
             }
             if (parent != null)
             {

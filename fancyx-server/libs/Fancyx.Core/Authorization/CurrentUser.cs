@@ -7,15 +7,15 @@ namespace Fancyx.Core.Authorization
 {
     public class CurrentUser : ICurrentUser
     {
-        public Guid? Id => _id;
+        public long? Id => _id;
 
         public string? UserName => _userName;
 
-        private readonly Guid? _id;
+        private readonly long? _id;
         private readonly string? _userName;
         private readonly IEnumerable<Claim>? _claims;
 
-        public CurrentUser(Guid? id, string? userName, IEnumerable<Claim>? claims)
+        public CurrentUser(long? id, string? userName, IEnumerable<Claim>? claims)
         {
             _id = id;
             _userName = userName;

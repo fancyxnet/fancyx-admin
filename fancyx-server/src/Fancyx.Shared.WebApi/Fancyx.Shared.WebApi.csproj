@@ -12,9 +12,10 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\libs\Fancyx.Core\Fancyx.Core.csproj" />
-		<ProjectReference Include="..\..\libs\Fancyx.Utils\Fancyx.Utils.csproj" />
 		<ProjectReference Include="..\..\libs\Fancyx.Redis\Fancyx.Redis.csproj" />
 		<ProjectReference Include="..\..\libs\Fancyx.Consul\Fancyx.Consul.csproj" />
+		<ProjectReference Include="..\..\libs\Fancyx.SnowflakeId\Fancyx.SnowflakeId.csproj" />
+		<ProjectReference Include="..\..\libs\Fancyx.Utils\Fancyx.Utils.csproj" />
 		<ProjectReference Include="..\Fancyx.Shared\Fancyx.Shared.csproj" />
 	</ItemGroup>
 

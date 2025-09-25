@@ -2,7 +2,7 @@
 {
     public class DeptTreeOptionDto
     {
-        public Guid Key { get; set; }
+        public long Key { get; set; }
 
         public string? Title { get; set; }
         

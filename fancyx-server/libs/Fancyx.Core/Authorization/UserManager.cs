@@ -2,16 +2,16 @@
 {
     public class UserManager
     {
-        private static AsyncLocal<Guid> asyncLocal = null!;
+        private static AsyncLocal<long> asyncLocal = null!;
 
-        public static Guid? Current
+        public static long? Current
         {
             get => asyncLocal?.Value;
         }
 
-        public static void SetCurrent(Guid userId)
+        public static void SetCurrent(long userId)
         {
-            asyncLocal ??= new AsyncLocal<Guid>();
+            asyncLocal ??= new AsyncLocal<long>();
             asyncLocal.Value = userId;
         }
     }

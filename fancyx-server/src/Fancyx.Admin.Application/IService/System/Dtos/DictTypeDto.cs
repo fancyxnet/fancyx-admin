@@ -14,7 +14,7 @@ public class DictTypeDto
     /// <summary>
     /// 主键ID
     /// </summary>
-    public Guid? Id { get; set; }
+    public long? Id { get; set; }
 
     /// <summary>
     /// 是否开启

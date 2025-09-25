@@ -8,6 +8,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Fancyx.Core\Fancyx.Core.csproj" />
+		<ProjectReference Include="..\Fancyx.SnowflakeId\Fancyx.SnowflakeId.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Fancyx.Assemblies" Version="1.0.0" />

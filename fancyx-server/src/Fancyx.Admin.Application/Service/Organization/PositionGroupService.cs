@@ -30,7 +30,7 @@ namespace Fancyx.Admin.Application.Service.Organization
             return true;
         }
 
-        public async Task<bool> DeletePositionGroupAsync(Guid id)
+        public async Task<bool> DeletePositionGroupAsync(long id)
         {
             var hasChildren = await _positionGroupRepository.AnyAsync(x => x.ParentId == id);
             if (hasChildren)
@@ -56,7 +56,7 @@ namespace Fancyx.Admin.Application.Service.Organization
                 .ToDictionaryAsync(k => k.Id);
 
             var tree = new List<PositionGroupListDto>();
-            var nodeDtos = new Dictionary<Guid, PositionGroupListDto>();
+            var nodeDtos = new Dictionary<long, PositionGroupListDto>();
             var endDtos = new List<PositionGroupListDto>();
 
             foreach (var node in allNodes.Values)

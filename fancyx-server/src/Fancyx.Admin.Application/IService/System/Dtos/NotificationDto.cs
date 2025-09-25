@@ -5,7 +5,7 @@ namespace Fancyx.Admin.Application.IService.System.Dtos
 {
     public class NotificationDto
     {
-        public Guid? Id { get; set; }
+        public long? Id { get; set; }
 
         /// <summary>
         /// 通知标题
@@ -26,6 +26,6 @@ namespace Fancyx.Admin.Application.IService.System.Dtos
         /// </summary>
         [NotNull]
         [Required]
-        public Guid UserId { get; set; }
+        public long UserId { get; set; }
     }
 }

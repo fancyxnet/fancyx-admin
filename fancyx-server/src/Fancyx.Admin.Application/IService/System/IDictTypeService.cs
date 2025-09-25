@@ -15,6 +15,6 @@ namespace Fancyx.Admin.Application.IService.System
 
         Task<List<AppOption>> GetDictDataOptionsAsync(string type);
 
-        Task DeleteDictTypesAsync(Guid[] ids);
+        Task DeleteDictTypesAsync(long[] ids);
     }
 }

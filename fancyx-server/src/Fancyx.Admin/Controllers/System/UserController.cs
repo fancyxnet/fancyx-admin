@@ -59,9 +59,9 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("delete/{id:Guid}")]
+        [HttpDelete("delete/{id:long}")]
         [HasPermission("Sys.User.Delete")]
-        public async Task<AppResponse<bool>> DeleteUserAsync(Guid id)
+        public async Task<AppResponse<bool>> DeleteUserAsync(long id)
         {
             await _userService.DeleteUserAsync(id);
             return Result.Ok();
@@ -86,10 +86,10 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpPut("changeEnabled/{id:Guid}")]
+        [HttpPut("changeEnabled/{id:long}")]
         [HasPermission("Sys.User.SwitchEnabledStatus")]
         [ApiAccessLog(operateName: "切换用户启用状态", operateType: [OperateType.Update], reponseEnable: true)]
-        public async Task<AppResponse<bool>> SwitchUserEnabledStatusAsync(Guid id)
+        public async Task<AppResponse<bool>> SwitchUserEnabledStatusAsync(long id)
         {
             await _userService.SwitchUserEnabledStatusAsync(id);
             return Result.Ok();
@@ -100,8 +100,8 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="uid"></param>
         /// <returns></returns>
-        [HttpGet("roles/{uid:Guid}")]
-        public async Task<AppResponse<Guid[]>> GetUserRoleIdsAsync(Guid uid)
+        [HttpGet("roles/{uid:long}")]
+        public async Task<AppResponse<long[]>> GetUserRoleIdsAsync(long uid)
         {
             var data = await _userService.GetUserRoleIdsAsync(uid);
             return Result.Data(data);
@@ -170,7 +170,7 @@ namespace Fancyx.Admin.Controllers.System
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("EditInfo")]
-        public async Task<AppResponse<UserEditInfoDto>> GetUserEditInfoAsync(Guid id)
+        public async Task<AppResponse<UserEditInfoDto>> GetUserEditInfoAsync(long id)
         {
             var data = await _userService.GetUserEditInfoAsync(id);
             return Result.Data(data);

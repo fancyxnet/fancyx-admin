@@ -70,7 +70,7 @@ namespace Fancyx.Admin.Controllers.Organization
         [HttpDelete("delete/{id:guid}")]
         [HasPermission("Org.Position.Delete")]
         [ApiAccessLog(operateName: "删除职位", operateType: [OperateType.Delete], reponseEnable: true)]
-        public async Task<AppResponse<bool>> DeletePositionAsync(Guid id)
+        public async Task<AppResponse<bool>> DeletePositionAsync(long id)
         {
             await _positionService.DeletePositionAsync(id);
             return Result.Ok();

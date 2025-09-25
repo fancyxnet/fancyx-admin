@@ -31,7 +31,7 @@ namespace Fancyx.Admin.EfCore.Entities.System
         [NotNull]
         [Required]
         [Column("user_id")]
-        public Guid UserId { get; set; }
+        public long UserId { get; set; }
 
         /// <summary>
         /// 是否已读(true已读false未读)
