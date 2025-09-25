@@ -7,7 +7,7 @@
         "Action": "Start"
       },
       {
-        "Path": "src\\Fancyx.Erp\\Fancyx.Erp.csproj",
+        "Path": "src\\Fancyx.Gateway.Ocelot\\Fancyx.Gateway.Ocelot.csproj",
         "Action": "Start"
       }
     ]

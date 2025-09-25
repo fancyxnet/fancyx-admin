@@ -2,6 +2,7 @@
 using Fancyx.Shared.Consts;
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.System;
+using Fancyx.SnowflakeId;
 
 namespace Fancyx.Admin.Application.Subscribers
 {
@@ -18,7 +19,9 @@ namespace Fancyx.Admin.Application.Subscribers
         public async Task WriteLoginLog(LoginLog log)
         {
             log.CreationTime = DateTime.Now;
-            await _context.SingleInsertAsync(log);
+            log.Id = IdGenerater.Instance.NextId();
+            await _context.AddAsync(log);
+            await _context.SaveChangesAsync();
         }
     }
 }
