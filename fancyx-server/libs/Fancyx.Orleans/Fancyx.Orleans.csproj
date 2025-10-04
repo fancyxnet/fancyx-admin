@@ -4,6 +4,9 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<Version>1.0.0</Version>
+	<Authors>hedonghua</Authors>
+	<Description>Orleans配置,Redis集群,Redis存储</Description>
   </PropertyGroup>
 
 	<ItemGroup>
