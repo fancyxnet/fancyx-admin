@@ -6,7 +6,7 @@ import React, { useMemo } from 'react';
 import ProIcon from '@/components/ProIcon';
 import { useDispatch, useSelector } from 'react-redux';
 import { open, selectActiveKey } from '@/store/tabStore.ts';
-import { selectCollapsed } from '@/store/themeStore.ts';
+import { selectCollapsed, selectSidebarMode } from '@/store/themeStore.ts';
 import { HomeOutlined } from '@ant-design/icons';
 import { observer } from 'mobx-react-lite';
 import _ from 'lodash';
@@ -22,6 +22,7 @@ const Sidebar = observer(() => {
   const dispatch = useDispatch();
   const activeKey = useSelector(selectActiveKey);
   const collapsed = useSelector(selectCollapsed);
+  const sidebarMode = useSelector(selectSidebarMode);
 
   const addTab = (menu: FrontendMenu) => {
     dispatch(open(menu.path));
@@ -65,7 +66,7 @@ const Sidebar = observer(() => {
   }, [UserStore.userInfo?.menus]);
 
   return (
-    <div className="fancyx-sidebar">
+    <div className={`fancyx-sidebar ${sidebarMode === 'dark' ? 'dark-sidebar' : ''}`}>
       <div className="sidebar-header">
         <h2>
           <HomeOutlined className={'header-icon' + (collapsed ? ' header-icon-center' : '')} />

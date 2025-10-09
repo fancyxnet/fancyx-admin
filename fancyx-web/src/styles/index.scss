@@ -160,6 +160,81 @@
     }
   }
 
+  /* 暗色侧边栏样式 */
+    .dark-sidebar {
+      background-color: #1f1f1f;
+      transition: background-color 0.3s ease;
+    }
+
+    .dark-sidebar .sidebar-header {
+      background: linear-gradient(135deg, rgba(50, 50, 50, 0.8), rgba(40, 40, 40, 0.8));
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .dark-sidebar h2 {
+      color: #e0e0e0;
+      /* 细微色差效果 */
+      text-shadow: 0 0 1px rgba(255, 255, 255, 0.1);
+    }
+
+    .dark-sidebar .header-icon {
+      background: linear-gradient(135deg, var(--primary-color, #1890ff), #40a9ff);
+      box-shadow: 0 2px 12px rgba(24, 144, 255, 0.4);
+    }
+
+    .dark-sidebar .sidebar-content {
+      background-color: #1f1f1f;
+    }
+
+    .dark-sidebar .ant-menu {
+      background-color: transparent;
+    }
+
+    /* 菜单项基本样式 - 增加亮度 */
+    .dark-sidebar .ant-menu-item,
+    .dark-sidebar .ant-menu-submenu-title {
+      color: #d0d0d0;
+      transition: color 0.2s ease;
+    }
+
+    /* 菜单项悬浮效果 - 文字变亮，添加轻微透明浅色背景 */
+    .dark-sidebar .ant-menu-item:hover,
+    .dark-sidebar .ant-menu-submenu-title:hover {
+      color: #ffffff !important;
+      background-color: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    /* 确保所有可能的悬浮状态都有轻微透明浅色背景且文字更亮 */
+    .dark-sidebar .ant-menu-item:hover,
+    .dark-sidebar .ant-menu-submenu:hover > .ant-menu-submenu-title,
+    .dark-sidebar .ant-menu-submenu-title:hover {
+      color: #ffffff !important;
+      background-color: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    /* 选中菜单项样式 - 加深背景色 */
+    .dark-sidebar .ant-menu-item-selected {
+      color: var(--primary-color, #1890ff) !important;
+      background-color: rgba(24, 144, 255, 0.2) !important;
+    }
+
+    /* 激活菜单项样式 - 仅文字变色 */
+    .dark-sidebar .ant-menu-item-active,
+    .dark-sidebar .ant-menu-submenu-active {
+      color: var(--primary-color, #1890ff);
+      background-color: transparent;
+    }
+
+    /* 确保子菜单标题颜色与菜单项一致 */
+    .dark-sidebar .ant-menu-submenu-title {
+      color: #d0d0d0 !important;
+    }
+
+    /* 展开的子菜单标题颜色 */
+    .dark-sidebar .ant-menu-submenu-open > .ant-menu-submenu-title {
+      color: #ffffff !important;
+    }
+
   .fancyx-navbar {
     border-bottom: 1px solid vars.$border-color-light;
     background-color: vars.$bg-base;

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button, Drawer, Radio, Typography } from 'antd';
 import { loadThemeFromStorage, switchTheme } from '@/utils/themeUtils';
 import { themeMap } from '@/theme';
-import { setTheme, setSize, selectSize } from '@/store/themeStore';
+import { setTheme, setSize, setSidebarMode, selectSize, selectSidebarMode } from '@/store/themeStore';
 import { useDispatch, useSelector } from 'react-redux';
 import ProIcon from '@/components/ProIcon';
 import './index.scss';
@@ -19,11 +19,17 @@ const InterfaceSettings: React.FC<InterfaceSettingsProps> = ({ size = 'small' })
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [currentTheme, setCurrentTheme] = useState<ThemeType>(loadThemeFromStorage());
   const currentSize = useSelector(selectSize);
+  const currentSidebarMode = useSelector(selectSidebarMode);
   const dispatch = useDispatch();
 
   // 处理尺寸选择
   const handleSizeSelect = (e: any) => {
     dispatch(setSize(e.target.value));
+  };
+
+  // 处理侧边栏主题模式选择
+  const handleSidebarModeSelect = (e: any) => {
+    dispatch(setSidebarMode(e.target.value));
   };
 
   // 处理主题选择
@@ -62,7 +68,7 @@ const InterfaceSettings: React.FC<InterfaceSettingsProps> = ({ size = 'small' })
         width={300}
       >
         <div className="theme-drawer-content">
-          <Title level={5}>主题选择</Title>
+          <Title level={5}>主题</Title>
           <div className="color-schemes">
             {Object.values(themeMap).map((theme) => (
               <div
@@ -82,7 +88,7 @@ const InterfaceSettings: React.FC<InterfaceSettingsProps> = ({ size = 'small' })
             ))}
           </div>
 
-          <Title level={5} style={{ marginTop: '24px' }}>界面尺寸</Title>
+          <Title level={5} style={{ marginTop: '24px' }}>尺寸</Title>
           <Radio.Group
             value={currentSize}
             onChange={handleSizeSelect}
@@ -92,6 +98,17 @@ const InterfaceSettings: React.FC<InterfaceSettingsProps> = ({ size = 'small' })
             <Radio.Button value="large">大</Radio.Button>
             <Radio.Button value="middle">中</Radio.Button>
             <Radio.Button value="small">小</Radio.Button>
+          </Radio.Group>
+
+          <Title level={5} style={{ marginTop: '24px' }}>侧边栏</Title>
+          <Radio.Group
+            value={currentSidebarMode}
+            onChange={handleSidebarModeSelect}
+            buttonStyle="solid"
+            className="theme-radio-group"
+          >
+            <Radio.Button value="light">亮色</Radio.Button>
+            <Radio.Button value="dark">暗色</Radio.Button>
           </Radio.Group>
         </div>
       </Drawer>
