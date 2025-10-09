@@ -5,6 +5,15 @@
   margin: 0;
 }
 
+html, body {
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+  overflow: hidden;
+}
+
 /** ================================ 覆盖antd pro样式开始 ================================ */
 .ant-pro-page-container-children-container-no-header {
   padding-block-start: 0 !important;
@@ -104,8 +113,22 @@
 }
 
 .fancyx-layout {
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  
   .fancyx-sidebar {
-    min-height: 100vh;
+    min-height: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  .ant-layout-sider {
+    min-height: 100%;
+    background-color: transparent;
   }
 
   //侧边栏标题
@@ -164,6 +187,13 @@
     .dark-sidebar {
       background-color: #1f1f1f;
       transition: background-color 0.3s ease;
+      height: 100%;
+    }
+    
+    /* 确保暗色侧边栏在内容滚动时完全填充 */
+    .ant-layout-sider.dark-sidebar {
+      background-color: #1f1f1f;
+      overflow: hidden;
     }
 
     .dark-sidebar .sidebar-header {
@@ -236,8 +266,10 @@
     }
 
   .fancyx-navbar {
+    height: 50px;
     border-bottom: 1px solid vars.$border-color-light;
     background-color: vars.$bg-base;
+    flex-shrink: 0;
 
     button.ant-btn {
       height: 50px !important;
@@ -259,7 +291,28 @@
   }
 
   .fancyx-tabs {
+    height: 42px;
     background-color: vars.$bg-base;
+    flex-shrink: 0;
+  }
+
+  /* 调整内部布局容器为flex列布局 */
+  .ant-layout > .ant-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  /* 内容区域占据剩余空间并可滚动 */
+  .ant-layout-content {
+    flex: 1;
+    overflow: auto;
+    padding: 16px;
+  }
+
+  /* 确保暗色侧边栏正确显示 */
+  .ant-layout-sider.dark-sidebar {
+    background-color: #1f1f1f;
   }
 
   main {
