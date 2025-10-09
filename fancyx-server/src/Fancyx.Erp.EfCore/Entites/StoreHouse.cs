@@ -4,9 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fancyx.Erp.EfCore.Entites
 {
-    [Table("good_classify")]
     [Index(nameof(Code), IsUnique = true)]
-    public class GoodClassify : FullAuditedEntity
+    public class StoreHouse : FullAuditedEntity
     {
         [Column("code")]
         public string Code { get; set; } = null!;

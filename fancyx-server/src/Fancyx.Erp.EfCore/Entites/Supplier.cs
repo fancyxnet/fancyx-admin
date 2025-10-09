@@ -4,6 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fancyx.Erp.EfCore.Entites
 {
+    /// <summary>
+    /// 供应商
+    /// </summary>
     [Table("supplier")]
     [Index(nameof(Code), IsUnique = true)]
     public class Supplier : FullAuditedEntity
