@@ -98,10 +98,10 @@
   transition: all 0.3s vars.$transition-bezier;
 
   .color-scheme-item.active & {
-    border-color: vars.$primary-color;
-    box-shadow: 0 0 0 2px rgba(126, 87, 194, 0.15), 0 2px 8px rgba(126, 87, 194, 0.2);
-    transform: scale(1.05);
-  }
+      border-color: vars.$primary-color;
+      box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.15), 0 2px 8px rgba(var(--primary-color-rgb), 0.2);
+      transform: scale(1.05);
+    }
 }
 
 // 自定义颜色选择器

@@ -151,7 +151,3 @@ export const getThemeConfig = (themeType: ThemeType = 'default'): ThemeConfig =>
 export const getAllThemes = (): ThemeDefinition[] => {
   return Object.values(themeMap);
 };
-
-// 主题变量同步检查提示
-// 注意：本文件中的颜色值应与 src/styles/vars.scss 文件中的颜色变量保持同步
-// 如需新增主题，请同时更新 vars.scss 文件中的对应主题变量

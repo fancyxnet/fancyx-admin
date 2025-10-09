@@ -61,6 +61,19 @@ export const switchTheme = (themeType: ThemeType, callback?: (theme: ThemeConfig
 };
 
 /**
+ * 将HEX颜色转换为RGB格式
+ * @param hex HEX颜色值
+ * @returns RGB值的数组 [r, g, b]
+ */
+const hexToRgb = (hex: string): [number, number, number] => {
+  // 移除#符号
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return [r, g, b];
+};
+
+/**
  * 更新CSS变量
  * @param themeType 主题类型
  */
@@ -77,9 +90,16 @@ export const updateCssVariables = (themeType: ThemeType): void => {
     // 主要颜色变量
     if (token.colorPrimary) {
       root.style.setProperty('--primary-color', token.colorPrimary);
+      // 设置RGB格式的主色变量，用于rgba()函数
+      if (token.colorPrimary.startsWith('#') && token.colorPrimary.length === 7) {
+        const [r, g, b] = hexToRgb(token.colorPrimary);
+        root.style.setProperty('--primary-color-rgb', `${r}, ${g}, ${b}`);
+      }
       // 为react-contexify设置背景色变量
       if (token.colorPrimaryHover) {
         root.style.setProperty('--contexify-activeItem-bgColor', token.colorPrimaryHover);
+        // 设置--primary-color-hover变量，用于样式中引用
+        root.style.setProperty('--primary-color-hover', token.colorPrimaryHover);
       }
     }
     if (token.colorSuccess) {
