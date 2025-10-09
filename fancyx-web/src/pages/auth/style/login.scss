@@ -40,7 +40,8 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(126, 87, 194, 0.7);
+        background: var(--primary-color);
+        opacity: 0.7;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -97,18 +98,6 @@
           height: 48px;
           font-size: 16px;
           border-radius: 8px;
-          background: vars.$primary-color;
-          border-color: vars.$primary-color;
-
-          &:hover {
-            background: vars.$primary-hover;
-            border-color: vars.$primary-hover;
-          }
-
-          &:active {
-            background: vars.$primary-active;
-            border-color: vars.$primary-active;
-          }
         }
 
         .other-login {

@@ -2,7 +2,7 @@ import { theme } from 'antd';
 import type { ThemeConfig } from 'antd';
 
 // 主题类型定义
-export type ThemeType = 'blue-light' | 'default' | 'custom';
+export type ThemeType = 'blue' | 'default' | 'green' | 'red' | 'orange' | 'pink';
 
 export interface ThemeDefinition {
   name: ThemeType;
@@ -85,32 +85,61 @@ export const createBaseTheme = (
 export const PurpleLightTheme: ThemeDefinition = {
   name: 'default',
   config: createBaseTheme('#7E57C2', '#9575CD', '#673AB7', '#EDE7F6'),
-  displayName: '紫色主题',
+  displayName: '罗兰紫',
   description: '优雅的紫色主题，适合大多数应用场景',
 };
 
 // 蓝色主题配置
 export const BlueLightTheme: ThemeDefinition = {
-  name: 'blue-light',
+  name: 'blue',
   config: createBaseTheme('#1890ff', '#40a9ff', '#096dd9', '#e6f7ff'),
-  displayName: '蓝色主题',
+  displayName: '海洋蓝',
   description: '专业的蓝色主题，适合企业应用场景',
 };
 
 // 默认主题配置
 export const DefaultTheme = PurpleLightTheme.config;
 
+// 绿色主题配置
+export const GreenLightTheme: ThemeDefinition = {
+  name: 'green',
+  config: createBaseTheme('#52c41a', '#73d13d', '#389e0d', '#f6ffed'),
+  displayName: '森林绿',
+  description: '清新的绿色主题，带来活力感',
+};
+
+// 红色主题配置
+export const RedLightTheme: ThemeDefinition = {
+  name: 'red',
+  config: createBaseTheme('#ff4d4f', '#ff7875', '#cf1322', '#fff1f0'),
+  displayName: '丹霞红',
+  description: '热情的红色主题，引人注目',
+};
+
+// 橙色主题配置
+export const OrangeLightTheme: ThemeDefinition = {
+  name: 'orange',
+  config: createBaseTheme('#fa8c16', '#ffa940', '#d46b08', '#fffbe6'),
+  displayName: '阳光橙',
+  description: '温暖的橙色主题，充满活力',
+};
+
+// 粉色主题配置
+export const PinkLightTheme: ThemeDefinition = {
+  name: 'pink',
+  config: createBaseTheme('#eb2f96', '#f759ab', '#c41d7f', '#fff1f0'),
+  displayName: '樱花粉',
+  description: '柔美的粉色主题，温馨浪漫',
+};
+
 // 主题映射表
 export const themeMap: Record<ThemeType, ThemeDefinition> = {
-  'blue-light': BlueLightTheme,
   default: PurpleLightTheme,
-  // 自定义主题（在运行时通过 localStorage 配置）
-  custom: {
-    name: 'custom',
-    config: PurpleLightTheme.config, // 默认使用紫色主题的配置，实际使用时会通过 CSS 变量覆盖
-    displayName: '自定义主题',
-    description: '用户自定义的主题配色',
-  },
+  blue: BlueLightTheme,
+  green: GreenLightTheme,
+  red: RedLightTheme,
+  orange: OrangeLightTheme,
+  pink: PinkLightTheme
 };
 
 // 获取主题配置

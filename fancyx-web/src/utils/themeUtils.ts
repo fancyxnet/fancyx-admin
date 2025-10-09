@@ -67,12 +67,6 @@ export const switchTheme = (themeType: ThemeType, callback?: (theme: ThemeConfig
 export const updateCssVariables = (themeType: ThemeType): void => {
   const root = document.documentElement;
   
-  // 处理自定义主题
-  if (themeType === 'custom') {
-    applyCustomTheme();
-    return;
-  }
-  
   const theme = themeMap[themeType];
   if (!theme) return;
   
@@ -83,6 +77,10 @@ export const updateCssVariables = (themeType: ThemeType): void => {
     // 主要颜色变量
     if (token.colorPrimary) {
       root.style.setProperty('--primary-color', token.colorPrimary);
+      // 为react-contexify设置背景色变量
+      if (token.colorPrimaryHover) {
+        root.style.setProperty('--contexify-activeItem-bgColor', token.colorPrimaryHover);
+      }
     }
     if (token.colorSuccess) {
       root.style.setProperty('--success-color', token.colorSuccess);
@@ -147,6 +145,7 @@ export const applyCustomTheme = (): void => {
     // 计算悬停颜色（稍微亮一点）
     const hoverColor = `rgb(${Math.min(r + 20, 255)}, ${Math.min(g + 20, 255)}, ${Math.min(b + 20, 255)})`;
     root.style.setProperty('--primary-color-hover', hoverColor);
+    root.style.setProperty('--contexify-activeItem-bgColor', hoverColor);
     root.style.setProperty('--ant-primary-color-hover', hoverColor);
     
     // 计算激活颜色（稍微暗一点）

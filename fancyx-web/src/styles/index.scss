@@ -119,7 +119,7 @@
     overflow: hidden;
     box-shadow: vars.$shadow-sm;
 
-    // 紫色波纹装饰
+    // 主题波纹装饰（跟随当前主题颜色变化）
     &::after {
       content: '';
       position: absolute;
@@ -127,8 +127,9 @@
       top: -30px;
       width: 80px;
       height: 80px;
-      background: rgba(255, 255, 255, 0.08);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 100%);
       border-radius: 50%;
+      transition: transform 0.3s ease;
     }
 
     h2 {

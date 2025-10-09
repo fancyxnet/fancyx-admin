@@ -39,23 +39,7 @@ const Navbar = observer(() => {
     },
   ];
   const { ossDomain } = useApplication();
-  const sizeItems = [
-    {
-      key: 'large',
-      icon: <ProIcon icon="antd:FontSizeOutlined" />,
-      label: '大',
-    },
-    {
-      key: 'middle',
-      icon: <ProIcon icon="antd:FontSizeOutlined" />,
-      label: '中',
-    },
-    {
-      key: 'small',
-      icon: <ProIcon icon="antd:FontSizeOutlined" />,
-      label: '小',
-    },
-  ];
+
   const location = useLocation();
   const setCollapsed = () => {
     dispatch(toggleCollapsed());
@@ -70,13 +54,9 @@ const Navbar = observer(() => {
     } else if (key === 'profile') {
       navigate('/profile');
       dispatch(open('/profile'));
-    } else if (sizeItems.some((h) => h.key === key)) {
-      dispatch(setSize(key));
     }
   };
-  const sizeDisplayText = useMemo(() => {
-    return sizeItems.find((h) => h.key === size)?.label ?? '';
-  }, [size]);
+
   const breadcrumbItems = useMemo((): { title: string }[] => {
     const curMenu = UserStore.menuList.find((x) => x.path === location.pathname);
     if (curMenu) {
@@ -100,6 +80,7 @@ const Navbar = observer(() => {
         </div>
         {/* 右侧菜单 */}
         <div className="grow flex flex-row-reverse fancyx-navbar-right-wrapper">
+          {/* 头像 */}
           <div>
             <Dropdown
               menu={{
@@ -119,31 +100,17 @@ const Navbar = observer(() => {
               </Button>
             </Dropdown>
           </div>
-          {/** 通知 */}
-          <div>
-            <NotificationPopover />
-          </div>
-          {/** 尺寸 */}
-          <div>
-            <Dropdown
-              overlayClassName="size-wrapper"
-              menu={{
-                items: sizeItems,
-                selectable: true,
-                onClick,
-              }}
-              trigger={['click']}
-            >
-              <Button type="text" className="navbar-btn">
-                <ProIcon icon="antd:FontSizeOutlined" />
-                {sizeDisplayText}
-              </Button>
-            </Dropdown>
-          </div>
+
           {/** 主题 */}
           <div>
             <ThemeSwitcher size="small" />
           </div>
+
+          {/** 通知 */}
+          <div>
+            <NotificationPopover />
+          </div>
+
           {/** 搜索 */}
           <div>
             <Button type="text" className="navbar-btn" onClick={searchModalRef?.current?.openModal}>

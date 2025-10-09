@@ -1,7 +1,11 @@
+:root {
+  --contexify-activeItem-bgColor: var(--primary-color-hover) !important;
+}
+
 .mini-context-menu {
   min-width: 120px !important;
   //tab右键菜单悬浮样式
-  --contexify-activeItem-bgColor: #9575cd;
+  //--contexify-activeItem-bgColor
   //tab右键菜单间距
   --contexify-itemContent-padding: 4px;
   //tab右键菜单文字颜色
