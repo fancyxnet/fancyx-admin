@@ -26,6 +26,20 @@ html, body {
 
 /** ================================ 覆盖antdpro样式结束 ================================ */
 
+/** ================================ 固定Table表头背景色 ================================ */
+/* 固定antd表格表头背景色为通用灰色，不随主题切换而改变 */
+.ant-table-wrapper .ant-table-thead > tr > th,
+.ant-table-wrapper .ant-table-thead > tr > td {
+  background-color: #fafafa !important;
+}
+
+/* 确保表头在不同状态下也保持固定的背景色 */
+.ant-table-wrapper .ant-table-thead > tr > th.ant-table-column-sort,
+.ant-table-wrapper .ant-table-thead > tr > th.ant-table-cell-row-hover,
+.ant-table-wrapper .ant-table-thead > tr > th:hover {
+  background-color: #fafafa !important;
+}
+
 .w-full {
   width: 100% !important;
 }
