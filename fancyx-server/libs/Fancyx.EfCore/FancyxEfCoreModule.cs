@@ -34,11 +34,13 @@ namespace Fancyx.EfCore
                 switch (dbOptions.DatabaseType)
                 {
                     case DbType.PostgreSql:
-                        options.UseNpgsql(connectionString);
+                        options.UseNpgsql(connectionString)
+                               .UseSnakeCaseNamingConvention();
                         break;
                     case DbType.MySql:
                         var version = ServerVersion.AutoDetect(connectionString);
-                        options.UseMySql(connectionString, version);
+                        options.UseMySql(connectionString, version)
+                               .UseSnakeCaseNamingConvention();
                         break;
                 }
                 options.LogTo(Console.WriteLine, LogLevel.Information)
