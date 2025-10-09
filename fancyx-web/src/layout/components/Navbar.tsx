@@ -14,6 +14,7 @@ import { StaticRoutes } from '@/utils/globalValue.ts';
 import { useAuthProvider } from '@/components/AuthProvider';
 import { observer } from 'mobx-react-lite';
 import NotificationPopover from '@/layout/components/NotificationPopover.tsx';
+import ThemeSwitcher from '@/components/ThemeSwitcher';
 
 const Navbar = observer(() => {
   const collapsed = useSelector(selectCollapsed);
@@ -138,6 +139,10 @@ const Navbar = observer(() => {
                 {sizeDisplayText}
               </Button>
             </Dropdown>
+          </div>
+          {/** 主题 */}
+          <div>
+            <ThemeSwitcher size="small" />
           </div>
           {/** 搜索 */}
           <div>

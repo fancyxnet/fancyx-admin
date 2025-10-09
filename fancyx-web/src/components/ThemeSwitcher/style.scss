@@ -1,0 +1,124 @@
+@use '@/styles/vars.scss' as vars;
+
+// 主题切换按钮
+.theme-switcher-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s vars.$transition-bezier;
+  color: vars.$text-primary;
+  height: 32px;
+  padding: 0 15px;
+
+  &:hover {
+    color: vars.$primary-color;
+    background-color: vars.$primary-light;
+  }
+}
+
+// 抽屉内容样式
+.theme-drawer-content {
+  padding: 10px 0;
+}
+
+// 内置主题单选按钮组
+.theme-radio-group {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+
+  .ant-radio-button-wrapper {
+    flex: 1;
+    min-width: 100px;
+    border-color: vars.$border-color;
+    transition: all 0.3s vars.$transition-bezier;
+
+    &:hover {
+      color: vars.$primary-color;
+      border-color: vars.$primary-color;
+    }
+
+    &.ant-radio-button-wrapper-checked {
+      color: #fff;
+      background-color: vars.$primary-color;
+      border-color: vars.$primary-color;
+      box-shadow: -1px 0 0 0 vars.$primary-color;
+
+      &:hover {
+        color: #fff;
+        background-color: vars.$primary-hover;
+        border-color: vars.$primary-hover;
+      }
+    }
+  }
+}
+
+// 颜色方案选择器
+.color-schemes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 12px;
+  margin: 15px 0;
+}
+
+.color-scheme-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.3s vars.$transition-bezier;
+
+  &:hover {
+    background-color: vars.$bg-light;
+  }
+
+  &.active {
+    background-color: vars.$primary-light;
+  }
+}
+
+.color-scheme-preview {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  margin-bottom: 6px;
+  border: 2px solid transparent;
+  transition: all 0.3s vars.$transition-bezier;
+
+  .color-scheme-item.active & {
+    border-color: vars.$primary-color;
+  }
+}
+
+// 自定义颜色选择器
+.custom-color-section {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.custom-color-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+// 响应式调整
+@media (max-width: 768px) {
+  .color-schemes {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .theme-radio-group {
+    flex-direction: column;
+
+    .ant-radio-button-wrapper {
+      min-width: auto;
+    }
+  }
+}

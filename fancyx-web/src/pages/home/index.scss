@@ -2,26 +2,27 @@
 
 .home-page {
   .dashboard-card {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: vars.$shadow-md;
     transition: all 0.3s ease;
     height: 100%;
     border: none;
 
     &:hover {
       transform: translateY(-3px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+      box-shadow: vars.$shadow-lg;
     }
 
     .ant-card-head {
-      border-bottom: 1px solid #f0f0f0;
-      min-height: auto;
-      padding: 0 20px;
-      background-color: rgba(126, 87, 194, 0.05);
+        border-bottom: 1px solid vars.$border-color-light;
+        min-height: auto;
+        padding: 0 20px;
+        // 使用 rgba 函数和十六进制颜色需要特殊处理
+        background-color: rgba(126, 87, 194, 0.05);
 
-      .ant-card-head-title {
-        padding: 16px 0;
+        .ant-card-head-title {
+          padding: 16px 0;
+        }
       }
-    }
 
     .ant-card-body {
       padding: 20px;
@@ -71,7 +72,7 @@
     gap: 20px;
     margin-top: 10px;
     padding: 10px;
-    background: #f9f9f9;
+    background: vars.$bg-lighter;
     border-radius: 8px;
   }
 
@@ -81,6 +82,7 @@
     gap: 10px;
 
     .tech-tag {
+      // 主色调的淡色版本
       background: rgba(126, 87, 194, 0.1);
       color: vars.$primary-color;
       border: none;
@@ -132,6 +134,7 @@
     .qrcode-placeholder {
       width: 160px;
       height: 160px;
+      // 主色调的极淡版本
       background: rgba(126, 87, 194, 0.05);
       display: flex;
       align-items: center;

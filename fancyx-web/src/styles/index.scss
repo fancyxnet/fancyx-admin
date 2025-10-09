@@ -112,12 +112,12 @@
   .sidebar-header {
     height: 50px; // 严格限定高度
     padding: 0 20px;
-    background: linear-gradient(135deg, vars.$primary-color 0%, #9575cd 100%);
+    background: linear-gradient(135deg, vars.$primary-color 0%, vars.$primary-hover 100%);
     display: flex;
     align-items: center;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: vars.$shadow-sm;
 
     // 紫色波纹装饰
     &::after {
@@ -160,8 +160,8 @@
   }
 
   .fancyx-navbar {
-    border-bottom: 1px solid #f0f0f0;
-    background-color: #ffffff;
+    border-bottom: 1px solid vars.$border-color-light;
+    background-color: vars.$bg-base;
 
     button.ant-btn {
       height: 50px !important;
@@ -183,12 +183,12 @@
   }
 
   .fancyx-tabs {
-    background-color: #ffffff;
+    background-color: vars.$bg-base;
   }
 
   main {
     padding: 10px;
-    background-color: #f5f5f5;
+    background-color: vars.$bg-light;
   }
 }
 
@@ -197,7 +197,7 @@
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:hover {
-    background: #f5f3ff !important;
+    background: vars.$primary-light !important;
 
     &::before {
       content: '';
@@ -213,26 +213,26 @@
 
 // 选中状态
 .ant-menu-item-selected {
-  background: #ede7f6 !important;
+  background: vars.$primary-lighter !important;
   color: vars.$primary-color !important;
   font-weight: 500;
 }
 
 .ant-btn-primary {
-  box-shadow: 0 2px 6px rgba(126, 87, 194, 0.3);
+  box-shadow: 0 2px 6px vars.$shadow-primary;
   transition: all 0.3s;
 
   &:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(126, 87, 194, 0.4);
+    box-shadow: 0 4px 12px vars.$shadow-primary-hover;
   }
 
   &:active {
     transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(126, 87, 194, 0.3);
+    box-shadow: 0 2px 4px vars.$shadow-primary-active;
   }
 }
 
 .icon-info:hover {
-  color: #000000;
+  color: vars.$text-primary;
 }

@@ -4,7 +4,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #fafafa;
+  background-color: vars.$bg-light;
   height: 100dvh;
   box-sizing: border-box;
 
@@ -101,13 +101,13 @@
           border-color: vars.$primary-color;
 
           &:hover {
-            background: vars.$hover-color;
-            border-color: vars.$hover-color;
+            background: vars.$primary-hover;
+            border-color: vars.$primary-hover;
           }
 
           &:active {
-            background: vars.$active-color;
-            border-color: vars.$active-color;
+            background: vars.$primary-active;
+            border-color: vars.$primary-active;
           }
         }
 

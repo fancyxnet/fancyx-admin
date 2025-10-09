@@ -1,5 +1,140 @@
-/* 亮色紫色主题 */
+/* 主题变量系统 - 统一管理项目中所有主题相关变量 */
+
+// ========================================= 主题颜色 =========================================
+
+// 主色调 - 紫色系
 $primary-color: #7e57c2;
-$hover-color: #9575cd;
-$active-color: #673ab7;
-$bg-color: #f5f3ff;
+$primary-hover: #9575cd;
+$primary-active: #673ab7;
+$primary-light: #f5f3ff;
+$primary-lighter: #ede7f6;
+
+// 状态颜色
+$success-color: #66bb6a;
+$success-hover: #81c784;
+$success-active: #43a047;
+
+$warning-color: #ffa726;
+$warning-hover: #ffb74d;
+$warning-active: #f57c00;
+
+$error-color: #ff7043;
+$error-hover: #ff8a65;
+$error-active: #ef5350;
+
+$info-color: #29b6f6;
+$info-hover: #4fc3f7;
+$info-active: #0288d1;
+
+// 文本颜色
+$text-primary: #262626;
+$text-base: #4a4a4a;
+$text-secondary: #8c8c8c;
+$text-placeholder: #bfbfbf;
+$text-disabled: #d9d9d9;
+
+// 背景颜色
+$bg-base: #ffffff;
+$bg-light: #fafafa;
+$bg-lighter: #f5f5f5;
+$bg-elevated: #ffffff;
+
+// 边框颜色
+$border-color: #d9d9d9;
+$border-color-light: #f0f0f0;
+$border-color-lighter: #f5f5f5;
+
+// 分割线颜色
+$divider-color: #f0f0f0;
+
+// 阴影颜色
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+$shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 8px 0 rgba(0, 0, 0, 0.08);
+$shadow-lg: 0 8px 16px 0 rgba(0, 0, 0, 0.12);
+$shadow-primary: 0 2px 6px rgba(126, 87, 194, 0.3);
+$shadow-primary-hover: 0 4px 12px rgba(126, 87, 194, 0.4);
+$shadow-primary-active: 0 2px 4px rgba(126, 87, 194, 0.3);
+
+// ========================================= 尺寸变量 =========================================
+
+// 间距
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 12px;
+$spacing-lg: 16px;
+$spacing-xl: 20px;
+$spacing-2xl: 24px;
+$spacing-3xl: 28px;
+$spacing-4xl: 32px;
+$spacing-5xl: 40px;
+
+// 边框圆角
+$border-radius-sm: 2px;
+$border-radius: 4px;
+$border-radius-md: 6px;
+$border-radius-lg: 8px;
+$border-radius-xl: 12px;
+$border-radius-2xl: 16px;
+$border-radius-full: 9999px;
+
+// 边框宽度
+$border-width: 1px;
+$border-width-md: 2px;
+$border-width-lg: 3px;
+
+// 字体大小
+$font-size-xs: 12px;
+$font-size-sm: 13px;
+$font-size: 14px;
+$font-size-lg: 16px;
+$font-size-xl: 18px;
+$font-size-2xl: 20px;
+$font-size-3xl: 24px;
+$font-size-4xl: 28px;
+$font-size-5xl: 32px;
+
+// 行高
+$line-height-xs: 1.2;
+$line-height-sm: 1.3333333;
+$line-height: 1.5;
+$line-height-lg: 1.6666667;
+$line-height-xl: 1.8;
+
+// 图标尺寸
+$icon-size-xs: 12px;
+$icon-size-sm: 14px;
+$icon-size: 16px;
+$icon-size-lg: 18px;
+$icon-size-xl: 20px;
+$icon-size-2xl: 24px;
+$icon-size-3xl: 32px;
+
+// ========================================= 动画变量 =========================================
+
+// 过渡时间
+$transition-fast: 0.1s;
+$transition-base: 0.2s;
+$transition-slow: 0.3s;
+$transition-slower: 0.5s;
+
+// 过渡函数
+$transition-bezier: cubic-bezier(0.4, 0, 0.2, 1);
+$transition-bezier-fast-out-slow-in: cubic-bezier(0.25, 0.8, 0.25, 1);
+$transition-bezier-ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
+
+// ========================================= 布局变量 =========================================
+
+// 布局宽度
+$layout-header-height: 64px;
+$layout-sider-width: 200px;
+$layout-sider-collapsed-width: 56px;
+$layout-content-padding: $spacing-lg;
+
+// 响应式断点
+$breakpoint-xs: 480px;
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+$breakpoint-2xl: 1600px;
