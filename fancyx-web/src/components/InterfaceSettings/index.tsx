@@ -8,14 +8,14 @@ import ProIcon from '@/components/ProIcon';
 import './index.scss';
 import type { ThemeType } from '@/theme';
 
-interface ThemeSwitcherProps {
+interface InterfaceSettingsProps {
   className?: string;
   size?: 'small' | 'middle' | 'large';
 }
 
 const { Title, Text } = Typography;
 
-const ThemeSwitcher: React.FC<ThemeSwitcherProps> = ({ size = 'small' }) => {
+const InterfaceSettings: React.FC<InterfaceSettingsProps> = ({ size = 'small' }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [currentTheme, setCurrentTheme] = useState<ThemeType>(loadThemeFromStorage());
   const currentSize = useSelector(selectSize);
@@ -99,4 +99,4 @@ const ThemeSwitcher: React.FC<ThemeSwitcherProps> = ({ size = 'small' }) => {
   );
 };
 
-export default ThemeSwitcher;
+export default InterfaceSettings;

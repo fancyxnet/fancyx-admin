@@ -3,7 +3,7 @@ import ProIcon from '@/components/ProIcon';
 import { signOut } from '@/api/auth.ts';
 import { useLocation, useNavigate } from 'react-router-dom';
 import UserStore from '@/store/userStore.ts';
-import { selectCollapsed, selectSize, setSize, toggleCollapsed } from '@/store/themeStore.ts';
+import { selectCollapsed, toggleCollapsed } from '@/store/themeStore.ts';
 import { useDispatch, useSelector } from 'react-redux';
 import { open } from '@/store/tabStore.ts';
 import { useMemo, useRef } from 'react';
@@ -14,11 +14,10 @@ import { StaticRoutes } from '@/utils/globalValue.ts';
 import { useAuthProvider } from '@/components/AuthProvider';
 import { observer } from 'mobx-react-lite';
 import NotificationPopover from '@/layout/components/NotificationPopover.tsx';
-import ThemeSwitcher from '@/components/ThemeSwitcher';
+import InterfaceSettings from '@/components/InterfaceSettings';
 
 const Navbar = observer(() => {
   const collapsed = useSelector(selectCollapsed);
-  const size = useSelector(selectSize);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const searchModalRef = useRef<SearchModalRef>(null);
@@ -103,7 +102,7 @@ const Navbar = observer(() => {
 
           {/** 主题 */}
           <div>
-            <ThemeSwitcher size="small" />
+            <InterfaceSettings size="small" />
           </div>
 
           {/** 通知 */}
