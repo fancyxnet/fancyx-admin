@@ -50,7 +50,7 @@ namespace Fancyx.EfCore
                        .EnableDetailedErrors();
             });
             services.TryAddScoped<IUnitOfWorkManager, UnitOfWorkManager>();
-            services.TryAddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.TryAddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Fancyx.Erp.EfCore.Entites
         [Column("brand_id")]
         public long BrandId { get; set; }
 
-        [Column("classify_id")]
-        public long ClassifyId { get; set; }
+        [Column("category_id")]
+        public long CategoryId { get; set; }
     }
 }

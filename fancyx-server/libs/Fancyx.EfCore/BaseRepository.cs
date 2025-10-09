@@ -2,37 +2,40 @@
 using Fancyx.EfCore.BaseEntity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Data;
 using System.Linq.Expressions;
 
 namespace Fancyx.EfCore
 {
-    internal class Repository<T> : IRepository<T> where T : class
+    public class BaseRepository<T> : IRepository<T> where T : class
     {
-        private readonly DbContext _context;
         private readonly ICurrentUser _currentUser;
         private static readonly Type _fullAuditedEntityType = typeof(FullAuditedEntity);
         private static readonly Type _efCoreExtensionType = typeof(EfCoreExtension);
         private static readonly Type _currentType = typeof(T);
 
-        public Repository(DbContext context, ICurrentUser currentUser)
+        public BaseRepository(DbContext context, ICurrentUser currentUser)
         {
-            _context = context;
+            Context = context;
             _currentUser = currentUser;
         }
 
+        protected DbContext Context { get; }
+        protected IDbConnection Connection => Context.Database.GetDbConnection();
+
         public Task<bool> AnyAsync(Expression<Func<T, bool>> whereExpression)
         {
-            return _context.Set<T>().AsNoTracking().AnyAsync(whereExpression);
+            return Context.Set<T>().AsNoTracking().AnyAsync(whereExpression);
         }
 
         public Task<int> CountAsync(Expression<Func<T, bool>> whereExpression)
         {
-            return _context.Set<T>().AsNoTracking().CountAsync(whereExpression);
+            return Context.Set<T>().AsNoTracking().CountAsync(whereExpression);
         }
 
         public async Task<int> DeleteAsync(Expression<Func<T, bool>> whereExpression)
         {
-            var query = _context.Set<T>().AsNoTracking().Where(whereExpression);
+            var query = Context.Set<T>().AsNoTracking().Where(whereExpression);
             if (_fullAuditedEntityType.IsAssignableFrom(_currentType))
             {
                 var softDeleteMethod = _efCoreExtensionType.GetMethod(nameof(EfCoreExtension.SoftDeleteAsync), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
@@ -52,18 +55,18 @@ namespace Fancyx.EfCore
 
         public Task<List<T>> GetListAsync(Expression<Func<T, bool>> whereExpression)
         {
-            return _context.Set<T>().AsNoTracking().Where(whereExpression).ToListAsync();
+            return Context.Set<T>().AsNoTracking().Where(whereExpression).ToListAsync();
         }
 
         public IQueryable<T> GetQueryable()
         {
-            return _context.Set<T>();
+            return Context.Set<T>();
         }
 
         public async Task<int> InsertAsync(T entity, bool autoSave = true)
         {
-            _context.Set<T>().Add(entity);
-            return autoSave ? await _context.SaveChangesAsync() : -1;
+            Context.Set<T>().Add(entity);
+            return autoSave ? await Context.SaveChangesAsync() : -1;
         }
 
         public async Task<int> InsertManyAsync(List<T> entities, bool autoSave = true)
@@ -79,30 +82,30 @@ namespace Fancyx.EfCore
                         if (value.CreationTime == default) value.CreationTime = now;
                     }
                 }
-                await _context.Set<T>().BulkInsertAsync(entities);
+                await Context.Set<T>().BulkInsertAsync(entities);
                 return entities.Count;
             }
-            _context.Set<T>().AddRange(entities);
-            return autoSave ? await _context.SaveChangesAsync() : -1;
+            Context.Set<T>().AddRange(entities);
+            return autoSave ? await Context.SaveChangesAsync() : -1;
         }
 
         public Task<T?> GetAsync(Expression<Func<T, bool>> whereExpression)
         {
-            return _context.Set<T>().FirstOrDefaultAsync(whereExpression);
+            return Context.Set<T>().FirstOrDefaultAsync(whereExpression);
         }
 
         public ValueTask<T?> FindAsync<TKey>(TKey id)
         {
-            return _context.Set<T>().FindAsync(id);
+            return Context.Set<T>().FindAsync(id);
         }
 
         public async Task<int> UpdateAsync(T entity, bool autoSave = true)
         {
-            if (_context.Entry(entity).State != EntityState.Modified)
+            if (Context.Entry(entity).State != EntityState.Modified)
             {
-                _context.Set<T>().Update(entity);
+                Context.Set<T>().Update(entity);
             }
-            return autoSave ? await _context.SaveChangesAsync() : -1;
+            return autoSave ? await Context.SaveChangesAsync() : -1;
         }
 
         public async Task<int> UpdateManyAsync(List<T> entities, bool autoSave = true)
@@ -118,21 +121,21 @@ namespace Fancyx.EfCore
                         if (value.LastModificationTime == default) value.LastModificationTime = now;
                     }
                 }
-                await _context.Set<T>().BulkUpdateAsync(entities);
+                await Context.Set<T>().BulkUpdateAsync(entities);
                 return entities.Count;
             }
-            _context.Set<T>().UpdateRange(entities);
-            return autoSave ? await _context.SaveChangesAsync() : -1;
+            Context.Set<T>().UpdateRange(entities);
+            return autoSave ? await Context.SaveChangesAsync() : -1;
         }
 
         public IQueryable<T> Where(Expression<Func<T, bool>> whereExpression)
         {
-            return _context.Set<T>().Where(whereExpression);
+            return Context.Set<T>().Where(whereExpression);
         }
 
         public Task<List<T>> GetListAsync()
         {
-            return _context.Set<T>().AsNoTracking().ToListAsync();
+            return Context.Set<T>().AsNoTracking().ToListAsync();
         }
 
         public async Task<int> DeleteAsync(T entity, bool autoSave = true)
@@ -140,10 +143,10 @@ namespace Fancyx.EfCore
             if (entity is FullAuditedEntity val)
             {
                 val.Delete(_currentUser.Id.GetValueOrDefault());
-                var entry2 = _context.Entry(val);
+                var entry2 = Context.Entry(val);
                 if (entry2.State == EntityState.Detached)
                 {
-                    _context.Attach(val);
+                    Context.Attach(val);
                     entry2.Property(e => e.IsDeleted).IsModified = true;
                     entry2.Property(e => e.DeleterId).IsModified = true;
                     entry2.Property(e => e.DeletionTime).IsModified = true;
@@ -155,9 +158,9 @@ namespace Fancyx.EfCore
             }
             else
             {
-                _context.Set<T>().Remove(entity);
+                Context.Set<T>().Remove(entity);
             }
-            return autoSave ? await _context.SaveChangesAsync() : -1;
+            return autoSave ? await Context.SaveChangesAsync() : -1;
         }
 
         private static void SoftDeleteBeforeResetOtherProperty(EntityEntry entry)

@@ -1,9 +1,10 @@
-﻿using Fancyx.Erp.Application.IService.BaseInfo.Dtos;
+﻿using Fancyx.Core.Interfaces;
+using Fancyx.Erp.Application.IService.BaseInfo.Dtos;
 using Fancyx.Shared.Models;
 
 namespace Fancyx.Erp.Application.IService.BaseInfo
 {
-    public interface ISupplierService
+    public interface ISupplierService : IScopedDependency
     {
         Task AddSupplierAsync(SupplierDto dto);
         Task<PagedResult<SupplierListDto>> GetSupplierListAsync(SupplierQueryDto dto);

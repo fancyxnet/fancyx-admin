@@ -1,5 +1,6 @@
-﻿using System.Linq.Expressions;
-
+﻿using System.Data;
+using System.Linq.Expressions;
+using Dapper;
 using Fancyx.EfCore.BaseEntity;
 using Fancyx.EfCore.Models;
 using Fancyx.SnowflakeId;
@@ -9,7 +10,6 @@ namespace Fancyx.EfCore
 {
     public static class EfCoreExtension
     {
-
         public static IQueryable<T> WhereIf<T>(this IQueryable<T> query, bool condition, Expression<Func<T, bool>> expression) where T : class
         {
             if (condition) return query.Where(expression);
@@ -56,6 +56,18 @@ namespace Fancyx.EfCore
                 Total = await query.AsNoTracking().CountAsync(),
                 Items = await query.AsNoTracking().Skip((current - 1) * pageSize).Take(pageSize).ToListAsync()
             };
+        }
+
+        public static async Task<EntityPaged<TModel>> QueryListFromSqlAsync<TModel>(this IDbConnection connection, int current, int pageSize, string sql, DynamicParameters? parameters = null)
+        {
+            var alias = $"M_{Guid.NewGuid():N}";
+            var countSql = $"select count(*) from ({sql}) as {alias}";
+            var pagingSql = $"select * from ({sql}) as {alias} limit {pageSize} offset {(current - 1) * pageSize}";
+            var total = await connection.ExecuteScalarAsync<int>(countSql, parameters);
+            if (total == 0) return new EntityPaged<TModel>();
+
+            var items = (await connection.QueryAsync<TModel>(pagingSql, parameters)).ToList();
+            return new EntityPaged<TModel>(total, items);
         }
     }
 }
