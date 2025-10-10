@@ -67,6 +67,24 @@ namespace Fancyx.Admin.Application.Service.Feedback
             await _ticketRepository.UpdateAsync(ticket);
         }
 
+        public async Task<TicketDetailsDto> GetTicketDetailsAsync(long id)
+        {
+            var ticket = await _ticketRepository.FindAsync(id) ?? throw new EntityNotFoundException();
+            var model = new TicketDetailsDto
+            {
+                Id = ticket.Id,
+                Title = ticket.Title,
+                Content = ticket.Content,
+                Status = ticket.Status,
+                Rating = ticket.Rating,
+                RatingComment = ticket.RatingComment,
+                CreationTime = ticket.CreationTime,
+                ReplyList = _mapper.Map<List<TicketReplyListDto>>(await _ticketRepository.QueryReplyListAsync(id))
+            };
+            model.ReplyCount = model.ReplyList?.Count ?? 0;
+            return model;
+        }
+
         public async Task<PagedResult<TicketListDto>> GetTicketListAsync(TicketQueryDto dto)
         {
             var data = await _ticketRepository.QueryListAsync(dto.Current, dto.PageSize);

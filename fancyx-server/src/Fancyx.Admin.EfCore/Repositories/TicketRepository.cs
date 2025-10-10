@@ -1,4 +1,5 @@
-﻿using Fancyx.Admin.EfCore.Entities.Feedback;
+﻿using Dapper;
+using Fancyx.Admin.EfCore.Entities.Feedback;
 using Fancyx.Admin.EfCore.Models;
 using Fancyx.Core.AutoInject;
 using Fancyx.Core.Interfaces;
@@ -20,6 +21,12 @@ namespace Fancyx.Admin.EfCore.Repositories
             // TODO:
             var sql = @"";
             return Connection.QueryListFromSqlAsync<TicketItem>(current, pageSize, sql);
+        }
+
+        public async Task<List<TicketReplyInfo>> QueryReplyListAsync(long ticketId)
+        {
+            var sql = @"";
+            return (await Connection.QueryAsync<TicketReplyInfo>(sql, new { id = ticketId })).ToList();
         }
     }
 }

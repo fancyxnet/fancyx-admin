@@ -11,5 +11,6 @@ namespace Fancyx.Admin.Application.IService.Feedback
         Task<PagedResult<UserTicketListDto>> GetUserTicketListAsync(UserTicketQueryDto dto);
         Task ReplyTicketAsync(ReplyTicketDto dto);
         Task EvaluationTicketAsync(EvaluationTicketDto dto);
+        Task<TicketDetailsDto> GetTicketDetailsAsync(long id);
     }
 }

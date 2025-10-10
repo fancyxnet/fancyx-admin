@@ -67,5 +67,13 @@ namespace Fancyx.Admin.Controllers.Feedback
             await _ticketService.EvaluationTicketAsync(dto);
             return Result.Ok();
         }
+
+        [HttpGet("Details")]
+        [HasPermission("Feedback.Ticket.Details")]
+        public async Task<AppResponse<TicketDetailsDto>> GetTicketDetailsAsync(long id)
+        {
+            var data = await _ticketService.GetTicketDetailsAsync(id);
+            return Result.Data(data);
+        }
     }
 }

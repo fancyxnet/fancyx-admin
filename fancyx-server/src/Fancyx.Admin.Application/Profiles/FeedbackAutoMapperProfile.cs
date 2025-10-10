@@ -8,7 +8,8 @@ namespace Fancyx.Admin.Application.Profiles
     {
         public FeedbackAutoMapperProfile()
         {
-            CreateMap<TicketItem, TicketListDto>();
+            CreateMap<TicketItem, TicketListDto>(MemberList.None);
+            CreateMap<TicketReplyInfo, TicketReplyListDto>(MemberList.None);
         }
     }
 }
