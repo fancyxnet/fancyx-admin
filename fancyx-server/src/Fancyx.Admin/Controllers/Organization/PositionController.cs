@@ -12,7 +12,7 @@ namespace Fancyx.Admin.Controllers.Organization
 {
     [Authorize]
     [ApiController]
-    [Route("api/position")]
+    [Route("api/[controller]")]
     public class PositionController : ControllerBase
     {
         private readonly IPositionService _positionService;

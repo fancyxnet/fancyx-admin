@@ -9,7 +9,7 @@ namespace Fancyx.Admin.Controllers.Account
 {
     [Authorize]
     [ApiController]
-    [Route("api/account")]
+    [Route("api/[controller]")]
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;

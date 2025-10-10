@@ -15,7 +15,7 @@ namespace Fancyx.Admin.Controllers.System
 {
     [Authorize]
     [ApiController]
-    [Route("/api/user")]
+    [Route("/api/[controller]")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -30,7 +30,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPost("add")]
+        [HttpPost("Add")]
         [HasPermission("Sys.User.Add")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
         [ApiAccessLog(operateName: "新增用户", operateType: [OperateType.Create], reponseEnable: true)]
@@ -45,7 +45,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpGet("list")]
+        [HttpGet("List")]
         [HasPermission("Sys.User.List")]
         [ApiAccessLog(operateName: "用户分页列表")]
         public async Task<AppResponse<PagedResult<UserListDto>>> GetUserListAsync([FromQuery] UserQueryDto dto)
@@ -59,7 +59,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("delete/{id:long}")]
+        [HttpDelete("Delete/{id:long}")]
         [HasPermission("Sys.User.Delete")]
         public async Task<AppResponse<bool>> DeleteUserAsync(long id)
         {
@@ -72,7 +72,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPost("assignRole")]
+        [HttpPost("AssignRole")]
         [HasPermission("Sys.User.AssignRole")]
         [ApiAccessLog(operateName: "分配角色", operateType: [OperateType.Update], reponseEnable: true)]
         public async Task<AppResponse<bool>> AssignRoleAsync([FromBody] AssignRoleDto dto)
@@ -86,7 +86,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpPut("changeEnabled/{id:long}")]
+        [HttpPut("ChangeEnabled/{id:long}")]
         [HasPermission("Sys.User.SwitchEnabledStatus")]
         [ApiAccessLog(operateName: "切换用户启用状态", operateType: [OperateType.Update], reponseEnable: true)]
         public async Task<AppResponse<bool>> SwitchUserEnabledStatusAsync(long id)
@@ -100,7 +100,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="uid"></param>
         /// <returns></returns>
-        [HttpGet("roles/{uid:long}")]
+        [HttpGet("Roles/{uid:long}")]
         public async Task<AppResponse<long[]>> GetUserRoleIdsAsync(long uid)
         {
             var data = await _userService.GetUserRoleIdsAsync(uid);
@@ -112,7 +112,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPut("resetPwd")]
+        [HttpPut("ResetPwd")]
         [HasPermission("Sys.User.ResetPwd")]
         [ApiAccessLog(operateName: "重置用户密码", operateType: [OperateType.Update], reponseEnable: true)]
         public async Task<AppResponse<bool>> ResetUserPasswordAsync([FromBody] ResetUserPwdDto dto)
@@ -126,7 +126,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="keyword"></param>
         /// <returns></returns>
-        [HttpGet("simpleUserInfos")]
+        [HttpGet("SimpleUserInfos")]
         public async Task<AppResponse<List<UserSimpleInfoDto>>> GetUserSimpleInfosAsync(string? keyword)
         {
             var data = await _userService.GetUserSimpleInfosAsync(keyword);
@@ -138,7 +138,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpGet("export")]
+        [HttpGet("Export")]
         [HasPermission("Sys.User.Export")]
         [ApiAccessLog(operateName: "导出用户列表")]
         public async Task<IActionResult> ExportUserListAsync([FromQuery] UserQueryDto dto)
@@ -155,7 +155,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPut("update")]
+        [HttpPut("Update")]
         [HasPermission("Sys.User.Update")]
         [ApiAccessLog(operateName: "修改用户")]
         public async Task<AppResponse<bool>> UpdateUserAsync([FromBody] UserEditDto dto)

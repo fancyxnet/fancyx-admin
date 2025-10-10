@@ -19,7 +19,7 @@ namespace Fancyx.Admin.Application.Jobs
         private readonly IRepository<Notification> _repository;
         private readonly MqttSharedService _mqttService;
         private readonly IDatabase _database;
-        private readonly RedLockFactory redLockFactory;
+        private readonly RedLockFactory _redLockFactory;
 
         public NotificationJob(ILogger<NotificationJob> logger, IRepository<Notification> repository, MqttSharedService mqttService, IDatabase database
             , RedLockFactory redLockFactory)
@@ -28,7 +28,7 @@ namespace Fancyx.Admin.Application.Jobs
             _repository = repository;
             _mqttService = mqttService;
             _database = database;
-            this.redLockFactory = redLockFactory;
+            _redLockFactory = redLockFactory;
         }
 
         public async Task Invoke()
@@ -39,7 +39,7 @@ namespace Fancyx.Admin.Application.Jobs
                 var wait = TimeSpan.FromSeconds(10);
                 var retry = TimeSpan.FromSeconds(1);
 
-                using var redLock = await redLockFactory.CreateLockAsync(nameof(NotificationJob), expiry, wait, retry);
+                using var redLock = await _redLockFactory.CreateLockAsync(nameof(NotificationJob), expiry, wait, retry);
                 if (redLock.IsAcquired)
                 {
                     var notis = await _repository.Where(x => !x.IsReaded).ToListAsync();

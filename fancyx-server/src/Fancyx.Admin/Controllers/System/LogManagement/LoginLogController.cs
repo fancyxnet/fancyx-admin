@@ -7,7 +7,7 @@ namespace Fancyx.Admin.Controllers.System.LogManagement
 {
     [Authorize]
     [ApiController]
-    [Route("api/loginLog")]
+    [Route("api/[controller]")]
     public class LoginLogController : ControllerBase
     {
         private readonly ILoginLogService _loginLogService;

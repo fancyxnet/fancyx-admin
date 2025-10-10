@@ -12,7 +12,7 @@ namespace Fancyx.Admin.Controllers.System
 {
     [Authorize]
     [ApiController]
-    [Route("api/role")]
+    [Route("api/[controller]")]
     public class RoleController : ControllerBase
     {
         private readonly IRoleService _roleService;
@@ -27,7 +27,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPost("add")]
+        [HttpPost("Add")]
         [HasPermission("Sys.Role.Add")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
         public async Task<AppResponse<bool>> AddRoleAsync([FromBody] RoleDto dto)
@@ -41,7 +41,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpGet("list")]
+        [HttpGet("List")]
         [HasPermission("Sys.Role.List")]
         public async Task<AppResponse<PagedResult<RoleListDto>>> GetRoleListAsync([FromQuery] RoleQueryDto dto)
         {
@@ -54,7 +54,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPut("update")]
+        [HttpPut("Update")]
         [HasPermission("Sys.Role.Update")]
         [ApiAccessLog(operateName: "修改角色", operateType: [OperateType.Update], reponseEnable: true)]
         public async Task<AppResponse<bool>> UpdateRoleAsync([FromBody] RoleDto dto)
@@ -68,7 +68,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("delete/{id:long}")]
+        [HttpDelete("Delete/{id:long}")]
         [HasPermission("Sys.Role.Delete")]
         [ApiAccessLog(operateName: "删除角色", operateType: [OperateType.Delete], reponseEnable: true)]
         public async Task<AppResponse<bool>> DeleteRoleAsync(long id)
@@ -82,7 +82,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPost("assignMenu")]
+        [HttpPost("AssignMenu")]
         [HasPermission("Sys.Role.AssignMenu")]
         [ApiAccessLog(operateName: "分配菜单权限", operateType: [OperateType.Update], reponseEnable: true)]
         public async Task<AppResponse<bool>> AssignMenuAsync([FromBody] AssignMenuDto dto)
@@ -95,7 +95,7 @@ namespace Fancyx.Admin.Controllers.System
         /// 获取角色
         /// </summary>
         /// <returns></returns>
-        [HttpGet("options")]
+        [HttpGet("Options")]
         public async Task<AppResponse<List<AppOption>>> GetRoleOptionsAsync()
         {
             var data = await _roleService.GetRoleOptionsAsync();
@@ -107,7 +107,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("menus/{id:long}")]
+        [HttpGet("Menus/{id:long}")]
         public async Task<AppResponse<long[]>> GetRoleMenuIdsAsync(long id)
         {
             var data = await _roleService.GetRoleMenuIdsAsync(id);
