@@ -25,7 +25,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPost("add")]
+        [HttpPost("Add")]
         [HasPermission("Sys.DictData.Add")]
         public async Task<AppResponse<bool>> AddDictDataAsync(DictDataDto dto)
         {
@@ -38,7 +38,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpGet("list")]
+        [HttpGet("List")]
         [HasPermission("Sys.DictData.List")]
         public async Task<AppResponse<PagedResult<DictDataListDto>>> GetDictDataListAsync([FromQuery] DictDataQueryDto dto)
         {
@@ -51,7 +51,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPut("update")]
+        [HttpPut("Update")]
         [HasPermission("Sys.DictData.Update")]
         public async Task<AppResponse<bool>> UpdateDictDataAsync(DictDataDto dto)
         {
@@ -64,7 +64,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        [HttpDelete("delete")]
+        [HttpDelete("Delete")]
         [HasPermission("Sys.DictData.Delete")]
         [ApiAccessLog(operateName: "删除字典数据", operateType: [OperateType.Delete], reponseEnable: true)]
         public async Task<AppResponse<bool>> DeleteDictDataAsync([FromBody] long[] ids)

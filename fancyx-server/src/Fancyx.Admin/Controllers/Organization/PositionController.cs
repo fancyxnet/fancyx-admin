@@ -27,7 +27,7 @@ namespace Fancyx.Admin.Controllers.Organization
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPost("add")]
+        [HttpPost("Add")]
         [HasPermission("Org.Position.Add")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
         public async Task<AppResponse<bool>> AddPositionAsync([FromBody] PositionDto dto)
@@ -41,7 +41,7 @@ namespace Fancyx.Admin.Controllers.Organization
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpGet("list")]
+        [HttpGet("List")]
         [HasPermission("Org.Position.List")]
         public async Task<AppResponse<PagedResult<PositionListDto>>> GetPositionListAsync([FromQuery] PositionQueryDto dto)
         {
@@ -54,7 +54,7 @@ namespace Fancyx.Admin.Controllers.Organization
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPut("update")]
+        [HttpPut("Update")]
         [HasPermission("Org.Position.Update")]
         public async Task<AppResponse<bool>> UpdatePositionAsync([FromBody] PositionDto dto)
         {
@@ -67,7 +67,7 @@ namespace Fancyx.Admin.Controllers.Organization
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("delete/{id:guid}")]
+        [HttpDelete("Delete/{id:guid}")]
         [HasPermission("Org.Position.Delete")]
         [ApiAccessLog(operateName: "删除职位", operateType: [OperateType.Delete], reponseEnable: true)]
         public async Task<AppResponse<bool>> DeletePositionAsync(long id)
@@ -80,7 +80,7 @@ namespace Fancyx.Admin.Controllers.Organization
         /// 职位分组+职位树
         /// </summary>
         /// <returns></returns>
-        [HttpGet("options")]
+        [HttpGet("Options")]
         public async Task<AppResponse<List<AppOptionTree>>> GetPositionTreeOptionAsync()
         {
             var data = await _positionService.GetPositionTreeOptionAsync();

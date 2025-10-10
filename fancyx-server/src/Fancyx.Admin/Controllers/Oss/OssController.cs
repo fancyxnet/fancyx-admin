@@ -38,14 +38,14 @@ namespace Fancyx.Admin.Controllers.Oss
 
             if (type == StorageType.Local)
             {
-                url = $"file/{url}";
+                url = $"File/{url}";
             }
 
             return Result.Data(url);
         }
 
         [HttpGet]
-        [Route("/file/{*fileName}")]
+        [Route("/File/{*fileName}")]
         public async Task<IActionResult> ImageAsync([FromRoute] string fileName)
         {
             try

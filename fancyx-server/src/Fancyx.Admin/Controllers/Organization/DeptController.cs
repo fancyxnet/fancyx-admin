@@ -27,7 +27,7 @@ namespace Fancyx.Admin.Controllers.Organization
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPost("add")]
+        [HttpPost("Add")]
         [HasPermission("Org.Dept.Add")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
         public async Task<AppResponse<bool>> AddDeptAsync([FromBody] DeptDto dto)
@@ -41,7 +41,7 @@ namespace Fancyx.Admin.Controllers.Organization
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpGet("list")]
+        [HttpGet("List")]
         [HasPermission("Org.Dept.List")]
         public async Task<AppResponse<List<DeptListDto>>> GetDeptListAsync([FromQuery] DeptQueryDto dto)
         {
@@ -54,7 +54,7 @@ namespace Fancyx.Admin.Controllers.Organization
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPut("update")]
+        [HttpPut("Update")]
         [HasPermission("Org.Dept.Update")]
         public async Task<AppResponse<bool>> UpdateDeptAsync([FromBody] DeptDto dto)
         {
@@ -67,7 +67,7 @@ namespace Fancyx.Admin.Controllers.Organization
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("delete/{id:guid}")]
+        [HttpDelete("Delete/{id:guid}")]
         [HasPermission("Org.Dept.Delete")]
         [ApiAccessLog(operateName: "删除部门", operateType: [OperateType.Delete], reponseEnable: true)]
         public async Task<AppResponse<bool>> DeleteDeptAsync(long id)

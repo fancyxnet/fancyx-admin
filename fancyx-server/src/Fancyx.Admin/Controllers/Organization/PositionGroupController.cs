@@ -27,7 +27,7 @@ namespace Fancyx.Admin.Controllers.Organization
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPost("add")]
+        [HttpPost("Add")]
         [HasPermission("Org.PositionGroup.Add")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
         public async Task<AppResponse<bool>> AddPositionGroupAsync([FromBody] PositionGroupDto dto)
@@ -41,7 +41,7 @@ namespace Fancyx.Admin.Controllers.Organization
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpGet("list")]
+        [HttpGet("List")]
         [HasPermission("Org.PositionGroup.List")]
         public async Task<AppResponse<List<PositionGroupListDto>>> GetPositionGroupListAsync([FromQuery] PositionGroupQueryDto dto)
         {
@@ -54,7 +54,7 @@ namespace Fancyx.Admin.Controllers.Organization
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPut("update")]
+        [HttpPut("Update")]
         [HasPermission("Org.PositionGroup.Update")]
         public async Task<AppResponse<bool>> UpdatePositionGroupAsync([FromBody] PositionGroupDto dto)
         {
@@ -67,7 +67,7 @@ namespace Fancyx.Admin.Controllers.Organization
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("delete/{id:guid}")]
+        [HttpDelete("Delete/{id:guid}")]
         [HasPermission("Org.PositionGroup.Delete")]
         [ApiAccessLog(operateName: "删除职位分组", operateType: [OperateType.Delete], reponseEnable: true)]
         public async Task<AppResponse<bool>> DeletePositionGroupAsync(long id)

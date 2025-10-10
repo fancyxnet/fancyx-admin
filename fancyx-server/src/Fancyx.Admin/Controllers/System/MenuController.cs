@@ -27,7 +27,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPost("add")]
+        [HttpPost("Add")]
         [HasPermission("Sys.Menu.Add")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
         public async Task<AppResponse<bool>> AddMenuAsync([FromBody] MenuDto dto)
@@ -41,7 +41,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpGet("list")]
+        [HttpGet("List")]
         [HasPermission("Sys.Menu.List")]
         [ApiAccessLog(operateType: [OperateType.Query])]
         public async Task<AppResponse<List<MenuListDto>>> GetMenuListAsync([FromQuery] MenuQueryDto dto)
@@ -55,7 +55,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPut("update")]
+        [HttpPut("Update")]
         [HasPermission("Sys.Menu.Update")]
         [ApiAccessLog(operateName: "修改菜单", operateType: [OperateType.Update], reponseEnable: true)]
         public async Task<AppResponse<bool>> UpdateMenuAsync([FromBody] MenuDto dto)
@@ -69,7 +69,7 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        [HttpDelete("delete")]
+        [HttpDelete("Delete")]
         [HasPermission("Sys.Menu.Delete")]
         [ApiAccessLog(operateName: "删除菜单", operateType: [OperateType.Delete], reponseEnable: true)]
         public async Task<AppResponse<bool>> DeleteMenusAsync([FromBody] long[] ids)
@@ -82,7 +82,7 @@ namespace Fancyx.Admin.Controllers.System
         /// 获取菜单组成的选项树
         /// </summary>
         /// <returns></returns>
-        [HttpGet("menuOptions")]
+        [HttpGet("MenuOptions")]
         public async Task<AppResponse<Dictionary<string, object>>> GetMenuOptionsAsync(bool onlyMenu, string? keyword)
         {
             var (keys, tree) = await _menuService.GetMenuOptionsAsync(onlyMenu, keyword);
