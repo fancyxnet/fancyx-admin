@@ -11,6 +11,7 @@ import {
 } from '@/api/system/menu';
 import { MenuType } from '@/utils/globalValue.ts';
 import useApp from 'antd/es/app/useApp';
+import IconSelector from '@/components/IconSelector';
 
 interface ModalProps {
   refresh?: () => void;
@@ -152,7 +153,7 @@ const MenuForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
         {(menuType === MenuType.Folder || menuType === MenuType.Menu) && (
           <>
             <Form.Item label="菜单图标" name="icon" rules={[{ max: 64 }]}>
-              <Input placeholder="请输入菜单图标" />
+              <IconSelector placeholder="请选择菜单图标" />
             </Form.Item>
             <Form.Item label="路由地址" name="path" rules={[{ required: true }, { max: 256 }]}>
               <Input placeholder="请输入路由地址" />
