@@ -27,14 +27,12 @@ namespace Fancyx.Admin
             var services = context.Services;
             var configuration = context.Configuration;
 
-            services.Configure<JsonOptions>(options =>
+            services.Configure<MvcNewtonsoftJsonOptions>(options =>
             {
-                options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
-                options.JsonSerializerOptions.Converters.Add(new DateTimeNullableJsonConverter());
-                options.JsonSerializerOptions.Converters.Add(new StringJsonConverter());
-                options.JsonSerializerOptions.Converters.Add(new StringNullableJsonConverter());
-                options.JsonSerializerOptions.Converters.Add(new LongJsonConverter());
-                options.JsonSerializerOptions.Converters.Add(new LongNullableJsonConverter());
+                options.SerializerSettings.Converters.Add(new LongToStringConverter());
+                options.SerializerSettings.Converters.Add(new NullableLongToStringConverter());
+                options.SerializerSettings.Converters.Add(new DateTimeToStringConverter());
+                options.SerializerSettings.Converters.Add(new NullableDateTimeToStringConverter());
             });
 
             //Swagger

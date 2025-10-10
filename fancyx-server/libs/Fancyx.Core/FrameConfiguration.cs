@@ -60,7 +60,7 @@ namespace Fancyx.Core
             var services = builder.Services;
             var configuration = builder.Configuration;
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddMemoryCache();
             services.AddHttpContextAccessor();
             services.AddConnections();
