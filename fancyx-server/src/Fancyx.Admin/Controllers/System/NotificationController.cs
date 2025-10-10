@@ -12,18 +12,18 @@ namespace Fancyx.Admin.Controllers.System
     [Route("api/[controller]")]
     public class NotificationController : ControllerBase
     {
-        private readonly INotificationService notificationService;
+        private readonly INotificationService _notificationService;
 
         public NotificationController(INotificationService notificationService)
         {
-            this.notificationService = notificationService;
+            _notificationService = notificationService;
         }
 
         [HttpPost("Add")]
         [HasPermission("Sys.Notification.Add")]
         public async Task<AppResponse<bool>> AddNotificationAsync([FromBody] NotificationDto dto)
         {
-            await notificationService.AddNotificationAsync(dto);
+            await _notificationService.AddNotificationAsync(dto);
             return Result.Ok();
         }
 
@@ -31,7 +31,7 @@ namespace Fancyx.Admin.Controllers.System
         [HasPermission("Sys.Notification.List")]
         public async Task<AppResponse<PagedResult<NotificationResultDto>>> GetNotificationListAsync([FromQuery] NotificationQueryDto dto)
         {
-            var data = await notificationService.GetNotificationListAsync(dto);
+            var data = await _notificationService.GetNotificationListAsync(dto);
             return Result.Data(data);
         }
 
@@ -39,7 +39,7 @@ namespace Fancyx.Admin.Controllers.System
         [HasPermission("Sys.Notification.Update")]
         public async Task<AppResponse<bool>> UpdateNotificationAsync([FromBody] NotificationDto dto)
         {
-            await notificationService.UpdateNotificationAsync(dto);
+            await _notificationService.UpdateNotificationAsync(dto);
             return Result.Ok();
         }
 
@@ -47,7 +47,7 @@ namespace Fancyx.Admin.Controllers.System
         [HasPermission("Sys.Notification.Delete")]
         public async Task<AppResponse<bool>> DeleteNotificationAsync([FromBody] long[] ids)
         {
-            await notificationService.DeleteNotificationAsync(ids);
+            await _notificationService.DeleteNotificationAsync(ids);
             return Result.Ok();
         }
     }

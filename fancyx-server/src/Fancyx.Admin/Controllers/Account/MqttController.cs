@@ -13,11 +13,11 @@ namespace Fancyx.Admin.Controllers.Account
     [Route("api/[controller]/[action]")]
     public class MqttController : ControllerBase
     {
-        private readonly IDatabase redisDb;
+        private readonly IDatabase _redisDb;
 
         public MqttController(IDatabase redisDb)
         {
-            this.redisDb = redisDb;
+            _redisDb = redisDb;
         }
 
         [HttpPost]
@@ -27,20 +27,20 @@ namespace Fancyx.Admin.Controllers.Account
 
             var codeKey = MqttCacheKey.MqttTokenCode(code);
 
-            if (await redisDb.KeyExistsAsync(codeKey))
+            if (await _redisDb.KeyExistsAsync(codeKey))
             {
-                var ttl = await redisDb.KeyTimeToLiveAsync(codeKey);
+                var ttl = await _redisDb.KeyTimeToLiveAsync(codeKey);
                 var ttlValue = ttl.HasValue ? ttl.Value.Seconds : 0;
                 if (ttlValue > 60)
                 {
-                    return Result.Data(new MqttToken { Token = redisDb.StringGet(codeKey), Expired = ttlValue });
+                    return Result.Data(new MqttToken { Token = _redisDb.StringGet(codeKey), Expired = ttlValue });
                 }
             }
 
             var token = Guid.NewGuid().ToString();
             var expired = TimeHelper.Instance.GetCurrentTimestamp() + 3600;
-            await redisDb.StringSetAsync(MqttCacheKey.MqttToken(token), expired, TimeSpan.FromHours(1));
-            await redisDb.StringSetAsync(codeKey, token, TimeSpan.FromHours(1));
+            await _redisDb.StringSetAsync(MqttCacheKey.MqttToken(token), expired, TimeSpan.FromHours(1));
+            await _redisDb.StringSetAsync(codeKey, token, TimeSpan.FromHours(1));
             return Result.Data(new MqttToken { Expired = expired, Token = token });
         }
     }

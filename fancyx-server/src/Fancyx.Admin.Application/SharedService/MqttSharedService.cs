@@ -14,23 +14,23 @@ namespace Fancyx.Admin.Application.SharedService
 {
     public class MqttSharedService : ISingletonDependency
     {
-        private readonly MqttServer mqttServer;
-        private readonly IConfiguration configuration;
-        private readonly IDatabase redisDb;
-        private readonly string clientId = "fancyx_admin_";
+        private readonly MqttServer _mqttServer;
+        private readonly IConfiguration _configuration;
+        private readonly IDatabase _redisDb;
+        private readonly string _clientId = "fancyx_admin_";
 
         public MqttSharedService(MqttServer mqttServer, IConfiguration configuration, IDatabase redisDb)
         {
-            this.mqttServer = mqttServer;
-            this.configuration = configuration;
-            this.redisDb = redisDb;
-            clientId += Guid.NewGuid().ToString("N");
+            _mqttServer = mqttServer;
+            _configuration = configuration;
+            _redisDb = redisDb;
+            _clientId += Guid.NewGuid().ToString("N");
         }
 
         public async Task ValidatingConnectionAsync(ValidatingConnectionEventArgs e)
         {
-            var isValidToken = await redisDb.KeyExistsAsync(MqttCacheKey.MqttToken(e.UserName)); //此处将userName作为token使用
-            var isValidAccount = e.UserName == configuration["Mqtt:UserName"] && e.Password == configuration["Mqtt:Password"];
+            var isValidToken = await _redisDb.KeyExistsAsync(MqttCacheKey.MqttToken(e.UserName)); //此处将userName作为token使用
+            var isValidAccount = e.UserName == _configuration["Mqtt:UserName"] && e.Password == _configuration["Mqtt:Password"];
             if (!(isValidToken || isValidAccount))
             {
                 e.ReasonCode = MqttConnectReasonCode.BadUserNameOrPassword;
@@ -58,10 +58,10 @@ namespace Fancyx.Admin.Application.SharedService
             }
             var message = new MqttApplicationMessageBuilder().WithTopic(topic).WithPayload(payloadString).Build();
 
-            await mqttServer.InjectApplicationMessage(
+            await _mqttServer.InjectApplicationMessage(
                 new InjectedMqttApplicationMessage(message)
                 {
-                    SenderClientId = clientId
+                    SenderClientId = _clientId
                 });
 
             return true;

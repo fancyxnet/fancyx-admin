@@ -13,11 +13,11 @@ namespace Fancyx.Admin.Controllers.Monitor
     [Route("api/[controller]/[action]")]
     public class OnlineUserController : ControllerBase
     {
-        private readonly IOnlineUserService onlineUserService;
+        private readonly IOnlineUserService _onlineUserService;
 
         public OnlineUserController(IOnlineUserService onlineUserService)
         {
-            this.onlineUserService = onlineUserService;
+            _onlineUserService = onlineUserService;
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Fancyx.Admin.Controllers.Monitor
         [ApiAccessLog(operateName: "在线用户列表", operateType: [OperateType.Query])]
         public async Task<AppResponse<PagedResult<OnlineUserResultDto>>> GetOnlineUserListAsync([FromQuery] OnlineUserSearchDto dto)
         {
-            var data = await onlineUserService.GetOnlineUserListAsync(dto);
+            var data = await _onlineUserService.GetOnlineUserListAsync(dto);
             return Result.Data(data);
         }
 
@@ -44,7 +44,7 @@ namespace Fancyx.Admin.Controllers.Monitor
         [ApiAccessLog(operateName: "注销用户会话", operateType: [OperateType.Delete])]
         public async Task<AppResponse<bool>> LogoutAsync(string key)
         {
-            await onlineUserService.LogoutAsync(key);
+            await _onlineUserService.LogoutAsync(key);
             return Result.Ok();
         }
     }

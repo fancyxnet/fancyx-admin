@@ -15,11 +15,11 @@ namespace Fancyx.Admin.Controllers.System
     [Route("api/[controller]")]
     public class TenantController : ControllerBase
     {
-        private readonly ITenantService tenantService;
+        private readonly ITenantService _tenantService;
 
         public TenantController(ITenantService tenantService)
         {
-            this.tenantService = tenantService;
+            _tenantService = tenantService;
         }
 
         [HttpPost("Add")]
@@ -28,7 +28,7 @@ namespace Fancyx.Admin.Controllers.System
         [ApiAccessLog(operateName: "添加租户", operateType: [OperateType.Create], reponseEnable: true)]
         public async Task<AppResponse<bool>> AddTenantAsync([FromBody] TenantDto dto)
         {
-            await tenantService.AddTenantAsync(dto);
+            await _tenantService.AddTenantAsync(dto);
             return Result.Ok();
         }
 
@@ -41,7 +41,7 @@ namespace Fancyx.Admin.Controllers.System
         [HasPermission("Sys.Tenant.List")]
         public async Task<AppResponse<PagedResult<TenantResultDto>>> GetTenantListAsync([FromQuery] TenantSearchDto dto)
         {
-            var data = await tenantService.GetTenantListAsync(dto);
+            var data = await _tenantService.GetTenantListAsync(dto);
             return Result.Data(data);
         }
 
@@ -55,7 +55,7 @@ namespace Fancyx.Admin.Controllers.System
         [ApiAccessLog(operateName: "修改租户", operateType: [OperateType.Update], reponseEnable: true)]
         public async Task<AppResponse<bool>> UpdateTenantAsync([FromBody] TenantDto dto)
         {
-            await tenantService.UpdateTenantAsync(dto);
+            await _tenantService.UpdateTenantAsync(dto);
             return Result.Ok();
         }
 
@@ -69,7 +69,7 @@ namespace Fancyx.Admin.Controllers.System
         [ApiAccessLog(operateName: "删除租户", operateType: [OperateType.Delete], reponseEnable: true)]
         public async Task<AppResponse<bool>> DeleteTenantAsync(long id)
         {
-            await tenantService.DeleteTenantAsync(id);
+            await _tenantService.DeleteTenantAsync(id);
             return Result.Ok();
         }
     }
