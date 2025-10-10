@@ -1,10 +1,12 @@
 using AutoMapper;
+
 using Fancyx.Admin.Application.IService.System;
 using Fancyx.Admin.Application.IService.System.Dtos;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
 using Fancyx.EfCore;
 using Fancyx.Utils;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.Application.Service.System
@@ -55,9 +57,9 @@ namespace Fancyx.Admin.Application.Service.System
 
         public async Task<bool> DeleteMenusAsync(long[] ids)
         {
-            var hasChildren =
-                await _menuRepository.AnyAsync(x => x.ParentId.HasValue && ids.Contains(x.ParentId.Value));
-            if (hasChildren)
+            var childIds = await _menuRepository.Where(x => x.ParentId.HasValue && ids.Contains(x.ParentId.Value)).Select(x => x.Id).ToListAsync();
+            var isCheckAllChildren = childIds.All(c => ids.Contains(c));
+            if (childIds.Count > 0 && !isCheckAllChildren)
             {
                 throw new BusinessException("存在子菜单，无法删除");
             }
@@ -117,7 +119,7 @@ namespace Fancyx.Admin.Application.Service.System
                 return (keys, list);
             }
 
-            var top = all.Where(x => !x.ParentId.HasValue && x.MenuType == MenuType.Menu)
+            var top = all.Where(x => !x.ParentId.HasValue && (x.MenuType == MenuType.Folder || x.MenuType == MenuType.Menu))
                 .OrderBy(x => x.Sort).ToList();
             var topMap = new List<MenuOptionTreeDto>();
             foreach (var item in top)
