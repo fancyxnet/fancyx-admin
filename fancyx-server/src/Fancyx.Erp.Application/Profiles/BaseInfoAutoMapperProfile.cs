@@ -9,7 +9,7 @@ namespace Fancyx.Erp.Application.Profiles
         public BaseInfoAutoMapperProfile()
         {
             CreateMap<CustomerDto, Customer>(MemberList.None);
-            CreateMap<StoreHouse, StoreHouseListDto>(MemberList.None);
+            CreateMap<Warehouse, StoreHouseListDto>(MemberList.None);
         }
     }
 }

@@ -1,0 +1,86 @@
+﻿using Fancyx.Erp.Application.IService.Products;
+using Fancyx.Erp.Application.IService.Products.Dtos;
+using Fancyx.Shared.Models;
+using Fancyx.Shared.WebApi.Attributes;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Fancyx.Erp.Controllers.Products
+{
+    [Authorize]
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ProductAttrController : ControllerBase
+    {
+        public ProductAttrController(IProductAttrService productAttrService)
+        {
+            ProductAttrService = productAttrService;
+        }
+
+        public IProductAttrService ProductAttrService { get; }
+
+        [HttpPost("Add")]
+        [HasPermission("Erp.ProductAttr.Add")]
+        public async Task<AppResponse<bool>> AddProductAttrAsync([FromBody] ProductAttrDto dto)
+        {
+            await ProductAttrService.AddProductAttrAsync(dto);
+            return Result.Ok();
+        }
+
+        [HttpPost("List")]
+        [HasPermission("Erp.ProductAttr.List")]
+        public async Task<AppResponse<PagedResult<ProductAttrListDto>>> GetProductAttrListAsync([FromQuery] ProductAttrQueryDto dto)
+        {
+            var data = await ProductAttrService.GetProductAttrListAsync(dto);
+            return Result.Data(data);
+        }
+
+        [HttpPost("Update")]
+        [HasPermission("Erp.ProductAttr.Update")]
+        public async Task<AppResponse<bool>> UpdateProductAttrAsync([FromBody] ProductAttrDto dto)
+        {
+            await ProductAttrService.UpdateProductAttrAsync(dto);
+            return Result.Ok();
+        }
+
+        [HttpPost("Delete/{id}")]
+        [HasPermission("Erp.ProductAttr.Delete")]
+        public async Task<AppResponse<bool>> DeleteProductAttrAsync(long id)
+        {
+            await ProductAttrService.DeleteProductAttrAsync(id);
+            return Result.Ok();
+        }
+
+        [HttpPost("Value/List")]
+        [HasPermission("Erp.ProductAttrValue.Add")]
+        public async Task<AppResponse<PagedResult<ProductAttrValueListDto>>> GetProductAttrValueListAsync([FromQuery] ProductAttrValueQueryDto dto)
+        {
+            var data = await ProductAttrService.GetProductAttrValueListAsync(dto);
+            return Result.Data(data);
+        }
+
+        [HttpPost("Value/Add")]
+        [HasPermission("Erp.ProductAttrValue.Add")]
+        public async Task<AppResponse<bool>> AddProductAttrValueAsync([FromBody] ProductAttrValueDto dto)
+        {
+            await ProductAttrService.AddProductAttrValueAsync(dto);
+            return Result.Ok();
+        }
+
+        [HttpPost("Value/Update")]
+        [HasPermission("Erp.ProductAttrValue.Update")]
+        public async Task<AppResponse<bool>> UpdateProductAttrValueAsync([FromBody] ProductAttrValueDto dto)
+        {
+            await ProductAttrService.UpdateProductAttrValueAsync(dto);
+            return Result.Ok();
+        }
+
+        [HttpPost("Value/Delete")]
+        [HasPermission("Erp.ProductAttrValue.Delete")]
+        public async Task<AppResponse<bool>> DeleteProductAttrValueAsync(long id)
+        {
+            await ProductAttrService.DeleteProductAttrValueAsync(id);
+            return Result.Ok();
+        }
+    }
+}

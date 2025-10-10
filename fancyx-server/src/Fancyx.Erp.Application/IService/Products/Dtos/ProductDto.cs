@@ -8,6 +8,7 @@
         public string? Remark { get; set; }
         public bool IsEnabled { get; set; }
         public long BrandId { get; set; }
-        public long ClassifyId { get; set; }
+        public long CategoryId { get; set; }
+        public List<ProductBindAttrValueDto>? Attrs { get; set; }
     }
 }

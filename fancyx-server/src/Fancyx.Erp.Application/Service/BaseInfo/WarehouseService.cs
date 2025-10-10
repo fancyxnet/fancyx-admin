@@ -8,25 +8,25 @@ using Fancyx.Shared.Models;
 
 namespace Fancyx.Erp.Application.Service.BaseInfo
 {
-    public class StoreHouseService : IStoreHouseService
+    public class WarehouseService : IWarehouseService
     {
-        private readonly IRepository<StoreHouse> _storeHouseRepository;
+        private readonly IRepository<Warehouse> _storeHouseRepository;
         private readonly IMapper _mapper;
 
-        public StoreHouseService(IRepository<StoreHouse> storeHouseRepository, IMapper mapper)
+        public WarehouseService(IRepository<Warehouse> storeHouseRepository, IMapper mapper)
         {
             _storeHouseRepository = storeHouseRepository;
             _mapper = mapper;
         }
 
-        public async Task AddStoreHouseAsync(StoreHouseDto dto)
+        public async Task AddWarehouseAsync(StoreHouseDto dto)
         {
             var codeIsExist = await _storeHouseRepository.AnyAsync(x => x.Code == dto.Code);
             if (codeIsExist)
             {
                 throw new BusinessException("编码已存在");
             }
-            var storeHouse = new StoreHouse()
+            var storeHouse = new Warehouse()
             {
                 Code = dto.Code,
                 Name = dto.Name,
@@ -36,12 +36,12 @@ namespace Fancyx.Erp.Application.Service.BaseInfo
             await _storeHouseRepository.InsertAsync(storeHouse);
         }
 
-        public async Task DeleteStoreHouseAsync(long id)
+        public async Task DeleteWarehouseAsync(long id)
         {
             await _storeHouseRepository.DeleteAsync(x => x.Id == id);
         }
 
-        public async Task<PagedResult<StoreHouseListDto>> GetStoreHouseListAsync(StoreHouseQueryDto dto)
+        public async Task<PagedResult<StoreHouseListDto>> GetWarehouseListAsync(StoreHouseQueryDto dto)
         {
             var resp = await _storeHouseRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.Name), x => x.Name.StartsWith(dto.Name!))
@@ -49,7 +49,7 @@ namespace Fancyx.Erp.Application.Service.BaseInfo
             return new PagedResult<StoreHouseListDto>(resp.Total, _mapper.Map<List<StoreHouseListDto>>(resp.Items));
         }
 
-        public async Task UpdateStoreHouseAsync(StoreHouseDto dto)
+        public async Task UpdateWarehouseAsync(StoreHouseDto dto)
         {
             var storeHouse = await _storeHouseRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
             var codeIsExist = storeHouse.Code != dto.Code && await _storeHouseRepository.AnyAsync(x => x.Code == dto.Code);
