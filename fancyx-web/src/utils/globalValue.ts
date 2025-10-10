@@ -41,6 +41,7 @@ export const PermissionConstant = {
  */
 export const StaticRoutes = {
   Login: '/auth/login',
+  External: '/external/',
 };
 
 /**

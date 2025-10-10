@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import UserStore from '@/store/userStore.ts';
+import { StaticRoutes } from '@/utils/globalValue';
 
 const homeTab = { key: '/', label: '首页', closable: false };
 
@@ -12,6 +13,10 @@ export const tabSlice = createSlice({
   reducers: {
     open: (state, action) => {
       const menus = UserStore.menuList;
+      //外链特殊处理，截取external/后的路径
+      if (action.payload.startsWith(StaticRoutes.External)) {
+        action.payload = action.payload.replace(StaticRoutes.External, '');
+      }
       const tmp = menus.find((h) => h.path === action.payload);
       if (!tmp) return;
 
