@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<Version>1.0.0</Version>
+	<Authors>hedonghua</Authors>
+	<Description>Consul服务注册与发现,配置中心</Description>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Winton.Extensions.Configuration.Consul" Version="3.4.0" />
+		<PackageReference Include="Consul" Version="1.7.14.7" />
+		<PackageReference Include="Grpc.Net.Client" Version="2.64.0" />
+	</ItemGroup>
+</Project>

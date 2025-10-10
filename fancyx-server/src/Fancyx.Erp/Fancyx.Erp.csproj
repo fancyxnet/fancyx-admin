@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\libs\Fancyx.Swagger\Fancyx.Swagger.csproj" />
+		<ProjectReference Include="..\Fancyx.Erp.Application\Fancyx.Erp.Application.csproj" />
+		<ProjectReference Include="..\Fancyx.Shared.WebApi\Fancyx.Shared.WebApi.csproj" />
+	</ItemGroup>
+</Project>

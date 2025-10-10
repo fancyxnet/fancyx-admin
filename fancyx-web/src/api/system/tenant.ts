@@ -6,7 +6,7 @@ import type { AppResponse, PagedResult, PageSearch } from '@/types/api';
  * @param dto
  */
 export function addTenant(dto: TenantDto) {
-  return httpClient.post<TenantDto, AppResponse<boolean>>('/api/tenant/add', dto);
+  return httpClient.post<TenantDto, AppResponse<boolean>>('/admin-api/tenant/add', dto);
 }
 
 /**
@@ -14,7 +14,7 @@ export function addTenant(dto: TenantDto) {
  * @param dto
  */
 export function getTenantList(dto: TenantQueryDto) {
-  return httpClient.get<TenantQueryDto, AppResponse<PagedResult<TenantListDto>>>('/api/tenant/list', { params: dto });
+  return httpClient.get<TenantQueryDto, AppResponse<PagedResult<TenantListDto>>>('/admin-api/tenant/list', { params: dto });
 }
 
 /**
@@ -22,7 +22,7 @@ export function getTenantList(dto: TenantQueryDto) {
  * @param dto
  */
 export function updateTenant(dto: TenantDto) {
-  return httpClient.put<TenantDto, AppResponse<boolean>>('/api/tenant/update', dto);
+  return httpClient.put<TenantDto, AppResponse<boolean>>('/admin-api/tenant/update', dto);
 }
 
 /**

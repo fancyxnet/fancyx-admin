@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "新建配置文件",
+    "Projects": [
+      {
+        "Path": "src\\Fancyx.Admin\\Fancyx.Admin.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "src\\Fancyx.Gateway.Ocelot\\Fancyx.Gateway.Ocelot.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

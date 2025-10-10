@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\libs\Fancyx.EfCore\Fancyx.EfCore.csproj" />
+	  <ProjectReference Include="..\..\libs\Fancyx.EventBus\Fancyx.EventBus.csproj" />
+	  <ProjectReference Include="..\..\libs\Fancyx.Core\Fancyx.Core.csproj" />
+	  <ProjectReference Include="..\..\libs\Fancyx.Serilog\Fancyx.Serilog.csproj" />
+	  <ProjectReference Include="..\..\libs\Fancyx.Utils\Fancyx.Utils.csproj" />
+	  <ProjectReference Include="..\Fancyx.Shared\Fancyx.Shared.csproj" />
+	</ItemGroup>
+</Project>

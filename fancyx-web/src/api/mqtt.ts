@@ -6,7 +6,7 @@ import type { AppResponse } from '@/types/api';
  * @param code
  */
 export function getMqttToken(code: string) {
-  return httpClient.post<string, AppResponse<MqttToken>>('/api/mqtt/getMqttToken?code=' + code);
+  return httpClient.post<string, AppResponse<MqttToken>>('/admin-api/mqtt/getMqttToken?code=' + code);
 }
 
 export interface MqttToken {

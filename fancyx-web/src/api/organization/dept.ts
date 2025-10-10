@@ -6,7 +6,7 @@ import type { AppResponse } from '@/types/api';
  * @param dto
  */
 export function addDept(dto: DeptDto) {
-  return httpClient.post<DeptDto, AppResponse<boolean>>('/api/dept/add', dto);
+  return httpClient.post<DeptDto, AppResponse<boolean>>('/admin-api/dept/add', dto);
 }
 
 /**
@@ -14,7 +14,7 @@ export function addDept(dto: DeptDto) {
  * @param dto
  */
 export function getDeptList(dto: DeptQueryDto) {
-  return httpClient.get<DeptQueryDto, AppResponse<DeptListDto[]>>('/api/dept/list', { params: dto });
+  return httpClient.get<DeptQueryDto, AppResponse<DeptListDto[]>>('/admin-api/dept/list', { params: dto });
 }
 
 /**
@@ -22,7 +22,7 @@ export function getDeptList(dto: DeptQueryDto) {
  * @param dto
  */
 export function updateDept(dto: DeptDto) {
-  return httpClient.put<DeptDto, AppResponse<boolean>>('/api/dept/update', dto);
+  return httpClient.put<DeptDto, AppResponse<boolean>>('/admin-api/dept/update', dto);
 }
 
 /**
@@ -30,7 +30,7 @@ export function updateDept(dto: DeptDto) {
  * @param id 部门ID
  */
 export function deleteDept(id: string) {
-  return httpClient.delete<string, AppResponse<boolean>>('/api/dept/delete/' + id);
+  return httpClient.delete<string, AppResponse<boolean>>('/admin-api/dept/delete/' + id);
 }
 
 /**
@@ -39,7 +39,7 @@ export function deleteDept(id: string) {
  * @returns
  */
 export function getDeptSimpleInfos(keyword?: string) {
-  return httpClient.get<string, AppResponse<DeptSimpleInfoDto[]>>('/api/dept/getDeptSimpleInfos', { params: { keyword } });
+  return httpClient.get<string, AppResponse<DeptSimpleInfoDto[]>>('/admin-api/dept/getDeptSimpleInfos', { params: { keyword } });
 }
 
 export interface DeptDto {

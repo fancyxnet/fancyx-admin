@@ -6,7 +6,7 @@ import type { AppResponse, PageSearch, AppOption, PagedResult } from '@/types/ap
  * @param dto
  */
 export function addDictType(dto: DictTypeDto) {
-  return httpClient.post<DictTypeDto, AppResponse<boolean>>('/api/dictType/addDictType', dto);
+  return httpClient.post<DictTypeDto, AppResponse<boolean>>('/admin-api/dictType/addDictType', dto);
 }
 
 /**
@@ -14,7 +14,7 @@ export function addDictType(dto: DictTypeDto) {
  */
 export function getDictTypeList(dto: DictTypeSearchDto) {
   return httpClient.get<DictTypeSearchDto, AppResponse<PagedResult<DictTypeResultDto>>>(
-    '/api/dictType/getDictTypeList',
+    '/admin-api/dictType/getDictTypeList',
     { params: dto },
   );
 }
@@ -24,7 +24,7 @@ export function getDictTypeList(dto: DictTypeSearchDto) {
  * @param dto
  */
 export function updateDictType(dto: DictTypeDto) {
-  return httpClient.put<DictTypeDto, AppResponse<boolean>>('/api/dictType/updateDictType', dto);
+  return httpClient.put<DictTypeDto, AppResponse<boolean>>('/admin-api/dictType/updateDictType', dto);
 }
 
 /**
@@ -32,7 +32,7 @@ export function updateDictType(dto: DictTypeDto) {
  * @param dictType
  */
 export function deleteDictType(dictType: string) {
-  return httpClient.delete<string, AppResponse<boolean>>('/api/dictType/deleteDictType/' + dictType);
+  return httpClient.delete<string, AppResponse<boolean>>('/admin-api/dictType/deleteDictType/' + dictType);
 }
 
 /**
@@ -40,7 +40,7 @@ export function deleteDictType(dictType: string) {
  * @param ids
  */
 export function deleteDictTypes(ids: string[]) {
-  return httpClient.delete<string[], AppResponse<boolean>>('/api/dictType/deleteDictTypes', {
+  return httpClient.delete<string[], AppResponse<boolean>>('/admin-api/dictType/deleteDictTypes', {
     data: ids,
   });
 }
@@ -51,7 +51,7 @@ export function deleteDictTypes(ids: string[]) {
  * @returns
  */
 export function getDictDataOptions(type: string) {
-  return httpClient.get<string, AppResponse<AppOption[]>>('/api/dictType/getDictDataOptions?type=' + type);
+  return httpClient.get<string, AppResponse<AppOption[]>>('/admin-api/dictType/getDictDataOptions?type=' + type);
 }
 
 export interface DictTypeDto {

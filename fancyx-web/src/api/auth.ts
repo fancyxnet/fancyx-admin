@@ -6,7 +6,7 @@ import type { AppResponse } from '@/types/api';
  * @param dto
  */
 export function login(dto: LoginDto) {
-  return httpClient.post<LoginDto, AppResponse<LoginResultDto>>('/api/account/login', dto);
+  return httpClient.post<LoginDto, AppResponse<LoginResultDto>>('/admin-api/account/login', dto);
 }
 
 /**
@@ -14,7 +14,7 @@ export function login(dto: LoginDto) {
  * @param dto
  */
 export function smsLogin(dto: SmsLoginDto) {
-  return httpClient.post<SmsLoginDto, AppResponse<LoginResultDto>>('/api/account/SmsLogin', dto);
+  return httpClient.post<SmsLoginDto, AppResponse<LoginResultDto>>('/admin-api/account/SmsLogin', dto);
 }
 
 /**
@@ -22,7 +22,7 @@ export function smsLogin(dto: SmsLoginDto) {
  * @param phone
  */
 export function sendLoginSmsCode(phone: string) {
-  return httpClient.post<string, AppResponse<string>>('/api/account/SendLoginSmsCode?phone=' + phone);
+  return httpClient.post<string, AppResponse<string>>('/admin-api/account/SendLoginSmsCode?phone=' + phone);
 }
 
 /**
@@ -31,7 +31,7 @@ export function sendLoginSmsCode(phone: string) {
  * @returns
  */
 export function refreshToken(refreshToken: string) {
-  return httpClient.post<string, AppResponse<TokenResultDto>>('/api/account/refreshToken?refreshToken=' + refreshToken);
+  return httpClient.post<string, AppResponse<TokenResultDto>>('/admin-api/account/refreshToken?refreshToken=' + refreshToken);
 }
 
 /**
@@ -39,7 +39,7 @@ export function refreshToken(refreshToken: string) {
  * @param info
  */
 export function updateInfo(info: PersonalInfoDto) {
-  return httpClient.put<PersonalInfoDto, AppResponse<boolean>>('/api/account/updateInfo', info);
+  return httpClient.put<PersonalInfoDto, AppResponse<boolean>>('/admin-api/account/updateInfo', info);
 }
 
 /**
@@ -47,21 +47,21 @@ export function updateInfo(info: PersonalInfoDto) {
  * @param dto
  */
 export function updatePwd(dto: UserPwdDto) {
-  return httpClient.put<UserPwdDto, AppResponse<boolean>>('/api/account/updatePwd', dto);
+  return httpClient.put<UserPwdDto, AppResponse<boolean>>('/admin-api/account/updatePwd', dto);
 }
 
 /**
  * 注销
  */
 export function signOut() {
-  return httpClient.post<AppResponse<boolean>>('/api/account/signOut');
+  return httpClient.post<AppResponse<boolean>>('/admin-api/account/signOut');
 }
 
 /**
  * 用户权限信息
  */
 export function getUserAuth() {
-  return httpClient.get<unknown, AppResponse<UserAuthInfoDto>>('/api/account/userAuth');
+  return httpClient.get<unknown, AppResponse<UserAuthInfoDto>>('/admin-api/account/userAuth');
 }
 
 export interface LoginDto {

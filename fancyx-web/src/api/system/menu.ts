@@ -6,7 +6,7 @@ import type { AppResponse } from '@/types/api';
  * @param dto
  */
 export function addMenu(dto: MenuDto) {
-  return httpClient.post<MenuDto, AppResponse<boolean>>('/api/menu/add', dto);
+  return httpClient.post<MenuDto, AppResponse<boolean>>('/admin-api/menu/add', dto);
 }
 
 /**
@@ -14,7 +14,7 @@ export function addMenu(dto: MenuDto) {
  * @param dto
  */
 export function getMenuList(dto: MenuQueryDto) {
-  return httpClient.get<MenuQueryDto, AppResponse<MenuListDto[]>>('/api/menu/list', { params: dto });
+  return httpClient.get<MenuQueryDto, AppResponse<MenuListDto[]>>('/admin-api/menu/list', { params: dto });
 }
 
 /**
@@ -22,7 +22,7 @@ export function getMenuList(dto: MenuQueryDto) {
  * @param dto
  */
 export function updateMenu(dto: MenuDto) {
-  return httpClient.put<MenuDto, AppResponse<boolean>>('/api/menu/update', dto);
+  return httpClient.put<MenuDto, AppResponse<boolean>>('/admin-api/menu/update', dto);
 }
 
 /**
@@ -30,7 +30,7 @@ export function updateMenu(dto: MenuDto) {
  * @param ids
  */
 export function deleteMenu(ids: string[]) {
-  return httpClient.delete<string[], AppResponse<boolean>>('/api/menu/delete', {
+  return httpClient.delete<string[], AppResponse<boolean>>('/admin-api/menu/delete', {
     data: ids,
   });
 }
@@ -41,7 +41,7 @@ export function deleteMenu(ids: string[]) {
  * @param keyword
  */
 export function getMenuOptions(onlyMenu: boolean, keyword?: string) {
-  return httpClient.get<number, AppResponse<MenuOptionResultDto>>('/api/menu/menuOptions', {
+  return httpClient.get<number, AppResponse<MenuOptionResultDto>>('/admin-api/menu/menuOptions', {
     params: {
       onlyMenu: onlyMenu,
       keyword: keyword,

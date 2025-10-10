@@ -6,7 +6,7 @@ import type { AppResponse, PagedResult, PageSearch, AppOption } from '@/types/ap
  * @param dto
  */
 export function addRole(dto: RoleDto) {
-  return httpClient.post<RoleDto, AppResponse<boolean>>('/api/role/add', dto);
+  return httpClient.post<RoleDto, AppResponse<boolean>>('/admin-api/role/add', dto);
 }
 
 /**
@@ -14,7 +14,7 @@ export function addRole(dto: RoleDto) {
  * @param dto
  */
 export function getRoleList(dto: RoleQueryDto) {
-  return httpClient.get<RoleQueryDto, AppResponse<PagedResult<RoleListDto>>>('/api/role/list', { params: dto });
+  return httpClient.get<RoleQueryDto, AppResponse<PagedResult<RoleListDto>>>('/admin-api/role/list', { params: dto });
 }
 
 /**
@@ -22,7 +22,7 @@ export function getRoleList(dto: RoleQueryDto) {
  * @param dto
  */
 export function updateRole(dto: RoleDto) {
-  return httpClient.put<RoleDto, AppResponse<boolean>>('/api/role/update', dto);
+  return httpClient.put<RoleDto, AppResponse<boolean>>('/admin-api/role/update', dto);
 }
 
 /**
@@ -38,14 +38,14 @@ export function deleteRole(id: string) {
  * @param dto
  */
 export function assignMenu(dto: AssignMenuDto) {
-  return httpClient.post<AssignMenuDto, AppResponse<boolean>>('/api/role/assignMenu', dto);
+  return httpClient.post<AssignMenuDto, AppResponse<boolean>>('/admin-api/role/assignMenu', dto);
 }
 
 /**
  * 获取角色
  */
 export function getRoleOptions() {
-  return httpClient.get<unknown, AppResponse<AppOption[]>>('/api/role/options');
+  return httpClient.get<unknown, AppResponse<AppOption[]>>('/admin-api/role/options');
 }
 
 /**
@@ -61,7 +61,7 @@ export function getRoleMenuIds(id: string) {
  * @param dto
  */
 export function assignData(dto: AssignDataDto) {
-  return httpClient.post<AssignDataDto, AppResponse<boolean>>('/api/role/assignData', dto);
+  return httpClient.post<AssignDataDto, AppResponse<boolean>>('/admin-api/role/assignData', dto);
 }
 
 /**
@@ -70,7 +70,7 @@ export function assignData(dto: AssignDataDto) {
  * @returns
  */
 export function getRoleDeptPowerInfo(roleId: string) {
-  return httpClient.get<string, AppResponse<RoleDeptPowerInfo>>('/api/role/GetRoleDeptPowerInfo?roleId=' + roleId);
+  return httpClient.get<string, AppResponse<RoleDeptPowerInfo>>('/admin-api/role/GetRoleDeptPowerInfo?roleId=' + roleId);
 }
 
 /**
@@ -79,7 +79,7 @@ export function getRoleDeptPowerInfo(roleId: string) {
  * @returns
  */
 export function assignDataScope(dto: AssignDataScopeDto) {
-  return httpClient.post<AssignDataScopeDto, AppResponse<boolean>>('/api/role/assignDataScope', dto);
+  return httpClient.post<AssignDataScopeDto, AppResponse<boolean>>('/admin-api/role/assignDataScope', dto);
 }
 
 export interface RoleDto {

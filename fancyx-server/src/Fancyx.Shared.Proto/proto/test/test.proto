@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package test;
+option csharp_namespace = "Fancyx.Internal.Grpc";
+
+import "test/test_model.proto";
+
+service Test{
+	rpc GetTestInfo (GetTestInfoRequest) returns (GetTestInfoResponse);
+}

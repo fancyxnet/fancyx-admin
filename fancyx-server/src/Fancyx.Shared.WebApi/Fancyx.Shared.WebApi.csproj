@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\libs\Fancyx.Core\Fancyx.Core.csproj" />
+		<ProjectReference Include="..\..\libs\Fancyx.Redis\Fancyx.Redis.csproj" />
+		<ProjectReference Include="..\..\libs\Fancyx.Consul\Fancyx.Consul.csproj" />
+		<ProjectReference Include="..\..\libs\Fancyx.SnowflakeId\Fancyx.SnowflakeId.csproj" />
+		<ProjectReference Include="..\..\libs\Fancyx.Utils\Fancyx.Utils.csproj" />
+		<ProjectReference Include="..\Fancyx.Shared\Fancyx.Shared.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
+		<PackageReference Include="Grpc.AspNetCore" Version="2.64.0" />
+		<PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.64.0" />
+		<PackageReference Include="Grpc.Net.ClientFactory" Version="2.64.0" />
+		<PackageReference Include="Google.Protobuf" Version="3.32.0" />
+		<PackageReference Include="Calzolari.Grpc.AspNetCore.Validation" Version="8.1.0" />
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
+	</ItemGroup>
+</Project>
