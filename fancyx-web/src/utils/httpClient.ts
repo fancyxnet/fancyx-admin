@@ -7,6 +7,11 @@ import dayjs from 'dayjs';
 class HttpClient {
   private readonly instance: AxiosInstance;
   allowAnonymousApis: string[] = ['/admin-api/account/login']; //允许匿名访问接口
+  
+  // 错误提示防抖相关
+  private static lastErrorTime = 0;
+  private static errorTimeout = 3000; // 3秒内只显示一次相同错误
+  private static errorQueue: Array<{msg: string, jumpLogin: boolean}> = [];
 
   constructor(config?: AxiosRequestConfig) {
     this.instance = axios.create(config);
@@ -62,11 +67,41 @@ class HttpClient {
               break;
           }
         }
-        message.error(msg, 1, () => {
-          if (jumpLogin) {
+        
+        // 处理错误提示的防抖逻辑
+        const currentTime = Date.now();
+        
+        // 登录过期错误总是立即显示
+        if (jumpLogin) {
+          message.error(msg, 1, () => {
             window.location.href = StaticRoutes.Login;
+          });
+        } else {
+          // 对于其他错误，实现防抖处理
+          if (currentTime - HttpClient.lastErrorTime > HttpClient.errorTimeout) {
+            // 只有当时间间隔超过设定值时才显示新的错误提示
+            HttpClient.lastErrorTime = currentTime;
+            
+            message.error(msg, 3, () => {
+              // 检查是否有队列中的错误需要显示
+              if (HttpClient.errorQueue.length > 0) {
+                const nextError = HttpClient.errorQueue.shift();
+                if (nextError) {
+                  HttpClient.lastErrorTime = Date.now(); // 更新最后显示时间
+                  message.error(nextError.msg, 3, () => {
+                    if (nextError.jumpLogin) {
+                      window.location.href = StaticRoutes.Login;
+                    }
+                  });
+                }
+              }
+            });
+          } else if (HttpClient.errorQueue.length === 0) {
+            // 只保留第一个错误在队列中，避免队列过长
+            HttpClient.errorQueue.push({ msg, jumpLogin });
           }
-        });
+        }
+        
         return Promise.reject(error);
       },
     );
