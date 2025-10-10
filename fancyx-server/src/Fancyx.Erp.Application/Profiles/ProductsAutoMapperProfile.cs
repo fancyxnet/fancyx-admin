@@ -13,6 +13,10 @@ namespace Fancyx.Erp.Application.Profiles
             CreateMap<ProductDto, Product>(MemberList.None);
             CreateMap<ProductUpdateDto, Product>(MemberList.None);
             CreateMap<ProductItem, ProductListDto>(MemberList.None);
+            CreateMap<ProductAttrDto, ProductAttr>(MemberList.None);
+            CreateMap<ProductAttrValueDto, ProductAttrValue>(MemberList.None);
+            CreateMap<ProductAttr, ProductAttrListDto>(MemberList.None);
+            CreateMap<ProductAttrValue, ProductAttrValueListDto>(MemberList.None);
         }
     }
 }

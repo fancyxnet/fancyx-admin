@@ -18,7 +18,7 @@ namespace Fancyx.Erp.EfCore.Repositories
 
         public Task<EntityPaged<ProductItem>> QueryProductListAsync(int current, int pageSize, string? name)
         {
-            // TODO: 
+            // TODO:
             var sql = "";
             var parameters = new DynamicParameters();
             if (!string.IsNullOrEmpty(name))
@@ -26,6 +26,12 @@ namespace Fancyx.Erp.EfCore.Repositories
                 parameters.Add("name", name);
             }
             return Connection.QueryListFromSqlAsync<ProductItem>(current, pageSize, sql, parameters);
+        }
+
+        public Task<ProductSlimInfo?> GetProductSlimInfoAsync(long id)
+        {
+            var sql = "select name from product where id = @id";
+            return Connection.ExecuteScalarAsync<ProductSlimInfo>(sql, new { id = id });
         }
     }
 }
