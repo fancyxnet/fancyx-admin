@@ -30,7 +30,7 @@ const routes: RouteObject[] = [
         element: <NotFound />,
       },
       {
-        path: 'profile',
+        path: '/profile',
         element: <Profile />,
       },
       {
@@ -41,4 +41,11 @@ const routes: RouteObject[] = [
   },
 ];
 
-export { routes };
+const needDisplayRoutes = [
+  {
+    path: '/profile',
+    title: '个人中心',
+  }
+]
+
+export { routes, needDisplayRoutes };

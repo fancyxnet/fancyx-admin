@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import UserStore from '@/store/userStore.ts';
 import { StaticRoutes } from '@/utils/globalValue';
+import { needDisplayRoutes } from '@/router/index'
 
 const homeTab = { key: '/', label: '首页', closable: false };
 
@@ -17,8 +18,14 @@ export const tabSlice = createSlice({
       if (action.payload.startsWith(StaticRoutes.External)) {
         action.payload = action.payload.replace(StaticRoutes.External, '');
       }
-      const tmp = menus.find((h) => h.path === action.payload);
-      if (!tmp) return;
+      let currentTitle = menus.find((h) => h.path === action.payload)?.title;
+      if (!currentTitle) {
+        const findStaticRoute = needDisplayRoutes.find(x => x.path === action.payload);
+        if (!findStaticRoute) {
+          return;
+        }
+        currentTitle = findStaticRoute.title;
+      }
 
       const exist = state.tabs.some((h) => h.key === action.payload);
       //存在不添加，只设置活动标签key
@@ -28,7 +35,7 @@ export const tabSlice = createSlice({
       }
       state.tabs.push({
         key: action.payload,
-        label: tmp.title,
+        label: currentTitle,
         closable: true,
       });
       state.activeKey = action.payload;

@@ -16,6 +16,7 @@ import {
   DoubleRightOutlined,
   ReloadOutlined,
 } from '@ant-design/icons';
+import { needDisplayRoutes } from '@/router';
 
 const StyledTabs = styled(Tabs)`
   .ant-tabs-nav {
@@ -70,10 +71,21 @@ const Tab = () => {
       navigate('/');
       dispatch(setActiveKey(newActiveKey));
     }
-    const tmp = UserStore.menuList.find((h) => h.path === newActiveKey);
-    if (!tmp) return;
 
-    navigate(tmp.path);
+    const tmp = UserStore.menuList.find((h) => h.path === newActiveKey);
+    if (!tmp) {
+      const findStaticRoute = needDisplayRoutes.find(x => x.path === newActiveKey);
+      if (!findStaticRoute) {
+        return;
+      }
+      navigate(findStaticRoute.path);
+    } else {
+      if (tmp.isExternal) {
+        navigate(`/external/${tmp.path}`);
+      } else {
+        navigate(tmp.path);
+      }
+    }
     dispatch(setActiveKey(newActiveKey));
   };
   const onEdit = (targetKey: string, action: string) => {
