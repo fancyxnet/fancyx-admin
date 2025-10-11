@@ -10,6 +10,15 @@
       "DownstreamPathTemplate": "/api/{url}"
     },
     {
+      "UpstreamPathTemplate": "/File/{url}",
+      "ServiceName": "fancyx-admin-api",
+      "UseServiceDiscovery": true,
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "DownstreamPathTemplate": "/File/{url}"
+    },
+    {
       "UpstreamPathTemplate": "/erp-api/{url}",
       "ServiceName": "fancyx-erp-api",
       "UseServiceDiscovery": true,

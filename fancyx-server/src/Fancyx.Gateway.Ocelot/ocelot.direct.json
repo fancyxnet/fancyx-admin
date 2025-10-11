@@ -14,6 +14,19 @@
       "DownstreamPathTemplate": "/api/{url}"
     },
     {
+      "UpstreamPathTemplate": "/File/{url}",
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5001
+        }
+      ],
+      "DownstreamPathTemplate": "/File/{url}"
+    },
+    {
       "UpstreamPathTemplate": "/erp-api/{url}",
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
