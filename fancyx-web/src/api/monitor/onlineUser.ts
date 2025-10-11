@@ -1,12 +1,12 @@
 import httpClient from '@/utils/httpClient';
-import type { AppResponse, PagedResult, PageSearch } from '@/types/api';
+import type { AppResponse, PageSearch } from '@/types/api';
 
 /**
  * 在线用户列表
  * @param dto
  */
 export function getOnlineUsers(dto: OnlineUserSearchDto) {
-  return httpClient.get<OnlineUserSearchDto, AppResponse<PagedResult<OnlineUserResultDto>>>(
+  return httpClient.get<OnlineUserSearchDto, AppResponse<OnlineUserResultDto[]>>(
     '/admin-api/OnlineUser/GetOnlineUserList',
     {
       params: dto,

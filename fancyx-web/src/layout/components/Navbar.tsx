@@ -44,12 +44,11 @@ const Navbar = observer(() => {
     dispatch(toggleCollapsed());
   };
 
-  const onClick = ({ key }: { key: string }) => {
+  const onClick = async ({ key }: { key: string }) => {
     if (key === 'logout') {
-      signOut().then(() => {
-        clearToken();
-        navigate(StaticRoutes.Login);
-      });
+      clearToken();
+      navigate(StaticRoutes.Login);
+      await signOut();
     } else if (key === 'profile') {
       navigate('/profile');
       dispatch(open('/profile'));

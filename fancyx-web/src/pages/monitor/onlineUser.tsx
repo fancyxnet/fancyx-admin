@@ -75,10 +75,14 @@ const OnlineUserList: React.FC = () => {
     <SmartTable
       ref={tableRef}
       columns={columns}
+      showPagination={false}
       rowKey="sessionId"
       request={async (params) => {
         const { data } = await getOnlineUsers(params);
-        return data;
+        return {
+          totalCount: data.length,
+          items: data,
+        };
       }}
       searchItems={
         <Form.Item label="账号" name="userName">

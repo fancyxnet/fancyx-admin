@@ -8,6 +8,7 @@ export interface SmartTableProps<T> extends Omit<TableProps<T>, 'columns'> {
   searchItems?: React.ReactNode | React.ReactNode[];
   toolbar?: React.ReactNode | React.ReactNode[];
   selection?: boolean;
+  showPagination?: boolean;
 }
 
 export interface SmartTableRef {

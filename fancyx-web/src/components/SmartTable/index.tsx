@@ -11,7 +11,7 @@ type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection'
 
 const SmartTable = forwardRef<SmartTableRef, SmartTableProps<any>>(
   <T extends object = any>(props: SmartTableProps<T>, ref: ForwardedRef<SmartTableRef>) => {
-    const { columns, selection = false, ...restProps } = props;
+    const { columns, selection = false, showPagination = true, ...restProps } = props;
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [queryParams, setQueryParams] = useState({
@@ -40,9 +40,12 @@ const SmartTable = forwardRef<SmartTableRef, SmartTableProps<any>>(
       if (props.request) {
         setLoading(true);
         try {
-          const result = await props.request(queryParams);
-          //判断当前页是否有数据，无数据设置第1页
-          if (result.items === null || result.items.length === 0) {
+          // 如果关闭分页，传递pageSize为-1表示获取全部数据
+          const requestParams = showPagination ? queryParams : { ...queryParams, pageSize: -1 };
+          const result = await props.request(requestParams);
+          
+          // 只有在显示分页时才需要处理分页逻辑
+          if (showPagination && (result.items === null || result.items.length === 0)) {
             if (result.totalCount > 0) {
               setQueryParams({
                 ...queryParams,
@@ -200,7 +203,7 @@ const SmartTable = forwardRef<SmartTableRef, SmartTableProps<any>>(
             columns={withEmptyValue(columns)}
             rowKey={props.rowKey ?? 'id'}
             size={tableSize}
-            pagination={{
+            pagination={showPagination ? {
               current: queryParams.current,
               pageSize: queryParams.pageSize,
               total: total,
@@ -208,12 +211,28 @@ const SmartTable = forwardRef<SmartTableRef, SmartTableProps<any>>(
               showQuickJumper: true,
               pageSizeOptions: [10, 20, 50, 100].map(String),
               showTotal: (total: number) => `共 ${total} 条`,
-            }}
+            } : false}
+            scroll={undefined}
             onChange={handleTableChange}
             loading={loading}
             rowSelection={selection ? rowSelection : undefined}
           />
-        </Card>
+            {/* 当关闭分页但需要显示总条数时，在表格下方显示总条数 */}
+            {!showPagination && (
+              <div 
+                className="smart-table-total-count"
+                style={{
+                  textAlign: 'right',
+                  padding: '12px 16px 0',
+                  fontSize: '14px',
+                  color: '#8c8c8c',
+                  borderTop: '1px solid #f0f0f0'
+                }}
+              >
+                共 {total} 条数据
+              </div>
+            )}
+          </Card>
       </div>
     );
   },

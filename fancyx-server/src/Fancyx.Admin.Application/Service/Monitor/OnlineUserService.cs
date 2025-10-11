@@ -1,8 +1,10 @@
 ﻿using Fancyx.Admin.Application.IService.Monitor;
 using Fancyx.Admin.Application.IService.Monitor.Dtos;
 using Fancyx.Admin.EfCore.Entities.System;
+using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
 using Fancyx.Redis;
+using Fancyx.Shared.Consts;
 using Fancyx.Shared.Keys;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,15 +15,17 @@ namespace Fancyx.Admin.Application.Service.Monitor
         private readonly IRepository<LoginLog> _loginLogRepository;
         private readonly IHybridCache _hybridCache;
         private readonly IRepository<User> _userRepository;
+        private readonly ICurrentUser _currentUser;
 
-        public OnlineUserService(IRepository<LoginLog> loginLogRepository, IHybridCache hybridCache, IRepository<User> userRepository)
+        public OnlineUserService(IRepository<LoginLog> loginLogRepository, IHybridCache hybridCache, IRepository<User> userRepository, ICurrentUser currentUser)
         {
             _loginLogRepository = loginLogRepository;
             _hybridCache = hybridCache;
             _userRepository = userRepository;
+            _currentUser = currentUser;
         }
 
-        public async Task<PagedResult<OnlineUserResultDto>> GetOnlineUserListAsync(OnlineUserSearchDto dto)
+        public async Task<List<OnlineUserResultDto>> GetOnlineUserListAsync(OnlineUserSearchDto dto)
         {
             var pattern = SystemCacheKey.AccessToken("*:*");
             if (!string.IsNullOrEmpty(dto.UserName))
@@ -33,23 +37,20 @@ namespace Fancyx.Admin.Application.Service.Monitor
                 }
             }
             var tokenKeys = await _hybridCache.KeyPatternAsync(pattern);
-            var resp = new PagedResult<OnlineUserResultDto>(dto) { TotalCount = tokenKeys.Count };
-            if (tokenKeys.Count <= 0) return resp;
-            resp.Items = new List<OnlineUserResultDto>();
+            if (tokenKeys.Count <= 0) return [];
+
+            var result = new List<OnlineUserResultDto>();
+            var currentSessionId = _currentUser.FindClaim(AdminConsts.SessionId).Value;
             var loginLogs = await _loginLogRepository.Where(x => x.CreationTime <= x.CreationTime.AddDays(1)).OrderByDescending(x => x.CreationTime).ToListAsync();
             foreach (var key in tokenKeys)
             {
-                if (resp.Items.Count >= dto.PageSize)
-                {
-                    return resp;
-                }
                 var arr = key.Split(':');
                 if (arr.Length < 3) continue;
                 var userId = arr[1];
                 var sessionId = arr[2];
                 var loginLog = loginLogs.FirstOrDefault(x => x.SessionId == sessionId);
                 if (loginLog == null) continue;
-                resp.Items.Add(new OnlineUserResultDto
+                result.Add(new OnlineUserResultDto
                 {
                     UserId = userId,
                     UserName = loginLog.UserName,
@@ -60,8 +61,17 @@ namespace Fancyx.Admin.Application.Service.Monitor
                     SessionId = loginLog.SessionId
                 });
             }
+            if (!string.IsNullOrEmpty(currentSessionId))
+            {
+                var index = result.FindIndex(x=>x.SessionId == currentSessionId);
+                if (index > 0)
+                {
+                    result.Insert(0, result[index]);
+                    result.RemoveAt(index + 1);
+                }
+            }
 
-            return resp;
+            return result;
         }
 
         public async Task LogoutAsync(string key)

@@ -28,7 +28,7 @@ namespace Fancyx.Admin.Controllers.Monitor
         [HttpGet]
         [HasPermission("Monitor.OnlineUser")]
         [ApiAccessLog(operateName: "在线用户列表", operateType: [OperateType.Query])]
-        public async Task<AppResponse<PagedResult<OnlineUserResultDto>>> GetOnlineUserListAsync([FromQuery] OnlineUserSearchDto dto)
+        public async Task<AppResponse<List<OnlineUserResultDto>>> GetOnlineUserListAsync([FromQuery] OnlineUserSearchDto dto)
         {
             var data = await _onlineUserService.GetOnlineUserListAsync(dto);
             return Result.Data(data);
