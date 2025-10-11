@@ -90,10 +90,10 @@
 ## 系统截图
 
 1. 登录
-![登录](./docs/login.png "login")
+![登录](./docs/img/login.png "login")
 
 2. 首页
-![首页](./docs/home.png "home")
+![首页](./docs/img/home.png "home")
 
 ## 快速上手
 
@@ -101,11 +101,11 @@
 
 **后端**
 
-![后端目录结构](./docs/project_struct.png "fancyx-server")
+![后端目录结构](./docs/img/project_struct.png "fancyx-server")
 
 **前端**
 
-![前端目录结构](./docs/frontend_struct.png "fancyx-web")
+![前端目录结构](./docs/img/frontend_struct.png "fancyx-web")
 
 ### 网关配置文件
 
@@ -209,7 +209,7 @@
 
 * 确认使用Consul服务注册发现还是直连，详见配置：`Services.Mode`
 * 修改配置数据库驱动,Redis配置
-* 执行根目录下`dbscripts/pgsql.sql`或`dbscripts/mysql.sql`，会创建表结构，初始化数据
+* 执行根目录下`docs/db/pgsql.sql`或`docs/db/mysql.sql`，会创建表结构，初始化数据
 * 修改OSS配置，使用本地目录（盘符一定要有，目录不存在会自动创建）
 * 使用VS2022启动网关和你需要的服务（如Fancyx.Admin）
 
