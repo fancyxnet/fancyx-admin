@@ -104,25 +104,35 @@
     }
   }
 
-  .changelog-item {
-    padding: 10px 0;
+  .compact-changelog {
+    .compact-changelog-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
 
-    .changelog-list {
-      padding-left: 20px;
-      margin-top: 8px;
+    .compact-changelog-entry {
+      padding-left: 0;
+      position: relative;
+    }
 
-      li {
-        margin-bottom: 6px;
-        position: relative;
+    .compact-changelog-date {
+      color: #000000;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
 
-        &::before {
-          content: "•";
-          position: absolute;
-          left: -15px;
-          color: vars.$primary-color;
-          font-weight: bold;
-        }
-      }
+    .compact-changelog-items {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .compact-changelog-item {
+      font-size: 13px;
+      line-height: 1.4;
+      color: vars.$text-base;
+      padding: 2px 0;
     }
   }
 

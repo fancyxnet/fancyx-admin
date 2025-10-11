@@ -1,4 +1,4 @@
-import { Card, Row, Col, Typography, Timeline, Button, Space, Tooltip, Tag, Divider, Image } from 'antd';
+import { Card, Row, Col, Typography, Button, Space, Tooltip, Tag, Divider, Image } from 'antd';
 import {
   GithubOutlined,
   BookOutlined,
@@ -18,6 +18,10 @@ const { Title, Text, Paragraph } = Typography;
 const HomePage = () => {
   // 更新日志数据
   const changelog = [
+    {
+      date: '2025-10-11',
+      items: ['微服务架构、界面设置、移除在线用户分页'],
+    },
     {
       date: '2025-07-29',
       items: ['token定时检查、刷新'],
@@ -218,7 +222,12 @@ const HomePage = () => {
                 <div className="donation-container">
                   <div className="qrcode-placeholder">
                     <div className="qrcode-icon">
-                      <Image src={AliPay} />
+                      <Image 
+                        src={AliPay} 
+                        preview={{ 
+                          zIndex: 9999, 
+                        }} 
+                      />
                     </div>
                   </div>
                   <div className="donation-text">
@@ -244,28 +253,22 @@ const HomePage = () => {
                     </Title>
                   </Space>
                 }
-                className="dashboard-card"
+                className="dashboard-card compact-changelog"
               >
-                <Timeline
-                  mode="left"
-                  items={changelog.map((log, index) => {
-                    return {
-                      color: '#7E57C2',
-                      children: (
-                        <div className="changelog-item" key={index}>
-                          <Space>
-                            <Text strong>{log.date}</Text>
-                          </Space>
-                          <ul className="changelog-list">
-                            {log.items.map((item, i) => (
-                              <li key={i}>{item}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      ),
-                    };
-                  })}
-                />
+                <div className="compact-changelog-container">
+                  {changelog.map((log, index) => (
+                    <div key={index} className="compact-changelog-entry">
+                      <div className="compact-changelog-date">{log.date}</div>
+                      <div className="compact-changelog-items">
+                        {log.items.map((item, i) => (
+                          <div key={i} className="compact-changelog-item">
+                            {item}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </Card>
             </Col>
           </Row>
