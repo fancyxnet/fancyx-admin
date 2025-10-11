@@ -23,14 +23,12 @@ namespace Fancyx.Erp
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            context.Services.Configure<JsonOptions>(options =>
+            context.Services.Configure<MvcNewtonsoftJsonOptions>(options =>
             {
-                options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
-                options.JsonSerializerOptions.Converters.Add(new DateTimeNullableJsonConverter());
-                options.JsonSerializerOptions.Converters.Add(new StringJsonConverter());
-                options.JsonSerializerOptions.Converters.Add(new StringNullableJsonConverter());
-                options.JsonSerializerOptions.Converters.Add(new LongJsonConverter());
-                options.JsonSerializerOptions.Converters.Add(new LongNullableJsonConverter());
+                options.SerializerSettings.Converters.Add(new LongToStringConverter());
+                options.SerializerSettings.Converters.Add(new NullableLongToStringConverter());
+                options.SerializerSettings.Converters.Add(new DateTimeToStringConverter());
+                options.SerializerSettings.Converters.Add(new NullableDateTimeToStringConverter());
             });
 
             context.Services.AddSwaggerGenPro("Fancyx Erp Api", c =>
