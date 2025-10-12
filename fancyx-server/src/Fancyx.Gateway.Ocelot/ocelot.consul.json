@@ -36,6 +36,28 @@
       "Type": "Consul",
       "Token": "99abbc21-ddaf-1cd4-a301-51c0df690841",
       "UseOnlyHealthyServices": true
+    },
+    "CorsOptions": {
+      "AllowCredentials": true,
+      "AllowedOrigins": [
+        "https://crackerwork.cn",
+        "http://localhost:8080"
+      ],
+      "AllowedMethods": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "OPTIONS"
+      ],
+      "AllowedHeaders": [
+        "Content-Type",
+        "Authorization",
+        "X-Requested-With"
+      ],
+      "ExposedHeaders": [
+        "Content-Disposition"
+      ]
     }
   }
 }
