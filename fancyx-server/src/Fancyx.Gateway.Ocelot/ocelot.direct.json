@@ -41,28 +41,6 @@
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost:9000",
-    "CorsOptions": {
-      "AllowCredentials": true,
-      "AllowedOrigins": [
-        "https://crackerwork.cn",
-        "http://localhost:8080"
-      ],
-      "AllowedMethods": [
-        "GET",
-        "POST",
-        "PUT",
-        "DELETE",
-        "OPTIONS"
-      ],
-      "AllowedHeaders": [
-        "Content-Type",
-        "Authorization",
-        "X-Requested-With"
-      ],
-      "ExposedHeaders": [
-        "Content-Disposition"
-      ]
-    }
+    "BaseUrl": "http://localhost:9000"
   }
 }
