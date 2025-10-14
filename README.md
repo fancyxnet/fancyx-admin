@@ -236,3 +236,12 @@
 * 邮箱：fancyxnet@gmail.com/crackerwork@outlook.com
 * QQ：3805712581
 * 在线文档： https://doc.crackerwork.cn
+
+## 赞赏列表
+
+*排名按照赞赏时间正序排列*
+
+| 名称      | 金额 |
+| ----------- | ----------- |
+| *杰      | 10元       |
+| **彬   | 16.8元        |
