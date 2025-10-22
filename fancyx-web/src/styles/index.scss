@@ -138,18 +138,19 @@ html, body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    background-color: vars.$bg-base;
   }
   
   .ant-layout-sider {
     min-height: 100%;
-    background-color: transparent;
+    background-color: vars.$bg-base;
   }
 
   //侧边栏标题
   .sidebar-header {
     height: 50px; // 严格限定高度
     padding: 0 20px;
-    background: linear-gradient(135deg, vars.$primary-color 0%, vars.$primary-hover 100%);
+    background: var(--primary-color);
     display: flex;
     align-items: center;
     position: relative;
