@@ -31,7 +31,7 @@ const SearchModal = forwardRef<SearchModalRef, any>((_, ref) => {
               <Link
                 to={menu.path}
                 onClick={() => {
-                  dispatch(open(menu.path));
+                  dispatch(open({ name: menu.title, path: menu.path }));
                   setIsOpenModal(false);
                   setSearchText('');
                 }}

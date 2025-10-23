@@ -15,11 +15,14 @@ import SmartTable from '@/components/SmartTable';
 import DictTypeForm, { type ModalRef } from '@/pages/system/components/DictTypeForm.tsx';
 import ProIcon from '@/components/ProIcon';
 import useApp from 'antd/es/app/useApp';
+import { useDispatch } from 'react-redux';
+import { open } from '@/store/tabStore.ts';
 
 const DictList: React.FC = () => {
   const tableRef = useRef<SmartTableRef>(null);
   const modalRef = useRef<ModalRef>(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { message, modal } = useApp();
   const columns: SmartTableColumnType[] = [
     {
@@ -70,7 +73,9 @@ const DictList: React.FC = () => {
               icon={<ProIcon icon="iconify:mi:database" />}
               key="data"
               onClick={() => {
-                navigate(`/system/dictItem/${record.dictType}`);
+                const dataPath = `/system/dictItem/${record.dictType}`;
+                navigate(dataPath);
+                dispatch(open({ name: `【${record.name}】字典数据`, path: dataPath }))
               }}
             >
               数据

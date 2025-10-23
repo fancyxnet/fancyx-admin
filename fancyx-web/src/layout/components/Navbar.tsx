@@ -51,7 +51,7 @@ const Navbar = observer(() => {
       await signOut();
     } else if (key === 'profile') {
       navigate('/profile');
-      dispatch(open('/profile'));
+      dispatch(open({ path: '/profile' }));
     }
   };
 

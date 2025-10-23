@@ -25,7 +25,7 @@ const Sidebar = observer(() => {
   const sidebarMode = useSelector(selectSidebarMode);
 
   const addTab = (menu: FrontendMenu) => {
-    dispatch(open(menu.path));
+    dispatch(open({ name: menu.title, path: menu.path }));
   };
 
   function convertToAntdMenuItems(menus: FrontendMenu[]) {

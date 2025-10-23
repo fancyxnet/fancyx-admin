@@ -1,9 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import UserStore from '@/store/userStore.ts';
-import { StaticRoutes } from '@/utils/globalValue';
 import { needDisplayRoutes } from '@/router/index'
+import type { GlobalTabItem } from '@/types/global';
 
-const homeTab = { key: '/', label: '首页', closable: false };
+const homeTab: GlobalTabItem = { key: '/', label: '首页', closable: false };
 
 export const tabSlice = createSlice({
   name: 'tab',
@@ -13,32 +12,27 @@ export const tabSlice = createSlice({
   },
   reducers: {
     open: (state, action) => {
-      const menus = UserStore.menuList;
-      //外链特殊处理，截取external/后的路径
-      if (action.payload.startsWith(StaticRoutes.External)) {
-        action.payload = action.payload.replace(StaticRoutes.External, '');
-      }
-      let currentTitle = menus.find((h) => h.path === action.payload)?.title;
-      if (!currentTitle) {
-        const findStaticRoute = needDisplayRoutes.find(x => x.path === action.payload);
+      let { name, path } = action.payload;
+      if (!name) {
+        const findStaticRoute = needDisplayRoutes.find(x => x.path === path);
         if (!findStaticRoute) {
           return;
         }
-        currentTitle = findStaticRoute.title;
+        name = findStaticRoute.title;
       }
 
-      const exist = state.tabs.some((h) => h.key === action.payload);
+      const exist = state.tabs.some((h) => h.key === path);
       //存在不添加，只设置活动标签key
       if (exist) {
-        state.activeKey = action.payload;
+        state.activeKey = path;
         return;
       }
       state.tabs.push({
-        key: action.payload,
-        label: currentTitle,
+        key: path,
+        label: name ?? '未知',
         closable: true,
       });
-      state.activeKey = action.payload;
+      state.activeKey = path;
     },
     remove: (state, action) => {
       //不能移除home页

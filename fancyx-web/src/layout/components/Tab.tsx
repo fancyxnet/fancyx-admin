@@ -2,7 +2,6 @@ import { Tabs } from 'antd';
 import { selectTabs, selectActiveKey, remove, setActiveKey } from '@/store/tabStore.ts';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
-import UserStore from '@/store/userStore.ts';
 import styled from 'styled-components';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -16,7 +15,7 @@ import {
   DoubleRightOutlined,
   ReloadOutlined,
 } from '@ant-design/icons';
-import { needDisplayRoutes } from '@/router';
+import type { GlobalTabItem } from '@/types/global';
 
 const StyledTabs = styled(Tabs)`
   .ant-tabs-nav {
@@ -48,7 +47,7 @@ const StyledTabs = styled(Tabs)`
 `;
 
 const Tab = () => {
-  const tabs: any[] = useSelector(selectTabs);
+  const tabs: GlobalTabItem[] = useSelector(selectTabs);
   const activeKey = useSelector(selectActiveKey);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -71,22 +70,10 @@ const Tab = () => {
       navigate('/');
       dispatch(setActiveKey(newActiveKey));
     }
-
-    const tmp = UserStore.menuList.find((h) => h.path === newActiveKey);
-    if (!tmp) {
-      const findStaticRoute = needDisplayRoutes.find(x => x.path === newActiveKey);
-      if (!findStaticRoute) {
-        return;
-      }
-      navigate(findStaticRoute.path);
-    } else {
-      if (tmp.isExternal) {
-        navigate(`/external/${tmp.path}`);
-      } else {
-        navigate(tmp.path);
-      }
+    if (tabs.some((h) => h.key === newActiveKey)) {
+      navigate(newActiveKey);
+      dispatch(setActiveKey(newActiveKey));
     }
-    dispatch(setActiveKey(newActiveKey));
   };
   const onEdit = (targetKey: string, action: string) => {
     if (action === 'remove') {
