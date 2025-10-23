@@ -6,7 +6,7 @@ import type { AppResponse, PagedResult, PageSearch, AppOption } from '@/types/ap
  * @param dto
  */
 export function addRole(dto: RoleDto) {
-  return httpClient.post<RoleDto, AppResponse<boolean>>('/admin-api/role/add', dto);
+  return httpClient.post<RoleDto, AppResponse<boolean>>('/admin-api/Role/Add', dto);
 }
 
 /**
@@ -14,7 +14,7 @@ export function addRole(dto: RoleDto) {
  * @param dto
  */
 export function getRoleList(dto: RoleQueryDto) {
-  return httpClient.get<RoleQueryDto, AppResponse<PagedResult<RoleListDto>>>('/admin-api/role/list', { params: dto });
+  return httpClient.get<RoleQueryDto, AppResponse<PagedResult<RoleListDto>>>('/admin-api/Role/List', { params: dto });
 }
 
 /**
@@ -22,7 +22,7 @@ export function getRoleList(dto: RoleQueryDto) {
  * @param dto
  */
 export function updateRole(dto: RoleDto) {
-  return httpClient.put<RoleDto, AppResponse<boolean>>('/admin-api/role/update', dto);
+  return httpClient.put<RoleDto, AppResponse<boolean>>('/admin-api/Role/Update', dto);
 }
 
 /**
@@ -30,7 +30,7 @@ export function updateRole(dto: RoleDto) {
  * @param id
  */
 export function deleteRole(id: string) {
-  return httpClient.delete<string, AppResponse<boolean>>(`/api/role/delete/${id}`);
+  return httpClient.delete<string, AppResponse<boolean>>(`/api/Role/Delete/${id}`);
 }
 
 /**
@@ -38,14 +38,14 @@ export function deleteRole(id: string) {
  * @param dto
  */
 export function assignMenu(dto: AssignMenuDto) {
-  return httpClient.post<AssignMenuDto, AppResponse<boolean>>('/admin-api/role/assignMenu', dto);
+  return httpClient.post<AssignMenuDto, AppResponse<boolean>>('/admin-api/Role/AssignMenu', dto);
 }
 
 /**
  * 获取角色
  */
 export function getRoleOptions() {
-  return httpClient.get<unknown, AppResponse<AppOption[]>>('/admin-api/role/options');
+  return httpClient.get<unknown, AppResponse<AppOption[]>>('/admin-api/Role/Options');
 }
 
 /**
@@ -53,7 +53,7 @@ export function getRoleOptions() {
  * @param id
  */
 export function getRoleMenuIds(id: string) {
-  return httpClient.get<string, AppResponse<string[]>>(`/api/role/menus/${id}`);
+  return httpClient.get<string, AppResponse<string[]>>(`/api/Role/Menus/${id}`);
 }
 
 /**
@@ -61,7 +61,7 @@ export function getRoleMenuIds(id: string) {
  * @param dto
  */
 export function assignData(dto: AssignDataDto) {
-  return httpClient.post<AssignDataDto, AppResponse<boolean>>('/admin-api/role/assignData', dto);
+  return httpClient.post<AssignDataDto, AppResponse<boolean>>('/admin-api/Role/AssignData', dto);
 }
 
 /**
@@ -70,7 +70,7 @@ export function assignData(dto: AssignDataDto) {
  * @returns
  */
 export function getRoleDeptPowerInfo(roleId: string) {
-  return httpClient.get<string, AppResponse<RoleDeptPowerInfo>>('/admin-api/role/GetRoleDeptPowerInfo?roleId=' + roleId);
+  return httpClient.get<string, AppResponse<RoleDeptPowerInfo>>('/admin-api/Role/GetRoleDeptPowerInfo?roleId=' + roleId);
 }
 
 /**
@@ -79,7 +79,7 @@ export function getRoleDeptPowerInfo(roleId: string) {
  * @returns
  */
 export function assignDataScope(dto: AssignDataScopeDto) {
-  return httpClient.post<AssignDataScopeDto, AppResponse<boolean>>('/admin-api/role/assignDataScope', dto);
+  return httpClient.post<AssignDataScopeDto, AppResponse<boolean>>('/admin-api/Role/AssignDataScope', dto);
 }
 
 export interface RoleDto {

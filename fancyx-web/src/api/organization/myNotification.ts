@@ -6,7 +6,7 @@ import type { AppResponse, PagedResult } from '@/types/api';
  * @param dto
  */
 export function readed(ids: string[]) {
-  return httpClient.put<string[], AppResponse<boolean>>('/admin-api/UserNotification/readed', ids);
+  return httpClient.put<string[], AppResponse<boolean>>('/admin-api/UserNotification/Readed', ids);
 }
 
 /**

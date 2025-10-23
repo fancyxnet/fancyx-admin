@@ -6,7 +6,7 @@ import type { AppResponse, PagedResult, PageSearch } from '@/types/api';
  * @param dto
  */
 export function addConfig(dto: ConfigDto) {
-  return httpClient.post<ConfigDto, AppResponse<boolean>>('/admin-api/config/add', dto);
+  return httpClient.post<ConfigDto, AppResponse<boolean>>('/admin-api/Config/Add', dto);
 }
 
 /**
@@ -14,7 +14,7 @@ export function addConfig(dto: ConfigDto) {
  * @param dto
  */
 export function getConfigList(dto: ConfigQueryDto) {
-  return httpClient.get<ConfigQueryDto, AppResponse<PagedResult<ConfigListDto>>>('/admin-api/config/list', { params: dto });
+  return httpClient.get<ConfigQueryDto, AppResponse<PagedResult<ConfigListDto>>>('/admin-api/Config/List', { params: dto });
 }
 
 /**
@@ -22,7 +22,7 @@ export function getConfigList(dto: ConfigQueryDto) {
  * @param dto
  */
 export function updateConfig(dto: ConfigDto) {
-  return httpClient.put<ConfigDto, AppResponse<boolean>>('/admin-api/config/update', dto);
+  return httpClient.put<ConfigDto, AppResponse<boolean>>('/admin-api/Config/Update', dto);
 }
 
 /**
@@ -30,7 +30,7 @@ export function updateConfig(dto: ConfigDto) {
  * @param id
  */
 export function deleteConfig(id: string) {
-  return httpClient.delete<string, AppResponse<boolean>>(`/api/config/delete/${id}`);
+  return httpClient.delete<string, AppResponse<boolean>>(`/api/Config/Delete/${id}`);
 }
 
 export interface ConfigDto {

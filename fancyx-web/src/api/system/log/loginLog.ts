@@ -6,7 +6,7 @@ import type { AppResponse, PageSearch, PagedResult } from '@/types/api';
  * @param dto
  */
 export function getLoginLogList(dto: LoginLogQueryDto) {
-  return httpClient.get<LoginLogQueryDto, AppResponse<PagedResult<LoginLogListDto>>>('/admin-api/loginLog/GetLoginLogList', {
+  return httpClient.get<LoginLogQueryDto, AppResponse<PagedResult<LoginLogListDto>>>('/admin-api/LoginLog/GetLoginLogList', {
     params: dto,
   });
 }

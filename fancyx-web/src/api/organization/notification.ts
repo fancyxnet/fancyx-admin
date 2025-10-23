@@ -6,7 +6,7 @@ import type { AppResponse, PagedResult, PageSearch } from '@/types/api';
  * @param dto
  */
 export function addNotification(dto: NotificationDto) {
-  return httpClient.post<NotificationDto, AppResponse<boolean>>('/admin-api/notification/add', dto);
+  return httpClient.post<NotificationDto, AppResponse<boolean>>('/admin-api/Notification/add', dto);
 }
 
 /**
@@ -14,7 +14,7 @@ export function addNotification(dto: NotificationDto) {
  * @param dto
  */
 export function getNotificationList(dto: NotificationQueryDto) {
-  return httpClient.get<NotificationQueryDto, AppResponse<PagedResult<NotificationListDto>>>('/admin-api/notification/list', {
+  return httpClient.get<NotificationQueryDto, AppResponse<PagedResult<NotificationListDto>>>('/admin-api/Notification/list', {
     params: dto,
   });
 }
@@ -24,7 +24,7 @@ export function getNotificationList(dto: NotificationQueryDto) {
  * @param dto
  */
 export function updateNotification(dto: NotificationDto) {
-  return httpClient.put<NotificationDto, AppResponse<boolean>>('/admin-api/notification/update', dto);
+  return httpClient.put<NotificationDto, AppResponse<boolean>>('/admin-api/Notification/update', dto);
 }
 
 /**
@@ -32,7 +32,7 @@ export function updateNotification(dto: NotificationDto) {
  * @param ids
  */
 export function deleteNotifications(ids: string[]) {
-  return httpClient.delete<string, AppResponse<boolean>>(`/api/notification/BatchDelete`, {
+  return httpClient.delete<string, AppResponse<boolean>>(`/api/Notification/BatchDelete`, {
     data: ids,
   });
 }

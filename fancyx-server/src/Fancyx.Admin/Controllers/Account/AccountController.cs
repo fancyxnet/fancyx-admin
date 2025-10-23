@@ -52,7 +52,7 @@ namespace Fancyx.Admin.Controllers.Account
         /// </summary>
         /// <param name="refreshToken"></param>
         /// <returns></returns>
-        [HttpPost("refreshToken")]
+        [HttpPost("RefreshToken")]
         public async Task<AppResponse<TokenResultDto>> GetAccessTokenAsync(string refreshToken)
         {
             var data = await _accountService.GetAccessTokenAsync(refreshToken);
@@ -64,7 +64,7 @@ namespace Fancyx.Admin.Controllers.Account
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPut("updateInfo")]
+        [HttpPut("UpdateInfo")]
         public async Task<AppResponse<bool>> UpdateUserInfoAsync([FromBody] PersonalInfoDto dto)
         {
             await _accountService.UpdateUserInfoAsync(dto);
@@ -76,7 +76,7 @@ namespace Fancyx.Admin.Controllers.Account
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPut("updatePwd")]
+        [HttpPut("UpdatePwd")]
         public async Task<AppResponse<bool>> UpdateUserPwdAsync([FromBody] UserPwdDto dto)
         {
             await _accountService.UpdateUserPwdAsync(dto);
@@ -87,7 +87,7 @@ namespace Fancyx.Admin.Controllers.Account
         /// 注销
         /// </summary>
         /// <returns></returns>
-        [HttpPost("signOut")]
+        [HttpPost("SignOut")]
         [AllowAnonymous]
         public async Task<AppResponse<bool>> SignOutAsync()
         {
@@ -99,7 +99,7 @@ namespace Fancyx.Admin.Controllers.Account
         /// 用户权限信息
         /// </summary>
         /// <returns></returns>
-        [HttpGet("userAuth")]
+        [HttpGet("UserAuth")]
         public async Task<AppResponse<UserAuthInfoDto>> GetUserAuthInfoAsync()
         {
             var data = await _accountService.GetUserAuthInfoAsync();

@@ -6,7 +6,7 @@ import type { AppResponse, PageSearch, PagedResult, AppOption } from '@/types/ap
  * @param dto
  */
 export function getBusinessLogList(dto: BusinessLogQueryDto) {
-  return httpClient.get<BusinessLogQueryDto, AppResponse<PagedResult<BusinessLogListDto>>>('/admin-api/businessLog/list', {
+  return httpClient.get<BusinessLogQueryDto, AppResponse<PagedResult<BusinessLogListDto>>>('/admin-api/BusinessLog/List', {
     params: dto,
   });
 }
@@ -16,7 +16,7 @@ export function getBusinessLogList(dto: BusinessLogQueryDto) {
  * @param type
  */
 export function getBusinessTypeOptions(type?: string | null) {
-  return httpClient.get<string, AppResponse<AppOption[]>>('/admin-api/businessLog/TypeOptions', {
+  return httpClient.get<string, AppResponse<AppOption[]>>('/admin-api/BusinessLog/TypeOptions', {
     params: type,
   });
 }

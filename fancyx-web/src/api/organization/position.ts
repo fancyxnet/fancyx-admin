@@ -6,7 +6,7 @@ import type { AppResponse, PagedResult, PageSearch, AppOptionTree } from '@/type
  * @param dto
  */
 export function addPosition(dto: PositionDto) {
-  return httpClient.post<PositionDto, AppResponse<boolean>>('/admin-api/position/add', dto);
+  return httpClient.post<PositionDto, AppResponse<boolean>>('/admin-api/Position/Add', dto);
 }
 
 /**
@@ -14,7 +14,7 @@ export function addPosition(dto: PositionDto) {
  * @param dto
  */
 export function getPositionList(dto: PositionQueryDto) {
-  return httpClient.get<PositionQueryDto, AppResponse<PagedResult<PositionListDto>>>('/admin-api/position/list', {
+  return httpClient.get<PositionQueryDto, AppResponse<PagedResult<PositionListDto>>>('/admin-api/Position/List', {
     params: dto,
   });
 }
@@ -24,7 +24,7 @@ export function getPositionList(dto: PositionQueryDto) {
  * @param dto
  */
 export function updatePosition(dto: PositionDto) {
-  return httpClient.put<PositionDto, AppResponse<boolean>>('/admin-api/position/update', dto);
+  return httpClient.put<PositionDto, AppResponse<boolean>>('/admin-api/Position/Update', dto);
 }
 
 /**
@@ -32,14 +32,14 @@ export function updatePosition(dto: PositionDto) {
  * @param id
  */
 export function deletePosition(id: string) {
-  return httpClient.delete('/admin-api/position/delete/' + id);
+  return httpClient.delete('/admin-api/Position/Delete/' + id);
 }
 
 /**
  * 职位分组+职位树
  */
 export function getPositionOptions() {
-  return httpClient.get<unknown, AppResponse<AppOptionTree[]>>('/admin-api/position/options');
+  return httpClient.get<unknown, AppResponse<AppOptionTree[]>>('/admin-api/Position/Options');
 }
 
 export interface PositionDto {
