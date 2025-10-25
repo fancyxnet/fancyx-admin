@@ -268,8 +268,8 @@ html, body {
     }
 
     .dark-sidebar .header-icon {
-      background: linear-gradient(135deg, var(--primary-color, #1890ff), #40a9ff);
-      box-shadow: 0 2px 12px rgba(24, 144, 255, 0.4);
+      background: linear-gradient(135deg, var(--primary-color, #177ddc), #3b96e8);
+      box-shadow: 0 2px 12px rgba(23, 125, 220, 0.4);
     }
 
     .dark-sidebar .sidebar-content {
@@ -342,14 +342,14 @@ html, body {
 
     /* 选中菜单项样式 - 加深背景色 */
     .dark-sidebar .ant-menu-item-selected {
-      color: var(--primary-color, #1890ff) !important;
-      background-color: rgba(24, 144, 255, 0.2) !important;
+      color: var(--primary-color, #177ddc) !important;
+      background-color: rgba(23, 125, 220, 0.2) !important;
     }
 
     /* 激活菜单项样式 - 仅文字变色 */
     .dark-sidebar .ant-menu-item-active,
     .dark-sidebar .ant-menu-submenu-active {
-      color: var(--primary-color, #1890ff);
+      color: var(--primary-color, #177ddc);
       background-color: transparent;
     }
 

@@ -34,15 +34,15 @@
   font-size: 20px;
 
   &:hover {
-    border-color: #1890ff;
+    border-color: var(--primary-color, #177ddc);
     background-color: #f0f7ff;
     transform: translateY(-2px);
   }
 
   &.selected {
-    border-color: #1890ff;
+    border-color: var(--primary-color, #177ddc);
     background-color: #e6f7ff;
-    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+    box-shadow: 0 0 0 2px rgba(23, 125, 220, 0.2);
   }
 }
 
