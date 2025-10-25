@@ -12,7 +12,7 @@
  Target Server Version : 160009 (160009)
  File Encoding         : 65001
 
- Date: 25/09/2025 21:51:40
+ Date: 25/10/2025 20:34:25
 */
 
 
@@ -310,7 +310,7 @@ COMMENT ON TABLE "public"."login_log" IS '登录日志';
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."menu";
 CREATE TABLE "public"."menu" (
-  "creator_id" varchar COLLATE "pg_catalog"."default",
+  "creator_id" int8,
   "creation_time" timestamp(6) NOT NULL,
   "last_modification_time" timestamp(6),
   "last_modifier_id" int8,
@@ -367,9 +367,6 @@ INSERT INTO "public"."menu" VALUES (NULL, '2024-07-13 19:49:13.599', NULL, NULL,
 INSERT INTO "public"."menu" VALUES (NULL, '2025-04-29 20:45:10.111', NULL, NULL, '注销', NULL, NULL, NULL, 3, 'Monitor.Logout', 1, 't', NULL, 'f', 4491762374256627738, 4491762374256627765);
 INSERT INTO "public"."menu" VALUES (NULL, '2025-04-29 20:57:50.052', NULL, NULL, '新增', NULL, NULL, NULL, 3, 'Sys.DictType.Add', 1, 't', NULL, 'f', 4491762374256627739, 4491762374256627762);
 INSERT INTO "public"."menu" VALUES (NULL, '2025-07-29 22:09:49.060841', NULL, NULL, '富文本组件', NULL, '/quickWork/rickText', 'quickWork/rickText', 2, '', 1, 't', NULL, 'f', 4491762374256627740, 4491762374256627715);
-INSERT INTO "public"."menu" VALUES (NULL, '2025-07-19 00:03:14.804374', NULL, NULL, '新增', NULL, NULL, NULL, 3, 'Sys.ScheduledTask.Add', 1, 't', NULL, 'f', 4491762374256627741, 4491762374256627790);
-INSERT INTO "public"."menu" VALUES (NULL, '2025-07-19 00:03:30.478029', NULL, NULL, '查询', NULL, NULL, NULL, 3, 'Sys.ScheduledTask.List', 1, 't', NULL, 'f', 4491762374256627742, 4491762374256627790);
-INSERT INTO "public"."menu" VALUES (NULL, '2025-07-19 00:03:41.928625', NULL, NULL, '编辑', NULL, NULL, NULL, 3, 'Sys.ScheduledTask.Update', 3, 't', NULL, 'f', 4491762374256627743, 4491762374256627790);
 INSERT INTO "public"."menu" VALUES (NULL, '2025-04-29 21:03:31.122', NULL, NULL, '编辑', NULL, NULL, NULL, 3, 'Sys.DictData.Update', 3, 't', NULL, 'f', 4491762374256627744, 4491762374256627789);
 INSERT INTO "public"."menu" VALUES (NULL, '2025-04-29 21:03:51.978', NULL, NULL, '删除', NULL, NULL, NULL, 3, 'Sys.DictData.Delete', 1, 't', NULL, 'f', 4491762374256627745, 4491762374256627789);
 INSERT INTO "public"."menu" VALUES (NULL, '2024-06-24 21:50:42.004', NULL, NULL, '编辑', NULL, NULL, NULL, 3, 'Sys.Menu.Update', 3, 't', NULL, 'f', 4491762374256627746, 4491762374256627752);
@@ -382,9 +379,7 @@ INSERT INTO "public"."menu" VALUES (NULL, '2024-06-15 16:10:54.046', NULL, NULL,
 INSERT INTO "public"."menu" VALUES (NULL, '2025-08-31 22:19:19.906074', NULL, NULL, '分配数据权限', NULL, NULL, NULL, 3, 'Sys.Role.AssignDataScope', 6, 't', NULL, 'f', 4491762374256627753, 4491762374256627751);
 INSERT INTO "public"."menu" VALUES (NULL, '2024-06-15 15:49:13.507', NULL, NULL, '系统管理', 'antd:SettingOutlined', '/system', NULL, 1, 'System', 2, 't', NULL, 'f', 4491762374256627712, NULL);
 INSERT INTO "public"."menu" VALUES (NULL, '2024-07-08 22:48:47.742', NULL, NULL, '组织架构', 'antd:TeamOutlined', '/org', NULL, 1, 'Org', 1, 't', NULL, 'f', 4491762374256627713, NULL);
-INSERT INTO "public"."menu" VALUES (NULL, '2025-07-15 21:55:44.831206', NULL, NULL, '在线文档', 'antd:ApiOutlined', 'https://doc.crackerwork.cn/', '#', 2, '', 99, 't', NULL, 't', 4491762374256627714, NULL);
 INSERT INTO "public"."menu" VALUES (NULL, '2025-07-29 22:09:06.608163', NULL, NULL, '快速开发', 'antd:ToolOutlined', '/quickWork', NULL, 1, '', 98, 't', NULL, 'f', 4491762374256627715, NULL);
-INSERT INTO "public"."menu" VALUES (NULL, '2025-07-19 00:03:57.712663', NULL, NULL, '删除', NULL, NULL, NULL, 3, 'Sys.ScheduledTask.Delete', 4, 't', NULL, 'f', 4491762374256627716, 4491762374256627790);
 INSERT INTO "public"."menu" VALUES (NULL, '2025-04-28 09:41:59.313', NULL, NULL, '数据字典', NULL, '/system/dict', 'system/dictType', 2, 'Sys:Dict', 4, 't', NULL, 'f', 4491762374256627762, 4491762374256627712);
 INSERT INTO "public"."menu" VALUES (NULL, '2024-06-15 16:01:03.301', NULL, NULL, '用户管理', '', '/system/user', 'system/user', 2, '', 1, 't', NULL, 'f', 4491762374256627763, 4491762374256627712);
 INSERT INTO "public"."menu" VALUES (NULL, '2025-07-02 21:52:29.472722', NULL, NULL, '异常日志', NULL, '/monitor/exceptionLog', 'monitor/exceptionLog', 2, '', 2, 't', NULL, 'f', 4491762374256627764, 4491762374256627754);
@@ -393,7 +388,6 @@ INSERT INTO "public"."menu" VALUES (NULL, '2025-07-15 21:04:05.703868', NULL, NU
 INSERT INTO "public"."menu" VALUES (NULL, '2025-07-15 21:04:19.12469', NULL, NULL, '查询', NULL, NULL, NULL, 3, 'Sys.Tenant.List', 2, 't', NULL, 'f', 4491762374256627767, 4491762374256627770);
 INSERT INTO "public"."menu" VALUES (NULL, '2025-07-15 21:04:32.976932', NULL, NULL, '编辑', NULL, NULL, NULL, 3, 'Sys.Tenant.Update', 3, 't', NULL, 'f', 4491762374256627768, 4491762374256627770);
 INSERT INTO "public"."menu" VALUES (NULL, '2025-07-15 21:04:51.458147', NULL, NULL, '删除', NULL, NULL, NULL, 3, 'Sys.Tenant.Delete', 4, 't', NULL, 'f', 4491762374256627769, 4491762374256627770);
-INSERT INTO "public"."menu" VALUES (NULL, '2025-07-15 21:01:24.861586', NULL, NULL, '租户管理', NULL, '/system/tenant', 'system/tenant', 2, '', 8, 't', NULL, 'f', 4491762374256627770, 4491762374256627712);
 INSERT INTO "public"."menu" VALUES (NULL, '2024-07-13 14:26:20.046', NULL, NULL, '职位分组', '', '/org/positionGroup', 'org/positionGroup', 2, '', 1, 't', NULL, 'f', 4491762374256627771, 4491762374256627713);
 INSERT INTO "public"."menu" VALUES (NULL, '2025-07-18 20:37:01.851781', NULL, NULL, '新增', NULL, NULL, NULL, 3, 'Sys.Notification.Add', 1, 't', NULL, 'f', 4491762374256627772, 4491762374256627755);
 INSERT INTO "public"."menu" VALUES (NULL, '2025-07-18 20:37:14.766532', NULL, NULL, '查询', NULL, NULL, NULL, 3, 'Sys.Notification.List', 2, 't', NULL, 'f', 4491762374256627773, 4491762374256627755);
@@ -402,7 +396,6 @@ INSERT INTO "public"."menu" VALUES (NULL, '2025-07-18 20:37:40.555994', NULL, NU
 INSERT INTO "public"."menu" VALUES (NULL, '2025-07-18 20:38:42.951706', NULL, NULL, '我的通知', NULL, '/org/myNotification', 'org/myNotification', 2, '', 6, 't', NULL, 'f', 4491762374256627776, 4491762374256627713);
 INSERT INTO "public"."menu" VALUES (NULL, '2024-07-03 22:00:40.118', NULL, NULL, '登录日志', NULL, '/system/log/login', 'system/log/loginLog', 2, '', 10, 't', NULL, 'f', 4491762374256627777, 4491762374256627712);
 INSERT INTO "public"."menu" VALUES (NULL, '2024-07-03 22:02:12.559', NULL, NULL, '业务日志', NULL, '/system/log/business', 'system/log/businessLog', 2, '', 11, 't', NULL, 'f', 4491762374256627778, 4491762374256627712);
-INSERT INTO "public"."menu" VALUES (NULL, '2025-07-19 00:04:13.762756', NULL, NULL, '执行日志', NULL, NULL, NULL, 3, 'Sys.ScheduledTask.Log', 5, 't', NULL, 'f', 4491762374256627779, 4491762374256627790);
 INSERT INTO "public"."menu" VALUES (NULL, '2025-04-29 21:01:47.281', NULL, NULL, '删除', NULL, '', NULL, 3, 'Sys.DictType.Delete', 4, 't', NULL, 'f', 4491762374256627780, 4491762374256627762);
 INSERT INTO "public"."menu" VALUES (NULL, '2025-04-29 21:02:11.74', NULL, NULL, '新增', NULL, NULL, NULL, 3, 'Sys.DictData.Add', 1, 't', NULL, 'f', 4491762374256627781, 4491762374256627789);
 INSERT INTO "public"."menu" VALUES (NULL, '2025-04-29 21:02:29.665', NULL, NULL, '查询', NULL, NULL, NULL, 3, 'Sys.DictData.List', 2, 't', NULL, 'f', 4491762374256627782, 4491762374256627789);
@@ -413,8 +406,8 @@ INSERT INTO "public"."menu" VALUES (NULL, '2025-07-14 22:54:07.938236', NULL, NU
 INSERT INTO "public"."menu" VALUES (NULL, '2025-07-14 22:54:26.364848', NULL, NULL, '编辑', NULL, NULL, NULL, 3, 'Sys.Config.Update', 3, 't', NULL, 'f', 4491762374256627787, 4491762374256627750);
 INSERT INTO "public"."menu" VALUES (NULL, '2025-07-14 22:54:38.605153', NULL, NULL, '删除', NULL, NULL, NULL, 3, 'Sys.Config.Delete', 4, 't', NULL, 'f', 4491762374256627788, 4491762374256627750);
 INSERT INTO "public"."menu" VALUES (NULL, '2025-04-28 15:43:17.394', NULL, NULL, '字典项', NULL, '/system/dictItem/:dictType', 'system/dictData', 2, NULL, 5, 'f', NULL, 'f', 4491762374256627789, 4491762374256627712);
-INSERT INTO "public"."menu" VALUES (NULL, '2025-07-19 00:01:20.451501', NULL, NULL, '定时任务', NULL, '/system/scheduledTask', 'system/scheduledTask', 2, '', 10, 't', NULL, 'f', 4491762374256627790, 4491762374256627712);
 INSERT INTO "public"."menu" VALUES (NULL, '2025-04-29 21:00:27.984', NULL, NULL, '编辑', NULL, NULL, NULL, 3, 'Sys.DictType.Update', 3, 't', NULL, 'f', 4491762374256627791, 4491762374256627762);
+INSERT INTO "public"."menu" VALUES (NULL, '2025-07-15 21:01:24.861586', NULL, NULL, '租户管理', NULL, '/system/tenant', 'system/tenant', 2, '', 8, 't', NULL, 'f', 4491762374256627770, 4491762374256627712);
 INSERT INTO "public"."menu" VALUES (NULL, '2025-01-04 11:06:54.207', NULL, NULL, '系统监控', 'antd:FundOutlined', '/monitor', NULL, 1, '', 3, 't', NULL, 'f', 4491762374256627754, NULL);
 INSERT INTO "public"."menu" VALUES (NULL, '2025-07-18 20:33:53.818229', NULL, NULL, '通知管理', '', '/org/notification', 'org/notification', 2, '', 5, 't', NULL, 'f', 4491762374256627755, 4491762374256627713);
 INSERT INTO "public"."menu" VALUES (NULL, '2024-06-24 21:45:12.962', NULL, NULL, '删除', NULL, NULL, NULL, 3, 'Sys.User.Delete', 3, 't', NULL, 'f', 4491762374256627756, 4491762374256627763);
@@ -423,6 +416,7 @@ INSERT INTO "public"."menu" VALUES (NULL, '2025-04-29 20:59:45.015', NULL, NULL,
 INSERT INTO "public"."menu" VALUES (NULL, '2024-06-24 21:44:19.284', NULL, NULL, '新增', NULL, NULL, NULL, 3, 'Sys.Role.Add', 1, 't', NULL, 'f', 4491762374256627759, 4491762374256627751);
 INSERT INTO "public"."menu" VALUES (NULL, '2024-07-13 17:52:45.803', NULL, NULL, '职位管理', NULL, '/org/position', 'org/position', 2, 'Org:Position', 2, 't', NULL, 'f', 4491762374256627760, 4491762374256627713);
 INSERT INTO "public"."menu" VALUES (NULL, '2024-07-13 19:47:46.294', NULL, NULL, '部门管理', NULL, '/org/dept', 'org/dept', 2, 'Org:Department', 3, 't', NULL, 'f', 4491762374256627761, 4491762374256627713);
+INSERT INTO "public"."menu" VALUES (NULL, '2025-07-15 21:55:44.831206', '2025-10-11 21:10:44.308225', 1, '在线文档', 'antd:ApiOutlined', 'https://doc.crackerwork.cn/', '#', 2, NULL, 99, 't', NULL, 't', 4491762374256627714, NULL);
 
 -- ----------------------------
 -- Table structure for notification
@@ -529,7 +523,7 @@ CREATE TABLE "public"."role" (
   "creator_id" int8,
   "creation_time" timestamp(6) NOT NULL,
   "last_modification_time" timestamp(6),
-  "last_modifier_id" varchar COLLATE "pg_catalog"."default",
+  "last_modifier_id" int8,
   "is_deleted" bool NOT NULL,
   "deleter_id" int8,
   "deletion_time" timestamp(6),
@@ -658,7 +652,7 @@ COMMENT ON TABLE "public"."user" IS '用户表';
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO "public"."user" VALUES (1, NULL, '2024-12-30 22:48:48.458', '2025-09-14 18:41:56.108293', NULL, 'f', NULL, NULL, 'admin', 'a2fa8ec90f15197c7a4e6e00525b198a', 'vHQZvbz+ng+B4NrSAEYl6g==', 'file/myavatar.jpg', '风汐', 2, 't', 'cq_market', '18273403759', NULL, NULL);
+INSERT INTO "public"."user" VALUES (1, NULL, '2024-12-30 22:48:48.458', '2025-10-10 23:42:32.466489', 1, 'f', NULL, NULL, 'admin', 'a2fa8ec90f15197c7a4e6e00525b198a', 'vHQZvbz+ng+B4NrSAEYl6g==', 'File/myavatar.jpg', '风汐', 2, 't', 'cq_market', '18211112222', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for user_role

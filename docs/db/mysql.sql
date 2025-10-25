@@ -11,7 +11,7 @@
  Target Server Version : 80042 (8.0.42)
  File Encoding         : 65001
 
- Date: 10/10/2025 22:14:15
+ Date: 25/10/2025 20:35:06
 */
 
 SET NAMES utf8mb4;
@@ -47,19 +47,51 @@ CREATE TABLE `api_access_log`  (
 -- ----------------------------
 -- Records of api_access_log
 -- ----------------------------
-INSERT INTO `api_access_log` VALUES (4497201445628022784, 1, '2025-10-10 21:52:59.483278', '/api/menu/list', 'GET', '::1', '2025-10-10 21:52:58.447714', NULL, NULL, 1, 'admin', '{\"dto\":{\"Title\":null,\"Path\":null}}', NULL, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '?current=1&pageSize=10', 'fa173a3d69f363d833d7f8e7d02e2f81', '[2]', NULL, NULL);
-INSERT INTO `api_access_log` VALUES (4497201446169088000, 1, '2025-10-10 21:52:59.747542', '/api/menu/list', 'GET', '::1', '2025-10-10 21:52:58.447719', NULL, NULL, 1, 'admin', '{\"dto\":{\"Title\":null,\"Path\":null}}', NULL, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '?current=1&pageSize=10', 'aa4c8cdd197bb0c5c953f37908983579', '[2]', NULL, NULL);
-INSERT INTO `api_access_log` VALUES (4497201450602467328, 1, '2025-10-10 21:53:00.803968', '/api/menu/list', 'GET', '::1', '2025-10-10 21:52:59.588571', NULL, NULL, 1, 'admin', '{\"dto\":{\"Title\":null,\"Path\":null}}', NULL, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '?current=1&pageSize=10', '2649227b734884dec299785a893ebab0', '[2]', NULL, NULL);
-INSERT INTO `api_access_log` VALUES (4497201574045028352, 631737765623021571, '2025-10-10 21:53:30.236928', '/api/user/list', 'GET', '::1', '2025-10-10 21:53:29.466124', NULL, NULL, 631737765623021571, 'admin', '{\"dto\":{\"UserName\":null,\"DeptId\":null,\"PageSize\":10,\"Current\":1,\"SortProperty\":null,\"IsAsecending\":false}}', NULL, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '?current=1&pageSize=10', 'cd596bb20365c756e412d86c6e55561c', NULL, '用户分页列表', NULL);
-INSERT INTO `api_access_log` VALUES (4497201574179246080, 631737765623021571, '2025-10-10 21:53:30.269259', '/api/user/list', 'GET', '::1', '2025-10-10 21:53:29.537492', NULL, NULL, 631737765623021571, 'admin', '{\"dto\":{\"UserName\":null,\"DeptId\":null,\"PageSize\":10,\"Current\":1,\"SortProperty\":null,\"IsAsecending\":false}}', NULL, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '?current=1&pageSize=10', '82c8ad33777297b2fa11c729e57223ee', NULL, '用户分页列表', NULL);
-INSERT INTO `api_access_log` VALUES (4497201574435098624, 631737765623021571, '2025-10-10 21:53:30.329834', '/api/user/list', 'GET', '::1', '2025-10-10 21:53:29.558783', NULL, NULL, 631737765623021571, 'admin', '{\"dto\":{\"UserName\":null,\"DeptId\":null,\"PageSize\":10,\"Current\":1,\"SortProperty\":null,\"IsAsecending\":false}}', NULL, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '?current=1&pageSize=10', 'f8839f64f1457cea143895135b0cf5b1', NULL, '用户分页列表', NULL);
-INSERT INTO `api_access_log` VALUES (4497201574573510656, 631737765623021571, '2025-10-10 21:53:30.362514', '/api/user/list', 'GET', '::1', '2025-10-10 21:53:29.583176', NULL, NULL, 631737765623021571, 'admin', '{\"dto\":{\"UserName\":null,\"DeptId\":null,\"PageSize\":10,\"Current\":1,\"SortProperty\":null,\"IsAsecending\":false}}', NULL, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '?current=1&pageSize=10', '027042aa75fd25a616fa4c06e9eeb5e1', NULL, '用户分页列表', NULL);
-INSERT INTO `api_access_log` VALUES (4497201583184416768, 631737765623021571, '2025-10-10 21:53:32.415393', '/api/user/list', 'GET', '::1', '2025-10-10 21:53:31.472974', NULL, NULL, 631737765623021571, 'admin', '{\"dto\":{\"UserName\":null,\"DeptId\":null,\"PageSize\":10,\"Current\":1,\"SortProperty\":null,\"IsAsecending\":false}}', NULL, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '?current=1&pageSize=10', 'f03bb59bdfcefc8ca9dfc0874efe96d9', NULL, '用户分页列表', NULL);
-INSERT INTO `api_access_log` VALUES (4497201583410909184, 631737765623021571, '2025-10-10 21:53:32.470060', '/api/user/list', 'GET', '::1', '2025-10-10 21:53:31.498294', NULL, NULL, 631737765623021571, 'admin', '{\"dto\":{\"UserName\":null,\"DeptId\":null,\"PageSize\":10,\"Current\":1,\"SortProperty\":null,\"IsAsecending\":false}}', NULL, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '?current=1&pageSize=10', '7cab5e500dd5fadc5cacabfafdb14d8f', NULL, '用户分页列表', NULL);
-INSERT INTO `api_access_log` VALUES (4497201583775813632, 631737765623021571, '2025-10-10 21:53:32.556706', '/api/user/list', 'GET', '::1', '2025-10-10 21:53:31.521938', NULL, NULL, 631737765623021571, 'admin', '{\"dto\":{\"UserName\":null,\"DeptId\":null,\"PageSize\":10,\"Current\":1,\"SortProperty\":null,\"IsAsecending\":false}}', NULL, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '?current=1&pageSize=10', '613942ea5d0fcaa39f85384152967984', NULL, '用户分页列表', NULL);
-INSERT INTO `api_access_log` VALUES (4497201583951974400, 631737765623021571, '2025-10-10 21:53:32.598468', '/api/user/list', 'GET', '::1', '2025-10-10 21:53:31.543356', NULL, NULL, 631737765623021571, 'admin', '{\"dto\":{\"UserName\":null,\"DeptId\":null,\"PageSize\":10,\"Current\":1,\"SortProperty\":null,\"IsAsecending\":false}}', NULL, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '?current=1&pageSize=10', '08efc6230bc05ee249c094a7c2d9a39c', NULL, '用户分页列表', NULL);
-INSERT INTO `api_access_log` VALUES (4497201588297273344, 631737765623021571, '2025-10-10 21:53:33.634446', '/api/menu/list', 'GET', '::1', '2025-10-10 21:53:32.436728', NULL, NULL, 631737765623021571, 'admin', '{\"dto\":{\"Title\":null,\"Path\":null}}', NULL, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '?current=1&pageSize=10', '92c0a1c330aa831ef9d161db2cd02cef', '[2]', NULL, NULL);
-INSERT INTO `api_access_log` VALUES (4497201588435685376, 631737765623021571, '2025-10-10 21:53:33.667170', '/api/menu/list', 'GET', '::1', '2025-10-10 21:53:32.464140', NULL, NULL, 631737765623021571, 'admin', '{\"dto\":{\"Title\":null,\"Path\":null}}', NULL, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '?current=1&pageSize=10', 'ed133f2f827e51ae694b74e90eb3bdb2', '[2]', NULL, NULL);
+
+-- ----------------------------
+-- Table structure for cap.published
+-- ----------------------------
+DROP TABLE IF EXISTS `cap.published`;
+CREATE TABLE `cap.published`  (
+  `Id` bigint NOT NULL,
+  `Version` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `Name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `Content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `Retries` int NULL DEFAULT NULL,
+  `Added` datetime NOT NULL,
+  `ExpiresAt` datetime NULL DEFAULT NULL,
+  `StatusName` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`Id`) USING BTREE,
+  INDEX `IX_Version_ExpiresAt_StatusName`(`Version` ASC, `ExpiresAt` ASC, `StatusName` ASC) USING BTREE,
+  INDEX `IX_ExpiresAt_StatusName`(`ExpiresAt` ASC, `StatusName` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of cap.published
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for cap.received
+-- ----------------------------
+DROP TABLE IF EXISTS `cap.received`;
+CREATE TABLE `cap.received`  (
+  `Id` bigint NOT NULL,
+  `Version` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `Name` varchar(400) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `Group` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `Content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `Retries` int NULL DEFAULT NULL,
+  `Added` datetime NOT NULL,
+  `ExpiresAt` datetime NULL DEFAULT NULL,
+  `StatusName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`Id`) USING BTREE,
+  INDEX `IX_Version_ExpiresAt_StatusName`(`Version` ASC, `ExpiresAt` ASC, `StatusName` ASC) USING BTREE,
+  INDEX `IX_ExpiresAt_StatusName`(`ExpiresAt` ASC, `StatusName` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of cap.received
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for config
@@ -239,7 +271,6 @@ CREATE TABLE `login_log`  (
 -- ----------------------------
 -- Records of login_log
 -- ----------------------------
-INSERT INTO `login_log` VALUES (4497201522736107520, 'admin', '::1', NULL, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', '登录成功', 1, '4497201521070968832', NULL, 0, '2025-10-10 21:53:18.004749');
 
 -- ----------------------------
 -- Table structure for menu
@@ -427,7 +458,7 @@ CREATE TABLE `role`  (
   `creator_id` bigint NULL DEFAULT NULL,
   `creation_time` datetime(6) NOT NULL,
   `last_modification_time` datetime(6) NULL DEFAULT NULL,
-  `last_modifier_id` char(36) CHARACTER SET ascii COLLATE ascii_general_ci NULL DEFAULT NULL,
+  `last_modifier_id` bigint NULL DEFAULT NULL,
   `is_deleted` tinyint(1) NOT NULL,
   `deleter_id` bigint NULL DEFAULT NULL,
   `deletion_time` datetime(6) NULL DEFAULT NULL,
