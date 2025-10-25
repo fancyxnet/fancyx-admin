@@ -141,6 +141,50 @@ html, body {
     background-color: vars.$bg-base;
   }
   
+  // 侧边栏菜单内容容器，允许滚动
+  .sidebar-content {
+    flex: 1;
+    min-height: 0; // 确保在flex容器中正确收缩
+    overflow-y: auto; // 基础滚动功能
+    
+    // 关键：使用overlay而不是auto，滚动条不会占用内容空间
+    overflow-y: overlay;
+    
+    // 浅色主题滚动条样式 - 不占用空间的悬浮滚动条
+    &::-webkit-scrollbar {
+      width: 5px; // 适中宽度确保可见
+      height: 5px; // 水平滚动条高度
+    }
+    
+    // 完全隐藏滚动条轨道
+    &::-webkit-scrollbar-track {
+      background: transparent; // 完全透明的轨道
+      border-radius: 3px; // 圆角
+    }
+    
+    // 滚动条滑块样式 - 保持可见性
+    &::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.25); // 增加透明度使滑块更明显
+      border-radius: 3px; // 圆角
+      transition: background-color 0.2s ease;
+      
+      // 滑块悬浮效果增强
+      &:hover {
+        background: rgba(0, 0, 0, 0.35);
+      }
+    }
+    
+    // 隐藏所有滚动条按钮和边角
+    &::-webkit-scrollbar-button,
+    &::-webkit-scrollbar-corner {
+      display: none; // 完全隐藏
+    }
+    
+    // Firefox样式优化
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.25) transparent; // 只显示滑块
+  }
+  
   .ant-layout-sider {
     min-height: 100%;
     background-color: vars.$bg-base;
@@ -156,6 +200,7 @@ html, body {
     position: relative;
     overflow: hidden;
     box-shadow: vars.$shadow-sm;
+    flex-shrink: 0; // 防止标题被压缩
 
     // 主题波纹装饰（跟随当前主题颜色变化）
     &::after {
@@ -229,6 +274,44 @@ html, body {
 
     .dark-sidebar .sidebar-content {
       background-color: #1f1f1f;
+      overflow-y: auto; // 基础滚动功能
+      
+      // 关键：使用overlay而不是auto，滚动条不会占用内容空间
+      overflow-y: overlay;
+      
+      // 暗色主题滚动条样式 - 不占用空间的悬浮滚动条
+      &::-webkit-scrollbar {
+        width: 5px; // 适中宽度确保可见
+        height: 5px; // 水平滚动条高度
+      }
+      
+      // 完全隐藏滚动条轨道
+      &::-webkit-scrollbar-track {
+        background: transparent; // 完全透明的轨道
+        border-radius: 3px; // 圆角
+      }
+      
+      // 滚动条滑块样式 - 保持可见性
+      &::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.25); // 增加透明度使滑块更明显
+        border-radius: 3px; // 圆角
+        transition: background-color 0.2s ease;
+        
+        // 滑块悬浮效果增强
+        &:hover {
+          background: rgba(255, 255, 255, 0.35);
+        }
+      }
+      
+      // 隐藏所有滚动条按钮和边角
+      &::-webkit-scrollbar-button,
+      &::-webkit-scrollbar-corner {
+        display: none; // 完全隐藏
+      }
+      
+      // Firefox样式优化
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.25) transparent; // 只显示滑块
     }
 
     .dark-sidebar .ant-menu {

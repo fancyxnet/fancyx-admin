@@ -73,8 +73,10 @@ const Sidebar = observer(() => {
           {!collapsed && <span>风汐管理系统</span>}
         </h2>
       </div>
-
-      <Menu mode="inline" items={calcItems} selectedKeys={[activeKey]} inlineCollapsed={collapsed} />
+      
+      <div className="sidebar-content">
+        <Menu mode="inline" items={calcItems} selectedKeys={[activeKey]} inlineCollapsed={collapsed} />
+      </div>
     </div>
   );
 });
