@@ -92,7 +92,7 @@ export const PurpleLightTheme: ThemeDefinition = {
 // 蓝色主题配置
 export const BlueLightTheme: ThemeDefinition = {
   name: 'blue',
-  config: createBaseTheme('#1890ff', '#40a9ff', '#096dd9', '#e6f7ff'),
+  config: createBaseTheme('#177ddc', '#3b96e8', '#0e62c9', '#e6f2ff'),
   displayName: '海洋蓝',
   description: '专业的蓝色主题，适合企业应用场景',
 };
@@ -103,7 +103,7 @@ export const DefaultTheme = PurpleLightTheme.config;
 // 绿色主题配置
 export const GreenLightTheme: ThemeDefinition = {
   name: 'green',
-  config: createBaseTheme('#52c41a', '#73d13d', '#389e0d', '#f6ffed'),
+  config: createBaseTheme('#45a61e', '#62c036', '#31880c', '#f0fce9'),
   displayName: '森林绿',
   description: '清新的绿色主题，带来活力感',
 };
@@ -111,7 +111,7 @@ export const GreenLightTheme: ThemeDefinition = {
 // 红色主题配置
 export const RedLightTheme: ThemeDefinition = {
   name: 'red',
-  config: createBaseTheme('#ff4d4f', '#ff7875', '#cf1322', '#fff1f0'),
+  config: createBaseTheme('#e54649', '#f26a6d', '#c91923', '#fdf0f0'),
   displayName: '丹霞红',
   description: '热情的红色主题，引人注目',
 };
@@ -119,7 +119,7 @@ export const RedLightTheme: ThemeDefinition = {
 // 橙色主题配置
 export const OrangeLightTheme: ThemeDefinition = {
   name: 'orange',
-  config: createBaseTheme('#fa8c16', '#ffa940', '#d46b08', '#fffbe6'),
+  config: createBaseTheme('#e77c15', '#f79d30', '#c65f07', '#fffae0'),
   displayName: '阳光橙',
   description: '温暖的橙色主题，充满活力',
 };
