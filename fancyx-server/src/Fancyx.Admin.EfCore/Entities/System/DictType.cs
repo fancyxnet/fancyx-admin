@@ -10,7 +10,7 @@ namespace Fancyx.Admin.EfCore.Entities.System
     /// 字典类型表
     /// </summary>
     [Table("dict_type")]
-    public class DictType : AuditedEntity, ITenant
+    public class DictType : AuditedEntity<long>, ITenant
     {
         /// <summary>
         /// 字典名称

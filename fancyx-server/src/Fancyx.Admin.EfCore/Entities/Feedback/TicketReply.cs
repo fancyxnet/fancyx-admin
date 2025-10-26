@@ -5,7 +5,7 @@ namespace Fancyx.Admin.EfCore.Entities.Feedback
     /// <summary>
     /// 工单回复
     /// </summary>
-    public class TicketReply : CreationEntity
+    public class TicketReply : CreationEntity<long>
     {
         public long TicketId { get; set; }
         public long SenderId { get; set; }

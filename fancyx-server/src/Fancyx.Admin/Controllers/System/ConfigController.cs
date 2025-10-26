@@ -1,5 +1,5 @@
 ﻿using Fancyx.Shared.WebApi.Attributes;
-using Fancyx.Logger;
+using Fancyx.Shared.Logger;
 using Fancyx.Shared.Consts;
 
 using Microsoft.AspNetCore.Authorization;

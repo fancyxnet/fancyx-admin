@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
+
 using Fancyx.Admin.Application.IService.System.LogManagement;
 using Fancyx.Admin.Application.IService.System.LogManagement.Dtos;
 using Fancyx.Admin.EfCore;
 using Fancyx.EfCore;
-using Fancyx.Logger.Entities;
+using Fancyx.Shared.Logger.Entities;
 
 using Microsoft.EntityFrameworkCore;
 

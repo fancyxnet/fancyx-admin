@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Fancyx.EfCore.BaseEntity
 {
-    public abstract class AuditedEntity<TKey> : CreationEntity<TKey>, IHasCreationProperty, IHasModificationProperty
+    public interface IHasModificationProperty
     {
         [Column("last_modification_time")]
         public DateTime? LastModificationTime { get; set; }

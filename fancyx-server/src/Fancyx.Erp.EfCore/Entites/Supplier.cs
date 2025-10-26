@@ -9,7 +9,7 @@ namespace Fancyx.Erp.EfCore.Entites
     /// </summary>
     [Table("supplier")]
     [Index(nameof(Code), IsUnique = true)]
-    public class Supplier : FullAuditedEntity
+    public class Supplier : FullAuditedEntity<long>
     {
         [Column("code")]
         public string Code { get; set; } = null!;

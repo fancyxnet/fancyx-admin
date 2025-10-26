@@ -2,7 +2,7 @@
 
 namespace Fancyx.EfCore.BaseEntity
 {
-    public abstract class FullAuditedEntity : AuditedEntity
+    public abstract class FullAuditedEntity<TKey> : AuditedEntity<TKey>, IHasCreationProperty, IHasModificationProperty, IHasDeletionProperty
     {
         [Column("is_deleted")]
         public bool IsDeleted { get; set; } = false;

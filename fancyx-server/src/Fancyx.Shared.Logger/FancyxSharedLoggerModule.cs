@@ -2,10 +2,11 @@
 using Fancyx.Core.Context;
 using Fancyx.EfCore;
 using Fancyx.EventBus;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fancyx.Logger
+namespace Fancyx.Shared.Logger
 {
     [DependsOn(
         typeof(FancyxEventBusModule)

@@ -11,7 +11,7 @@ namespace Fancyx.Admin.EfCore.Entities.System
     /// 菜单表
     /// </summary>
     [Table("menu")]
-    public class Menu : AuditedEntity, ITenant
+    public class Menu : AuditedEntity<long>, ITenant
     {
         /// <summary>
         /// 显示标题/名称

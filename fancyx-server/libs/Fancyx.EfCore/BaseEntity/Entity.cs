@@ -4,12 +4,12 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Fancyx.EfCore.BaseEntity
 {
-    public abstract class Entity
+    public abstract class Entity<TKey>
     {
         [Key]
         [NotNull]
         [Required]
         [Column("id")]
-        public virtual long Id { get; set; }
+        public virtual TKey Id { get; set; } = default!;
     }
 }

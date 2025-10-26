@@ -10,7 +10,8 @@ namespace Fancyx.EfCore
     public class BaseRepository<T> : IRepository<T> where T : class
     {
         private readonly ICurrentUser _currentUser;
-        private static readonly Type _fullAuditedEntityType = typeof(FullAuditedEntity);
+        private static readonly Type _hasDeletionEntityType = typeof(IHasDeletionProperty);
+        private static readonly Type _hasDeletionFlagEntityType = typeof(IHasDeletionFlagProperty);
         private static readonly Type _efCoreExtensionType = typeof(EfCoreExtension);
         private static readonly Type _currentType = typeof(T);
 
@@ -36,7 +37,7 @@ namespace Fancyx.EfCore
         public async Task<int> DeleteAsync(Expression<Func<T, bool>> whereExpression)
         {
             var query = Context.Set<T>().AsNoTracking().Where(whereExpression);
-            if (_fullAuditedEntityType.IsAssignableFrom(_currentType))
+            if (_hasDeletionEntityType.IsAssignableFrom(_currentType))
             {
                 var softDeleteMethod = _efCoreExtensionType.GetMethod(nameof(EfCoreExtension.SoftDeleteAsync), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
                 if (softDeleteMethod != null)
@@ -76,7 +77,7 @@ namespace Fancyx.EfCore
                 var now = DateTime.Now;
                 foreach (var entity in entities)
                 {
-                    if (entity is CreationEntity value)
+                    if (entity is IHasCreationProperty value)
                     {
                         value.CreatorId ??= _currentUser.Id;
                         if (value.CreationTime == default) value.CreationTime = now;
@@ -115,7 +116,7 @@ namespace Fancyx.EfCore
                 var now = DateTime.Now;
                 foreach (var entity in entities)
                 {
-                    if (entity is AuditedEntity value)
+                    if (entity is IHasModificationProperty value)
                     {
                         value.LastModifierId ??= _currentUser.Id;
                         if (value.LastModificationTime == default) value.LastModificationTime = now;
@@ -140,7 +141,7 @@ namespace Fancyx.EfCore
 
         public async Task<int> DeleteAsync(T entity, bool autoSave = true)
         {
-            if (entity is FullAuditedEntity val)
+            if (entity is IHasDeletionProperty val)
             {
                 val.Delete(_currentUser.Id.GetValueOrDefault());
                 var entry2 = Context.Entry(val);
@@ -167,9 +168,9 @@ namespace Fancyx.EfCore
         {
             foreach (var property in entry.Properties)
             {
-                if (property.Metadata.Name != nameof(FullAuditedEntity.IsDeleted) &&
-                    property.Metadata.Name != nameof(FullAuditedEntity.DeleterId) &&
-                    property.Metadata.Name != nameof(FullAuditedEntity.DeletionTime))
+                if (property.Metadata.Name != nameof(IHasDeletionFlagProperty.IsDeleted) &&
+                    property.Metadata.Name != nameof(IHasDeletionProperty.DeleterId) &&
+                    property.Metadata.Name != nameof(IHasDeletionProperty.DeletionTime))
                 {
                     property.IsModified = false;
                 }

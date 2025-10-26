@@ -1,4 +1,4 @@
-﻿namespace Fancyx.Logger.Message
+﻿namespace Fancyx.Shared.Logger.Message
 {
     public class ExceptionLogMessage
     {

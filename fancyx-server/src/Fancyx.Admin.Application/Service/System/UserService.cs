@@ -1,4 +1,5 @@
 using AutoMapper;
+
 using Fancyx.Admin.Application.IService.System;
 using Fancyx.Admin.Application.IService.System.Dtos;
 using Fancyx.Admin.Application.SharedService;
@@ -8,10 +9,10 @@ using Fancyx.Admin.EfCore.Enums;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
 using Fancyx.EfCore.Aop;
-using Fancyx.Logger;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.EfCore;
 using Fancyx.Shared.Generated;
+using Fancyx.Shared.Logger;
 using Fancyx.Utils;
 
 using Microsoft.EntityFrameworkCore;

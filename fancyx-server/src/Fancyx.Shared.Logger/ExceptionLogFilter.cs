@@ -1,14 +1,17 @@
 ﻿using DotNetCore.CAP;
+
 using Fancyx.Core.Authorization;
-using Fancyx.Logger.Consts;
-using Fancyx.Logger.Message;
+using Fancyx.Shared.Logger.Message;
 using Fancyx.Shared.Exceptions;
+using Fancyx.Shared.Logger.Consts;
 using Fancyx.Utils;
+
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
+
 using System.Diagnostics;
 
-namespace Fancyx.Logger
+namespace Fancyx.Shared.Logger
 {
     /// <summary>
     /// 异常日志收集（异常会继续往下传递，不标记已处理）

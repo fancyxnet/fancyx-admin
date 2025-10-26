@@ -1,7 +1,8 @@
 ﻿using DotNetCore.CAP;
+
 using Fancyx.Core.Authorization;
-using Fancyx.Logger.Consts;
-using Fancyx.Logger.Message;
+using Fancyx.Shared.Logger.Consts;
+using Fancyx.Shared.Logger.Message;
 using Fancyx.Utils;
 
 using Microsoft.AspNetCore.Http;
@@ -13,7 +14,7 @@ using Newtonsoft.Json;
 
 using System.Diagnostics;
 
-namespace Fancyx.Logger
+namespace Fancyx.Shared.Logger
 {
     public sealed class ApiAccessLogAttribute : ActionFilterAttribute
     {

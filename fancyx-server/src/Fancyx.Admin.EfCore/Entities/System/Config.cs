@@ -10,7 +10,7 @@ namespace Fancyx.Admin.EfCore.Entities.System
     /// 系统配置
     /// </summary>
     [Table("config")]
-    public class Config : AuditedEntity, ITenant
+    public class Config : AuditedEntity<long>, ITenant
     {
         /// <summary>
         /// 配置名称

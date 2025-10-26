@@ -10,7 +10,7 @@ namespace Fancyx.EfCore
 {
     public class EfCoreDbContextBase : DbContext
     {
-        private static readonly Type _softDeleteType = typeof(FullAuditedEntity);
+        private static readonly Type _softDeleteType = typeof(IHasDeletionFlagProperty);
         private static readonly Type _onModelType = typeof(IDbContextOnModelCreating);
 
         protected IServiceProvider ServiceProvider { get; }
@@ -80,7 +80,7 @@ namespace Fancyx.EfCore
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        if (entity is CreationEntity creationEntity)
+                        if (entity is IHasCreationProperty creationEntity)
                         {
                             if (creationEntity.CreationTime == default)
                             {
@@ -93,17 +93,24 @@ namespace Fancyx.EfCore
                         {
                             entityWithTenant.TenantId ??= TenantManager.Current;
                         }
-                        if (entity is Entity baseEntity)
+                        if (entity is Entity<long> longBaseEntity)
                         {
-                            if (baseEntity.Id == default)
+                            if (longBaseEntity.Id <= 0)
                             {
-                                baseEntity.Id = IdGenerater.Instance.NextId();
+                                longBaseEntity.Id = IdGenerater.Instance.NextId();
+                            }
+                        }
+                        if (entity is Entity<Guid> guidBaseEntity)
+                        {
+                            if (guidBaseEntity.Id == default || guidBaseEntity.Id == Guid.Empty)
+                            {
+                                guidBaseEntity.Id = Guid.NewGuid();
                             }
                         }
                         break;
 
                     case EntityState.Modified:
-                        if (entity is AuditedEntity auditedEntity)
+                        if (entity is IHasModificationProperty auditedEntity)
                         {
                             auditedEntity.LastModificationTime = DateTime.Now;
                             auditedEntity.LastModifierId = UserManager.Current;
@@ -111,7 +118,7 @@ namespace Fancyx.EfCore
                         break;
 
                     case EntityState.Deleted:
-                        if (entity is FullAuditedEntity fullAuditedEntity)
+                        if (entity is IHasDeletionProperty fullAuditedEntity)
                         {
                             fullAuditedEntity.IsDeleted = true;
                             fullAuditedEntity.DeletionTime = DateTime.Now;
@@ -127,7 +134,7 @@ namespace Fancyx.EfCore
             if (!_softDeleteType.IsAssignableFrom(entityType)) return null;
 
             var parameter = Expression.Parameter(entityType, "e");
-            var property = Expression.Property(parameter, nameof(FullAuditedEntity.IsDeleted));
+            var property = Expression.Property(parameter, nameof(IHasDeletionFlagProperty.IsDeleted));
             var condition = Expression.Equal(property, Expression.Constant(false));
             return Expression.Lambda(condition, parameter);
         }

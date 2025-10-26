@@ -6,7 +6,7 @@ namespace Fancyx.Admin.EfCore.Entities.Feedback
     /// <summary>
     /// 工单
     /// </summary>
-    public class Ticket : FullAuditedEntity
+    public class Ticket : FullAuditedEntity<long>
     {
         public string Title { get; set; } = null!;
         public string Content { get; set; } = null!;

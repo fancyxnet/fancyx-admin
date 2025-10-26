@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Fancyx.Erp.EfCore.Entites
 {
     [Index(nameof(Code), IsUnique = true)]
-    public class Warehouse : FullAuditedEntity
+    public class Warehouse : FullAuditedEntity<long>
     {
         [Column("code")]
         public string Code { get; set; } = null!;

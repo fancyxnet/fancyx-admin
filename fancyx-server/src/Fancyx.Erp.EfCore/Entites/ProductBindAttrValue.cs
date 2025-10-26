@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Fancyx.Erp.EfCore.Entites
 {
     [Table("product_bind_attr_value")]
-    public class ProductBindAttrValue : CreationEntity
+    public class ProductBindAttrValue : CreationEntity<long>
     {
         [Column("product_id")]
         public long ProductId { get; set; }

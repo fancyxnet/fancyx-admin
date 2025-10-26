@@ -1,13 +1,13 @@
 ﻿using Fancyx.Core.Interfaces;
 using Fancyx.EfCore.BaseEntity;
+
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Fancyx.Logger;
 
-namespace Fancyx.Logger.Entities
+namespace Fancyx.Shared.Logger.Entities
 {
     [Table("api_access_log")]
-    public class ApiAccessLog : CreationEntity, ITenant
+    public class ApiAccessLog : CreationEntity<long>, ITenant
     {
         /// <summary>
         /// 请求路径

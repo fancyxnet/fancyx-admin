@@ -1,4 +1,5 @@
 ﻿using Coravel;
+
 using Fancyx.Admin.Application.Grpc;
 using Fancyx.Admin.Application.Jobs;
 using Fancyx.Admin.Application.SharedService;
@@ -6,11 +7,13 @@ using Fancyx.Admin.EfCore;
 using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
 using Fancyx.EventBus;
-using Fancyx.Logger;
 using Fancyx.Redis;
+using Fancyx.Shared.Logger;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
+
 using MQTTnet.AspNetCore;
 
 namespace Fancyx.Admin.Application

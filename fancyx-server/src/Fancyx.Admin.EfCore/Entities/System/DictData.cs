@@ -10,7 +10,7 @@ namespace Fancyx.Admin.EfCore.Entities.System
     /// 字典数据表
     /// </summary>
     [Table("dict_data")]
-    public class DictData : AuditedEntity, ITenant
+    public class DictData : AuditedEntity<long>, ITenant
     {
         /// <summary>
         /// 字典值

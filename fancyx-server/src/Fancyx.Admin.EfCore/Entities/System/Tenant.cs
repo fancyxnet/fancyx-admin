@@ -8,7 +8,7 @@ namespace Fancyx.Admin.EfCore.Entities.System
 {
     [Table("tenant")]
     [Index(nameof(TenantId), IsUnique = true)]
-    public class Tenant : AuditedEntity
+    public class Tenant : AuditedEntity<long>
     {
         /// <summary>
         /// 租户名称

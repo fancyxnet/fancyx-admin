@@ -1,9 +1,9 @@
 ﻿using Fancyx.EfCore;
-using Fancyx.Logger.Entities;
+using Fancyx.Shared.Logger.Entities;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Fancyx.Logger
+namespace Fancyx.Shared.Logger
 {
     public class LoggerOnModelCreating : IDbContextOnModelCreating
     {

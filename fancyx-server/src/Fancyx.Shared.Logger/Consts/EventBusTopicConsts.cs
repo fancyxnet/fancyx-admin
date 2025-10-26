@@ -1,4 +1,4 @@
-﻿namespace Fancyx.Logger.Consts
+﻿namespace Fancyx.Shared.Logger.Consts
 {
     public static class EventBusTopicConsts
     {

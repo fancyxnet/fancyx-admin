@@ -4,13 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fancyx.EfCore.BaseEntity
 {
-    public interface ITreeEntity
+    public interface IHasTreeProperty<TKey>
     {
         /// <summary>
         /// 父ID
         /// </summary>
         [Column("parent_id")]
-        long? ParentId { get; set; }
+        TKey ParentId { get; set; }
 
         /// <summary>
         /// 树形路径

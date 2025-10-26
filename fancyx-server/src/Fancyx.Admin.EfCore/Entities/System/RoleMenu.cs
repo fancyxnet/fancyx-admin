@@ -8,7 +8,7 @@ namespace Fancyx.Admin.EfCore.Entities.System
     /// 角色菜单表
     /// </summary>
     [Table("role_menu")]
-    public class RoleMenu : Entity, ITenant
+    public class RoleMenu : Entity<long>, ITenant
     {
         /// <summary>
         /// 菜单ID

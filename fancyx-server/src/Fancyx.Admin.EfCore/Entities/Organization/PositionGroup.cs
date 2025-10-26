@@ -11,7 +11,7 @@ namespace Fancyx.Admin.EfCore.Entities.Organization
     /// 职位分组
     /// </summary>
     [Table("position_group")]
-    public class PositionGroup : AuditedEntity, ITenant, ITreeEntity
+    public class PositionGroup : AuditedEntity<long>, ITenant, IHasTreeProperty<long?>
     {
         /// <summary>
         /// 分组名

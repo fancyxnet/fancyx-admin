@@ -11,7 +11,7 @@ namespace Fancyx.Admin.EfCore.Entities.System
     /// 登录日志
     /// </summary>
     [Table("login_log")]
-    public class LoginLog : CreationEntity, ITenant
+    public class LoginLog : CreationEntity<long>, ITenant
     {
         /// <summary>
         /// 账号

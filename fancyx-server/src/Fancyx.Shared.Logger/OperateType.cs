@@ -1,4 +1,4 @@
-﻿namespace Fancyx.Logger
+﻿namespace Fancyx.Shared.Logger
 {
     public enum OperateType
     {

@@ -1,11 +1,12 @@
 using AutoMapper;
+
 using Fancyx.Admin.Application.IService.System;
 using Fancyx.Admin.Application.IService.System.Dtos;
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.EfCore;
-using Fancyx.Logger;
 using Fancyx.Shared.Consts;
+using Fancyx.Shared.Logger;
 
 namespace Fancyx.Admin.Application.Service.System
 {

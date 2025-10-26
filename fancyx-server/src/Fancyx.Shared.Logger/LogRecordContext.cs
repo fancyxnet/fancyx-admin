@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics;
 
-namespace Fancyx.Logger
+namespace Fancyx.Shared.Logger
 {
     public class LogRecordContext
     {

@@ -4,13 +4,13 @@ using Fancyx.EfCore.BaseEntity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Fancyx.Logger.Entities
+namespace Fancyx.Shared.Logger.Entities
 {
     /// <summary>
     /// 异常日志实体类
     /// </summary>
     [Table("exception_log")]
-    public class ExceptionLog : CreationEntity, ITenant
+    public class ExceptionLog : CreationEntity<long>, ITenant
     {
         /// <summary>
         /// 异常类型

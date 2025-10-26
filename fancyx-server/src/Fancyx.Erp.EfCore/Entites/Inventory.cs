@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Fancyx.Erp.EfCore.Entites
 {
     [Table("inventory")]
-    public class Inventory : AuditedEntity
+    public class Inventory : AuditedEntity<long>
     {
         public string? InventoryNo { get; set; }
 

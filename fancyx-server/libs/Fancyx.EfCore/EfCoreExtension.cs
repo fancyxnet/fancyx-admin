@@ -26,14 +26,14 @@ namespace Fancyx.EfCore
             return await query.Select(selector).ToListAsync();
         }
 
-        public static Task SoftDeleteAsync<TEntity>(this IQueryable<TEntity> entities, long? userId) where TEntity : FullAuditedEntity
+        public static Task SoftDeleteAsync<TEntity>(this IQueryable<TEntity> entities, long? userId) where TEntity : IHasDeletionProperty
         {
             return entities.ExecuteUpdateAsync(e => e.SetProperty(s => s.IsDeleted, true)
                 .SetProperty(s => s.DeletionTime, DateTime.Now)
                 .SetProperty(s => s.DeleterId, userId));
         }
 
-        public static void SetTreeProperties<TEntity>(this TEntity entity, TEntity? parent) where TEntity : Entity, ITreeEntity
+        public static void SetTreeProperties<TEntity>(this TEntity entity, TEntity? parent) where TEntity : Entity<long>, IHasTreeProperty<long?>
         {
             if (entity.Id == default)
             {

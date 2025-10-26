@@ -2,9 +2,6 @@
   "Routes": [
     {
       "UpstreamPathTemplate": "/admin-api/{url}",
-      "LoadBalancerOptions": {
-        "Type": "RoundRobin"
-      },
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -15,9 +12,6 @@
     },
     {
       "UpstreamPathTemplate": "/File/{url}",
-      "LoadBalancerOptions": {
-        "Type": "RoundRobin"
-      },
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -27,10 +21,17 @@
       "DownstreamPathTemplate": "/File/{url}"
     },
     {
+      "UpstreamPathTemplate": "/avatar/{url}",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5001
+        }
+      ],
+      "DownstreamPathTemplate": "/avatar/{url}"
+    },
+    {
       "UpstreamPathTemplate": "/erp-api/{url}",
-      "LoadBalancerOptions": {
-        "Type": "RoundRobin"
-      },
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",

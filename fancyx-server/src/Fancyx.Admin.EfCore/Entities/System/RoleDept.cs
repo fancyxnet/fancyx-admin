@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Fancyx.Admin.EfCore.Entities.System
 {
     [Table("role_dept")]
-    public class RoleDept : Entity, ITenant
+    public class RoleDept : Entity<long>, ITenant
     {
         /// <summary>
         /// 角色ID

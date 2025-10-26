@@ -3,10 +3,10 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Fancyx.EfCore.BaseEntity;
 
-namespace Fancyx.Logger.Entities
+namespace Fancyx.Shared.Logger.Entities
 {
     [Table("log_record")]
-    public class LogRecord : CreationEntity, ITenant
+    public class LogRecord : CreationEntity<long>, ITenant
     {
         /// <summary>
         /// 日志类型

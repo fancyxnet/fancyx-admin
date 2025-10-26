@@ -2,8 +2,8 @@
 using Fancyx.Core.Context;
 using Fancyx.Erp.EfCore;
 using Fancyx.EventBus;
-using Fancyx.Logger;
 using Fancyx.Redis;
+using Fancyx.Shared.Logger;
 
 namespace Fancyx.Erp.Application
 {

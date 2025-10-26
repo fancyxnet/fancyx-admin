@@ -1,11 +1,12 @@
 ﻿using DotNetCore.CAP;
+
 using Fancyx.EfCore;
-using Fancyx.Logger.Consts;
-using Fancyx.Logger.Entities;
-using Fancyx.Logger.Message;
+using Fancyx.Shared.Logger.Consts;
+using Fancyx.Shared.Logger.Entities;
+using Fancyx.Shared.Logger.Message;
 using Fancyx.Utils;
 
-namespace Fancyx.Logger
+namespace Fancyx.Shared.Logger
 {
     public class LoggerCapSubscriber : ICapSubscribe
     {

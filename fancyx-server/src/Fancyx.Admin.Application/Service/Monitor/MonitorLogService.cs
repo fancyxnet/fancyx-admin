@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
+
 using Fancyx.Admin.Application.IService.Monitor;
 using Fancyx.Admin.Application.IService.Monitor.Dtos;
 using Fancyx.Admin.EfCore;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
-using Fancyx.Logger.Entities;
+using Fancyx.Shared.Logger.Entities;
 
 namespace Fancyx.Admin.Application.Service.Monitor
 {

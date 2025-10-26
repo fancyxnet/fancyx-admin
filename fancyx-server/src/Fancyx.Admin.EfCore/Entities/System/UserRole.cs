@@ -8,7 +8,7 @@ namespace Fancyx.Admin.EfCore.Entities.System
     /// 用户角色关联表
     /// </summary>
     [Table("user_role")]
-    public class UserRole : Entity, ITenant
+    public class UserRole : Entity<long>, ITenant
     {
         /// <summary>
         /// 用户ID

@@ -6,7 +6,7 @@ namespace Fancyx.Erp.EfCore.Entites
 {
     [Table("product_brand")]
     [Index(nameof(Code), IsUnique = true)]
-    public class ProductBrand : FullAuditedEntity
+    public class ProductBrand : FullAuditedEntity<long>
     {
         [Column("code")]
         public string Code { get; set; } = null!;

@@ -3,7 +3,7 @@ using Fancyx.Erp.EfCore.Enums;
 
 namespace Fancyx.Erp.EfCore.Entites
 {
-    public class InventoryLog : CreationEntity
+    public class InventoryLog : CreationEntity<long>
     {
         public InventoryBizType BizType { get; set; }
         public long InventoryId { get; set; }

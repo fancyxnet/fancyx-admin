@@ -1,15 +1,18 @@
 using DotNetCore.CAP;
+
 using Fancyx.Core.Authorization;
 using Fancyx.Core.AutoInject;
-using Fancyx.Logger.Consts;
-using Fancyx.Logger.Message;
+using Fancyx.Shared.Logger.Message;
+using Fancyx.Shared.Logger.Consts;
 using Fancyx.Utils;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 using System.Diagnostics;
 
-namespace Fancyx.Logger
+namespace Fancyx.Shared.Logger
 {
     /// <summary>
     /// 操作日志记录，加在业务方法上（只适合异步方法）

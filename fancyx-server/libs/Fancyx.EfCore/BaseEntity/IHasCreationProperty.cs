@@ -2,7 +2,7 @@
 
 namespace Fancyx.EfCore.BaseEntity
 {
-    public abstract class CreationEntity<TKey> : Entity<TKey>, IHasCreationProperty
+    public interface IHasCreationProperty
     {
         [Column("creator_id")]
         public long? CreatorId { get; set; }

@@ -13,7 +13,7 @@ namespace Fancyx.Admin.EfCore.Entities.Organization
     /// 部门表
     /// </summary>
     [Table("dept")]
-    public class Dept : FullAuditedEntity, ITenant, ITreeEntity
+    public class Dept : FullAuditedEntity<long>, ITenant, IHasTreeProperty<long?>
     {
         [Key]
         [NotNull]
