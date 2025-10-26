@@ -1,4 +1,8 @@
-﻿using Fancyx.Admin.Application.IService.Monitor;
+﻿using System.Net;
+
+using Consul;
+
+using Fancyx.Admin.Application.IService.Monitor;
 using Fancyx.Admin.Application.IService.Monitor.Dtos;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Core.Interfaces;
@@ -6,6 +10,7 @@ using Fancyx.EfCore;
 using Fancyx.Redis;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Keys;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.Application.Service.Monitor
@@ -41,7 +46,26 @@ namespace Fancyx.Admin.Application.Service.Monitor
 
             var result = new List<OnlineUserResultDto>();
             var currentSessionId = _currentUser.FindClaim(AdminConsts.SessionId).Value;
-            var loginLogs = await _loginLogRepository.Where(x => x.CreationTime <= x.CreationTime.AddDays(1)).OrderByDescending(x => x.CreationTime).ToListAsync();
+            var subQuery = _loginLogRepository.Where(x => x.CreationTime >= x.CreationTime.AddDays(-1)).GroupBy(x => x.SessionId)
+                .Select(g => new
+                {
+                    SessionId = g.Key,
+                    MaxCreationTime = g.Max(x => x.CreationTime)
+                });
+            var loginLogs = await subQuery
+                .Join(_loginLogRepository.GetQueryable(),
+                    max => new { max.SessionId, max.MaxCreationTime },
+                    log => new { log.SessionId, MaxCreationTime = log.CreationTime },
+                    (max, log) => new
+                    {
+                        UserName = log.UserName,
+                        Ip = log.Ip,
+                        SessionId = log.SessionId,
+                        Address = log.Address,
+                        Browser = log.Browser,
+                        CreationTime = log.CreationTime
+                    })
+                .ToListAsync();
             foreach (var key in tokenKeys)
             {
                 var arr = key.Split(':');
@@ -63,7 +87,7 @@ namespace Fancyx.Admin.Application.Service.Monitor
             }
             if (!string.IsNullOrEmpty(currentSessionId))
             {
-                var index = result.FindIndex(x=>x.SessionId == currentSessionId);
+                var index = result.FindIndex(x => x.SessionId == currentSessionId);
                 if (index > 0)
                 {
                     result.Insert(0, result[index]);

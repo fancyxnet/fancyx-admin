@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
+
 using StackExchange.Redis;
-using System.Collections.Concurrent;
+
 using System.Text.Json;
-using System.Text.RegularExpressions;
 
 namespace Fancyx.Redis
 {
@@ -11,7 +11,6 @@ namespace Fancyx.Redis
         private readonly IMemoryCache _memoryCache;
         private readonly IDatabase _redisClient;
         private readonly TimeSpan _defaultExpiration;
-        private readonly ConcurrentDictionary<string, byte> _cacheKeys = new();
 
         public HybridCache(
             IMemoryCache memoryCache,
@@ -94,8 +93,6 @@ namespace Fancyx.Redis
                     AbsoluteExpirationRelativeToNow = actualExpiration
                 });
             }
-
-            _cacheKeys.TryAdd(key, 0);
         }
 
         public async Task RemoveAsync(string key, HybridCacheMode mode = HybridCacheMode.Both)
@@ -110,8 +107,6 @@ namespace Fancyx.Redis
             {
                 await _redisClient.KeyDeleteAsync(key);
             }
-
-            _cacheKeys.Remove(key, out var _);
         }
 
         public async Task RemoveByPatternAsync(string pattern, HybridCacheMode mode = HybridCacheMode.Both)
@@ -126,10 +121,6 @@ namespace Fancyx.Redis
 
         public async Task<List<string>> KeyPatternAsync(string pattern, HybridCacheMode mode = HybridCacheMode.Both)
         {
-            var regex = new Regex(pattern, RegexOptions.Singleline | RegexOptions.Compiled | RegexOptions.IgnoreCase);
-            var keys = _cacheKeys.Keys.Where(k => regex.IsMatch(k)).ToList();
-            if (keys.Count > 0) return keys;
-
             return (await _redisClient.KeyPatternAsync(pattern))?.ToList() ?? [];
         }
 
