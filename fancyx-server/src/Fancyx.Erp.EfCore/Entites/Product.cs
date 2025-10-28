@@ -1,16 +1,15 @@
-﻿using Fancyx.EfCore.BaseEntity;
-using Microsoft.EntityFrameworkCore;
+﻿using Fancyx.Core.Interfaces;
+using Fancyx.EfCore.BaseEntity;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fancyx.Erp.EfCore.Entites
 {
     [Table("product")]
-    [Index(nameof(Code), IsUnique = true)]
-    [Index(nameof(SkuCode), IsUnique = true)]
-    public class Product : FullAuditedEntity<long>
+    public class Product : FullAuditedEntity<long>, ITenant
     {
         [Column("code")]
         public string Code { get; set; } = null!;
+
         [Column("sku_code")]
         public string SkuCode { get; set; } = null!;
 
@@ -28,5 +27,11 @@ namespace Fancyx.Erp.EfCore.Entites
 
         [Column("category_id")]
         public long CategoryId { get; set; }
+
+        /// <summary>
+        /// 租户ID
+        /// </summary>
+        [Column("tenant_id")]
+        public string? TenantId { get; set; }
     }
 }

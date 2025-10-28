@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Fancyx.Core.Interfaces;
+using Fancyx.EfCore.BaseEntity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
-
-using Fancyx.EfCore.BaseEntity;
 
 namespace Fancyx.Erp.EfCore.Entites
 {
@@ -10,7 +10,7 @@ namespace Fancyx.Erp.EfCore.Entites
     /// 客户信息
     /// </summary>
     [Table("customer")]
-    public class Customer : FullAuditedEntity<long>
+    public class Customer : FullAuditedEntity<long>, ITenant
     {
         /// <summary>
         /// 编号
@@ -50,5 +50,11 @@ namespace Fancyx.Erp.EfCore.Entites
         /// </summary>
         [Column("contact_phone")]
         public string? ContactPhone { get; set; }
+
+        /// <summary>
+        /// 租户ID
+        /// </summary>
+        [Column("tenant_id")]
+        public string? TenantId { get; set; }
     }
 }

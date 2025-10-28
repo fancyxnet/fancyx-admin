@@ -1,9 +1,11 @@
-﻿using Fancyx.EfCore.BaseEntity;
+﻿using Fancyx.Core.Interfaces;
+using Fancyx.EfCore.BaseEntity;
 using Fancyx.Erp.EfCore.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fancyx.Erp.EfCore.Entites
 {
-    public class InventoryLog : CreationEntity<long>
+    public class InventoryLog : CreationEntity<long>, ITenant
     {
         public InventoryBizType BizType { get; set; }
         public long InventoryId { get; set; }
@@ -23,5 +25,11 @@ namespace Fancyx.Erp.EfCore.Entites
         /// 总价
         /// </summary>
         public decimal TotalCost { get; set; }
+
+        /// <summary>
+        /// 租户ID
+        /// </summary>
+        [Column("tenant_id")]
+        public string? TenantId { get; set; }
     }
 }

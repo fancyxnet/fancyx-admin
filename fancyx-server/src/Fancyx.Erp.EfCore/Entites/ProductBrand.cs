@@ -1,12 +1,11 @@
-﻿using Fancyx.EfCore.BaseEntity;
-using Microsoft.EntityFrameworkCore;
+﻿using Fancyx.Core.Interfaces;
+using Fancyx.EfCore.BaseEntity;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fancyx.Erp.EfCore.Entites
 {
     [Table("product_brand")]
-    [Index(nameof(Code), IsUnique = true)]
-    public class ProductBrand : FullAuditedEntity<long>
+    public class ProductBrand : FullAuditedEntity<long>, ITenant
     {
         [Column("code")]
         public string Code { get; set; } = null!;
@@ -19,5 +18,11 @@ namespace Fancyx.Erp.EfCore.Entites
 
         [Column("is_enabled")]
         public bool IsEnabled { get; set; }
+
+        /// <summary>
+        /// 租户ID
+        /// </summary>
+        [Column("tenant_id")]
+        public string? TenantId { get; set; }
     }
 }

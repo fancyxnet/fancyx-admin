@@ -1,5 +1,5 @@
-﻿using Fancyx.EfCore.BaseEntity;
-using Microsoft.EntityFrameworkCore;
+﻿using Fancyx.Core.Interfaces;
+using Fancyx.EfCore.BaseEntity;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fancyx.Erp.EfCore.Entites
@@ -8,8 +8,7 @@ namespace Fancyx.Erp.EfCore.Entites
     /// 供应商
     /// </summary>
     [Table("supplier")]
-    [Index(nameof(Code), IsUnique = true)]
-    public class Supplier : FullAuditedEntity<long>
+    public class Supplier : FullAuditedEntity<long>, ITenant
     {
         [Column("code")]
         public string Code { get; set; } = null!;
@@ -22,5 +21,11 @@ namespace Fancyx.Erp.EfCore.Entites
 
         [Column("is_enabled")]
         public bool IsEnabled { get; set; }
+
+        /// <summary>
+        /// 租户ID
+        /// </summary>
+        [Column("tenant_id")]
+        public string? TenantId { get; set; }
     }
 }
