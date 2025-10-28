@@ -30,7 +30,7 @@ export function updateRole(dto: RoleDto) {
  * @param id
  */
 export function deleteRole(id: string) {
-  return httpClient.delete<string, AppResponse<boolean>>(`/api/Role/Delete/${id}`);
+  return httpClient.delete<string, AppResponse<boolean>>(`/admin-api/Role/Delete/${id}`);
 }
 
 /**
@@ -53,7 +53,7 @@ export function getRoleOptions() {
  * @param id
  */
 export function getRoleMenuIds(id: string) {
-  return httpClient.get<string, AppResponse<string[]>>(`/api/Role/Menus/${id}`);
+  return httpClient.get<string, AppResponse<string[]>>(`/admin-api/Role/Menus/${id}`);
 }
 
 /**

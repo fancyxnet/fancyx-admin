@@ -32,7 +32,7 @@ export function updateNotification(dto: NotificationDto) {
  * @param ids
  */
 export function deleteNotifications(ids: string[]) {
-  return httpClient.delete<string, AppResponse<boolean>>(`/api/Notification/BatchDelete`, {
+  return httpClient.delete<string, AppResponse<boolean>>(`/admin-api/Notification/BatchDelete`, {
     data: ids,
   });
 }

@@ -32,7 +32,7 @@ export function updatePositionGroup(dto: PositionGroupDto) {
  * @param id
  */
 export function deletePositionGroup(id: string) {
-  return httpClient.delete<AppResponse<boolean>>(`/api/PositionGroup/Delete/${id}`);
+  return httpClient.delete<AppResponse<boolean>>(`/admin-api/PositionGroup/Delete/${id}`);
 }
 
 export interface PositionGroupDto {
