@@ -30,7 +30,7 @@ export function updateTenant(dto: TenantDto) {
  * @param id
  */
 export function deleteTenant(id: string) {
-  return httpClient.delete<string, AppResponse<boolean>>(`/api/Tenant/Delete/${id}`);
+  return httpClient.delete<string, AppResponse<boolean>>(`/admin-api/Tenant/Delete/${id}`);
 }
 
 export interface TenantDto {

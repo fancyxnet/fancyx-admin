@@ -65,7 +65,7 @@ const BusinessLogList: React.FC = () => {
               icon={<CheckCircleOutlined />}
               onClick={() => {
                 modal.confirm({
-                  title: '确认删除？',
+                  title: '确认已处理？',
                   icon: <ExclamationCircleFilled />,
                   onOk() {
                     handleException(record.id).then(() => {

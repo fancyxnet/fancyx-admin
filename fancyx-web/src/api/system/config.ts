@@ -30,7 +30,7 @@ export function updateConfig(dto: ConfigDto) {
  * @param id
  */
 export function deleteConfig(id: string) {
-  return httpClient.delete<string, AppResponse<boolean>>(`/api/Config/Delete/${id}`);
+  return httpClient.delete<string, AppResponse<boolean>>(`/admin-api/Config/Delete/${id}`);
 }
 
 export interface ConfigDto {
