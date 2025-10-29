@@ -1,12 +1,13 @@
 ﻿import Permission from '@/components/Permission';
 import { deleteTenant, getTenantList, type TenantDto, type TenantListDto } from '@/api/system/tenant.ts';
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, HddOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Popconfirm, Space } from 'antd';
 import React, { useRef } from 'react';
 import type { SmartTableRef, SmartTableColumnType } from '@/components/SmartTable/type.ts';
 import SmartTable from '@/components/SmartTable';
 import TenantForm, { type ModalRef } from '@/pages/system/components/TenantForm.tsx';
 import useApp from 'antd/es/app/useApp';
+import AssignTenantForm, { type AssignTenantMenuFormModalRef } from './components/AssignTenantMenuForm';
 
 const TenantList: React.FC = () => {
   const tableRef = useRef<SmartTableRef>(null);
@@ -73,10 +74,23 @@ const TenantList: React.FC = () => {
               </Button>
             </Popconfirm>
           </Permission>
+          <Permission permissions={'Sys.Tenant.AssignTenantMenu'}>
+            <Button
+              type="link"
+              icon={<HddOutlined />}
+              key="assign"
+              onClick={() => {
+                modalRef?.current?.openModal(record as TenantDto);
+              }}
+            >
+              分配功能
+            </Button>
+          </Permission>
         </Space>
       ),
     },
   ];
+  const assignTenantFormRef = useRef<AssignTenantMenuFormModalRef>(null);
 
   return (
     <>
@@ -111,6 +125,8 @@ const TenantList: React.FC = () => {
       />
       {/** 新增/编辑租户弹窗 */}
       <TenantForm ref={modalRef} refresh={() => tableRef?.current?.reload()} />
+      {/* 分配功能权限 */}
+      <AssignTenantForm ref={assignTenantFormRef} />
     </>
   );
 };

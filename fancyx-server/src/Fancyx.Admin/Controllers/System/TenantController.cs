@@ -72,5 +72,21 @@ namespace Fancyx.Admin.Controllers.System
             await _tenantService.DeleteTenantAsync(id);
             return Result.Ok();
         }
+
+        [HttpPost("AssignTenantMenu")]
+        [HasPermission("Sys.Tenant.AssignTenantMenu")]
+        public async Task<AppResponse<bool>> AssignTenantMenuAsync([FromBody] AssignTenantMenuDto dto)
+        {
+            await _tenantService.AssignTenantMenuAsync(dto);
+            return Result.Ok();
+        }
+
+        [HttpGet("GetTenantMenuIds/{id}")]
+        [HasPermission("Sys.Tenant.AssignTenantMenu")]
+        public async Task<AppResponse<List<long>>> GetTenantMenuIdsAsync(long id)
+        {
+            var data = await _tenantService.GetTenantMenuIdsAsync(id);
+            return Result.Data(data);
+        }
     }
 }

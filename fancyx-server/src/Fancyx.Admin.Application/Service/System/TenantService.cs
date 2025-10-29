@@ -3,16 +3,19 @@ using Fancyx.Admin.Application.IService.System.Dtos;
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.EfCore;
+using Fancyx.EfCore.Aop;
 
 namespace Fancyx.Admin.Application.Service.System
 {
     public class TenantService : ITenantService
     {
         private readonly IRepository<Tenant> _tenantRepository;
+        private readonly IRepository<TenantMenu> _tenantMenuRepository;
 
-        public TenantService(IRepository<Tenant> tenantRepository)
+        public TenantService(IRepository<Tenant> tenantRepository, IRepository<TenantMenu> tenantMenuRepository)
         {
             _tenantRepository = tenantRepository;
+            _tenantMenuRepository = tenantMenuRepository;
         }
 
         public async Task AddTenantAsync(TenantDto dto)
@@ -68,6 +71,26 @@ namespace Fancyx.Admin.Application.Service.System
             entity.Domain = dto.Domain;
 
             await _tenantRepository.UpdateAsync(entity);
+        }
+
+        [AsyncTransactional]
+        public async Task AssignTenantMenuAsync(AssignTenantMenuDto dto)
+        {
+            await _tenantRepository.DeleteAsync(x => x.Id == dto.TenantId);
+            if (dto.MenuIds?.Length > 0)
+            {
+                var tenantMenus = dto.MenuIds.Select(id => new TenantMenu
+                {
+                    TenantId = dto.TenantId,
+                    MenuId = id
+                }).ToList();
+                await _tenantMenuRepository.InsertManyAsync(tenantMenus);
+            }
+        }
+
+        public Task<List<long>> GetTenantMenuIdsAsync(long id)
+        {
+            return _tenantMenuRepository.GetQueryable().SelectToListAsync(x => x.MenuId);
         }
     }
 }

@@ -14,7 +14,9 @@ export function addTenant(dto: TenantDto) {
  * @param dto
  */
 export function getTenantList(dto: TenantQueryDto) {
-  return httpClient.get<TenantQueryDto, AppResponse<PagedResult<TenantListDto>>>('/admin-api/Tenant/List', { params: dto });
+  return httpClient.get<TenantQueryDto, AppResponse<PagedResult<TenantListDto>>>('/admin-api/Tenant/List', {
+    params: dto,
+  });
 }
 
 /**
@@ -31,6 +33,27 @@ export function updateTenant(dto: TenantDto) {
  */
 export function deleteTenant(id: string) {
   return httpClient.delete<string, AppResponse<boolean>>(`/admin-api/Tenant/Delete/${id}`);
+}
+
+/**
+ * 分配租户菜单
+ * @param dto
+ */
+export function assignTenantMenu(dto: AssignTenantMenuDto) {
+  return httpClient.post<AssignTenantMenuDto, AppResponse<boolean>>('/admin-api/Tenant/AssginTenantMenu', dto);
+}
+
+/**
+ * 租户已有菜单ID列表
+ * @param dto
+ */
+export function getTenantMenuIds(id: string) {
+  return httpClient.get<string, AppResponse<string[]>>('/admin-api/Tenant/GetTenantMenuIds' + id);
+}
+
+export interface AssignTenantMenuDto {
+  tenantId: string;
+  menuIds: string[] | null;
 }
 
 export interface TenantDto {
