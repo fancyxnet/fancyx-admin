@@ -80,10 +80,10 @@ const TenantList: React.FC = () => {
               icon={<HddOutlined />}
               key="assign"
               onClick={() => {
-                modalRef?.current?.openModal(record as TenantDto);
+                assignTenantFormRef?.current?.openModal(record);
               }}
             >
-              分配功能
+              菜单
             </Button>
           </Permission>
         </Space>

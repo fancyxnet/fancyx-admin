@@ -40,7 +40,7 @@ export function deleteTenant(id: string) {
  * @param dto
  */
 export function assignTenantMenu(dto: AssignTenantMenuDto) {
-  return httpClient.post<AssignTenantMenuDto, AppResponse<boolean>>('/admin-api/Tenant/AssginTenantMenu', dto);
+  return httpClient.post<AssignTenantMenuDto, AppResponse<boolean>>('/admin-api/Tenant/AssignTenantMenu', dto);
 }
 
 /**
@@ -48,7 +48,7 @@ export function assignTenantMenu(dto: AssignTenantMenuDto) {
  * @param dto
  */
 export function getTenantMenuIds(id: string) {
-  return httpClient.get<string, AppResponse<string[]>>('/admin-api/Tenant/GetTenantMenuIds' + id);
+  return httpClient.get<string, AppResponse<string[]>>('/admin-api/Tenant/GetTenantMenuIds/' + id);
 }
 
 export interface AssignTenantMenuDto {
@@ -61,7 +61,7 @@ export interface TenantDto {
   name: string;
   tenantId: string;
   remark?: string;
-  domain?: string;
+  domain: string;
 }
 
 export interface TenantListDto {

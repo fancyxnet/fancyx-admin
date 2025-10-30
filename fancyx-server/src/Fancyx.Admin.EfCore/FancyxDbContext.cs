@@ -27,5 +27,6 @@ namespace Fancyx.Admin.EfCore
         public DbSet<RoleMenu> RoleMenu { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<UserRole> UserRole { get; set; }
+        public DbSet<TenantMenu> TenantMenu { get; set; }
     }
 }

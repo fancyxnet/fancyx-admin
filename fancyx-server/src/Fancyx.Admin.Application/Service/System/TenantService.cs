@@ -76,7 +76,7 @@ namespace Fancyx.Admin.Application.Service.System
         [AsyncTransactional]
         public async Task AssignTenantMenuAsync(AssignTenantMenuDto dto)
         {
-            await _tenantRepository.DeleteAsync(x => x.Id == dto.TenantId);
+            await _tenantMenuRepository.DeleteAsync(x => x.TenantId == dto.TenantId);
             if (dto.MenuIds?.Length > 0)
             {
                 var tenantMenus = dto.MenuIds.Select(id => new TenantMenu
@@ -90,7 +90,7 @@ namespace Fancyx.Admin.Application.Service.System
 
         public Task<List<long>> GetTenantMenuIdsAsync(long id)
         {
-            return _tenantMenuRepository.GetQueryable().SelectToListAsync(x => x.MenuId);
+            return _tenantMenuRepository.Where(x => x.TenantId == id).SelectToListAsync(x => x.MenuId);
         }
     }
 }

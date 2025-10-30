@@ -65,7 +65,7 @@ const AssignTenantMenuFormForm = forwardRef<AssignTenantMenuFormModalRef, ModalP
   };
 
   return (
-    <Modal title="分配功能权限" open={isOpenModal} onCancel={onCancel} onOk={onOk} maskClosable={false} width="50%">
+    <Modal title="分配租户菜单" open={isOpenModal} onCancel={onCancel} onOk={onOk} maskClosable={false} width="50%">
       <Form
         labelCol={{ flex: '80px' }}
         labelWrap
