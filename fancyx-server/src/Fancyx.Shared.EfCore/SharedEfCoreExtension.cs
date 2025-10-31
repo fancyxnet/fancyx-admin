@@ -12,8 +12,6 @@ namespace Fancyx.Shared.EfCore
 
         public static IQueryable<TEntity> PowerFilter<TEntity>(this IQueryable<TEntity> query, ICurrentUser currentUser)
         {
-            if (currentUser.IsInRoles(DataPower.SuperAdmin)) return query;
-
             var type = typeof(TEntity);
             var userIds = currentUser.FindClaim(DataPower.UserIdType)?.Value ?? "";
             var deptIds = currentUser.FindClaim(DataPower.DeptIdType)?.Value ?? "";

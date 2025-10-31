@@ -4,7 +4,6 @@ using Fancyx.Admin.EfCore.Enums;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
 using Fancyx.Redis;
-using Fancyx.Shared.EfCore;
 using Fancyx.Shared.Keys;
 
 using Microsoft.EntityFrameworkCore;
@@ -66,10 +65,9 @@ namespace Fancyx.Admin.Application.SharedService
                          group r by new { r.Id, r.RoleName } into g
                          select new { g.Key.Id, g.Key.RoleName }).ToList();
             var roleIds = roles.Select(x => x.Id).ToArray();
-            var isSuperAdmin = await _userRepository.AnyAsync(x => x.IsSuperAdmin && x.IsEnabled && x.Id == userId);
             var menus = (from m in _menuRepository.GetQueryable()
                          join rm in _roleMenuRepository.GetQueryable() on m.Id equals rm.MenuId
-                         where roleIds.Contains(rm.RoleId) || isSuperAdmin
+                         where roleIds.Contains(rm.RoleId)
                          select new
                          {
                              m.Id,
@@ -83,8 +81,7 @@ namespace Fancyx.Admin.Application.SharedService
                 Roles = [.. roles.Select(c => c.RoleName)],
                 Auths = menus.Where(c => !string.IsNullOrEmpty(c.Permission) && c.MenuType == MenuType.Button && c.Display).Select(c => c.Permission!).Distinct().ToArray(),
                 RoleIds = roleIds,
-                MenuIds = [.. menus.Select(x => x.Id)],
-                IsSuperAdmin = isSuperAdmin
+                MenuIds = [.. menus.Select(x => x.Id)]
             };
             await _hybridCache.SetAsync(key, rs);
             return rs;
@@ -162,16 +159,6 @@ namespace Fancyx.Admin.Application.SharedService
             {
                 return null;
             }
-        }
-
-        /// <summary>
-        /// 用户是否来源主库
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public Task<bool> UserIsFromMainDbAsync(string id)
-        {
-            return _userRepository.GetQueryable().AsNoTracking().IgnoreQueryFilters().AnyAsync(x => !x.IsDeleted && x.Id.ToString() == id);
         }
 
         /// <summary>
