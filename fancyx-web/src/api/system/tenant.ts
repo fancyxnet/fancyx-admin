@@ -57,15 +57,13 @@ export interface AssignTenantMenuDto {
 }
 
 export interface TenantDto {
-  id?: string;
   name: string;
-  tenantId: string;
+  tenantId?: string;
   remark?: string;
   domain: string;
 }
 
 export interface TenantListDto {
-  id: string;
   name: string;
   tenantId: string;
   remark?: string;

@@ -47,7 +47,7 @@ const TenantForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
     apiAction: (params: TenantDto) => Promise<AppResponse<boolean>>,
     successMsg: string,
   ) => {
-    apiAction({ ...values, id: row?.id }).then(() => {
+    apiAction({ ...values, tenantId: row?.tenantId }).then(() => {
       message.success(successMsg);
       setIsOpenModal(false);
       form.resetFields();
@@ -55,14 +55,14 @@ const TenantForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
     });
   };
   const onFinish = (values: TenantDto) => {
-    const isEdit = !!row?.id;
+    const isEdit = !!row?.tenantId;
 
     execute(values, isEdit ? updateTenant : addTenant, isEdit ? '编辑成功' : '新增成功');
   };
 
   return (
     <Modal
-      title={row?.id ? '编辑租户' : '新增租户'}
+      title={row?.tenantId ? '编辑租户' : '新增租户'}
       open={isOpenModal}
       onCancel={onCancel}
       onOk={onOk}

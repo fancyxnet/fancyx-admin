@@ -63,7 +63,7 @@ const TenantList: React.FC = () => {
               title="确定删除吗？"
               description="删除后无法撤销"
               onConfirm={() => {
-                deleteTenant(record.id!).then(() => {
+                deleteTenant(record.tenantId!).then(() => {
                   message.success('删除成功');
                   tableRef.current?.reload();
                 });
@@ -97,7 +97,7 @@ const TenantList: React.FC = () => {
       <SmartTable
         columns={columns}
         ref={tableRef}
-        rowKey="id"
+        rowKey="tenantId"
         request={async (params) => {
           const { data } = await getTenantList(params);
           return data;
