@@ -5,8 +5,6 @@ namespace Fancyx.Admin.Application.IService.System.Dtos
 {
     public class TenantDto
     {
-        public long? Id { get; set; }
-
         /// <summary>
         /// 租户名称
         /// </summary>

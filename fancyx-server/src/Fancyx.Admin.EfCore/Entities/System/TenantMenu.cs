@@ -1,11 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Fancyx.Admin.EfCore.Entities.System
 {
     [PrimaryKey(nameof(TenantId), nameof(MenuId))]
     public class TenantMenu
     {
-        public long TenantId { get; set; }
+        [NotNull, Required]
+        public string? TenantId { get; set; } = null!;
         public long MenuId { get; set; }
     }
 }

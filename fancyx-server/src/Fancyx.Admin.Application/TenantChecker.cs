@@ -22,7 +22,7 @@ namespace Fancyx.Admin.Application
         {
             if (await _redisClient.KeyExistsAsync(SystemCacheKey.AllTenant)) return await _redisClient.HashExistsAsync(SystemCacheKey.AllTenant, tenantId);
 
-            var tenants = await _tenantRepository.GetQueryable().SelectToListAsync(x => new { x.TenantId, x.Name });
+            var tenants = await _tenantRepository.GetQueryable().SelectToListAsync(x => new { TenantId = x.Id, x.Name });
             var map = tenants.ToDictionary(k => k.TenantId, v => v.Name);
             if (map.Count == 0) return false;
 

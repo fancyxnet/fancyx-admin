@@ -1,6 +1,7 @@
 ﻿using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
+using Fancyx.Core;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
 using Fancyx.Redis;
@@ -28,10 +29,14 @@ namespace Fancyx.Admin.Application.SharedService
         private readonly ICurrentUser _currentUser;
         private readonly IRepository<RoleDept> _roleDeptRepository;
         private readonly IRepository<Dept> _deptRepository;
+        private readonly IRepository<Tenant> _tenantRepository;
+        private readonly IRepository<TenantMenu> _tenantMenuRepository;
+        private readonly ICurrentTenant _currentTenant;
 
         public IdentitySharedService(IRepository<UserRole> userRoleRepository, IRepository<RoleMenu> roleMenuRepository, IRepository<Role> roleRepository,
             IRepository<Menu> menuRepository, IConfiguration configuration, IRepository<User> userRepository, IHybridCache hybridCache, ICurrentUser currentUser
-            , IRepository<RoleDept> roleDeptRepository, IRepository<Dept> deptRepository)
+            , IRepository<RoleDept> roleDeptRepository, IRepository<Dept> deptRepository, IRepository<Tenant> tenantRepository, IRepository<TenantMenu> tenantMenuRepository
+            , ICurrentTenant currentTenant)
         {
             _userRoleRepository = userRoleRepository;
             _roleMenuRepository = roleMenuRepository;
@@ -43,6 +48,9 @@ namespace Fancyx.Admin.Application.SharedService
             _currentUser = currentUser;
             _roleDeptRepository = roleDeptRepository;
             _deptRepository = deptRepository;
+            _tenantRepository = tenantRepository;
+            _tenantMenuRepository = tenantMenuRepository;
+            _currentTenant = currentTenant;
         }
 
         /// <summary>
@@ -75,6 +83,11 @@ namespace Fancyx.Admin.Application.SharedService
                              m.MenuType,
                              m.Display,
                          }).ToList();
+            if (MultiTenancyConsts.IsEnabled)
+            {
+                var tenantMenuIds = await this.GetTenantMenusAsync(_currentTenant.TenantId);
+                menus = menus.Where(x => tenantMenuIds.Contains(x.Id)).ToList();
+            }
             var rs = new UserPermission
             {
                 UserId = userId,
@@ -239,6 +252,16 @@ namespace Fancyx.Admin.Application.SharedService
 
             var key = SystemCacheKey.UserDeptPower(_currentUser.Id.Value);
             await _hybridCache.RemoveAsync(key);
+        }
+
+        /// <summary>
+        /// 通过租户ID查询租户拥有菜单
+        /// </summary>
+        /// <param name="tenantId"></param>
+        /// <returns></returns>
+        public Task<List<long>> GetTenantMenusAsync(string tenantId)
+        {
+            return _tenantMenuRepository.GetQueryable().Where(x => x.TenantId == tenantId).Join(_tenantRepository.GetQueryable(), tm => tm.TenantId, t => t.Id, (tm, t) => tm.MenuId).ToListAsync();
         }
     }
 }

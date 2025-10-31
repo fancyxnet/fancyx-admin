@@ -7,8 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Fancyx.Admin.EfCore.Entities.System
 {
     [Table("tenant")]
-    [Index(nameof(TenantId), IsUnique = true)]
-    public class Tenant : AuditedEntity<long>
+    public class Tenant : AuditedEntity<string>
     {
         /// <summary>
         /// 租户名称
@@ -17,15 +16,6 @@ namespace Fancyx.Admin.EfCore.Entities.System
         [Required]
         [Column("name")]
         public string? Name { get; set; }
-
-        /// <summary>
-        /// 租户标识
-        /// </summary>
-        [NotNull]
-        [Required]
-        [MaxLength(18)]
-        [Column("tenant_id")]
-        public string? TenantId { get; set; }
 
         /// <summary>
         /// 备注
