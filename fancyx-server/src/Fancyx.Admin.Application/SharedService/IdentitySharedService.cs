@@ -60,22 +60,30 @@ namespace Fancyx.Admin.Application.SharedService
                 return cacheValue!;
             }
 
-            var roleIds = await _userRoleRepository.Where(x => x.UserId == userId).SelectToListAsync(x => x.RoleId);
-            var roles = await _roleRepository.Where(x => roleIds.Contains(x.Id) && x.IsEnabled).ToListAsync();
-            var isSuperAdmin = roles.Any(r => r.RoleName == DataPower.SuperAdmin);
-            var menuIds = await _roleMenuRepository.Where(x => roleIds.Contains(x.RoleId)).SelectToListAsync(x => x.MenuId);
-            var menus = await _menuRepository.Where(x => menuIds.Contains(x.Id) || isSuperAdmin).SelectToListAsync(x => new { x.Permission, x.Id, x.MenuType, x.Display });
-            if (isSuperAdmin)
-            {
-                menuIds = menus.Select(x => x.Id).ToList();
-            }
+            var roles = (from r in _roleRepository.GetQueryable()
+                         join ur in _userRoleRepository.GetQueryable() on r.Id equals ur.RoleId
+                         where ur.UserId == userId && r.IsEnabled
+                         group r by new { r.Id, r.RoleName } into g
+                         select new { g.Key.Id, g.Key.RoleName }).ToList();
+            var roleIds = roles.Select(x => x.Id).ToArray();
+            var isSuperAdmin = await _userRepository.AnyAsync(x => x.IsSuperAdmin && x.IsEnabled && x.Id == userId);
+            var menus = (from m in _menuRepository.GetQueryable()
+                         join rm in _roleMenuRepository.GetQueryable() on m.Id equals rm.MenuId
+                         where roleIds.Contains(rm.RoleId) || isSuperAdmin
+                         select new
+                         {
+                             m.Id,
+                             m.Permission,
+                             m.MenuType,
+                             m.Display,
+                         }).ToList();
             var rs = new UserPermission
             {
                 UserId = userId,
-                Roles = roles.Select(c => c.RoleName).ToArray(),
+                Roles = [.. roles.Select(c => c.RoleName)],
                 Auths = menus.Where(c => !string.IsNullOrEmpty(c.Permission) && c.MenuType == MenuType.Button && c.Display).Select(c => c.Permission!).Distinct().ToArray(),
-                RoleIds = [.. roleIds],
-                MenuIds = [.. menuIds],
+                RoleIds = roleIds,
+                MenuIds = [.. menus.Select(x => x.Id)],
                 IsSuperAdmin = isSuperAdmin
             };
             await _hybridCache.SetAsync(key, rs);

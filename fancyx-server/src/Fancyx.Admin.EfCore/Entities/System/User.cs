@@ -106,5 +106,10 @@ namespace Fancyx.Admin.EfCore.Entities.System
         /// </summary>
         [Column("post_id")]
         public long? PostId { get; set; }
+
+        /// <summary>
+        /// 是否超级管理员（只能在数据库设置）
+        /// </summary>
+        public bool IsSuperAdmin { get; set; }
     }
 }

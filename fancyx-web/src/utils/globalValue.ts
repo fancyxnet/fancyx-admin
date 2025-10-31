@@ -30,13 +30,6 @@ export const DictType = {
 };
 
 /**
- * 权限相关常量
- */
-export const PermissionConstant = {
-  SuperAdmin: '系统管理员',
-};
-
-/**
  * 静态路由
  */
 export const StaticRoutes = {

@@ -6,7 +6,6 @@ using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
 using Fancyx.EfCore;
 using Fancyx.EfCore.Aop;
-using Fancyx.Shared.EfCore;
 
 namespace Fancyx.Admin.Application.Service.System
 {
@@ -78,12 +77,6 @@ namespace Fancyx.Admin.Application.Service.System
             var hasUsers = await _userRoleRepository.AnyAsync(x => x.RoleId == id);
             if (hasUsers) throw new BusinessException(message: "角色已分配给用户，不能删除");
 
-            var role = await _roleRepository.FindAsync(id) ?? throw new EntityNotFoundException();
-            if (role.RoleName == DataPower.SuperAdmin)
-            {
-                throw new BusinessException(message: $"{role.RoleName}不能删除");
-            }
-
             await _roleRepository.DeleteAsync(x => x.Id == id);
             await _identitySharedService.DelUserPermissionCacheByRoleIdAsync(id);
             return true;
@@ -117,11 +110,6 @@ namespace Fancyx.Admin.Application.Service.System
             if (entity.RoleName.ToLower() != dto.RoleName.ToLower() && isExist)
             {
                 throw new BusinessException("角色名已存在");
-            }
-
-            if (entity.RoleName == DataPower.SuperAdmin)
-            {
-                throw new BusinessException(message: $"{entity.RoleName}不允许编辑");
             }
 
             entity.RoleName = dto.RoleName;
