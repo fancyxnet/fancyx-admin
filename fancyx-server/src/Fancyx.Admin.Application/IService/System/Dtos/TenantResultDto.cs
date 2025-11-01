@@ -2,8 +2,6 @@
 
 public class TenantResultDto
 {
-    public long Id { get; set; }
-
     /// <summary>
     /// 租户名称
     /// </summary>

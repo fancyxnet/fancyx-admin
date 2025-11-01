@@ -47,7 +47,7 @@ const TenantForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
     apiAction: (params: TenantDto) => Promise<AppResponse<boolean>>,
     successMsg: string,
   ) => {
-    apiAction({ ...values, tenantId: row?.tenantId }).then(() => {
+    apiAction({ ...values, tenantId: values.tenantId || row?.tenantId }).then(() => {
       message.success(successMsg);
       setIsOpenModal(false);
       form.resetFields();
@@ -55,7 +55,7 @@ const TenantForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
     });
   };
   const onFinish = (values: TenantDto) => {
-    const isEdit = !!row?.tenantId;
+    const isEdit = row?.tenantId;
 
     execute(values, isEdit ? updateTenant : addTenant, isEdit ? '编辑成功' : '新增成功');
   };
@@ -77,11 +77,11 @@ const TenantForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
         colon={false}
         onFinish={onFinish}
       >
+        <Form.Item label="租户标识" name="tenantId" rules={[{ required: true }, { max: 18 }]}>
+          <Input placeholder="请输入租户标识" disabled={row?.tenantId ? true : false} />
+        </Form.Item>
         <Form.Item label="租户名称" name="name" rules={[{ required: true }, { max: 64 }]}>
           <Input placeholder="请输入租户名称" />
-        </Form.Item>
-        <Form.Item label="租户标识" name="tenantId" rules={[{ required: true }, { max: 18 }]}>
-          <Input placeholder="请输入租户标识" />
         </Form.Item>
         <Form.Item label="绑定域名" name="domain" rules={[{ required: true }, { max: 256 }]}>
           <Input placeholder="请输入绑定域名" />

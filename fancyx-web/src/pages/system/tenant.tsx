@@ -57,6 +57,18 @@ const TenantList: React.FC = () => {
               编辑
             </Button>
           </Permission>
+          <Permission permissions={'Sys.Tenant.AssignTenantMenu'}>
+            <Button
+              type="link"
+              icon={<HddOutlined />}
+              key="assign"
+              onClick={() => {
+                assignTenantFormRef?.current?.openModal(record);
+              }}
+            >
+              菜单
+            </Button>
+          </Permission>
           <Permission permissions={'Sys.Tenant.Delete'}>
             <Popconfirm
               key="delete"
@@ -73,18 +85,6 @@ const TenantList: React.FC = () => {
                 删除
               </Button>
             </Popconfirm>
-          </Permission>
-          <Permission permissions={'Sys.Tenant.AssignTenantMenu'}>
-            <Button
-              type="link"
-              icon={<HddOutlined />}
-              key="assign"
-              onClick={() => {
-                assignTenantFormRef?.current?.openModal(record);
-              }}
-            >
-              菜单
-            </Button>
           </Permission>
         </Space>
       ),
