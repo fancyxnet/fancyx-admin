@@ -1,6 +1,8 @@
-using Fancyx.Core.Interfaces;
-using Fancyx.EfCore.BaseEntity;
 using System.ComponentModel.DataAnnotations.Schema;
+
+using Fancyx.Core.Interfaces;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.EfCore.Entities.System
 {
@@ -8,7 +10,8 @@ namespace Fancyx.Admin.EfCore.Entities.System
     /// 角色菜单表
     /// </summary>
     [Table("role_menu")]
-    public class RoleMenu : Entity<long>, ITenant
+    [PrimaryKey(nameof(MenuId), nameof(RoleId))]
+    public class RoleMenu : ITenant
     {
         /// <summary>
         /// 菜单ID
