@@ -152,7 +152,7 @@ class HttpClient {
 
 // 默认配置
 const defaultConfig: AxiosRequestConfig = {
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  //baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 10000,
 };
 

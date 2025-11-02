@@ -85,7 +85,7 @@ namespace Fancyx.Admin.Application.SharedService
                          }).ToList();
             if (MultiTenancyConsts.IsEnabled)
             {
-                var tenantMenuIds = await this.GetTenantMenusAsync(_currentTenant.TenantId);
+                var tenantMenuIds = await this.GetTenantMenusAsync(_currentTenant.TenantId!);
                 menus = menus.Where(x => tenantMenuIds.Contains(x.Id)).ToList();
             }
             var rs = new UserPermission

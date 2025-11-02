@@ -3,6 +3,9 @@ using Fancyx.Admin.Application.IService.System.Dtos;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.EfCore;
 using Fancyx.EfCore.Aop;
+using Fancyx.Shared.Keys;
+
+using StackExchange.Redis;
 
 namespace Fancyx.Admin.Application.Service.System
 {
@@ -10,11 +13,13 @@ namespace Fancyx.Admin.Application.Service.System
     {
         private readonly IRepository<Tenant> _tenantRepository;
         private readonly IRepository<TenantMenu> _tenantMenuRepository;
+        private readonly IDatabase _redis;
 
-        public TenantService(IRepository<Tenant> tenantRepository, IRepository<TenantMenu> tenantMenuRepository)
+        public TenantService(IRepository<Tenant> tenantRepository, IRepository<TenantMenu> tenantMenuRepository, IDatabase redis)
         {
             _tenantRepository = tenantRepository;
             _tenantMenuRepository = tenantMenuRepository;
+            _redis = redis;
         }
 
         public async Task AddTenantAsync(TenantDto dto)
@@ -32,11 +37,13 @@ namespace Fancyx.Admin.Application.Service.System
                 Domain = dto.Domain,
             };
             await _tenantRepository.InsertAsync(entity);
+            await _redis.KeyDeleteAsync(SystemCacheKey.AllTenant);
         }
 
         public async Task DeleteTenantAsync(string tenantId)
         {
             await _tenantRepository.DeleteAsync(x => x.Id == tenantId);
+            await _redis.KeyDeleteAsync(SystemCacheKey.AllTenant);
         }
 
         public async Task<PagedResult<TenantResultDto>> GetTenantListAsync(TenantSearchDto dto)
@@ -62,6 +69,7 @@ namespace Fancyx.Admin.Application.Service.System
             entity.Domain = dto.Domain;
 
             await _tenantRepository.UpdateAsync(entity);
+            await _redis.KeyDeleteAsync(SystemCacheKey.AllTenant);
         }
 
         [AsyncTransactional]

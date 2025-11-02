@@ -41,7 +41,7 @@ namespace Fancyx.Shared.WebApi.Handlers
                 var permission = await _hybridCache.GetAsync<UserPermission>(key);
                 if (permission == null || permission.Auths == null) return false;
 
-                return permission.Auths.Contains(code) || permission.IsSuperAdmin;
+                return permission.Auths.Contains(code);
             }
             return false;
         }
