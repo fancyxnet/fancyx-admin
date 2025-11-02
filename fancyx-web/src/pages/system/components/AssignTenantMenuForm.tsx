@@ -31,7 +31,7 @@ const AssignTenantMenuFormForm = forwardRef<AssignTenantMenuFormModalRef, ModalP
     getMenuOptions(false).then(async (menuRes) => {
       setMenuOptions(menuRes.data.tree);
       setAllKeys(menuRes.data.keys);
-      const { data } = await getTenantMenuIds(row!.id);
+      const { data } = await getTenantMenuIds(row!.tenantId);
       setMenuIds(data);
       setIsOpenModal(true);
     });
@@ -49,7 +49,7 @@ const AssignTenantMenuFormForm = forwardRef<AssignTenantMenuFormModalRef, ModalP
   const onFinish = () => {
     assignTenantMenu({
       menuIds: menuIds ?? [],
-      tenantId: currentRow!.id!,
+      tenantId: currentRow!.tenantId!,
     }).then(() => {
       message.success('分配成功');
       setIsOpenModal(false);
