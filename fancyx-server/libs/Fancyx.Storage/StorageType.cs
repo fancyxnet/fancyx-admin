@@ -10,6 +10,11 @@
         /// <summary>
         /// 阿里云OSS
         /// </summary>
-        AliyunOss = 2
+        AliyunOss = 2,
+        
+        /// <summary>
+        /// S3协议
+        /// </summary>
+        S3 = 3
     }
 }
