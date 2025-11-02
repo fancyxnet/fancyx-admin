@@ -107,7 +107,6 @@ const MenuForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
       <Form<MenuDto>
         name="wrap"
         labelCol={{ flex: '90px' }}
-        labelWrap
         form={form}
         wrapperCol={{ flex: 1 }}
         colon={false}
@@ -173,11 +172,14 @@ const MenuForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
         <Form.Item label="显示排序" name="sort" rules={[{ required: true }]}>
           <InputNumber min={1} max={999} placeholder="排序值" />
         </Form.Item>
-        {menuType === MenuType.Menu && (
-          <Form.Item label="是否外链" name="isExternal">
+        {menuType === MenuType.Menu && [
+          <Form.Item label="是否外链" name="isExternal" key='isExternalFormItem'>
             <Switch checkedChildren="外链" unCheckedChildren="内部" />
-          </Form.Item>
-        )}
+          </Form.Item>,
+          <Form.Item label="是否缓存" name="keepAlive" key='keepAliveFormItem'>
+            <Switch checkedChildren="缓存" unCheckedChildren="否" />
+          </Form.Item>,
+        ]}
         <Form.Item label="显示状态" name="display">
           <Switch checkedChildren="显示" unCheckedChildren="隐藏" />
         </Form.Item>

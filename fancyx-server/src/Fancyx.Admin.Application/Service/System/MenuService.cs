@@ -215,6 +215,7 @@ namespace Fancyx.Admin.Application.Service.System
             entity.Display = dto.Display;
             entity.Component = dto.Component;
             entity.IsExternal = dto.IsExternal;
+            entity.KeepAlive = dto.KeepAlive;
             await _menuRepository.UpdateAsync(entity);
 
             return true;

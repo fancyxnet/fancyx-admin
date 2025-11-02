@@ -113,6 +113,7 @@ export interface FrontendMenu {
   layerName: string;
   menuType: number;
   isExternal: boolean;
+  keepAlive: boolean;
 }
 
 interface UserAuthInfoDto {

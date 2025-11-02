@@ -83,5 +83,10 @@ namespace Fancyx.Admin.EfCore.Entities.System
         /// </summary>
         [Column("is_external")]
         public bool IsExternal { get; set; } = false;
+
+        /// <summary>
+        /// 是否保活
+        /// </summary>
+        public bool KeepAlive { get; set; }
     }
 }

@@ -16,6 +16,7 @@ import {
   ReloadOutlined,
 } from '@ant-design/icons';
 import type { GlobalTabItem } from '@/types/global';
+import { useAliveController } from 'react-activation';
 
 const StyledTabs = styled(Tabs)`
   .ant-tabs-nav {
@@ -54,6 +55,7 @@ const Tab = () => {
   const location = useLocation();
   const menuId = 'my-menu';
   const { show } = useContextMenu({ id: menuId });
+  const { dropById } = useAliveController();
 
   useEffect(() => {
     if (location.pathname) {
@@ -79,6 +81,7 @@ const Tab = () => {
     if (action === 'remove') {
       const change = activeKey === targetKey;
       dispatch(remove({ key: targetKey, change: change }));
+      dropById(targetKey);
       if (change) {
         //找到要跳转/指定的活动标签
         const index = tabs.findIndex((h) => h.key === targetKey && targetKey !== '');

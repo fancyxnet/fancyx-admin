@@ -23,6 +23,7 @@
     "mobx-react-lite": "^4.1.0",
     "mqtt": "^5.13.3",
     "react": "^18.2.0",
+    "react-activation": "^0.13.4",
     "react-contexify": "^6.0.0",
     "react-dom": "^18.2.0",
     "react-error-boundary": "^6.0.0",
