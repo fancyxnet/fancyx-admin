@@ -31,13 +31,14 @@ namespace Fancyx.Admin.Application.Service.Account
         private readonly IdentitySharedService _identitySharedService;
         private readonly ICapPublisher _capPublisher;
         private readonly IMapper _mapper;
+        private readonly ICurrentTenant _currentTenant;
         private readonly HttpContext _httpContext;
 
         private delegate Task<User> LoginHandler();
 
         public AccountService(IRepository<User> userRepository, ICurrentUser currentUser, IRepository<Menu> menuRepository
             , IConfiguration configuration, IHybridCache hybridCache, IdentitySharedService identitySharedService
-            , ICapPublisher capPublisher, IHttpContextAccessor httpContextAccessor, IMapper mapper)
+            , ICapPublisher capPublisher, IHttpContextAccessor httpContextAccessor, IMapper mapper, ICurrentTenant currentTenant)
         {
             _userRepository = userRepository;
             _currentUser = currentUser;
@@ -47,6 +48,7 @@ namespace Fancyx.Admin.Application.Service.Account
             _identitySharedService = identitySharedService;
             _capPublisher = capPublisher;
             _mapper = mapper;
+            _currentTenant = currentTenant;
             _httpContext = httpContextAccessor.HttpContext!;
         }
 
@@ -167,7 +169,8 @@ namespace Fancyx.Admin.Application.Service.Account
                 IsSuccess = true,
                 Ip = HttpUtils.GetIp(_httpContext),
                 OperationMsg = "登录成功",
-                UserName = userName
+                UserName = userName,
+                TenantId = _currentTenant.TenantId
             };
             try
             {
