@@ -27,6 +27,11 @@ const TenantList: React.FC = () => {
       dataIndex: 'domain',
     },
     {
+      title: '状态',
+      dataIndex: 'isEnabled',
+      render: (_: any, record: TenantListDto) => (record.isEnabled ? '启用' : '禁用'),
+    },
+    {
       title: '备注',
       dataIndex: 'Remark',
     },

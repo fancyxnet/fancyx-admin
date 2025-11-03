@@ -62,7 +62,7 @@ namespace Fancyx.Admin.Application.Service.System
             var resp = await _tenantRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.Keyword), x => x.Name.Contains(dto.Keyword!) || x.Id.Contains(dto.Keyword!))
                 .OrderByDescending(x => x.CreationTime)
-                .Select(x => new TenantResultDto { CreationTime = x.CreationTime, Domain = x.Domain, LastModificationTime = x.LastModificationTime, Name = x.Name, Remark = x.Remark, TenantId = x.Id })
+                .Select(x => new TenantResultDto { IsEnabled = x.IsEnabled, CreationTime = x.CreationTime, Domain = x.Domain, LastModificationTime = x.LastModificationTime, Name = x.Name, Remark = x.Remark, TenantId = x.Id })
                 .PagedAsync(dto.Current, dto.PageSize);
             return new PagedResult<TenantResultDto>(dto)
             {
