@@ -1,7 +1,7 @@
 ﻿using Fancyx.Erp.Application.IService.BaseInfo;
 using Fancyx.Erp.Application.IService.BaseInfo.Dtos;
 using Fancyx.Shared.Models;
-
+using Fancyx.Shared.WebApi.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,6 +25,7 @@ namespace Fancyx.Erp.Controllers.BaseInfo
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost("AddCustomer")]
+        [HasPermission("Erp.Customer.Add")]
         public async Task<AppResponse<bool>> AddCustomerAsync([FromBody] CustomerDto dto)
         {
             await _customerService.AddCustomerAsync(dto);
@@ -37,10 +38,27 @@ namespace Fancyx.Erp.Controllers.BaseInfo
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpGet("CustomerList")]
+        [HasPermission("Erp.Customer.List")]
         public async Task<AppResponse<PagedResult<CustomerListDto>>> GetCustomerListAsync([FromQuery] CustomerQueryDto dto)
         {
             var data = await _customerService.GetCustomerListAsync(dto);
             return Result.Data(data);
+        }
+
+        [HttpPut("UpdateCustomer")]
+        [HasPermission("Erp.Customer.Update")]
+        public async Task<AppResponse<bool>> UpdateCustomerAsync([FromBody] CustomerDto dto)
+        {
+            await _customerService.UpdateCustomerAsync(dto);
+            return Result.Ok();
+        }
+
+        [HttpDelete("DeleteCustomer/{id}")]
+        [HasPermission("Erp.Customer.Delete")]
+        public async Task<AppResponse<bool>> DeleteCustomerAsync(long id)
+        {
+            await _customerService.DeleteCustomerAsync(id);
+            return Result.Ok();
         }
     }
 }
