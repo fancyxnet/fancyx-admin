@@ -289,8 +289,8 @@ namespace Fancyx.Admin.Application.Service.Account
         {
             var user = await _userRepository.Where(x => x.Id == _currentUser.Id).FirstAsync()
                 ?? throw new BusinessException(message: "用户不存在");
-            var isRight = user.Password == EncryptionUtils.GenEncodingPassword(dto.OldPwd, user.PasswordSalt);
-            if (!isRight) throw new BusinessException(message: "旧密码错误");
+            var isCorrect = user.Password == EncryptionUtils.GenEncodingPassword(dto.OldPwd, user.PasswordSalt);
+            if (!isCorrect) throw new BusinessException(message: "旧密码错误");
             user.PasswordSalt = EncryptionUtils.GetPasswordSalt();
             user.Password = EncryptionUtils.GenEncodingPassword(dto.NewPwd, user.PasswordSalt);
             await _userRepository.UpdateAsync(user);
