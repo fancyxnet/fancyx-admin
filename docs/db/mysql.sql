@@ -11,7 +11,7 @@
  Target Server Version : 80042 (8.0.42)
  File Encoding         : 65001
 
- Date: 02/11/2025 23:49:30
+ Date: 03/11/2025 20:50:10
 */
 
 SET NAMES utf8mb4;
@@ -115,7 +115,6 @@ CREATE TABLE `config`  (
 -- ----------------------------
 -- Records of config
 -- ----------------------------
-INSERT INTO `config` VALUES (4505382937214586880, 'StorageType', 'StorageType', '1', NULL, NULL, 'platform', 631737765623021571, '2025-11-02 11:43:19.219492', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for dept
@@ -649,14 +648,18 @@ CREATE TABLE `tenant`  (
   `creation_time` datetime(6) NOT NULL,
   `last_modification_time` datetime(6) NULL DEFAULT NULL,
   `last_modifier_id` bigint NULL DEFAULT NULL,
+  `is_enabled` bit(1) NOT NULL DEFAULT b'0' COMMENT '启用状态',
+  `is_deleted` tinyint(1) NOT NULL,
+  `deleter_id` bigint NULL DEFAULT NULL,
+  `deletion_time` datetime(6) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tenant
 -- ----------------------------
-INSERT INTO `tenant` VALUES ('mi', '大米公司', NULL, 'mi.crackerwork.cn', 631737765623021571, '2025-11-01 22:43:37.466969', '2025-11-01 22:44:31.769803', 631737765623021571);
-INSERT INTO `tenant` VALUES ('platform', '平台', NULL, 'platform.crackerwork.cn', 631737765623021571, '2025-10-30 20:38:31.319463', NULL, NULL);
+INSERT INTO `tenant` VALUES ('mi', '大米公司', NULL, 'mi.crackerwork.cn', 631737765623021571, '2025-11-01 22:43:37.466969', '2025-11-03 20:49:24.066274', 631737765623021571, b'0', 0, NULL, NULL);
+INSERT INTO `tenant` VALUES ('platform', '平台', NULL, 'platform.crackerwork.cn', 631737765623021571, '2025-10-30 20:38:31.319463', '2025-11-03 20:42:35.571284', 631737765623021571, b'1', 0, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for tenant_menu
@@ -820,9 +823,9 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (631737765623021571, 'admin', 'a2fa8ec90f15197c7a4e6e00525b198a', 'vHQZvbz+ng+B4NrSAEYl6g==', 'file/myavatar.jpg', '风汐', 2, 1, 'platform', '18211114444', NULL, NULL, NULL, '2025-09-10 21:13:06.186342', NULL, NULL, 0, NULL, NULL);
+INSERT INTO `user` VALUES (631737765623021571, 'admin', 'a2fa8ec90f15197c7a4e6e00525b198a', 'vHQZvbz+ng+B4NrSAEYl6g==', 'file/myavatar.jpg', '风汐', 2, 1, 'platform', '18211114444', NULL, NULL, NULL, '2025-09-10 21:13:06.186342', '2025-11-03 20:42:35.619666', 631737765623021571, 0, NULL, NULL);
 INSERT INTO `user` VALUES (4502836036707553280, 'test', '31b34585be7edab0062adaf1c5e8ca54', 'FHvandmgkN55J7rydt4RXA==', 'avatar/male.png', 'test_hdh', 1, 1, NULL, NULL, NULL, NULL, 631737765623021571, '2025-10-26 11:02:50.819162', '2025-10-26 11:03:39.408462', 631737765623021571, 1, 631737765623021571, '2025-10-26 11:08:14.994318');
-INSERT INTO `user` VALUES (4505462198378172416, 'miadmin', 'a2fa8ec90f15197c7a4e6e00525b198a', 'vHQZvbz+ng+B4NrSAEYl6g==', 'avatar/male.png', 'miadmin', 1, 1, 'mi', NULL, NULL, NULL, 631737765623021571, '2025-11-02 16:58:16.553187', '2025-11-02 17:21:14.038647', 631737765623021571, 0, NULL, NULL);
+INSERT INTO `user` VALUES (4505462198378172416, 'miadmin', 'a2fa8ec90f15197c7a4e6e00525b198a', 'vHQZvbz+ng+B4NrSAEYl6g==', 'avatar/male.png', 'miadmin', 1, 0, 'mi', NULL, NULL, NULL, 631737765623021571, '2025-11-02 16:58:16.553187', '2025-11-03 20:49:24.109932', 631737765623021571, 0, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for user_role
