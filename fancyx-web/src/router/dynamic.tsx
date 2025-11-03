@@ -3,6 +3,7 @@ import React, { lazy, Suspense } from 'react';
 import type { FrontendMenu } from '@/api/auth';
 import KeepAlive from 'react-activation';
 import Fallback from '@/components/Fallback';
+import { NotFoundTip } from '@/pages/error/notFound';
 
 // 获取所有页面文件
 const PageKeys = Object.keys(import.meta.glob(['@/pages/**/index.tsx', '@/pages/**/*.tsx'], { eager: true }));
@@ -33,19 +34,28 @@ const createElementFromPath = (routePath: string, keepAlive: boolean, componentP
 };
 
 const convertMenuToRoutes = (menus: FrontendMenu[]): RouteObject[] => {
-  return menus.map((menu) => {
-    const componentPath = `/src/pages/${menu.component}.tsx`;
+  const routes: RouteObject[] = [];
+
+  for (const menu of menus) {
     const route: RouteObject = {
       path: menu.path,
-      element: !menu.isExternal ? createElementFromPath(menu.path, menu.keepAlive, componentPath) : undefined,
     };
-
-    if (menu.children?.length) {
-      route.children = convertMenuToRoutes(menu.children);
+    if (menu.component && !menu.isExternal) {
+      const componentPath = `/src/pages/${menu.component}.tsx`;
+      route.element = createElementFromPath(menu.path, menu.keepAlive, componentPath) || <NotFoundTip />;
     }
 
-    return route;
-  });
+    if (menu.children?.length) {
+      const childRoutes = convertMenuToRoutes(menu.children);
+      if (childRoutes.length > 0) {
+        route.children = childRoutes;
+      }
+    }
+
+    routes.push(route);
+  }
+
+  return routes;
 };
 
 export const generateDynamicRoutes = (apiRoutes: FrontendMenu[]) => {
