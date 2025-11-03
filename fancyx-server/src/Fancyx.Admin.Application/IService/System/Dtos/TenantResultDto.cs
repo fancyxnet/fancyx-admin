@@ -31,4 +31,6 @@ public class TenantResultDto
     /// 修改时间
     /// </summary>
     public DateTime? LastModificationTime { get; set; }
+
+    public bool IsEnabled { get; set; }
 }

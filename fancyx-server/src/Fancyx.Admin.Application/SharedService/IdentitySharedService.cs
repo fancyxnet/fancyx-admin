@@ -125,6 +125,26 @@ namespace Fancyx.Admin.Application.SharedService
         }
 
         /// <summary>
+        /// 删除用户权限缓存（通过租户ID）
+        /// </summary>
+        /// <param name="tenantId"></param>
+        /// <param name="clearToken"></param>
+        /// <returns></returns>
+        public async Task DelUserPermissionCacheByTenantIdAsync(string tenantId, bool clearToken = false)
+        {
+            var userIds = await _userRepository.GetQueryable().IgnoreQueryFilters().Where(x => x.TenantId == tenantId).SelectToListAsync(x => x.Id);
+            foreach (var userId in userIds)
+            {
+                await DelUserPermissionCacheByUserIdAsync(userId);
+                if (clearToken)
+                {
+                    await _hybridCache.RemoveByPatternAsync(SystemCacheKey.AccessToken(userId, "*"));
+                    await _hybridCache.RemoveByPatternAsync(SystemCacheKey.RefreshToken(userId, "*"));
+                }
+            }
+        }
+
+        /// <summary>
         /// 生成Token
         /// </summary>
         /// <param name="claims"></param>

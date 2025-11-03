@@ -96,6 +96,7 @@ namespace Fancyx.Admin.Application.Service.System
                     await _userRoleRepository.InsertManyAsync(items);
                 }
             }
+            await _identityDomainService.DelUserPermissionCacheByUserIdAsync(dto.UserId);
             return true;
         }
 

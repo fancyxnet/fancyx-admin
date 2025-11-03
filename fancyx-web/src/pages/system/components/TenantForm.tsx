@@ -1,4 +1,4 @@
-import { Form, Input, Modal } from 'antd';
+import { Form, Input, Modal, Switch } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import type { AppResponse } from '@/types/api';
 import { addTenant, type TenantDto, updateTenant } from '@/api/system/tenant.ts';
@@ -85,6 +85,9 @@ const TenantForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
         </Form.Item>
         <Form.Item label="绑定域名" name="domain" rules={[{ required: true }, { max: 256 }]}>
           <Input placeholder="请输入绑定域名" />
+        </Form.Item>
+        <Form.Item label="启用状态" name="isEnabled" rules={[{ required: true, message: '请选择租户状态' }]}>
+          <Switch />
         </Form.Item>
         <Form.Item label="备注" name="remark" rules={[{ max: 512 }]}>
           <Input placeholder="请输入备注" />

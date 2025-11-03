@@ -33,5 +33,8 @@ namespace Fancyx.Admin.Application.IService.System.Dtos
         [Required]
         [MaxLength(256)]
         public string? Domain { get; set; }
+
+        [Required]
+        public bool IsEnabled { get; set; }
     }
 }

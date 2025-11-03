@@ -2,8 +2,8 @@ using DotNetCore.CAP;
 
 using Fancyx.Core.Authorization;
 using Fancyx.Core.AutoInject;
+using Fancyx.Shared.Consts;
 using Fancyx.Shared.Logger.Message;
-using Fancyx.Shared.Logger.Consts;
 using Fancyx.Utils;
 
 using Microsoft.AspNetCore.Http;
@@ -58,7 +58,7 @@ namespace Fancyx.Shared.Logger
                     msg.TraceId = Activity.Current?.TraceId.ToString();
                 }
                 LogRecordContext.Dispose();
-                await eventBus.PublishAsync(EventBusTopicConsts.LOG_RECORD_EVENT, msg);
+                await eventBus.PublishAsync(LoggerEventBusTopicConsts.LOG_RECORD_EVENT, msg);
             }
             catch (Exception ex)
             {

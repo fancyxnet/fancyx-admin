@@ -1,5 +1,4 @@
 ﻿using Fancyx.EfCore.BaseEntity;
-using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
@@ -7,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Fancyx.Admin.EfCore.Entities.System
 {
     [Table("tenant")]
-    public class Tenant : AuditedEntity<string>
+    public class Tenant : FullAuditedEntity<string>
     {
         /// <summary>
         /// 租户名称
@@ -29,5 +28,12 @@ namespace Fancyx.Admin.EfCore.Entities.System
         [Required]
         [Column("domain")]
         public string? Domain { get; set; }
+
+        /// <summary>
+        /// 是否启用
+        /// </summary>
+        [Required]
+        [Column("is_enabled")]
+        public bool IsEnabled { get; set; }
     }
 }

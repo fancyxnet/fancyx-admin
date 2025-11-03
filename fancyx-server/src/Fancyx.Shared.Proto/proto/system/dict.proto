@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package fancyx.internal.grpc.system;
+option csharp_namespace = "Fancyx.Internal.Grpc.System";
+
+import "system/dict_model.proto";
+
+service Dict{
+	rpc GetDictItems (GetDictItemsReq) returns (GetDictItemsRes);
+}

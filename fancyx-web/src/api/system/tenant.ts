@@ -61,6 +61,7 @@ export interface TenantDto {
   tenantId?: string;
   remark?: string;
   domain: string;
+  isEnabled: boolean;
 }
 
 export interface TenantListDto {
@@ -69,6 +70,7 @@ export interface TenantListDto {
   remark?: string;
   domain?: string;
   lastModificationTime: string;
+  isEnabled: boolean;
 }
 
 export interface TenantQueryDto extends PageSearch {

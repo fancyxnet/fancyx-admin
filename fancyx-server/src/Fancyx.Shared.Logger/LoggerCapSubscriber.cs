@@ -1,7 +1,7 @@
 ﻿using DotNetCore.CAP;
 
 using Fancyx.EfCore;
-using Fancyx.Shared.Logger.Consts;
+using Fancyx.Shared.Consts;
 using Fancyx.Shared.Logger.Entities;
 using Fancyx.Shared.Logger.Message;
 using Fancyx.Utils;
@@ -22,7 +22,7 @@ namespace Fancyx.Shared.Logger
             _exceptionLogRepository = exceptionLogRepository;
         }
 
-        [CapSubscribe(EventBusTopicConsts.LOG_RECORD_EVENT)]
+        [CapSubscribe(LoggerEventBusTopicConsts.LOG_RECORD_EVENT)]
         public async Task LogRecord(LogRecordMessage message)
         {
             var entity = new LogRecord
@@ -44,7 +44,7 @@ namespace Fancyx.Shared.Logger
             await _logRecordRepository.InsertAsync(entity);
         }
 
-        [CapSubscribe(EventBusTopicConsts.API_ACCESS_LOG_EVENT)]
+        [CapSubscribe(LoggerEventBusTopicConsts.API_ACCESS_LOG_EVENT)]
         public async Task ApiAccessLog(ApiAccessLogMessage message)
         {
             var entity = new ApiAccessLog
@@ -72,7 +72,7 @@ namespace Fancyx.Shared.Logger
             await _apiAccessLogRepository.InsertAsync(entity);
         }
 
-        [CapSubscribe(EventBusTopicConsts.EXCEPTION_LOG_EVENT)]
+        [CapSubscribe(LoggerEventBusTopicConsts.EXCEPTION_LOG_EVENT)]
         public async Task ExceptionLog(ExceptionLogMessage message)
         {
             var entity = new ExceptionLog()

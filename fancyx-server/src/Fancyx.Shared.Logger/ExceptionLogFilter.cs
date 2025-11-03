@@ -1,14 +1,11 @@
 ﻿using DotNetCore.CAP;
-
 using Fancyx.Core.Authorization;
-using Fancyx.Shared.Logger.Message;
+using Fancyx.Shared.Consts;
 using Fancyx.Shared.Exceptions;
-using Fancyx.Shared.Logger.Consts;
+using Fancyx.Shared.Logger.Message;
 using Fancyx.Utils;
-
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
-
 using System.Diagnostics;
 
 namespace Fancyx.Shared.Logger
@@ -57,7 +54,7 @@ namespace Fancyx.Shared.Logger
                 msg.UserName = currentUser?.UserName;
                 msg.TenantId = currentTenant?.TenantId;
 
-                await _capPublisher.PublishAsync(EventBusTopicConsts.EXCEPTION_LOG_EVENT, msg);
+                await _capPublisher.PublishAsync(LoggerEventBusTopicConsts.EXCEPTION_LOG_EVENT, msg);
             }
             catch (Exception ex)
             {
