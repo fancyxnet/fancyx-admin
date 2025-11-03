@@ -15,6 +15,7 @@
     "@fingerprintjs/fingerprintjs": "^4.6.2",
     "@reduxjs/toolkit": "^2.6.1",
     "@tanstack/react-query": "^5.81.5",
+    "@tinymce/tinymce-react": "^6.3.0",
     "antd": "^5.25.4",
     "axios": "^1.9.0",
     "dayjs": "^1.11.13",
@@ -32,6 +33,7 @@
     "react-router-dom": "^7.6.2",
     "redux-persist": "^6.0.0",
     "styled-components": "^6.1.18",
+    "tinymce": "^8.2.0",
     "use-deep-compare-effect": "^1.8.1"
   },
   "devDependencies": {
