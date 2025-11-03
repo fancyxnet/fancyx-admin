@@ -1,10 +1,12 @@
 ﻿using Fancyx.Admin.Application.IService.System;
 using Fancyx.Admin.Application.IService.System.Dtos;
+using Fancyx.Admin.Application.SharedService;
 using Fancyx.Admin.EfCore.Entities.System;
+using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
 using Fancyx.EfCore.Aop;
 using Fancyx.Shared.Keys;
-
+using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 
 namespace Fancyx.Admin.Application.Service.System
@@ -14,12 +16,19 @@ namespace Fancyx.Admin.Application.Service.System
         private readonly IRepository<Tenant> _tenantRepository;
         private readonly IRepository<TenantMenu> _tenantMenuRepository;
         private readonly IDatabase _redis;
+        private readonly IdentitySharedService _identitySharedService;
+        private readonly IRepository<User> _userRepository;
+        private readonly ICurrentUser _currentUser;
 
-        public TenantService(IRepository<Tenant> tenantRepository, IRepository<TenantMenu> tenantMenuRepository, IDatabase redis)
+        public TenantService(IRepository<Tenant> tenantRepository, IRepository<TenantMenu> tenantMenuRepository, IDatabase redis
+            , IdentitySharedService identitySharedService, IRepository<User> userRepository, ICurrentUser currentUser)
         {
             _tenantRepository = tenantRepository;
             _tenantMenuRepository = tenantMenuRepository;
             _redis = redis;
+            _identitySharedService = identitySharedService;
+            _userRepository = userRepository;
+            _currentUser = currentUser;
         }
 
         public async Task AddTenantAsync(TenantDto dto)
@@ -35,6 +44,7 @@ namespace Fancyx.Admin.Application.Service.System
                 Id = dto.TenantId,
                 Remark = dto.Remark,
                 Domain = dto.Domain,
+                IsEnabled = dto.IsEnabled
             };
             await _tenantRepository.InsertAsync(entity);
             await _redis.KeyDeleteAsync(SystemCacheKey.AllTenant);
@@ -44,6 +54,7 @@ namespace Fancyx.Admin.Application.Service.System
         {
             await _tenantRepository.DeleteAsync(x => x.Id == tenantId);
             await _redis.KeyDeleteAsync(SystemCacheKey.AllTenant);
+            await this.DisabledTenantSubUserAsync(tenantId);
         }
 
         public async Task<PagedResult<TenantResultDto>> GetTenantListAsync(TenantSearchDto dto)
@@ -67,9 +78,15 @@ namespace Fancyx.Admin.Application.Service.System
             entity.Name = dto.Name;
             entity.Remark = dto.Remark;
             entity.Domain = dto.Domain;
+            entity.IsEnabled = dto.IsEnabled;
 
             await _tenantRepository.UpdateAsync(entity);
             await _redis.KeyDeleteAsync(SystemCacheKey.AllTenant);
+
+            if(!dto.IsEnabled)
+            {
+                await this.DisabledTenantSubUserAsync(dto.TenantId);
+            }
         }
 
         [AsyncTransactional]
@@ -85,11 +102,22 @@ namespace Fancyx.Admin.Application.Service.System
                 }).ToList();
                 await _tenantMenuRepository.InsertManyAsync(tenantMenus);
             }
+            await _identitySharedService.DelUserPermissionCacheByTenantIdAsync(dto.TenantId);
         }
 
         public Task<List<long>> GetTenantMenuIdsAsync(string id)
         {
             return _tenantMenuRepository.Where(x => x.TenantId == id).SelectToListAsync(x => x.MenuId);
+        }
+
+        private async Task DisabledTenantSubUserAsync(string tenantId)
+        {
+            await _identitySharedService.DelUserPermissionCacheByTenantIdAsync(tenantId, true);
+            // 禁用租户下所有账号
+            await _userRepository.GetQueryable().IgnoreQueryFilters().Where(x => x.TenantId == tenantId && x.IsEnabled)
+                .ExecuteUpdateAsync(s => s.SetProperty(e => e.IsEnabled, false)
+                .SetProperty(e => e.LastModificationTime, DateTime.Now)
+                .SetProperty(e => e.LastModifierId, _currentUser.Id));
         }
     }
 }
