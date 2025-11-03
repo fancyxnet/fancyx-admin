@@ -17,8 +17,6 @@ namespace Fancyx.Erp.EfCore.Entites
 
         public long WarehouseId { get; set; }
 
-        public int Unit { get; set; }
-
         /// <summary>
         /// 租户ID
         /// </summary>

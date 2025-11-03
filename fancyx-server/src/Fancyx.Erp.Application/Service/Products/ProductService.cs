@@ -5,7 +5,9 @@ using Fancyx.Erp.Application.IService.Products;
 using Fancyx.Erp.Application.IService.Products.Dtos;
 using Fancyx.Erp.EfCore.Entites;
 using Fancyx.Erp.EfCore.Repositories;
+using Fancyx.Internal.Grpc.System;
 using Fancyx.Shared.Exceptions;
+using Fancyx.Shared.Keys;
 using Fancyx.Shared.Models;
 using Fancyx.SnowflakeId;
 
@@ -17,14 +19,16 @@ namespace Fancyx.Erp.Application.Service.Products
         private readonly IMapper _mapper;
         private readonly IRepository<ProductBindAttrValue> _productBindAttrValueRepository;
         private readonly IRepository<Inventory> _inventoryRepository;
+        private readonly Dict.DictClient _dictClient;
 
         public ProductService(ProductRepository productRepository, IMapper mapper, IRepository<ProductBindAttrValue> productBindAttrValueRepository
-            , IRepository<Inventory> inventoryRepository)
+            , IRepository<Inventory> inventoryRepository, Dict.DictClient dictClient)
         {
             _productRepository = productRepository;
             _mapper = mapper;
             _productBindAttrValueRepository = productBindAttrValueRepository;
             _inventoryRepository = inventoryRepository;
+            _dictClient = dictClient;
         }
 
         [AsyncTransactional]
@@ -66,7 +70,16 @@ namespace Fancyx.Erp.Application.Service.Products
         public async Task<PagedResult<ProductListDto>> GetProductListAsync(ProductQueryDto dto)
         {
             var data = await _productRepository.QueryProductListAsync(dto.Current, dto.PageSize, dto.Name);
-            return new PagedResult<ProductListDto>(data.Total, _mapper.Map<List<ProductListDto>>(data.Items));
+            var res = new PagedResult<ProductListDto>(data.Total, _mapper.Map<List<ProductListDto>>(data.Items));
+            if(res.Items?.Count > 0)
+            {
+                var dictItems = (await _dictClient.GetDictItemsAsync(new GetDictItemsReq { DictType = ErpDictKey.ProductUnit })).Items;
+                foreach (var item in res.Items)
+                {
+                    item.UnitText = dictItems.FirstOrDefault(x => x.Value == item.Unit.ToString())?.Value;
+                }
+            }
+            return res;
         }
 
         [AsyncTransactional]

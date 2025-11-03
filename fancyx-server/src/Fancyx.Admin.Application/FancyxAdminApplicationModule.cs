@@ -62,6 +62,7 @@ namespace Fancyx.Admin.Application
                 sch.Schedule<NotificationJob>().EveryMinute().PreventOverlapping(nameof(NotificationJob));
             });
             context.Endpoint.MapGrpcService<TestGrpcServiceHandler>();
+            context.Endpoint.MapGrpcService<DictGrpcServiceHandler>();
         }
     }
 }

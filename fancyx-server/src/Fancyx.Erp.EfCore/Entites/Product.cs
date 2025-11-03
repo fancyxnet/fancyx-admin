@@ -33,5 +33,7 @@ namespace Fancyx.Erp.EfCore.Entites
         /// </summary>
         [Column("tenant_id")]
         public string? TenantId { get; set; }
+
+        public int Unit { get; set; }
     }
 }

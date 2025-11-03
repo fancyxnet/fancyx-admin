@@ -15,5 +15,8 @@
         public string? Brand { get; set; }
 
         public string? Category { get; set; }
+
+        public int Unit { get; set; }
+        public string? UnitText { get; set; }
     }
 }
