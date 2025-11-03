@@ -1,7 +1,7 @@
 ﻿using DotNetCore.CAP;
 
 using Fancyx.Core.Authorization;
-using Fancyx.Shared.Logger.Consts;
+using Fancyx.Shared.Consts;
 using Fancyx.Shared.Logger.Message;
 using Fancyx.Utils;
 
@@ -102,7 +102,7 @@ namespace Fancyx.Shared.Logger
             var capPublisher = httpContext.RequestServices.GetService<ICapPublisher>();
             if (capPublisher != null)
             {
-                await capPublisher.PublishAsync(EventBusTopicConsts.API_ACCESS_LOG_EVENT, msg);
+                await capPublisher.PublishAsync(LoggerEventBusTopicConsts.API_ACCESS_LOG_EVENT, msg);
             }
         }
     }
