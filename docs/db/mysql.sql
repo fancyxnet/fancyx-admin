@@ -11,7 +11,7 @@
  Target Server Version : 80406 (8.4.6)
  File Encoding         : 65001
 
- Date: 04/11/2025 09:37:31
+ Date: 04/11/2025 14:48:25
 */
 
 SET NAMES utf8mb4;
@@ -114,6 +114,33 @@ CREATE TABLE `config`  (
 
 -- ----------------------------
 -- Records of config
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for customer
+-- ----------------------------
+DROP TABLE IF EXISTS `customer`;
+CREATE TABLE `customer`  (
+  `id` bigint NOT NULL,
+  `code` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '编号',
+  `code_slim` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '简码',
+  `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '名称',
+  `remark` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+  `contact_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '联系人',
+  `contact_phone` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '联系电话',
+  `tenant_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户ID',
+  `creator_id` bigint NULL DEFAULT NULL,
+  `creation_time` datetime(6) NOT NULL,
+  `last_modification_time` datetime(6) NULL DEFAULT NULL,
+  `last_modifier_id` bigint NULL DEFAULT NULL,
+  `is_deleted` tinyint(1) NOT NULL,
+  `deleter_id` bigint NULL DEFAULT NULL,
+  `deletion_time` datetime(6) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '客户信息' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of customer
 -- ----------------------------
 
 -- ----------------------------
@@ -223,6 +250,56 @@ CREATE TABLE `exception_log`  (
 
 -- ----------------------------
 -- Records of exception_log
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for inventory
+-- ----------------------------
+DROP TABLE IF EXISTS `inventory`;
+CREATE TABLE `inventory`  (
+  `id` bigint NOT NULL,
+  `inventory_no` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '库存编号',
+  `product_id` bigint NOT NULL COMMENT '产品ID',
+  `quantity` int NOT NULL COMMENT '数量',
+  `warehouse_id` bigint NOT NULL COMMENT '仓库ID',
+  `tenant_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户ID',
+  `creator_id` bigint NULL DEFAULT NULL,
+  `creation_time` datetime(6) NOT NULL,
+  `last_modification_time` datetime(6) NULL DEFAULT NULL,
+  `last_modifier_id` bigint NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '库存' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of inventory
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for inventory_log
+-- ----------------------------
+DROP TABLE IF EXISTS `inventory_log`;
+CREATE TABLE `inventory_log`  (
+  `id` bigint NOT NULL,
+  `biz_type` int NOT NULL COMMENT '业务类型',
+  `inventory_id` bigint NOT NULL COMMENT '库存ID',
+  `inventory_no` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '库存编号',
+  `source` int NOT NULL COMMENT '来源',
+  `source_no` int NOT NULL COMMENT '来源单号',
+  `remark` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+  `change_quantity` int NOT NULL COMMENT '改变数量',
+  `after_quantity` int NOT NULL COMMENT '改变后数量',
+  `cost_price` decimal(10, 2) NULL DEFAULT NULL COMMENT '单价',
+  `total_cost` decimal(10, 2) NULL DEFAULT NULL COMMENT '总价',
+  `tenant_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户ID',
+  `creator_id` bigint NULL DEFAULT NULL,
+  `creation_time` datetime(6) NOT NULL,
+  `last_modification_time` datetime(6) NULL DEFAULT NULL,
+  `last_modifier_id` bigint NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '库存日志' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of inventory_log
 -- ----------------------------
 
 -- ----------------------------
@@ -457,6 +534,149 @@ INSERT INTO `position_group` VALUES (4505452973992185856, '前端分组', NULL, 
 INSERT INTO `position_group` VALUES (4505472754346627072, '233232', '232323', NULL, '4505472754346627072', 1, 0, 'mi', 4505462198378172416, '2025-11-02 17:40:13.300295', NULL, NULL);
 
 -- ----------------------------
+-- Table structure for product
+-- ----------------------------
+DROP TABLE IF EXISTS `product`;
+CREATE TABLE `product`  (
+  `id` bigint NOT NULL,
+  `code` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '产品编号',
+  `sku_code` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'SKU编号',
+  `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '产品名称',
+  `remark` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+  `is_enabled` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否启用',
+  `brand_id` bigint NOT NULL COMMENT '品牌ID',
+  `category_id` bigint NOT NULL COMMENT '分类ID',
+  `unit` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '单位,取字典',
+  `tenant_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户ID',
+  `creator_id` bigint NULL DEFAULT NULL,
+  `creation_time` datetime(6) NOT NULL,
+  `last_modification_time` datetime(6) NULL DEFAULT NULL,
+  `last_modifier_id` bigint NULL DEFAULT NULL,
+  `is_deleted` tinyint(1) NOT NULL,
+  `deleter_id` bigint NULL DEFAULT NULL,
+  `deletion_time` datetime(6) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '产品' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of product
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for product_attr
+-- ----------------------------
+DROP TABLE IF EXISTS `product_attr`;
+CREATE TABLE `product_attr`  (
+  `id` bigint NOT NULL,
+  `code` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '编码',
+  `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '名称',
+  `remark` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+  `is_enabled` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否启用',
+  `is_required` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否必填',
+  `input_type` int NOT NULL COMMENT '多选/单选/手动录入',
+  `attr_type` int NOT NULL COMMENT '指定分类/所有分类',
+  `category_id` bigint NULL DEFAULT NULL COMMENT '分类ID',
+  `tenant_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户ID',
+  `creator_id` bigint NULL DEFAULT NULL,
+  `creation_time` datetime(6) NOT NULL,
+  `last_modification_time` datetime(6) NULL DEFAULT NULL,
+  `last_modifier_id` bigint NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '产品属性' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of product_attr
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for product_attr_value
+-- ----------------------------
+DROP TABLE IF EXISTS `product_attr_value`;
+CREATE TABLE `product_attr_value`  (
+  `id` bigint NOT NULL,
+  `code` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '编码',
+  `value` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '值',
+  `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '名称',
+  `remark` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+  `is_enabled` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否启用',
+  `attr_id` bigint NULL DEFAULT NULL COMMENT '属性ID',
+  `tenant_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户ID',
+  `creator_id` bigint NULL DEFAULT NULL,
+  `creation_time` datetime(6) NOT NULL,
+  `last_modification_time` datetime(6) NULL DEFAULT NULL,
+  `last_modifier_id` bigint NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '产品属性可选值' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of product_attr_value
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for product_bind_attr_value
+-- ----------------------------
+DROP TABLE IF EXISTS `product_bind_attr_value`;
+CREATE TABLE `product_bind_attr_value`  (
+  `id` bigint NOT NULL,
+  `product_id` bigint NOT NULL COMMENT '产品ID',
+  `attr_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '属性ID',
+  `attr_value` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '属性值',
+  `attr_value_id` bigint NULL DEFAULT NULL COMMENT '属性值ID',
+  `tenant_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户ID',
+  `creator_id` bigint NULL DEFAULT NULL,
+  `creation_time` datetime(6) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '产品属性绑定值' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of product_bind_attr_value
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for product_brand
+-- ----------------------------
+DROP TABLE IF EXISTS `product_brand`;
+CREATE TABLE `product_brand`  (
+  `id` bigint NOT NULL,
+  `code` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '编码',
+  `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '名称',
+  `remark` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+  `is_enabled` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否启用',
+  `tenant_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户ID',
+  `creator_id` bigint NULL DEFAULT NULL,
+  `creation_time` datetime(6) NOT NULL,
+  `last_modification_time` datetime(6) NULL DEFAULT NULL,
+  `last_modifier_id` bigint NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '产品品牌' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of product_brand
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for product_category
+-- ----------------------------
+DROP TABLE IF EXISTS `product_category`;
+CREATE TABLE `product_category`  (
+  `id` bigint NOT NULL,
+  `code` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '编码',
+  `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '名称',
+  `remark` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+  `is_enabled` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否启用',
+  `tenant_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户ID',
+  `creator_id` bigint NULL DEFAULT NULL,
+  `creation_time` datetime(6) NOT NULL,
+  `last_modification_time` datetime(6) NULL DEFAULT NULL,
+  `last_modifier_id` bigint NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '产品分类' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of product_category
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for role
 -- ----------------------------
 DROP TABLE IF EXISTS `role`;
@@ -636,6 +856,31 @@ INSERT INTO `role_menu` VALUES (4505453985779945472, 631737765623021569, 'platfo
 INSERT INTO `role_menu` VALUES (4505454091476406272, 631737765623021569, 'platform');
 
 -- ----------------------------
+-- Table structure for supplier
+-- ----------------------------
+DROP TABLE IF EXISTS `supplier`;
+CREATE TABLE `supplier`  (
+  `id` bigint NOT NULL,
+  `code` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '编码',
+  `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '名称',
+  `remark` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+  `is_enabled` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否启用',
+  `tenant_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户ID',
+  `creator_id` bigint NULL DEFAULT NULL,
+  `creation_time` datetime(6) NOT NULL,
+  `last_modification_time` datetime(6) NULL DEFAULT NULL,
+  `last_modifier_id` bigint NULL DEFAULT NULL,
+  `is_deleted` tinyint(1) NOT NULL,
+  `deleter_id` bigint NULL DEFAULT NULL,
+  `deletion_time` datetime(6) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '供应商' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of supplier
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for tenant
 -- ----------------------------
 DROP TABLE IF EXISTS `tenant`;
@@ -794,6 +1039,53 @@ INSERT INTO `tenant_menu` VALUES ('platform', 4505453985779945472);
 INSERT INTO `tenant_menu` VALUES ('platform', 4505454091476406272);
 
 -- ----------------------------
+-- Table structure for ticket
+-- ----------------------------
+DROP TABLE IF EXISTS `ticket`;
+CREATE TABLE `ticket`  (
+  `id` bigint NOT NULL,
+  `title` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '标题',
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '内容',
+  `status` int NOT NULL COMMENT '状态',
+  `user_id` bigint NOT NULL COMMENT '用户ID',
+  `rating` int NULL DEFAULT NULL COMMENT '评价星级',
+  `rating_comment` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '评价内容',
+  `assigned_user_id` bigint NULL DEFAULT NULL COMMENT '负责人',
+  `tenant_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户ID',
+  `creator_id` bigint NULL DEFAULT NULL,
+  `creation_time` datetime(6) NOT NULL,
+  `last_modification_time` datetime(6) NULL DEFAULT NULL,
+  `last_modifier_id` bigint NULL DEFAULT NULL,
+  `is_deleted` tinyint(1) NOT NULL,
+  `deleter_id` bigint NULL DEFAULT NULL,
+  `deletion_time` datetime(6) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '工单' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of ticket
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for ticket_reply
+-- ----------------------------
+DROP TABLE IF EXISTS `ticket_reply`;
+CREATE TABLE `ticket_reply`  (
+  `id` bigint NOT NULL,
+  `ticket_id` bigint NOT NULL COMMENT '工单ID',
+  `sender_id` bigint NOT NULL COMMENT '发送人ID',
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '内容',
+  `tenant_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户ID',
+  `creator_id` bigint NULL DEFAULT NULL,
+  `creation_time` datetime(6) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '工单回复' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of ticket_reply
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for user
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
@@ -845,5 +1137,30 @@ CREATE TABLE `user_role`  (
 -- ----------------------------
 INSERT INTO `user_role` VALUES (631737765623021571, 631737765623021569, 'platform');
 INSERT INTO `user_role` VALUES (4505462198378172416, 631737765623021568, 'mi');
+
+-- ----------------------------
+-- Table structure for warehouse
+-- ----------------------------
+DROP TABLE IF EXISTS `warehouse`;
+CREATE TABLE `warehouse`  (
+  `id` bigint NOT NULL,
+  `code` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '编码',
+  `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '名称',
+  `remark` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+  `is_enabled` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否启用',
+  `tenant_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '租户ID',
+  `creator_id` bigint NULL DEFAULT NULL,
+  `creation_time` datetime(6) NOT NULL,
+  `last_modification_time` datetime(6) NULL DEFAULT NULL,
+  `last_modifier_id` bigint NULL DEFAULT NULL,
+  `is_deleted` tinyint(1) NOT NULL,
+  `deleter_id` bigint NULL DEFAULT NULL,
+  `deletion_time` datetime(6) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '仓库' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of warehouse
+-- ----------------------------
 
 SET FOREIGN_KEY_CHECKS = 1;

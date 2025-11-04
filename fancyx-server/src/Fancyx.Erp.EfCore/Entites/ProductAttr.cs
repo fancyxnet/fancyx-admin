@@ -4,8 +4,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fancyx.Erp.EfCore.Entites
 {
+    /// <summary>
+    /// 产品属性
+    /// </summary>
     [Table("product_attr")]
-    public class ProductAttr : FullAuditedEntity<long>, ITenant
+    public class ProductAttr : AuditedEntity<long>, ITenant
     {
         [Column("code")]
         public string Code { get; set; } = null!;

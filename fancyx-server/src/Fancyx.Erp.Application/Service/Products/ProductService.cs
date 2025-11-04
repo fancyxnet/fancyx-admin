@@ -76,7 +76,7 @@ namespace Fancyx.Erp.Application.Service.Products
                 var dictItems = (await _dictClient.GetDictItemsAsync(new GetDictItemsReq { DictType = ErpDictKey.ProductUnit })).Items;
                 foreach (var item in res.Items)
                 {
-                    item.UnitText = dictItems.FirstOrDefault(x => x.Value == item.Unit.ToString())?.Value;
+                    item.UnitText = dictItems.FirstOrDefault(x => x.Value == item.Unit)?.Value;
                 }
             }
             return res;

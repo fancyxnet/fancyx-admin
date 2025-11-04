@@ -4,6 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fancyx.Erp.EfCore.Entites
 {
+    /// <summary>
+    /// 产品属性绑定值
+    /// </summary>
     [Table("product_bind_attr_value")]
     public class ProductBindAttrValue : CreationEntity<long>, ITenant
     {
@@ -17,7 +20,7 @@ namespace Fancyx.Erp.EfCore.Entites
         public string? AttrValue { get; set; }
 
         [Column("attr_value_id")]
-        public long AttrValueId { get; set; }
+        public long? AttrValueId { get; set; }
 
         /// <summary>
         /// 租户ID

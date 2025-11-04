@@ -11,6 +11,6 @@
         public long CategoryId { get; set; }
         public List<ProductBindAttrValueDto>? Attrs { get; set; }
 
-        public int Unit { get; set; }
+        public string? Unit { get; set; }
     }
 }

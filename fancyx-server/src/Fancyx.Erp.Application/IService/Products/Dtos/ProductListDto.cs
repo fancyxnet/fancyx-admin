@@ -16,7 +16,7 @@
 
         public string? Category { get; set; }
 
-        public int Unit { get; set; }
+        public string? Unit { get; set; }
         public string? UnitText { get; set; }
     }
 }

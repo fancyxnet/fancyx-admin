@@ -4,6 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fancyx.Erp.EfCore.Entites
 {
+    /// <summary>
+    /// 仓库
+    /// </summary>
     public class Warehouse : FullAuditedEntity<long>, ITenant
     {
         [Column("code")]

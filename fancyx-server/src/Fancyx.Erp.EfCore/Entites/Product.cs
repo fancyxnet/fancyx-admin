@@ -1,6 +1,8 @@
 ﻿using Fancyx.Core.Interfaces;
 using Fancyx.EfCore.BaseEntity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Fancyx.Erp.EfCore.Entites
 {
@@ -34,6 +36,7 @@ namespace Fancyx.Erp.EfCore.Entites
         [Column("tenant_id")]
         public string? TenantId { get; set; }
 
-        public int Unit { get; set; }
+        [NotNull, Required]
+        public string? Unit { get; set; }
     }
 }
