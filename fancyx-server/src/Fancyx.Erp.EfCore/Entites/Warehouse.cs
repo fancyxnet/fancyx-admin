@@ -9,15 +9,27 @@ namespace Fancyx.Erp.EfCore.Entites
     /// </summary>
     public class Warehouse : FullAuditedEntity<long>, ITenant
     {
+        /// <summary>
+        /// 编码
+        /// </summary>
         [Column("code")]
         public string Code { get; set; } = null!;
 
+        /// <summary>
+        /// 名称
+        /// </summary>
         [Column("name")]
         public string Name { get; set; } = null!;
 
+        /// <summary>
+        /// 备注
+        /// </summary>
         [Column("remark")]
         public string? Remark { get; set; }
 
+        /// <summary>
+        /// 是否启用
+        /// </summary>
         [Column("is_enabled")]
         public bool IsEnabled { get; set; }
 
