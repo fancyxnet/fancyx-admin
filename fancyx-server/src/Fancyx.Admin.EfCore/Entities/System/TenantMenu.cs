@@ -4,6 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Fancyx.Admin.EfCore.Entities.System
 {
+    /// <summary>
+    /// 租户菜单关联
+    /// </summary>
     [PrimaryKey(nameof(TenantId), nameof(MenuId))]
     public class TenantMenu
     {

@@ -5,6 +5,9 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Fancyx.Admin.EfCore.Entities.System
 {
+    /// <summary>
+    /// 租户
+    /// </summary>
     [Table("tenant")]
     public class Tenant : FullAuditedEntity<string>
     {

@@ -29,21 +29,6 @@ namespace Fancyx.Admin.EfCore.Entities.System
         public string? Remark { get; set; }
 
         /// <summary>
-        /// 用户角色
-        /// </summary>
-        public virtual ICollection<UserRole>? UserRoles { get; set; }
-
-        /// <summary>
-        /// 角色菜单
-        /// </summary>
-        public virtual ICollection<RoleMenu>? RoleMenus { get; set; }
-
-        /// <summary>
-        /// 角色查看部门（数据权限类型=<see cref="DeptPowerType.Specify"/>时，指定部门时才存入）
-        /// </summary>
-        public virtual ICollection<RoleDept>? RoleDepts { get; set; }
-
-        /// <summary>
         /// 租户ID
         /// </summary>
         [Column("tenant_id")]

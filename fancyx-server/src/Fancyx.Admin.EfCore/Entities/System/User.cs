@@ -79,11 +79,6 @@ namespace Fancyx.Admin.EfCore.Entities.System
         public bool IsEnabled { get; set; }
 
         /// <summary>
-        /// 用户角色
-        /// </summary>
-        public virtual ICollection<UserRole>? UserRoles { get; set; }
-
-        /// <summary>
         /// 租户ID
         /// </summary>
         [Column("tenant_id")]

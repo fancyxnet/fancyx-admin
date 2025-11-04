@@ -5,6 +5,9 @@ using Fancyx.EfCore.BaseEntity;
 
 namespace Fancyx.Shared.Logger.Entities
 {
+    /// <summary>
+    /// 业务日志
+    /// </summary>
     [Table("log_record")]
     public class LogRecord : CreationEntity<long>, ITenant
     {
@@ -12,6 +15,7 @@ namespace Fancyx.Shared.Logger.Entities
         /// 日志类型
         /// </summary>
         [Column("type")]
+        [StringLength(64)]
         public string? Type { get; set; } = null!;
 
         /// <summary>

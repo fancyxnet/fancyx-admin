@@ -74,11 +74,6 @@ namespace Fancyx.Admin.EfCore.Entities.System
         public bool Display { get; set; }
 
         /// <summary>
-        /// 角色菜单
-        /// </summary>
-        public virtual ICollection<RoleMenu>? RoleMenus { get; set; }
-
-        /// <summary>
         /// 是否外链
         /// </summary>
         [Column("is_external")]

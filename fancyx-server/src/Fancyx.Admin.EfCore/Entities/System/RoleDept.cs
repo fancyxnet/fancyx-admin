@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.EfCore.Entities.System
 {
+    /// <summary>
+    /// 角色部门关联
+    /// </summary>
     [Table("role_dept")]
     [PrimaryKey(nameof(RoleId), nameof(DeptId))]
     public class RoleDept : ITenant
