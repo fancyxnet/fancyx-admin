@@ -11,7 +11,7 @@
  Target Server Version : 80406 (8.4.6)
  File Encoding         : 65001
 
- Date: 04/11/2025 14:48:25
+ Date: 05/11/2025 10:19:10
 */
 
 SET NAMES utf8mb4;
@@ -109,7 +109,8 @@ CREATE TABLE `config`  (
   `creation_time` datetime(6) NOT NULL,
   `last_modification_time` datetime(6) NULL DEFAULT NULL,
   `last_modifier_id` bigint NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `key`(`key` ASC, `tenant_id` ASC) USING BTREE COMMENT 'key唯一'
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统配置' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -136,7 +137,8 @@ CREATE TABLE `customer`  (
   `is_deleted` tinyint(1) NOT NULL,
   `deleter_id` bigint NULL DEFAULT NULL,
   `deletion_time` datetime(6) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `code`(`code` ASC, `tenant_id` ASC) USING BTREE COMMENT '编码唯一'
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '客户信息' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -168,7 +170,8 @@ CREATE TABLE `dept`  (
   `is_deleted` tinyint(1) NOT NULL,
   `deleter_id` bigint NULL DEFAULT NULL,
   `deletion_time` datetime(6) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `code`(`code` ASC, `tenant_id` ASC) USING BTREE COMMENT '编码唯一'
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '部门表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -193,7 +196,8 @@ CREATE TABLE `dict_data`  (
   `creation_time` datetime(6) NOT NULL,
   `last_modification_time` datetime(6) NULL DEFAULT NULL,
   `last_modifier_id` bigint NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `value`(`value` ASC, `tenant_id` ASC) USING BTREE COMMENT '字典项值唯一'
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '字典数据表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -215,7 +219,8 @@ CREATE TABLE `dict_type`  (
   `creation_time` datetime(6) NOT NULL,
   `last_modification_time` datetime(6) NULL DEFAULT NULL,
   `last_modifier_id` bigint NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `dict_type`(`dict_type` ASC, `tenant_id` ASC) USING BTREE COMMENT '字典类型唯一'
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '字典类型表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -267,7 +272,8 @@ CREATE TABLE `inventory`  (
   `creation_time` datetime(6) NOT NULL,
   `last_modification_time` datetime(6) NULL DEFAULT NULL,
   `last_modifier_id` bigint NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `inventory_no`(`inventory_no` ASC, `tenant_id` ASC) USING BTREE COMMENT '库存编号唯一'
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '库存' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -371,7 +377,8 @@ CREATE TABLE `menu`  (
   `creation_time` datetime(6) NOT NULL,
   `last_modification_time` datetime(6) NULL DEFAULT NULL,
   `last_modifier_id` bigint NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `path`(`path` ASC) USING BTREE COMMENT '菜单路由唯一'
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -404,7 +411,7 @@ INSERT INTO `menu` VALUES (4491762374256627736, '编辑', NULL, NULL, NULL, 3, '
 INSERT INTO `menu` VALUES (4491762374256627737, '删除', NULL, NULL, NULL, 3, 'Org.Dept.Delete', 4491762374256627761, 4, 1, 0, b'0', NULL, '2025-10-10 21:51:44.000000', NULL, NULL);
 INSERT INTO `menu` VALUES (4491762374256627738, '注销', NULL, NULL, NULL, 3, 'Monitor.Logout', 4491762374256627765, 1, 1, 0, b'0', NULL, '2025-10-10 21:51:44.000000', NULL, NULL);
 INSERT INTO `menu` VALUES (4491762374256627739, '新增', NULL, NULL, NULL, 3, 'Sys.DictType.Add', 4491762374256627762, 1, 1, 0, b'0', NULL, '2025-10-10 21:51:44.000000', NULL, NULL);
-INSERT INTO `menu` VALUES (4491762374256627740, '富文本组件', NULL, '/quickWork/rickText', 'quickWork/rickText', 2, '', 4491762374256627715, 1, 1, 0, b'0', NULL, '2025-10-10 21:51:44.000000', NULL, NULL);
+INSERT INTO `menu` VALUES (4491762374256627740, '富文本组件', NULL, '/quickWork/richText', 'quickWork/richText', 2, NULL, 4491762374256627715, 1, 1, 0, b'0', NULL, '2025-10-10 21:51:44.000000', '2025-11-04 15:09:04.370687', 631737765623021571);
 INSERT INTO `menu` VALUES (4491762374256627744, '编辑', NULL, NULL, NULL, 3, 'Sys.DictData.Update', 4491762374256627789, 3, 1, 0, b'0', NULL, '2025-10-10 21:51:44.000000', NULL, NULL);
 INSERT INTO `menu` VALUES (4491762374256627745, '删除', NULL, NULL, NULL, 3, 'Sys.DictData.Delete', 4491762374256627789, 1, 1, 0, b'0', NULL, '2025-10-10 21:51:44.000000', NULL, NULL);
 INSERT INTO `menu` VALUES (4491762374256627746, '编辑', NULL, NULL, NULL, 3, 'Sys.Menu.Update', 4491762374256627752, 3, 1, 0, b'0', NULL, '2025-10-10 21:51:44.000000', NULL, NULL);
@@ -500,7 +507,8 @@ CREATE TABLE `position`  (
   `is_deleted` tinyint(1) NOT NULL,
   `deleter_id` bigint NULL DEFAULT NULL,
   `deletion_time` datetime(6) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `code`(`code` ASC, `tenant_id` ASC) USING BTREE COMMENT '编码唯一'
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '职位表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -555,7 +563,9 @@ CREATE TABLE `product`  (
   `is_deleted` tinyint(1) NOT NULL,
   `deleter_id` bigint NULL DEFAULT NULL,
   `deletion_time` datetime(6) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `code`(`code` ASC, `tenant_id` ASC) USING BTREE COMMENT '编码唯一',
+  INDEX `sku_code`(`sku_code` ASC, `tenant_id` ASC) USING BTREE COMMENT 'SKU编码唯一'
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '产品' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -581,7 +591,8 @@ CREATE TABLE `product_attr`  (
   `creation_time` datetime(6) NOT NULL,
   `last_modification_time` datetime(6) NULL DEFAULT NULL,
   `last_modifier_id` bigint NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `code`(`code` ASC, `tenant_id` ASC) USING BTREE COMMENT '编码唯一'
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '产品属性' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -605,7 +616,8 @@ CREATE TABLE `product_attr_value`  (
   `creation_time` datetime(6) NOT NULL,
   `last_modification_time` datetime(6) NULL DEFAULT NULL,
   `last_modifier_id` bigint NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `code`(`code` ASC, `tenant_id` ASC) USING BTREE COMMENT '编码唯一'
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '产品属性可选值' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -647,7 +659,8 @@ CREATE TABLE `product_brand`  (
   `creation_time` datetime(6) NOT NULL,
   `last_modification_time` datetime(6) NULL DEFAULT NULL,
   `last_modifier_id` bigint NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `code`(`code` ASC, `tenant_id` ASC) USING BTREE COMMENT '编码唯一'
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '产品品牌' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -669,7 +682,8 @@ CREATE TABLE `product_category`  (
   `creation_time` datetime(6) NOT NULL,
   `last_modification_time` datetime(6) NULL DEFAULT NULL,
   `last_modifier_id` bigint NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `code`(`code` ASC, `tenant_id` ASC) USING BTREE COMMENT '编码唯一'
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '产品分类' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -695,7 +709,8 @@ CREATE TABLE `role`  (
   `deleter_id` bigint NULL DEFAULT NULL,
   `deletion_time` datetime(6) NULL DEFAULT NULL,
   `is_platform_role` int NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `role_name`(`role_name` ASC, `tenant_id` ASC) USING BTREE COMMENT '角色名唯一'
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -873,7 +888,8 @@ CREATE TABLE `supplier`  (
   `is_deleted` tinyint(1) NOT NULL,
   `deleter_id` bigint NULL DEFAULT NULL,
   `deletion_time` datetime(6) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `code`(`code` ASC, `tenant_id` ASC) USING BTREE COMMENT '编码唯一'
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '供应商' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -1109,7 +1125,9 @@ CREATE TABLE `user`  (
   `is_deleted` tinyint(1) NOT NULL,
   `deleter_id` bigint NULL DEFAULT NULL,
   `deletion_time` datetime(6) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `user_name`(`user_name` ASC, `tenant_id` ASC) USING BTREE COMMENT '用户名唯一',
+  UNIQUE INDEX `nick_name`(`nick_name` ASC, `tenant_id` ASC) USING BTREE COMMENT '昵称唯一'
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -1156,7 +1174,8 @@ CREATE TABLE `warehouse`  (
   `is_deleted` tinyint(1) NOT NULL,
   `deleter_id` bigint NULL DEFAULT NULL,
   `deletion_time` datetime(6) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `code`(`code` ASC, `tenant_id` ASC) USING BTREE COMMENT '编码唯一'
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '仓库' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
