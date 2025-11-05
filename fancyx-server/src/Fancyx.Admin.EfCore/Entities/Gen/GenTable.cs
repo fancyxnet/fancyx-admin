@@ -46,7 +46,7 @@ namespace Fancyx.Admin.EfCore.Entities.Gen
         /// <summary>
         /// 生成命名空间路径
         /// </summary>
-        public string? PackageName { get; set; }
+        public string? NamespaceName { get; set; }
 
         /// <summary>
         /// 生成模块名
@@ -62,11 +62,6 @@ namespace Fancyx.Admin.EfCore.Entities.Gen
         /// 生成功能名
         /// </summary>
         public string? FunctionName { get; set; }
-
-        /// <summary>
-        /// 生成功能作者
-        /// </summary>
-        public string? FunctionAuthor { get; set; }
 
         /// <summary>
         /// 生成代码方式（0zip压缩包 1自定义路径）

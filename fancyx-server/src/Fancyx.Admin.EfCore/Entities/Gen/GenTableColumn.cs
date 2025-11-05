@@ -71,7 +71,7 @@ namespace Fancyx.Admin.EfCore.Entities.Gen
         /// <summary>
         /// 是否列表字段
         /// </summary>
-        public char IsList { get; set; }
+        public bool IsList { get; set; }
 
         /// <summary>
         /// 是否查询字段
@@ -86,7 +86,7 @@ namespace Fancyx.Admin.EfCore.Entities.Gen
         /// <summary>
         /// 显示类型（文本框、文本域、下拉框、复选框、单选框、日期控件）
         /// </summary>
-        public long HtmlType { get; set; }
+        public string? HtmlType { get; set; }
 
         /// <summary>
         /// 字典类型

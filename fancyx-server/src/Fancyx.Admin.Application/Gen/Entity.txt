@@ -1,0 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+using Fancyx.Core.Interfaces;
+using Fancyx.EfCore.BaseEntity;
+
+namespace $namespace_name;
+
+/// <summary>
+/// $table_comment
+/// </summary>
+public class $class_name $inherit
+{
+	$properties
+}
