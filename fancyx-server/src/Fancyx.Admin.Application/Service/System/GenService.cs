@@ -45,6 +45,15 @@ namespace Fancyx.Admin.Application.Service.System
             var genTable = await _genTableRepository.FindAsync(tableId) ?? throw new EntityNotFoundException();
             var genTableColumns = await _genTableColumnRepository.Where(x => x.TableId == tableId).ToListAsync();
 
+            var iServiceTemplate = this.LoadTemplate("IService");
+            iServiceTemplate.Set("namespace_name", genTable.NamespaceName);
+            iServiceTemplate.Set("class_name", genTable.ClassName);
+            iServiceTemplate.Set("table_comment", genTable.TableComment);
+            iServiceTemplate.Set("module_name", genTable.ModuleName);
+            iServiceTemplate.Set("business_name", genTable.BusinessName);
+            iServiceTemplate.Set("function_name", genTable.FunctionName);
+            result.IService = iServiceTemplate.Render();
+
             var entityTemplate = this.LoadTemplate("Entity");
             var propStrBuilder = new StringBuilder();
             var isPrimaryKeyOfId = genTableColumns.Any(x => x.IsPk && x.ColumnName == "id");
@@ -58,8 +67,11 @@ namespace Fancyx.Admin.Application.Service.System
             }
             foreach (var item in genTableColumns)
             {
-                propStrBuilder.AppendLine($"public {item.CsharpType}{(item.IsRequired ? "?" : "")} {item.CsharpField}");
-                propStrBuilder.Append(" { get; set; }");
+                propStrBuilder.AppendLine("\t /// <summary>");
+                propStrBuilder.AppendLine($"\t /// {item.ColumnComment}");
+                propStrBuilder.AppendLine("\t /// </summary>");
+                propStrBuilder.AppendLine($"\tpublic {item.CsharpType}{(item.IsRequired ? "?" : "")} {item.CsharpField}");
+                propStrBuilder.Append(" { get; set; }\r\n");
             }
             entityTemplate.Set("namespace_name", genTable.NamespaceName);
             entityTemplate.Set("class_name", genTable.ClassName);
