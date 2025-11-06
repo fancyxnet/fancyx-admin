@@ -93,7 +93,7 @@ namespace Fancyx.Admin.Application.Service.Feedback
 
         public async Task<PagedResult<UserTicketListDto>> GetUserTicketListAsync(UserTicketQueryDto dto)
         {
-            var query = _ticketRepository.GetQueryable().WhereIf(!string.IsNullOrEmpty(dto.Title), x => x.Title.StartsWith(dto.Title!));
+            var query = _ticketRepository.GetQueryable().Where(x => x.UserId == _currentUser.Id).WhereIf(!string.IsNullOrEmpty(dto.Title), x => x.Title.StartsWith(dto.Title!));
             var data = await query.GroupJoin(_ticketReplyRepository.GetQueryable(), t => t.Id, g => g.TicketId,
                 (t, g) => new UserTicketListDto
                 {
