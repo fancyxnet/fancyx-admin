@@ -1,6 +1,8 @@
 import { useRef } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import './index.scss';
+import { useApplication } from '../Application';
+import { uploadFile } from '@/api/oss';
 
 // 定义组件的Props接口
 interface RichEditorProps {
@@ -15,7 +17,8 @@ type TinyMCEInstance = any;
 
 export default function RichEditor({ onChange, initialValue = '' }: RichEditorProps) {
   const editorRef = useRef<TinyMCEInstance>(null);
-  
+  const { ossDomain } = useApplication();
+
   // 处理编辑器内容变化的函数
   const handleEditorChange = (content: string) => {
     // 如果提供了onChange回调，则调用它并传递当前内容
@@ -23,7 +26,12 @@ export default function RichEditor({ onChange, initialValue = '' }: RichEditorPr
       onChange(content);
     }
   };
-  
+
+  const ImagesUploadHandler = async (blobInfo: any) => {
+    const { data } = await uploadFile(blobInfo.blob());
+    return ossDomain + data;
+  };
+
   return (
     <>
       <Editor
@@ -33,7 +41,7 @@ export default function RichEditor({ onChange, initialValue = '' }: RichEditorPr
           editorRef.current = editor as unknown as TinyMCEInstance;
         }}
         // 使用传入的initialValue或默认值
-        initialValue={initialValue || ""}
+        initialValue={initialValue || ''}
         // 配置内容变化事件监听
         onEditorChange={(content) => handleEditorChange(content)}
         init={{
@@ -58,13 +66,16 @@ export default function RichEditor({ onChange, initialValue = '' }: RichEditorPr
             'preview',
             'help',
             'wordcount',
+            'image',
           ],
           toolbar:
             'undo redo | blocks | ' +
             'bold italic forecolor | alignleft aligncenter ' +
             'alignright alignjustify | bullist numlist outdent indent | ' +
+            ' image | ' +
             'removeformat | help',
           content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+          paste_data_images: true,
           // 启用实时内容变化事件
           setup: (editor: any) => {
             editor.on('input change', () => {
@@ -72,6 +83,7 @@ export default function RichEditor({ onChange, initialValue = '' }: RichEditorPr
               handleEditorChange(content);
             });
           },
+          images_upload_handler: ImagesUploadHandler,
         }}
       />
     </>
