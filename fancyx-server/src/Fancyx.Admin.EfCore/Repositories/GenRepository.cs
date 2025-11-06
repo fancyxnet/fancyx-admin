@@ -53,7 +53,7 @@ namespace Fancyx.Admin.EfCore.Repositories
         /// 查询未生成过的表
         /// </summary>
         /// <returns></returns>
-        public async Task<EntityPaged<TableInfo>> QueryTablesAsync(int current, int pageSize)
+        public async Task<EntityPaged<TableInfo>> QueryTablesAsync(int current, int pageSize, string? tableName)
         {
             var sql = @"SELECT 
                             S.TABLE_NAME AS TableName,
@@ -61,9 +61,13 @@ namespace Fancyx.Admin.EfCore.Repositories
                             S.CREATE_TIME AS CreateTime,
                             S.UPDATE_TIME AS UpdateTime
                         FROM INFORMATION_SCHEMA.TABLES AS S
-                        WHERE S.TABLE_SCHEMA = @db AND S.TABLE_NAME NOT IN (SELECT table_name FROM gen_table)
-                        ORDER BY S.TABLE_NAME";
-            return await Connection.QueryListFromSqlAsync<TableInfo>(current, pageSize, sql, new DynamicParameters(new { db = Connection.Database }));
+                        WHERE S.TABLE_SCHEMA = @db AND S.TABLE_NAME NOT IN (SELECT table_name FROM gen_table)";
+            if (!string.IsNullOrEmpty(tableName))
+            {
+                sql += " AND S.TABLE_NAME like @tableName";
+            }
+            sql += " ORDER BY S.TABLE_NAME";
+            return await Connection.QueryListFromSqlAsync<TableInfo>(current, pageSize, sql, new DynamicParameters(new { db = Connection.Database, tableName = $"%{tableName}%" }));
         }
 
         /// <summary>

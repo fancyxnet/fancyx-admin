@@ -12,5 +12,9 @@ namespace Fancyx.Admin.Application.IService.System
         Task<PagedResult<TableInfoDto>> GetTableListAsync(GetTableQueryDto dto);
 
         Task GenSyncFromDb(long tableId);
+
+        Task<PagedResult<GenTableListDto>> GetGenTableListAsync(GenTableQueryDto dto);
+
+        Task<PagedResult<GenTableListColumnDto>> GetGenTableListColumnListAsync(GenTableListColumnQueryDto dto);
     }
 }

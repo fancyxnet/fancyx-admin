@@ -118,7 +118,7 @@ namespace Fancyx.Admin.Application.Service.System
             return result;
         }
 
-        //[AsyncTransactional] TODO: 加上有BUG，参见 https://mysqlconnector.net/troubleshooting/transaction-usage/
+        //[AsyncTransactional] //TODO: 加上有BUG，参见 https://mysqlconnector.net/troubleshooting/transaction-usage/
         public async Task ImportTableAsync(string table)
         {
             if (await _genTableRepository.AnyAsync(x => x.TableName == table)) throw new BusinessException("表已生成");
@@ -136,7 +136,46 @@ namespace Fancyx.Admin.Application.Service.System
             genTable.BusinessName = genTable.ClassName;
             await _genTableRepository.InsertAsync(genTable);
 
-            var columnInfos = await _genRepository.QueryColumnsAsync(tableInfo.TableName);
+            await this.InsertGenTableColumnsFromDb(genTable.TableId, tableInfo.TableName);
+        }
+
+        public async Task<PagedResult<TableInfoDto>> GetTableListAsync(GetTableQueryDto dto)
+        {
+            var resp = await _genRepository.QueryTablesAsync(dto.Current, dto.PageSize, dto.TableName);
+            return new PagedResult<TableInfoDto>(resp.Total, _mapper.Map<List<TableInfoDto>>(resp.Items));
+        }
+
+        public async Task<PagedResult<GenTableListDto>> GetGenTableListAsync(GenTableQueryDto dto)
+        {
+            var resp = await _genTableRepository.GetQueryable().WhereIf(!string.IsNullOrEmpty(dto.TableName), x => x.TableName != null && x.TableName.StartsWith(dto.TableName!))
+                .PagedAsync(dto.Current, dto.PageSize);
+            return new PagedResult<GenTableListDto>(resp.Total, _mapper.Map<List<GenTableListDto>>(resp.Items));
+        }
+
+        public async Task<PagedResult<GenTableListColumnDto>> GetGenTableListColumnListAsync(GenTableListColumnQueryDto dto)
+        {
+            var resp = await _genTableRepository.Where(x => x.TableId == dto.TableId)
+                .PagedAsync(dto.Current, dto.PageSize);
+            return new PagedResult<GenTableListColumnDto>(resp.Total, _mapper.Map<List<GenTableListColumnDto>>(resp.Items));
+        }
+
+        public async Task GenSyncFromDb(long tableId)
+        {
+            var genTable = await _genTableRepository.FindAsync(tableId) ?? throw new EntityNotFoundException();
+            var tableInfo = await _genRepository.QueryTableAsync(genTable.TableName!) ?? throw new BusinessException($"数据库表{genTable.TableName}不存在");
+            
+            genTable.TableName = tableInfo.TableName;
+            genTable.TableComment = tableInfo.TableComment;
+            genTable.ClassName = StringUtils.ToPascalCase(tableInfo.TableName);
+            await _genTableRepository.UpdateAsync(genTable);
+
+            await this.InsertGenTableColumnsFromDb(genTable.TableId, tableInfo.TableName);
+        }
+
+        private async Task InsertGenTableColumnsFromDb(long tableId, string tableName)
+        {
+            await _genTableColumnRepository.DeleteAsync(x => x.TableId == tableId);
+            var columnInfos = await _genRepository.QueryColumnsAsync(tableName);
             var genTableColumns = new List<GenTableColumn>();
             var sort = 1;
             foreach (var item in columnInfos)
@@ -146,7 +185,7 @@ namespace Fancyx.Admin.Application.Service.System
                 var genTableColumn = new GenTableColumn
                 {
                     ColumnId = IdGenerater.Instance.NextId(),
-                    TableId = genTable.TableId,
+                    TableId = tableId,
                     ColumnName = item.ColumnName,
                     ColumnComment = item.ColumnComment,
                     ColumnType = item.ColumnType,
@@ -166,17 +205,6 @@ namespace Fancyx.Admin.Application.Service.System
                 genTableColumns.Add(genTableColumn);
             }
             await _genTableColumnRepository.InsertManyAsync(genTableColumns);
-        }
-
-        public async Task<PagedResult<TableInfoDto>> GetTableListAsync(GetTableQueryDto dto)
-        {
-            var resp = await _genRepository.QueryTablesAsync(dto.Current, dto.PageSize);
-            return new PagedResult<TableInfoDto>(resp.Total, _mapper.Map<List<TableInfoDto>>(resp.Items));
-        }
-
-        public Task GenSyncFromDb(long tableId)
-        {
-            throw new NotImplementedException();
         }
 
         private StringBuilder AddProperties(StringBuilder sb, GenTableColumn item, bool? isNullable = null)

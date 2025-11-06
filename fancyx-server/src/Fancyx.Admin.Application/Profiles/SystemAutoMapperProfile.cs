@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Fancyx.Admin.Application.IService.Account.Dtos;
 using Fancyx.Admin.Application.IService.System.Dtos;
+using Fancyx.Admin.EfCore.Entities.Gen;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Models;
 
@@ -20,6 +21,8 @@ namespace Fancyx.Admin.Application.Profiles
             CreateMap<DictData, DictDataListDto>();
             CreateMap<User, UserEditInfoDto>(MemberList.None);
             CreateMap<TableInfo, TableInfoDto>(MemberList.None);
+            CreateMap<GenTable, GenTableListDto>(MemberList.None);
+            CreateMap<GenTableColumn, GenTableListColumnDto>(MemberList.None);
         }
     }
 }
