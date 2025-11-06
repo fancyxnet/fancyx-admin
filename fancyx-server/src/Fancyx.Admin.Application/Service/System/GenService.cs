@@ -5,7 +5,6 @@ using Fancyx.Admin.EfCore.Entities.Gen;
 using Fancyx.Admin.EfCore.Repositories;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
-using Fancyx.EfCore.Aop;
 using Fancyx.EfCore.BaseEntity;
 using Fancyx.SnowflakeId;
 using Fancyx.Utils;
@@ -43,41 +42,78 @@ namespace Fancyx.Admin.Application.Service.System
             var result = new GenCodeResultDto();
 
             var genTable = await _genTableRepository.FindAsync(tableId) ?? throw new EntityNotFoundException();
-            var genTableColumns = await _genTableColumnRepository.Where(x => x.TableId == tableId).ToListAsync();
+            var genTableColumns = await _genTableColumnRepository.Where(x => x.TableId == tableId).AsNoTracking().ToListAsync();
 
-            var iServiceTemplate = this.LoadTemplate("IService");
-            iServiceTemplate.Set("namespace_name", genTable.NamespaceName);
-            iServiceTemplate.Set("class_name", genTable.ClassName);
-            iServiceTemplate.Set("table_comment", genTable.TableComment);
-            iServiceTemplate.Set("module_name", genTable.ModuleName);
-            iServiceTemplate.Set("business_name", genTable.BusinessName);
-            iServiceTemplate.Set("function_name", genTable.FunctionName);
-            result.IService = iServiceTemplate.Render();
+            // IService
+            var iServiceTemplate = this.LoadTemplate("IService", genTable);
+            result.IService = new AppOption($"I{genTable.BusinessName}Service", iServiceTemplate.Render());
 
-            var entityTemplate = this.LoadTemplate("Entity");
-            var propStrBuilder = new StringBuilder();
+            // Controller
+            var controllerTemplate = this.LoadTemplate("Controller", genTable);
+            result.Controller = new AppOption($"{genTable.BusinessName}Controller", controllerTemplate.Render());
+
+            // Entity
+            var entityTemplate = this.LoadTemplate("Entity", genTable);
             var isPrimaryKeyOfId = genTableColumns.Any(x => x.IsPk && x.ColumnName == "id");
             var primaryKeyCount = genTableColumns.Where(x => x.IsPk).Count();
+            List<string> exceptFields = [];
             if (primaryKeyCount == 1)
             {
                 var primaryKeyType = genTableColumns.Find(x => x.IsPk)!.CsharpType!;
                 var columns = genTableColumns.Select(x => x.ColumnName).ToList();
-                var inheritClassOrInterfaces = this.GetInheritClassOrInterface(isPrimaryKeyOfId, primaryKeyType, columns!);
+                (string inheritClassOrInterfaces, exceptFields) = this.GetInheritClassOrInterface(isPrimaryKeyOfId, primaryKeyType, columns!);
                 entityTemplate.Set("inherit", $": {inheritClassOrInterfaces}");
             }
+            var entityPropStrBuilder = new StringBuilder();
+            var businessAddDtoPropStrBuilder = new StringBuilder();
+            var businessUpdateDtoPropStrBuilder = new StringBuilder();
+            var businessListDtoPropStrBuilder = new StringBuilder();
+            var businessQueryDtoPropStrBuilder = new StringBuilder();
             foreach (var item in genTableColumns)
             {
-                propStrBuilder.AppendLine("\t /// <summary>");
-                propStrBuilder.AppendLine($"\t /// {item.ColumnComment}");
-                propStrBuilder.AppendLine("\t /// </summary>");
-                propStrBuilder.AppendLine($"\tpublic {item.CsharpType}{(item.IsRequired ? "?" : "")} {item.CsharpField}");
-                propStrBuilder.Append(" { get; set; }\r\n");
+                if (!exceptFields.Contains(item.ColumnName!)) this.AddProperties(entityPropStrBuilder, item);
+                if (item.IsInsert) this.AddProperties(businessAddDtoPropStrBuilder, item);
+                if (item.IsEdit) this.AddProperties(businessUpdateDtoPropStrBuilder, item);
+                if (item.IsList) this.AddProperties(businessListDtoPropStrBuilder, item);
+                if (item.IsQuery) this.AddProperties(businessQueryDtoPropStrBuilder, item);
             }
-            entityTemplate.Set("namespace_name", genTable.NamespaceName);
-            entityTemplate.Set("class_name", genTable.ClassName);
-            entityTemplate.Set("table_comment", genTable.TableComment);
-            entityTemplate.Set("properties", propStrBuilder.ToString());
-            result.Entity = entityTemplate.Render();
+            entityTemplate.Set("properties", entityPropStrBuilder.ToString());
+            result.Entity = new AppOption(genTable.ClassName!, entityTemplate.Render());
+
+            // AddDto
+            var businessAddDtoTemplate = this.LoadTemplate("Dto", genTable);
+            var addDtoName = $"{genTable.BusinessName}AddDto";
+            businessAddDtoTemplate.Set("properties", businessAddDtoPropStrBuilder);
+            businessAddDtoTemplate.Set("dto_name", addDtoName);
+            result.BusinessAddDto = new AppOption(addDtoName, businessAddDtoTemplate.Render());
+
+            // UpdateDto
+            var businessUpdateDtoTemplate = this.LoadTemplate("Dto", genTable);
+            var updateDtoName = $"{genTable.BusinessName}UpdateDto";
+            businessUpdateDtoTemplate.Set("properties", businessUpdateDtoPropStrBuilder);
+            businessUpdateDtoTemplate.Set("dto_name", updateDtoName);
+            result.BusinessUpdateDto = new AppOption(updateDtoName, businessUpdateDtoTemplate.Render());
+
+            // ListDto
+            var businessListDtoTemplate = this.LoadTemplate("Dto", genTable);
+            var listDtoName = $"{genTable.BusinessName}ListDto";
+            businessListDtoTemplate.Set("properties", businessListDtoPropStrBuilder);
+            businessListDtoTemplate.Set("dto_name", listDtoName);
+            result.BusinessListDto = new AppOption(listDtoName, businessListDtoTemplate.Render());
+
+            // Dto
+            var businessDtoTemplate = this.LoadTemplate("Dto", genTable);
+            var dtoName = $"{genTable.BusinessName}Dto";
+            businessDtoTemplate.Set("properties", businessListDtoPropStrBuilder);
+            businessDtoTemplate.Set("dto_name", dtoName);
+            result.BusinessDto = new AppOption(dtoName, businessDtoTemplate.Render());
+
+            // QueryDto
+            var businessQueryDtoTemplate = this.LoadTemplate("Dto", genTable);
+            var queryDtoName = $"{genTable.BusinessName}QueryDto";
+            businessQueryDtoTemplate.Set("properties", businessQueryDtoPropStrBuilder);
+            businessQueryDtoTemplate.Set("dto_name", queryDtoName);
+            result.BusinessQueryDto = new AppOption(queryDtoName, businessQueryDtoTemplate.Render());
 
             return result;
         }
@@ -106,6 +142,7 @@ namespace Fancyx.Admin.Application.Service.System
             foreach (var item in columnInfos)
             {
                 var isDefaultField = this.IsDefaultFields(item.ColumnName);
+                var isPk = item.ColumnKey == "PRI";
                 var genTableColumn = new GenTableColumn
                 {
                     ColumnId = IdGenerater.Instance.NextId(),
@@ -115,11 +152,11 @@ namespace Fancyx.Admin.Application.Service.System
                     ColumnType = item.ColumnType,
                     CsharpType = this.MapToCSharpType(item.ColumnType),
                     CsharpField = StringUtils.ToPascalCase(item.ColumnName),
-                    IsPk = item.ColumnKey == "PRI",
+                    IsPk = isPk,
                     IsRequired = item.IsNullable == "YES",
                     IsInsert = !isDefaultField,
-                    IsEdit = !isDefaultField,
-                    IsList = !isDefaultField,
+                    IsEdit = !isDefaultField || isPk,
+                    IsList = !isDefaultField || isPk,
                     IsQuery = !isDefaultField && IsDefaultQuery(item.ColumnType, item.ColumnName),
                     HtmlType = "text",
                     QueryType = "=",
@@ -142,10 +179,32 @@ namespace Fancyx.Admin.Application.Service.System
             throw new NotImplementedException();
         }
 
-        private ITemplate LoadTemplate(string templateName)
+        private StringBuilder AddProperties(StringBuilder sb, GenTableColumn item, bool? isNullable = null)
+        {
+            isNullable ??= item.IsRequired;
+            sb.AppendLine("\t/// <summary>");
+            sb.AppendLine($"\t/// {item.ColumnComment}");
+            sb.AppendLine("\t/// </summary>");
+            sb.AppendLine($"\tpublic {item.CsharpType}{(isNullable.Value ? "?" : "")} {item.CsharpField}" + " { get; set; } \r\n");
+            return sb;
+        }
+
+        private ITemplate LoadTemplate(string templateName, GenTable genTable)
         {
             var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Gen", $"{templateName}.txt");
-            return Engine.LoadTemplate(filePath);
+            var template = Engine.LoadTemplate(filePath);
+
+            template.Set("table_name", genTable.TableName);
+            template.Set("table_comment", genTable.TableComment);
+            template.Set("class_name", genTable.ClassName);
+            template.Set("namespace_name", genTable.NamespaceName);
+            template.Set("module_name", genTable.ModuleName);
+            template.Set("business_name", genTable.BusinessName);
+            template.Set("function_name", genTable.FunctionName);
+            var businessNameInject = genTable.BusinessName?.Length > 1 ? genTable.BusinessName[..1].ToLowerInvariant() + genTable.BusinessName[1..] : genTable.BusinessName?.ToLowerInvariant();
+            template.Set("business_name_inject", businessNameInject);
+
+            return template;
         }
 
         private string MapToCSharpType(string columnType)
@@ -173,19 +232,20 @@ namespace Fancyx.Admin.Application.Service.System
         {
             if (columnType != "varchar") return false;
 
-            var noQueryFields = new string[] { "remark" };
+            var noQueryFields = new string[] { "remark", "content", "img", "file", "image", "url", "link" };
             return !noQueryFields.Contains(field);
         }
 
         private bool IsDefaultFields(string field)
         {
             return creationFields.Any(f => f == field) || deletionFields.Any(f => f == field) || deletionFlagFields.Any(f => f == field)
-                || modificationFields.Any(f => f == field) || treeFields.Any(f => f == field) || tenantFields.Any(f => f == field);
+                || modificationFields.Any(f => f == field) || tenantFields.Any(f => f == field);
         }
 
-        private string GetInheritClassOrInterface(bool idIsPrimaryKey, string primaryKeyCsType, List<string> columns)
+        private (string inheritClassOrInterfaces, List<string> exceptFields) GetInheritClassOrInterface(bool idIsPrimaryKey, string primaryKeyCsType, List<string> columns)
         {
             var arr = new List<string>();
+            var exceptFields = new HashSet<string>();
             var hasCreationFields = creationFields.All(columns.Contains);
             var hasDeletionFields = deletionFields.All(columns.Contains);
             var hasDeletionFlagFields = deletionFlagFields.All(columns.Contains);
@@ -193,17 +253,64 @@ namespace Fancyx.Admin.Application.Service.System
             var hasTreeFields = treeFields.All(columns.Contains);
             var hasTenantFields = tenantFields.All(columns.Contains);
 
-            if (idIsPrimaryKey && hasCreationFields && hasModificationFields && hasDeletionFields) arr.Add($"FullAuditedEntity<{primaryKeyCsType}>");
-            if (idIsPrimaryKey && hasCreationFields && hasModificationFields && !hasDeletionFields) arr.Add($"AuditedEntity<{primaryKeyCsType}>");
-            if (idIsPrimaryKey && hasCreationFields && !hasModificationFields && !hasDeletionFields) arr.Add($"CreationEntity<{primaryKeyCsType}>");
-            if (idIsPrimaryKey && !hasCreationFields && !hasModificationFields && !hasDeletionFields) arr.Add($"Entity<{primaryKeyCsType}>");
-            if (hasDeletionFlagFields && !hasDeletionFields) arr.Add(nameof(IHasDeletionFlagProperty));
-            if (!idIsPrimaryKey && hasCreationFields) arr.Add($"IHasCreationProperty<{primaryKeyCsType}>");
-            if (!idIsPrimaryKey && hasModificationFields) arr.Add($"IHasModificationProperty<{primaryKeyCsType}>");
-            if (hasTenantFields) arr.Add(nameof(ITenant));
-            if (hasTreeFields) arr.Add($"IHasTreeProperty<{primaryKeyCsType}>");
+            if (idIsPrimaryKey && hasCreationFields && hasModificationFields && hasDeletionFields)
+            {
+                arr.Add($"FullAuditedEntity<{primaryKeyCsType}>");
+                AddExceptFields(["id"], creationFields, modificationFields, deletionFields);
+            }
+            if (idIsPrimaryKey && hasCreationFields && hasModificationFields && !hasDeletionFields)
+            {
+                arr.Add($"AuditedEntity<{primaryKeyCsType}>");
+                AddExceptFields(["id"], creationFields, modificationFields);
+            }
+            if (idIsPrimaryKey && hasCreationFields && !hasModificationFields && !hasDeletionFields)
+            {
+                arr.Add($"CreationEntity<{primaryKeyCsType}>");
+                AddExceptFields(["id"], creationFields);
+            }
+            if (idIsPrimaryKey && !hasCreationFields && !hasModificationFields && !hasDeletionFields)
+            {
+                arr.Add($"Entity<{primaryKeyCsType}>");
+                AddExceptFields(["id"]);
+            }
+            if (hasDeletionFlagFields && !hasDeletionFields)
+            {
+                arr.Add(nameof(IHasDeletionFlagProperty));
+                AddExceptFields(deletionFlagFields);
+            }
+            if (!idIsPrimaryKey && hasCreationFields)
+            {
+                arr.Add($"IHasCreationProperty<{primaryKeyCsType}>");
+                AddExceptFields(creationFields);
+            }
+            if (!idIsPrimaryKey && hasModificationFields)
+            {
+                arr.Add($"IHasModificationProperty<{primaryKeyCsType}>");
+                AddExceptFields(modificationFields);
+            }
+            if (hasTenantFields)
+            {
+                arr.Add(nameof(ITenant));
+                AddExceptFields(tenantFields);
+            }
+            if (hasTreeFields)
+            {
+                arr.Add($"IHasTreeProperty<{primaryKeyCsType}>");
+                AddExceptFields(treeFields);
+            }
 
-            return string.Join(", ", arr);
+            void AddExceptFields(params string[][] fields)
+            {
+                foreach (var subFields in fields)
+                {
+                    foreach (var field in subFields)
+                    {
+                        exceptFields.Add(field);
+                    }
+                }
+            }
+
+            return (string.Join(", ", arr), exceptFields.ToList());
         }
     }
 }
