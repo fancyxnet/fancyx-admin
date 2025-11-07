@@ -152,11 +152,11 @@ namespace Fancyx.Admin.Application.Service.System
             return new PagedResult<GenTableListDto>(resp.Total, _mapper.Map<List<GenTableListDto>>(resp.Items));
         }
 
-        public async Task<PagedResult<GenTableListColumnDto>> GetGenTableListColumnListAsync(GenTableListColumnQueryDto dto)
+        public async Task<PagedResult<GenTableColumnListDto>> GetGenTableColumnListAsync(GenTableColumnQueryDto dto)
         {
             var resp = await _genTableRepository.Where(x => x.TableId == dto.TableId)
                 .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<GenTableListColumnDto>(resp.Total, _mapper.Map<List<GenTableListColumnDto>>(resp.Items));
+            return new PagedResult<GenTableColumnListDto>(resp.Total, _mapper.Map<List<GenTableColumnListDto>>(resp.Items));
         }
 
         public async Task GenSyncFromDb(long tableId)

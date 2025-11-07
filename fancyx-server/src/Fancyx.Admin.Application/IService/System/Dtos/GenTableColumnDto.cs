@@ -8,11 +8,6 @@
         public long ColumnId { get; set; }
 
         /// <summary>
-        /// 归属表编号
-        /// </summary>
-        public long TableId { get; set; }
-
-        /// <summary>
         /// 列名称
         /// </summary>
         public string? ColumnName { get; set; }

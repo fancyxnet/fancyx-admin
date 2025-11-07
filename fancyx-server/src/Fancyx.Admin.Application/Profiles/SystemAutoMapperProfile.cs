@@ -22,7 +22,7 @@ namespace Fancyx.Admin.Application.Profiles
             CreateMap<User, UserEditInfoDto>(MemberList.None);
             CreateMap<TableInfo, TableInfoDto>(MemberList.None);
             CreateMap<GenTable, GenTableListDto>(MemberList.None);
-            CreateMap<GenTableColumn, GenTableListColumnDto>(MemberList.None);
+            CreateMap<GenTableColumn, GenTableColumnListDto>(MemberList.None);
             CreateMap<GenTableInfoDto, GenTable>(MemberList.None);
             CreateMap<GenTableColumnDto, GenTableColumn>(MemberList.None);
             CreateMap<GenTable, GenDetailsInfoDto>(MemberList.None);

@@ -1,6 +1,6 @@
 ﻿namespace Fancyx.Admin.Application.IService.System.Dtos
 {
-    public class GenTableListColumnDto
+    public class GenTableColumnListDto
     {
         /// <summary>
         /// 编号

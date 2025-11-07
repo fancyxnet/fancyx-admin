@@ -54,10 +54,10 @@ namespace Fancyx.Admin.Controllers.System
             return Result.Data(data);
         }
 
-        [HttpGet("GetGenTableListColumnList")]
-        public async Task<AppResponse<PagedResult<GenTableListColumnDto>>> GetGenTableListColumnListAsync([FromQuery] GenTableListColumnQueryDto dto)
+        [HttpGet("GetGenTableColumnList")]
+        public async Task<AppResponse<PagedResult<GenTableColumnListDto>>> GetGenTableColumnListAsync([FromQuery] GenTableColumnQueryDto dto)
         {
-            var data = await _genService.GetGenTableListColumnListAsync(dto);
+            var data = await _genService.GetGenTableColumnListAsync(dto);
             return Result.Data(data);
         }
 
@@ -82,7 +82,7 @@ namespace Fancyx.Admin.Controllers.System
             return Result.Ok();
         }
 
-        [HttpGet("GetGenDetailsInfo")]
+        [HttpPut("GetGenDetailsInfo")]
         public async Task<AppResponse<GenDetailsInfoDto>> GetGenDetailsInfoAsync(long tableId)
         {
             var data = await _genService.GetGenDetailsInfoAsync(tableId);
