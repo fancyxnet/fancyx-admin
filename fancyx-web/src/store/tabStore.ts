@@ -11,6 +11,7 @@ export const tabSlice = createSlice({
     activeKey: '/',
   },
   reducers: {
+    // TODO: 需要处理同一路由，标题不一致
     open: (state, action) => {
       let { name, path } = action.payload;
       if (!name) {
