@@ -46,5 +46,47 @@ namespace Fancyx.Admin.Controllers.System
             await _genService.GenSyncFromDb(tableId);
             return Result.Ok();
         }
+
+        [HttpGet("GetGenTableList")]
+        public async Task<AppResponse<PagedResult<GenTableListDto>>> GetGenTableListAsync([FromQuery] GenTableQueryDto dto)
+        {
+            var data = await _genService.GetGenTableListAsync(dto);
+            return Result.Data(data);
+        }
+
+        [HttpGet("GetGenTableListColumnList")]
+        public async Task<AppResponse<PagedResult<GenTableListColumnDto>>> GetGenTableListColumnListAsync([FromQuery] GenTableListColumnQueryDto dto)
+        {
+            var data = await _genService.GetGenTableListColumnListAsync(dto);
+            return Result.Data(data);
+        }
+
+        [HttpDelete("DeleteGenTable/{tableId}")]
+        public async Task<AppResponse<bool>> DeleteGenTableAsync(long tableId)
+        {
+            await _genService.DeleteGenTableAsync(tableId);
+            return Result.Ok();
+        }
+
+        [HttpPut("SaveGenTableInfo")]
+        public async Task<AppResponse<bool>> SaveGenTableInfoAsync([FromBody] GenTableInfoDto dto)
+        {
+            await _genService.SaveGenTableInfoAsync(dto);
+            return Result.Ok();
+        }
+
+        [HttpPut("SaveGenColumnInfo")]
+        public async Task<AppResponse<bool>> SaveGenColumnInfoAsync([FromBody] List<GenTableColumnDto> dtos)
+        {
+            await _genService.SaveGenColumnInfoAsync(dtos);
+            return Result.Ok();
+        }
+
+        [HttpGet("GetGenDetailsInfo")]
+        public async Task<AppResponse<GenDetailsInfoDto>> GetGenDetailsInfoAsync(long tableId)
+        {
+            var data = await _genService.GetGenDetailsInfoAsync(tableId);
+            return Result.Data(data);
+        }
     }
 }

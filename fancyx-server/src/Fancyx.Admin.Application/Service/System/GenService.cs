@@ -5,6 +5,7 @@ using Fancyx.Admin.EfCore.Entities.Gen;
 using Fancyx.Admin.EfCore.Repositories;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
+using Fancyx.EfCore.Aop;
 using Fancyx.EfCore.BaseEntity;
 using Fancyx.SnowflakeId;
 using Fancyx.Utils;
@@ -118,7 +119,6 @@ namespace Fancyx.Admin.Application.Service.System
             return result;
         }
 
-        //[AsyncTransactional] //TODO: 加上有BUG，参见 https://mysqlconnector.net/troubleshooting/transaction-usage/
         public async Task ImportTableAsync(string table)
         {
             if (await _genTableRepository.AnyAsync(x => x.TableName == table)) throw new BusinessException("表已生成");
@@ -170,6 +170,40 @@ namespace Fancyx.Admin.Application.Service.System
             await _genTableRepository.UpdateAsync(genTable);
 
             await this.InsertGenTableColumnsFromDb(genTable.TableId, tableInfo.TableName);
+        }
+
+        [AsyncTransactional]
+        public async Task DeleteGenTableAsync(long tableId)
+        {
+            await _genTableColumnRepository.DeleteAsync(x => x.TableId == tableId);
+            await _genTableRepository.DeleteAsync(x => x.TableId == tableId);
+        }
+
+        public async Task SaveGenTableInfoAsync(GenTableInfoDto dto)
+        {
+            var genTable = await _genTableRepository.FindAsync(dto.TableId) ?? throw new EntityNotFoundException();
+            genTable = _mapper.Map<GenTable>(dto);
+            await _genTableRepository.UpdateAsync(genTable);
+        }
+
+        [AsyncTransactional]
+        public async Task SaveGenColumnInfoAsync(List<GenTableColumnDto> dtos)
+        {
+            var columnIds = dtos.Select(x => x.ColumnId).ToList();
+            var genTableColumns = await _genTableColumnRepository.Where(x => columnIds.Contains(x.ColumnId)).ToListAsync();
+            foreach (var dto in dtos)
+            {
+                var entity = genTableColumns.Find(x => x.ColumnId == dto.ColumnId);
+                if (entity == null) continue;
+                entity = _mapper.Map<GenTableColumn>(dto);
+            }
+            await _genTableColumnRepository.UpdateManyAsync(genTableColumns);
+        }
+
+        public async Task<GenDetailsInfoDto> GetGenDetailsInfoAsync(long tableId)
+        {
+            var genTable = await _genTableRepository.FindAsync(tableId) ?? throw new EntityNotFoundException();
+            return _mapper.Map<GenDetailsInfoDto>(genTable);
         }
 
         private async Task InsertGenTableColumnsFromDb(long tableId, string tableName)
