@@ -56,7 +56,7 @@ namespace Fancyx.EfCore
 
         public Task<List<T>> GetListAsync(Expression<Func<T, bool>> whereExpression)
         {
-            return Context.Set<T>().AsNoTracking().Where(whereExpression).ToListAsync();
+            return Context.Set<T>().Where(whereExpression).ToListAsync();
         }
 
         public IQueryable<T> GetQueryable()
@@ -102,9 +102,10 @@ namespace Fancyx.EfCore
 
         public async Task<int> UpdateAsync(T entity, bool autoSave = true)
         {
-            if (Context.Entry(entity).State != EntityState.Modified)
+            if (Context.Entry(entity).State == EntityState.Detached)
             {
-                Context.Set<T>().Update(entity);
+                Context.Attach(entity);
+                Context.Entry(entity).State = EntityState.Modified;
             }
             return autoSave ? await Context.SaveChangesAsync() : -1;
         }
@@ -136,7 +137,7 @@ namespace Fancyx.EfCore
 
         public Task<List<T>> GetListAsync()
         {
-            return Context.Set<T>().AsNoTracking().ToListAsync();
+            return Context.Set<T>().ToListAsync();
         }
 
         public async Task<int> DeleteAsync(T entity, bool autoSave = true)
@@ -162,6 +163,11 @@ namespace Fancyx.EfCore
                 Context.Set<T>().Remove(entity);
             }
             return autoSave ? await Context.SaveChangesAsync() : -1;
+        }
+
+        public IQueryable<T> AsNoTracking()
+        {
+            return Context.Set<T>().AsNoTracking();
         }
 
         private static void SoftDeleteBeforeResetOtherProperty(EntityEntry entry)

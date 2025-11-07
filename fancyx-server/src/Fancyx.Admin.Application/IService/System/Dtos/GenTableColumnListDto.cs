@@ -43,7 +43,7 @@
         public bool IsPk { get; set; }
 
         /// <summary>
-        /// 是否自增）
+        /// 是否自增
         /// </summary>
         public bool IsIncrement { get; set; }
 

@@ -35,6 +35,7 @@ namespace Fancyx.Shared.WebApi.Handlers
         /// <returns></returns>
         public async Task<bool> CheckPermissionAsync(string userId, string code)
         {
+            // TODO: 如果缓存不存在，要读数据库
             var key = SystemCacheKey.UserPermission(userId);
             if (await _hybridCache.ExistsAsync(key))
             {

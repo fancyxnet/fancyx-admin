@@ -36,5 +36,7 @@ namespace Fancyx.EfCore
         Task<int> DeleteAsync(Expression<Func<T, bool>> whereExpression);
 
         Task<int> DeleteAsync(T entity, bool autoSave = true);
+
+        IQueryable<T> AsNoTracking();
     }
 }

@@ -154,7 +154,7 @@ namespace Fancyx.Admin.Application.Service.System
 
         public async Task<PagedResult<GenTableColumnListDto>> GetGenTableColumnListAsync(GenTableColumnQueryDto dto)
         {
-            var resp = await _genTableRepository.Where(x => x.TableId == dto.TableId)
+            var resp = await _genTableColumnRepository.Where(x => x.TableId == dto.TableId)
                 .PagedAsync(dto.Current, dto.PageSize);
             return new PagedResult<GenTableColumnListDto>(resp.Total, _mapper.Map<List<GenTableColumnListDto>>(resp.Items));
         }
@@ -182,7 +182,17 @@ namespace Fancyx.Admin.Application.Service.System
         public async Task SaveGenTableInfoAsync(GenTableInfoDto dto)
         {
             var genTable = await _genTableRepository.FindAsync(dto.TableId) ?? throw new EntityNotFoundException();
-            genTable = _mapper.Map<GenTable>(dto);
+            genTable.TableId = dto.TableId;
+            genTable.TableComment = dto.TableComment;
+            genTable.ClassName = dto.ClassName;
+            genTable.TplCategory = dto.TplCategory;
+            genTable.NamespaceName = dto.NamespaceName;
+            genTable.ModuleName = dto.ModuleName;
+            genTable.BusinessName = dto.BusinessName;
+            genTable.FunctionName = dto.FunctionName;
+            genTable.GenPath = dto.GenPath;
+            genTable.Options = dto.Options;
+            genTable.Remark = dto.Remark;
             await _genTableRepository.UpdateAsync(genTable);
         }
 
@@ -190,12 +200,27 @@ namespace Fancyx.Admin.Application.Service.System
         public async Task SaveGenColumnInfoAsync(List<GenTableColumnDto> dtos)
         {
             var columnIds = dtos.Select(x => x.ColumnId).ToList();
-            var genTableColumns = await _genTableColumnRepository.Where(x => columnIds.Contains(x.ColumnId)).ToListAsync();
+            var genTableColumns = await _genTableColumnRepository.AsNoTracking().Where(x => columnIds.Contains(x.ColumnId)).ToListAsync();
             foreach (var dto in dtos)
             {
                 var entity = genTableColumns.Find(x => x.ColumnId == dto.ColumnId);
                 if (entity == null) continue;
-                entity = _mapper.Map<GenTableColumn>(dto);
+                entity.ColumnName = dto.ColumnName;
+                entity.ColumnComment = dto.ColumnComment;
+                entity.ColumnType = dto.ColumnType;
+                entity.CsharpType = dto.CsharpType;
+                entity.CsharpField = dto.CsharpField;
+                entity.IsPk = dto.IsPk;
+                entity.IsIncrement = dto.IsIncrement;
+                entity.IsRequired = dto.IsRequired;
+                entity.IsInsert = dto.IsInsert;
+                entity.IsEdit = dto.IsEdit;
+                entity.IsList = dto.IsList;
+                entity.IsQuery = dto.IsQuery;
+                entity.QueryType = dto.QueryType;
+                entity.HtmlType = dto.HtmlType;
+                entity.DictType = dto.DictType;
+                entity.Sort = dto.Sort;
             }
             await _genTableColumnRepository.UpdateManyAsync(genTableColumns);
         }

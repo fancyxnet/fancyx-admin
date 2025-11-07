@@ -38,7 +38,7 @@ export function genSyncFromDb(tableId: string) {
  * @param dto
  */
 export function getGenTableList(dto: GenTableQueryDto) {
-    return httpClient.get<GenTableQueryDto, AppResponse<PagedResult<TableInfoDto>>>('/admin-api/Gen/GetGenTableList', { params: dto });
+    return httpClient.get<GenTableQueryDto, AppResponse<PagedResult<GenTableListDto>>>('/admin-api/Gen/GetGenTableList', { params: dto });
 }
 
 /**
@@ -54,7 +54,7 @@ export function getGenTableColumnList(dto: GenTableColumnQueryDto) {
  * @param id
  */
 export function deleteGenTable(tableId: string) {
-    return httpClient.delete<string, AppResponse<boolean>>(`/admin-api/Config/DeleteGenTable/${tableId}`);
+    return httpClient.delete<string, AppResponse<boolean>>(`/admin-api/Gen/DeleteGenTable/${tableId}`);
 }
 
 /**
@@ -71,6 +71,14 @@ export function saveGenTableInfo(dto: GenTableInfoDto) {
  */
 export function saveGenColumnInfo(dtos: GenTableColumnDto[]) {
     return httpClient.put<GenTableColumnDto[], AppResponse<boolean>>('/admin-api/Gen/SaveGenColumnInfo', dtos);
+}
+
+/**
+ * 获取详细信息
+ * @param dto
+ */
+export function getGenDetailsInfo(tableId: string) {
+    return httpClient.get<string, AppResponse<GenDetailsInfoDto>>('/admin-api/Gen/GetGenDetailsInfo?tableId=' + tableId);
 }
 
 export interface GetTableQueryDto extends PageSearch {
@@ -95,6 +103,20 @@ export interface GenCodeResultDto {
 }
 export interface GenTableQueryDto extends PageSearch {
     tableName?: string
+}
+export interface GenTableListDto {
+    tableId: string;
+    tableName?: string;
+    tableComment?: string;
+    className?: string;
+    tplCategory?: string;
+    namespaceName?: string;
+    moduleName?: string;
+    businessName?: string;
+    genType?: string;
+    genPath?: string;
+    options?: string;
+    remark?: string;
 }
 export interface GenTableColumnQueryDto extends PageSearch {
     tableId: string
@@ -148,4 +170,18 @@ export interface GenTableColumnDto {
     htmlType?: string;
     dictType?: string;
     sort: number;
+}
+export interface GenDetailsInfoDto {
+    tableId: string;
+    tableName?: string;
+    tableComment?: string;
+    className?: string;
+    tplCategory?: string;
+    namespaceName?: string;
+    moduleName?: string;
+    businessName?: string;
+    genType?: string;
+    genPath?: string;
+    options?: string;
+    remark?: string;
 }
