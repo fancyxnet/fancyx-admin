@@ -30,7 +30,8 @@ const SmartTable = forwardRef<SmartTableRef, SmartTableProps<any>>(
       setQueryFormFieldValue: (field, value) => {
         form.setFieldValue(field, value);
       },
-      getData: () => dataSource
+      getData: () => dataSource,
+      updateData: (arr: Array<any>) => { setDataSource(arr); }
     }));
 
     useEffect(() => {

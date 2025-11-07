@@ -31,7 +31,14 @@ const GenEdit = () => {
       message.success('保存成功')
     })
   };
-
+  const updateField = (field: string, value: any, columnId: string) => {
+    const tableData = tableRef?.current?.getData();
+    if (tableData && tableData.length > 0) {
+      const i = tableData.findIndex(x => x.columnId === columnId);
+      tableData[i][field] = value;
+      tableRef?.current?.updateData(tableData);
+    }
+  }
   const columns = [
     {
       title: '列名称',
@@ -56,11 +63,17 @@ const GenEdit = () => {
     {
       title: '必填',
       dataIndex: 'isRequired',
-      render: (value: any, record: GenTableColumnListDto) => {
-        return <Select value={value} key={record.columnId} options={[
-          { label: '是', value: true },
-          { label: '否', value: false },
-        ]} />
+      render: (value: boolean, record: GenTableColumnListDto) => {
+        return <Select
+          value={value}
+          key={record.columnId}
+          onChange={(val) => {
+            updateField('isRequired', val, record.columnId);
+          }}
+          options={[
+            { label: '是', value: true },
+            { label: '否', value: false },
+          ]} />
       }
     },
     {

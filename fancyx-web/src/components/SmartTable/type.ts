@@ -16,7 +16,8 @@ export interface SmartTableRef {
   reload: () => void;
   getSelectedKeys: () => React.Key[];
   setQueryFormFieldValue: (field: string, value: any) => void;
-  getData: () => []
+  getData: () => Array<any>,
+  updateData: (arr: Array<any>) => void
 }
 
 export interface SmartTableColumnType {
