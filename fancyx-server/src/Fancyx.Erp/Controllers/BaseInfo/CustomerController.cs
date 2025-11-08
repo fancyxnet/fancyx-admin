@@ -24,7 +24,7 @@ namespace Fancyx.Erp.Controllers.BaseInfo
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPost("AddCustomer")]
+        [HttpPost("Add")]
         [HasPermission("Erp.Customer.Add")]
         public async Task<AppResponse<bool>> AddCustomerAsync([FromBody] CustomerDto dto)
         {
@@ -37,7 +37,7 @@ namespace Fancyx.Erp.Controllers.BaseInfo
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpGet("CustomerList")]
+        [HttpGet("List")]
         [HasPermission("Erp.Customer.List")]
         public async Task<AppResponse<PagedResult<CustomerListDto>>> GetCustomerListAsync([FromQuery] CustomerQueryDto dto)
         {
@@ -45,7 +45,7 @@ namespace Fancyx.Erp.Controllers.BaseInfo
             return Result.Data(data);
         }
 
-        [HttpPut("UpdateCustomer")]
+        [HttpPut("Update")]
         [HasPermission("Erp.Customer.Update")]
         public async Task<AppResponse<bool>> UpdateCustomerAsync([FromBody] CustomerDto dto)
         {
@@ -53,7 +53,7 @@ namespace Fancyx.Erp.Controllers.BaseInfo
             return Result.Ok();
         }
 
-        [HttpDelete("DeleteCustomer/{id}")]
+        [HttpDelete("Delete/{id}")]
         [HasPermission("Erp.Customer.Delete")]
         public async Task<AppResponse<bool>> DeleteCustomerAsync(long id)
         {

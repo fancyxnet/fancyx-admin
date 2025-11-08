@@ -1,5 +1,6 @@
 ﻿using Fancyx.Erp.Application.IService.BaseInfo;
 using Fancyx.Erp.Application.IService.BaseInfo.Dtos;
+using Fancyx.Erp.EfCore.Entites;
 using Fancyx.Shared.Models;
 using Fancyx.Shared.WebApi.Attributes;
 using Microsoft.AspNetCore.Authorization;
@@ -35,7 +36,7 @@ namespace Fancyx.Erp.Controllers.BaseInfo
             return Result.Data(data);
         }
 
-        [HttpPost("Update")]
+        [HttpPut("Update")]
         [HasPermission("Erp.Warehouse.Update")]
         public async Task<AppResponse<bool>> UpdateWarehouseAsync([FromBody] StoreHouseDto dto)
         {
@@ -43,12 +44,25 @@ namespace Fancyx.Erp.Controllers.BaseInfo
             return Result.Ok();
         }
 
-        [HttpPost("Delete/{id}")]
+        [HttpDelete("Delete/{id}")]
         [HasPermission("Erp.Warehouse.Delete")]
         public async Task<AppResponse<bool>> DeleteWarehouseAsync(long id)
         {
             await WarehouseService.DeleteWarehouseAsync(id);
             return Result.Ok();
+        }
+
+        /// <summary>
+        /// 查询仓库
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("GetWarehouse/{id}")]
+        [HasPermission("Erp.Warehouse.List")]
+        public async Task<AppResponse<Warehouse>> GetWarehouseAsync(long id)
+        {
+            var data = await WarehouseService.GetWarehouseAsync(id);
+            return Result.Data(data);
         }
     }
 }

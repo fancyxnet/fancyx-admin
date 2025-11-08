@@ -1,15 +1,18 @@
 import Permission from '@/components/Permission';
-import { deleteWarehouse, getWarehouseList, addWarehouse, updateWarehouse, type Warehouse, type WarehouseQueryDto } from '@/api/erp/warehouse.ts';
+import { deleteWarehouse, getWarehouseList, addWarehouse, updateWarehouse, getWarehouse, type Warehouse } from '@/api/erp/warehouse.ts';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Popconfirm, Space } from 'antd';
-import React, { useRef } from 'react';
+import { Button, Form, Input, Modal, Popconfirm, Space } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 import type { SmartTableRef, SmartTableColumnType } from '@/components/SmartTable/type.ts';
 import SmartTable from '@/components/SmartTable';
 import useApp from 'antd/es/app/useApp';
+import TextArea from 'antd/es/input/TextArea';
 
-const ConfigList: React.FC = () => {
+const WarehouseList: React.FC = () => {
   const tableRef = useRef<SmartTableRef>(null);
   const { message } = useApp();
+  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+  const [rowId, setRowId] = useState<string>('');
   const columns: SmartTableColumnType[] = [
     {
       title: '编码',
@@ -40,7 +43,8 @@ const ConfigList: React.FC = () => {
               icon={<EditOutlined />}
               key="edit"
               onClick={() => {
-                
+                setRowId(record.id);
+                setIsOpenModal(true)
               }}
             >
               编辑
@@ -85,12 +89,12 @@ const ConfigList: React.FC = () => {
         ]}
         toolbar={
           <Space size="middle">
-            <Permission permissions={'Sys.Config.Add'}>
+            <Permission permissions={'Erp.Warehouse.Add'}>
               <Button
                 type="primary"
                 key="primary"
                 onClick={() => {
-                  
+                  setIsOpenModal(true);
                 }}
               >
                 <PlusOutlined /> 新增
@@ -100,9 +104,81 @@ const ConfigList: React.FC = () => {
         }
       />
       {/** 新增/编辑弹窗 */}
-      
+      <WarehouseModal id={rowId} show={isOpenModal} onOk={() => {
+        setIsOpenModal(false);
+        tableRef?.current?.reload();
+      }} onCancel={() => setIsOpenModal(false)} />
     </>
   );
 };
 
-export default ConfigList;
+const WarehouseModal: React.FC<{
+  id: string;
+  show: boolean;
+  onOk: () => void;
+  onCancel: () => void;
+}> = ({ id, show, onOk, onCancel }) => {
+  const isEdit = id && id.length > 0;
+  const [form] = Form.useForm();
+  const { message } = useApp();
+
+  useEffect(() => {
+    if (isEdit) {
+      getWarehouse(id).then((res) => {
+        form.setFieldsValue(res.data)
+      })
+    }
+  }, [id])
+
+  const onFinish = (values: Warehouse) => {
+    if (isEdit) {
+      updateWarehouse(values).then(() => {
+        message.success('编辑成功')
+        onOk();
+      })
+    } else {
+      addWarehouse(values).then(() => {
+        message.success('新增成功')
+        onOk();
+      })
+    }
+  };
+
+  return (
+    <Modal
+      title={(isEdit ? '编辑' : '新增') + '仓库'}
+      width="60%"
+      open={show}
+      onCancel={() => {
+        form.resetFields();
+        onCancel();
+      }}
+      onOk={() => {
+        form.submit();
+      }}
+      maskClosable={false}
+    >
+      <Form<Warehouse>
+        name="wrap"
+        labelCol={{ flex: '90px' }}
+        labelWrap
+        form={form}
+        wrapperCol={{ flex: 1 }}
+        colon={false}
+        onFinish={onFinish}
+      >
+        <Form.Item label="编码" name="code" rules={[{ required: true }, { max: 256 }]}>
+          <Input placeholder="请输入编码" />
+        </Form.Item>
+        <Form.Item label="名称" name="name" rules={[{ required: true }, { max: 128 }]}>
+          <Input placeholder="请输入名称" />
+        </Form.Item>
+        <Form.Item label="备注" name="remark" rules={[{ max: 64 }]}>
+          <TextArea placeholder="请输入备注" />
+        </Form.Item>
+      </Form>
+    </Modal>
+  );
+}
+
+export default WarehouseList;

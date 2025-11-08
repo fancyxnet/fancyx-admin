@@ -61,7 +61,7 @@ const MenuForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
       setMenuType(_menuType);
       form.setFieldsValue({
         menuType: _menuType,
-        sort: row?.children ? Math.max(...row.children.map(x => x.sort)) + 1 : 0,
+        sort: row?.children ? Math.max(...row.children.map(x => x.sort)) + 1 : 1,
         display: true,
         parentId: isAddSub ? row?.id : null,
       });

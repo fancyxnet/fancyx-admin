@@ -2,7 +2,7 @@ import httpClient from '@/utils/httpClient.ts';
 import type { AppResponse, PagedResult, PageSearch } from '@/types/api';
 
 /**
- * 新增
+ * 新增仓库
  * @param dto
  */
 export function addWarehouse(dto: Warehouse) {
@@ -10,7 +10,7 @@ export function addWarehouse(dto: Warehouse) {
 }
 
 /**
- * 分页列表
+ * 仓库分页列表
  * @param dto
  */
 export function getWarehouseList(dto: WarehouseQueryDto) {
@@ -18,7 +18,15 @@ export function getWarehouseList(dto: WarehouseQueryDto) {
 }
 
 /**
- * 修改
+ * 仓库查询
+ * @param dto
+ */
+export function getWarehouse(id: string) {
+  return httpClient.get<string, AppResponse<Warehouse>>('/erp-api/Warehouse/GetWarehouse/' + id);
+}
+
+/**
+ * 修改仓库
  * @param dto
  */
 export function updateWarehouse(dto: Warehouse) {
@@ -26,7 +34,7 @@ export function updateWarehouse(dto: Warehouse) {
 }
 
 /**
- * 删除
+ * 删除仓库
  * @param id
  */
 export function deleteWarehouse(id: string) {

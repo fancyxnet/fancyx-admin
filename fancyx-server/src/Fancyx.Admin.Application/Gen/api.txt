@@ -18,6 +18,14 @@ export function get${business_name}List(dto: ${business_name}QueryDto) {
 }
 
 /**
+ * ${function_name}查询
+ * @param dto
+ */
+export function get${business_name}(id: string) {
+  return httpClient.get<string, AppResponse<${class_name}>>('/admin-api/${business_name}/Get${business_name}/' + id);
+}
+
+/**
  * 修改${function_name}
  * @param dto
  */

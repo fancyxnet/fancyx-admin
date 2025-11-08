@@ -74,5 +74,18 @@ namespace ${module_name}.Controllers.${namespace_name}
             await _${business_name_inject}Service.Delete${business_name}Async(id);
             return Result.Ok();
         }
+
+        /// <summary>
+        /// 查询${function_name}
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("Get${business_name}/{id}")]
+        [HasPermission("Sys.${business_name}.List")]
+        public async Task<AppResponse<${class_name}>> Get${business_name}Async(long id) 
+        {
+            var data = await _${business_name_inject}Service.Get${business_name}Async(id);
+            return Result.Data(data);
+        }
     }
 }

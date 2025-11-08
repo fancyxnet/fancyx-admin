@@ -50,5 +50,11 @@ ${listProperties}
 ${updateProperties}
             await _${business_name_inject}Repository.UpdateAsync(entity);
         }
+
+        public async Task<${class_name}> Get${business_name}Async(long id)
+        {
+            var entity = await _${business_name_inject}Repository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
+            return entity;
+        }
     }
 }
