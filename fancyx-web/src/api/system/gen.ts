@@ -95,6 +95,7 @@ export interface GenCodeResultDto {
     iService: AppOption;
     service: AppOption;
     controller: AppOption;
+    queryDto: AppOption;
 }
 export interface GenTableQueryDto extends PageSearch {
     tableName?: string

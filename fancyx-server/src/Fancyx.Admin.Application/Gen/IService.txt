@@ -17,7 +17,7 @@ namespace ${module_name}.$namespace_name
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<PagedResult<${business_name}>> Get${business_name}Async(${class_name} dto);
+        Task<PagedResult<${business_name}>> Get${business_name}Async(${class_name}QueryDto dto);
 
         /// <summary>
         /// 修改${function_name}

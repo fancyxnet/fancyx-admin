@@ -49,10 +49,6 @@ namespace Fancyx.Admin.Application.Service.System
             var iServiceTemplate = this.LoadTemplate("IService", genTable);
             result.IService = new AppOption($"I{genTable.BusinessName}Service.cs", iServiceTemplate.Render());
 
-            // Service
-            var serviceTemplate = this.LoadTemplate("Service", genTable);
-            result.Service = new AppOption($"{genTable.BusinessName}Service.cs", serviceTemplate.Render());
-
             // Controller
             var controllerTemplate = this.LoadTemplate("Controller", genTable);
             result.Controller = new AppOption($"{genTable.BusinessName}Controller.cs", controllerTemplate.Render());
@@ -70,12 +66,76 @@ namespace Fancyx.Admin.Application.Service.System
                 entityTemplate.Set("inherit", $": {inheritClassOrInterfaces}");
             }
             var entityPropStrBuilder = new StringBuilder();
+            var queryPropStrBuilder = new StringBuilder();
+            var listAssignPropStrBuilder = new StringBuilder();
+            var addAssignPropStrBuilder = new StringBuilder();
+            var updateAssignPropStrBuilder = new StringBuilder();
+            var queryConditionPropStrBuilder = new StringBuilder();
             foreach (var item in genTableColumns)
             {
                 if (!exceptFields.Contains(item.ColumnName!)) this.AddProperties(entityPropStrBuilder, item);
+                if (item.IsQuery)
+                {
+                    this.AddProperties(queryPropStrBuilder, item, true, item.QueryType == "BETWEEN");
+                    if(item.CsharpType == "string")
+                    {
+                        queryConditionPropStrBuilder.Append($".WhereIf(!string.IsNullOrEmpty(dto.{item.CsharpField}), x => ");
+                        if(item.QueryType == "LIKE")
+                        {
+                            queryConditionPropStrBuilder.Append($"x.StartWith(dto.{item.CsharpField})");
+                        }
+                    }
+                    else
+                    {
+                        queryConditionPropStrBuilder.Append($".WhereIf({item.CsharpField}.HasValue, x => ");
+                        if(item.QueryType == ">" ||  item.QueryType == ">=" || item.QueryType == "<"
+                            || item.QueryType == "<=")
+                        {
+                            queryConditionPropStrBuilder.Append($"x.{item.CsharpField} {item.QueryType} dto.{item.CsharpField}");
+                        }
+                    }
+                    switch (item.QueryType)
+                    {
+                        case "=":
+                            queryConditionPropStrBuilder.Append($"x.{item.CsharpField} == dto.{item.CsharpField}");
+                            break;
+                        case "!=":
+                            queryConditionPropStrBuilder.Append($"x.{item.CsharpField} != dto.{item.CsharpField}");
+                            break;
+                        case "BETWEEN":
+                            queryConditionPropStrBuilder.Append($"x.{item.CsharpField} between dto.{item.CsharpField}[0] and dto.{item.CsharpField}[1]");
+                            break;
+                    }
+                    queryConditionPropStrBuilder.Append(')');
+                }
+                if (item.IsList)
+                {
+                    listAssignPropStrBuilder.AppendLine($"\t\t\t{item.CsharpField} = x.{item.CsharpField}");
+                }
+                if (item.IsInsert)
+                {
+                    addAssignPropStrBuilder.AppendLine($"\t\tentity.{item.CsharpField} = dto.{item.CsharpField}");
+                }
+                if (item.IsEdit)
+                {
+                    updateAssignPropStrBuilder.AppendLine($"\t    entity.{item.CsharpField} = dto.{item.CsharpField}");
+                }
             }
             entityTemplate.Set("properties", entityPropStrBuilder.ToString());
             result.Entity = new AppOption($"{genTable.ClassName}.cs", entityTemplate.Render());
+
+            // Service
+            var serviceTemplate = this.LoadTemplate("Service", genTable);
+            serviceTemplate.Set("listProperties", listAssignPropStrBuilder.ToString());
+            serviceTemplate.Set("addProperties", addAssignPropStrBuilder.ToString());
+            serviceTemplate.Set("updateProperties", updateAssignPropStrBuilder.ToString());
+            serviceTemplate.Set("queryConditions", queryConditionPropStrBuilder.ToString());
+            result.Service = new AppOption($"{genTable.BusinessName}Service.cs", serviceTemplate.Render());
+
+            // QueryDto
+            var queryDtoTemplate = this.LoadTemplate("QueryDto", genTable);
+            queryDtoTemplate.Set("properties", queryPropStrBuilder.ToString());
+            result.QueryDto = new AppOption($"{genTable.BusinessName}QueryDto.cs", queryDtoTemplate.Render());
 
             return result;
         }
@@ -214,7 +274,7 @@ namespace Fancyx.Admin.Application.Service.System
                     IsPk = isPk,
                     IsRequired = item.IsNullable == "YES",
                     IsInsert = !isDefaultField,
-                    IsEdit = !isDefaultField || isPk,
+                    IsEdit = !isDefaultField,
                     IsList = !isDefaultField || isPk,
                     IsQuery = !isDefaultField && IsDefaultQuery(item.ColumnType, item.ColumnName),
                     HtmlType = "text",
@@ -227,13 +287,13 @@ namespace Fancyx.Admin.Application.Service.System
             await _genTableColumnRepository.InsertManyAsync(genTableColumns);
         }
 
-        private StringBuilder AddProperties(StringBuilder sb, GenTableColumn item, bool? isNullable = null)
+        private StringBuilder AddProperties(StringBuilder sb, GenTableColumn item, bool? isNullable = null, bool isArray = false)
         {
             isNullable ??= item.IsRequired;
             sb.AppendLine("\t/// <summary>");
             sb.AppendLine($"\t/// {item.ColumnComment}");
             sb.AppendLine("\t/// </summary>");
-            sb.AppendLine($"\tpublic {item.CsharpType}{(isNullable.Value ? "?" : "")} {item.CsharpField}" + " { get; set; } \r\n");
+            sb.AppendLine($"\tpublic {item.CsharpType}{(isNullable.Value ? "?" : "")} {item.CsharpField}{(isArray ? "[]": "")}" + " { get; set; } \r\n");
             return sb;
         }
 

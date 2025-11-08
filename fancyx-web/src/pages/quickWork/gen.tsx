@@ -289,6 +289,11 @@ const PerviewModal: React.FC<{
             key: 'controller',
             label: code?.controller?.label,
             children: renderCode(code?.controller?.label, code?.controller?.value),
+        },
+        {
+            key: 'queryDto',
+            label: code?.queryDto?.label,
+            children: renderCode(code?.queryDto?.label, code?.queryDto?.value),
         }
     ];
     const onTabChange = (key: string) => {
