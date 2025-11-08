@@ -63,6 +63,7 @@ namespace Fancyx.Admin.Application
             });
             context.Endpoint.MapGrpcService<TestGrpcServiceHandler>();
             context.Endpoint.MapGrpcService<DictGrpcServiceHandler>();
+            context.Endpoint.MapGrpcService<AuthGrpcServiceHandler>();
         }
     }
 }

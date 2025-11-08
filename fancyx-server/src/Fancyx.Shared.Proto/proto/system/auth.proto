@@ -7,4 +7,5 @@ import "system/auth_model.proto";
 
 service Auth{
 	rpc GetUserPermission (GetUserPermissionReq) returns (GetUserPermissionRes);
+	rpc ExistTenant (ExistTenantReq) returns (ExistTenantRes);
 }

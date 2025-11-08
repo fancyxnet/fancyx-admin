@@ -10,3 +10,11 @@ message GetUserPermissionReq{
 message GetUserPermissionRes{
 	repeated string auths = 1;
 }
+
+message ExistTenantReq{
+	string tenant_id = 1;
+}
+
+message ExistTenantRes{
+	bool is_exist = 1;
+}

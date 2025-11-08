@@ -27,7 +27,7 @@ namespace Fancyx.Erp.Controllers.BaseInfo
             return Result.Ok();
         }
 
-        [HttpPost("List")]
+        [HttpGet("List")]
         [HasPermission("Erp.Warehouse.List")]
         public async Task<AppResponse<PagedResult<StoreHouseListDto>>> GetWarehouseListAsync([FromQuery] StoreHouseQueryDto dto)
         {

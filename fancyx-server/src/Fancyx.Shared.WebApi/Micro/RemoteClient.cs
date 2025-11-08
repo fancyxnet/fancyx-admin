@@ -2,7 +2,7 @@
 
 using Fancyx.Consul.Discover;
 using Fancyx.Shared.Models;
-
+using Fancyx.Shared.WebApi.Filters;
 using Grpc.Core;
 using Grpc.Net.Client.Balancer;
 using Grpc.Net.Client.Configuration;
@@ -54,7 +54,7 @@ namespace Fancyx.Shared.WebApi.Micro
                  options.Credentials = ChannelCredentials.Insecure;
                  options.ServiceConfig = new ServiceConfig { LoadBalancingConfigs = { new RoundRobinConfig() } };
                  options.UnsafeUseInsecureChannelCallCredentials = true;
-             });
+             }).AddInterceptor<GrpcHeaderInterceptor>();
             var options = _configuration.GetRequiredSection("Services").Get<MicroServiceOption>() ?? throw new ArgumentNullException("options", "appsettings.Services配置不存在");
             switch (options.Mode)
             {

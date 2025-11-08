@@ -1,16 +1,19 @@
-﻿using Fancyx.Redis;
+﻿using Fancyx.Internal.Grpc.System;
+using Fancyx.Redis;
 using Fancyx.Shared.Keys;
-using Fancyx.Shared.Models;
 
 namespace Fancyx.Shared.WebApi.Handlers
 {
     public class PermissionCacheHandler
     {
-        private readonly IHybridCache _hybridCache;
+        private readonly IHybridCache Cache;
 
-        public PermissionCacheHandler(IHybridCache hybridCache)
+        public Auth.AuthClient AuthClient { get; }
+
+        public PermissionCacheHandler(IHybridCache hybridCache, Auth.AuthClient authClient)
         {
-            _hybridCache = hybridCache;
+            Cache = hybridCache;
+            AuthClient = authClient;
         }
 
         /// <summary>
@@ -23,7 +26,7 @@ namespace Fancyx.Shared.WebApi.Handlers
         public async Task<bool> CheckTokenAsync(string userId, string sessionId, string token)
         {
             string key = SystemCacheKey.AccessToken(userId, sessionId);
-            var existToken = await _hybridCache.GetAsync<string>(key);
+            var existToken = await Cache.GetAsync<string>(key);
             return existToken == token;
         }
 
@@ -35,16 +38,8 @@ namespace Fancyx.Shared.WebApi.Handlers
         /// <returns></returns>
         public async Task<bool> CheckPermissionAsync(string userId, string code)
         {
-            // TODO: 如果缓存不存在，要读数据库
-            var key = SystemCacheKey.UserPermission(userId);
-            if (await _hybridCache.ExistsAsync(key))
-            {
-                var permission = await _hybridCache.GetAsync<UserPermission>(key);
-                if (permission == null || permission.Auths == null) return false;
-
-                return permission.Auths.Contains(code);
-            }
-            return false;
+            var res = await AuthClient.GetUserPermissionAsync(new GetUserPermissionReq { UserId = long.Parse(userId) });
+            return res.Auths.Contains(code);
         }
     }
 }
