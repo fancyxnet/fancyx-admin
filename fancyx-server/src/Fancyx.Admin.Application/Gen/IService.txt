@@ -1,7 +1,7 @@
 ﻿using ${module_name}.${namespace_name}.Dtos;
 using Fancyx.Core.Interfaces;
 
-namespace ${module_name}.$namespace_name
+namespace ${module_name}.Application.IService.${namespace_name};
 {
     public interface I${business_name}Service : IScopedDependency
     {

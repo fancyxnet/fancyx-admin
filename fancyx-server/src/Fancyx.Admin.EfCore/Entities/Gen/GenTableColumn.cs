@@ -39,6 +39,11 @@ namespace Fancyx.Admin.EfCore.Entities.Gen
         public string? CsharpType { get; set; }
 
         /// <summary>
+        /// TS类型
+        /// </summary>
+        public string? TsType { get; set; }
+
+        /// <summary>
         /// CSharp字段名
         /// </summary>
         public string? CsharpField { get; set; }

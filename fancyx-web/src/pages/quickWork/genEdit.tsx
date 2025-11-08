@@ -69,6 +69,10 @@ const GenEdit = () => {
       title: 'CSharp类型',
       dataIndex: 'csharpType',
     },
+        {
+      title: 'TS类型',
+      dataIndex: 'tsType',
+    },
     {
       title: 'CSharp属性',
       dataIndex: 'csharpField',
@@ -197,7 +201,7 @@ const GenEdit = () => {
       children: (
         <Form<GenTableInfoDto>
           name="wrap"
-          labelCol={{ flex: '90px' }}
+          labelCol={{ flex: '120px' }}
           labelWrap
           form={form}
           wrapperCol={{ flex: 1 }}
@@ -213,14 +217,14 @@ const GenEdit = () => {
           <Form.Item label="类名" name="className" rules={[{ required: true }, { max: 128 }]}>
             <Input placeholder="请输入类名" />
           </Form.Item>
-          <Form.Item label="命名空间" name="namespaceName" rules={[{ required: true }, { max: 128 }]}>
-            <Input placeholder="请输入命名空间" />
-          </Form.Item>
           <Form.Item label="模块名" name="moduleName" rules={[{ required: true }, { max: 128 }]}>
             <Input placeholder="请输入模块名" />
           </Form.Item>
           <Form.Item label="业务名" name="businessName" rules={[{ required: true }, { max: 128 }]}>
             <Input placeholder="请输入业务名" />
+          </Form.Item>
+          <Form.Item label="目录/命名空间" name="namespaceName" rules={[{ required: true }, { max: 128 }]}>
+            <Input placeholder="请输入目录/命名空间" />
           </Form.Item>
           <Form.Item label="备注" name="remark" rules={[{ max: 64 }]}>
             <TextArea placeholder="请输入备注" />

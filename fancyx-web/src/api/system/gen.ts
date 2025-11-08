@@ -96,6 +96,7 @@ export interface GenCodeResultDto {
     service: AppOption;
     controller: AppOption;
     queryDto: AppOption;
+    api: AppOption;
 }
 export interface GenTableQueryDto extends PageSearch {
     tableName?: string
@@ -124,6 +125,7 @@ export interface GenTableColumnListDto {
     columnComment?: string;
     columnType?: string;
     csharpType?: string;
+    tsType?: string;
     csharpField?: string;
     isPk: boolean;
     isIncrement: boolean;

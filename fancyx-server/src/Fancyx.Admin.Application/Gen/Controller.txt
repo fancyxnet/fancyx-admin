@@ -5,10 +5,10 @@ using Fancyx.Shared.Consts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using Fancyx.Admin.Application.IService.System.Dtos;
-using Fancyx.Admin.Application.IService.System;
+using ${module_name}.Application.IService.${namespace_name}.Dtos;
+using ${module_name}.Application.IService.${namespace_name};
 
-namespace ${namespace_name}
+namespace ${module_name}.Controllers.${namespace_name}
 {
     [Authorize]
     [ApiController]

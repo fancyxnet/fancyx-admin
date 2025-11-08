@@ -71,12 +71,16 @@ namespace Fancyx.Admin.Application.Service.System
             var addAssignPropStrBuilder = new StringBuilder();
             var updateAssignPropStrBuilder = new StringBuilder();
             var queryConditionPropStrBuilder = new StringBuilder();
+            var tsFieldStrBuilder = new StringBuilder();
+            var tsFieldQueryStrBuilder = new StringBuilder();
             foreach (var item in genTableColumns)
             {
                 if (!exceptFields.Contains(item.ColumnName!)) this.AddProperties(entityPropStrBuilder, item);
+                this.AddTsProperties(tsFieldStrBuilder, item);
                 if (item.IsQuery)
                 {
                     this.AddProperties(queryPropStrBuilder, item, true, item.QueryType == "BETWEEN");
+                    this.AddTsProperties(tsFieldQueryStrBuilder, item, true, item.QueryType == "BETWEEN");
                     if(item.CsharpType == "string")
                     {
                         queryConditionPropStrBuilder.Append($".WhereIf(!string.IsNullOrEmpty(dto.{item.CsharpField}), x => ");
@@ -121,21 +125,27 @@ namespace Fancyx.Admin.Application.Service.System
                     updateAssignPropStrBuilder.AppendLine($"\t    entity.{item.CsharpField} = dto.{item.CsharpField}");
                 }
             }
-            entityTemplate.Set("properties", entityPropStrBuilder.ToString());
+            entityTemplate.Set("properties", entityPropStrBuilder.ToString().TrimEnd('\r', '\n'));
             result.Entity = new AppOption($"{genTable.ClassName}.cs", entityTemplate.Render());
 
             // Service
             var serviceTemplate = this.LoadTemplate("Service", genTable);
-            serviceTemplate.Set("listProperties", listAssignPropStrBuilder.ToString());
-            serviceTemplate.Set("addProperties", addAssignPropStrBuilder.ToString());
-            serviceTemplate.Set("updateProperties", updateAssignPropStrBuilder.ToString());
-            serviceTemplate.Set("queryConditions", queryConditionPropStrBuilder.ToString());
+            serviceTemplate.Set("listProperties", listAssignPropStrBuilder.ToString().TrimEnd('\r', '\n'));
+            serviceTemplate.Set("addProperties", addAssignPropStrBuilder.ToString().TrimEnd('\r', '\n'));
+            serviceTemplate.Set("updateProperties", updateAssignPropStrBuilder.ToString().TrimEnd('\r', '\n'));
+            serviceTemplate.Set("queryConditions", queryConditionPropStrBuilder.ToString().TrimEnd('\r', '\n'));
             result.Service = new AppOption($"{genTable.BusinessName}Service.cs", serviceTemplate.Render());
 
             // QueryDto
             var queryDtoTemplate = this.LoadTemplate("QueryDto", genTable);
-            queryDtoTemplate.Set("properties", queryPropStrBuilder.ToString());
+            queryDtoTemplate.Set("properties", queryPropStrBuilder.ToString().TrimEnd('\r', '\n'));
             result.QueryDto = new AppOption($"{genTable.BusinessName}QueryDto.cs", queryDtoTemplate.Render());
+
+            // Api
+            var apiTemplate = this.LoadTemplate("api", genTable);
+            apiTemplate.Set("ts_interface_fields", tsFieldStrBuilder.ToString().TrimEnd('\r', '\n'));
+            apiTemplate.Set("ts_interface_query_fields", tsFieldQueryStrBuilder.ToString().TrimEnd('\r', '\n'));
+            result.Api = new AppOption("api.ts", apiTemplate.Render());
 
             return result;
         }
@@ -230,6 +240,7 @@ namespace Fancyx.Admin.Application.Service.System
                 entity.ColumnComment = dto.ColumnComment;
                 entity.ColumnType = dto.ColumnType;
                 entity.CsharpType = dto.CsharpType;
+                entity.TsType = dto.TsType;
                 entity.CsharpField = dto.CsharpField;
                 entity.IsPk = dto.IsPk;
                 entity.IsIncrement = dto.IsIncrement;
@@ -270,6 +281,7 @@ namespace Fancyx.Admin.Application.Service.System
                     ColumnComment = item.ColumnComment,
                     ColumnType = item.ColumnType,
                     CsharpType = this.MapToCSharpType(item.ColumnType),
+                    TsType = this.MapToTsType(item.ColumnType),
                     CsharpField = StringUtils.ToPascalCase(item.ColumnName),
                     IsPk = isPk,
                     IsRequired = item.IsNullable == "YES",
@@ -297,6 +309,16 @@ namespace Fancyx.Admin.Application.Service.System
             return sb;
         }
 
+        private StringBuilder AddTsProperties(StringBuilder sb, GenTableColumn item, bool? isNullable = null, bool isArray = false)
+        {
+            var field = StringUtils.ToFirstLetterLowerCase(item.CsharpField!);
+
+            isNullable ??= item.IsRequired;
+            sb.AppendLine($"  /** {item.ColumnComment} */");
+            sb.AppendLine($"  {field}{(isArray ? "[]" : "")}" + $" {item.TsType}{(isNullable.Value ? " | null" : "")};");
+            return sb;
+        }
+
         private ITemplate LoadTemplate(string templateName, GenTable genTable)
         {
             var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Gen", $"{templateName}.txt");
@@ -309,7 +331,7 @@ namespace Fancyx.Admin.Application.Service.System
             template.Set("module_name", genTable.ModuleName);
             template.Set("business_name", genTable.BusinessName);
             template.Set("function_name", genTable.FunctionName);
-            var businessNameInject = genTable.BusinessName?.Length > 1 ? genTable.BusinessName[..1].ToLowerInvariant() + genTable.BusinessName[1..] : genTable.BusinessName?.ToLowerInvariant();
+            var businessNameInject = StringUtils.ToFirstLetterLowerCase(genTable.BusinessName ?? "");
             template.Set("business_name_inject", businessNameInject);
 
             return template;
@@ -329,9 +351,27 @@ namespace Fancyx.Admin.Application.Service.System
                 "varchar" or "text" or "longtext" or "json" => "string",
                 "int" => "int",
                 "tinyint" => "int",
-                "bit" => "boolean",
+                "bit" => "bool",
                 "datetime" => "DateTime",
                 "decimal" => "decimal",
+                _ => throw new NotSupportedException($"不支持的列类型 => {columnType}"),
+            };
+        }
+
+        private string MapToTsType(string columnType)
+        {
+            // columnType值如：varchar(16)
+            if (columnType.Contains('('))
+            {
+                columnType = columnType[..columnType.IndexOf('(')];
+            }
+
+            return columnType switch
+            {
+                "bigint" or "varchar" or "text" or "longtext" or "json" => "string",
+                "int" or "tinyint" or "decimal" => "number",
+                "bit" => "boolean",
+                "datetime" => "Date",
                 _ => throw new NotSupportedException($"不支持的列类型 => {columnType}"),
             };
         }

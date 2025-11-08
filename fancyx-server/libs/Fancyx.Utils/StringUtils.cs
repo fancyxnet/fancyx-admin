@@ -111,6 +111,12 @@ namespace Fancyx.Utils
             return pascalCase.ToString();
         }
 
+        public static string ToFirstLetterLowerCase(string input)
+        {
+            if(string.IsNullOrEmpty(input)) return input;
+            return input.Length > 1 ? input[..1].ToLowerInvariant() + input[1..] : input.ToLowerInvariant();
+        }
+
         public static string? XssFilte(string? input)
         {
             if (string.IsNullOrEmpty(input)) return input;
