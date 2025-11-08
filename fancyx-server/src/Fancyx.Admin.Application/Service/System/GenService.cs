@@ -47,11 +47,15 @@ namespace Fancyx.Admin.Application.Service.System
 
             // IService
             var iServiceTemplate = this.LoadTemplate("IService", genTable);
-            result.IService = new AppOption($"I{genTable.BusinessName}Service", iServiceTemplate.Render());
+            result.IService = new AppOption($"I{genTable.BusinessName}Service.cs", iServiceTemplate.Render());
+
+            // Service
+            var serviceTemplate = this.LoadTemplate("Service", genTable);
+            result.Service = new AppOption($"{genTable.BusinessName}Service.cs", serviceTemplate.Render());
 
             // Controller
             var controllerTemplate = this.LoadTemplate("Controller", genTable);
-            result.Controller = new AppOption($"{genTable.BusinessName}Controller", controllerTemplate.Render());
+            result.Controller = new AppOption($"{genTable.BusinessName}Controller.cs", controllerTemplate.Render());
 
             // Entity
             var entityTemplate = this.LoadTemplate("Entity", genTable);
@@ -66,55 +70,12 @@ namespace Fancyx.Admin.Application.Service.System
                 entityTemplate.Set("inherit", $": {inheritClassOrInterfaces}");
             }
             var entityPropStrBuilder = new StringBuilder();
-            var businessAddDtoPropStrBuilder = new StringBuilder();
-            var businessUpdateDtoPropStrBuilder = new StringBuilder();
-            var businessListDtoPropStrBuilder = new StringBuilder();
-            var businessQueryDtoPropStrBuilder = new StringBuilder();
             foreach (var item in genTableColumns)
             {
                 if (!exceptFields.Contains(item.ColumnName!)) this.AddProperties(entityPropStrBuilder, item);
-                if (item.IsInsert) this.AddProperties(businessAddDtoPropStrBuilder, item);
-                if (item.IsEdit) this.AddProperties(businessUpdateDtoPropStrBuilder, item);
-                if (item.IsList) this.AddProperties(businessListDtoPropStrBuilder, item);
-                if (item.IsQuery) this.AddProperties(businessQueryDtoPropStrBuilder, item);
             }
             entityTemplate.Set("properties", entityPropStrBuilder.ToString());
-            result.Entity = new AppOption(genTable.ClassName!, entityTemplate.Render());
-
-            // AddDto
-            var businessAddDtoTemplate = this.LoadTemplate("Dto", genTable);
-            var addDtoName = $"{genTable.BusinessName}AddDto";
-            businessAddDtoTemplate.Set("properties", businessAddDtoPropStrBuilder);
-            businessAddDtoTemplate.Set("dto_name", addDtoName);
-            result.BusinessAddDto = new AppOption(addDtoName, businessAddDtoTemplate.Render());
-
-            // UpdateDto
-            var businessUpdateDtoTemplate = this.LoadTemplate("Dto", genTable);
-            var updateDtoName = $"{genTable.BusinessName}UpdateDto";
-            businessUpdateDtoTemplate.Set("properties", businessUpdateDtoPropStrBuilder);
-            businessUpdateDtoTemplate.Set("dto_name", updateDtoName);
-            result.BusinessUpdateDto = new AppOption(updateDtoName, businessUpdateDtoTemplate.Render());
-
-            // ListDto
-            var businessListDtoTemplate = this.LoadTemplate("Dto", genTable);
-            var listDtoName = $"{genTable.BusinessName}ListDto";
-            businessListDtoTemplate.Set("properties", businessListDtoPropStrBuilder);
-            businessListDtoTemplate.Set("dto_name", listDtoName);
-            result.BusinessListDto = new AppOption(listDtoName, businessListDtoTemplate.Render());
-
-            // Dto
-            var businessDtoTemplate = this.LoadTemplate("Dto", genTable);
-            var dtoName = $"{genTable.BusinessName}Dto";
-            businessDtoTemplate.Set("properties", businessListDtoPropStrBuilder);
-            businessDtoTemplate.Set("dto_name", dtoName);
-            result.BusinessDto = new AppOption(dtoName, businessDtoTemplate.Render());
-
-            // QueryDto
-            var businessQueryDtoTemplate = this.LoadTemplate("Dto", genTable);
-            var queryDtoName = $"{genTable.BusinessName}QueryDto";
-            businessQueryDtoTemplate.Set("properties", businessQueryDtoPropStrBuilder);
-            businessQueryDtoTemplate.Set("dto_name", queryDtoName);
-            result.BusinessQueryDto = new AppOption(queryDtoName, businessQueryDtoTemplate.Render());
+            result.Entity = new AppOption($"{genTable.ClassName}.cs", entityTemplate.Render());
 
             return result;
         }

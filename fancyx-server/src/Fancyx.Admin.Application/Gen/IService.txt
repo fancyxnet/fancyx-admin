@@ -10,21 +10,21 @@ namespace ${module_name}.$namespace_name
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<bool> Add${business_name}Async(${business_name}UpdateDto dto);
+        Task<bool> Add${business_name}Async(${class_name} dto);
 
         /// <summary>
         /// ${function_name}分页列表
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<PagedResult<${business_name}ListDto>> Get${business_name}ListAsync(${business_name}QueryDto dto);
+        Task<PagedResult<${business_name}>> Get${business_name}Async(${class_name} dto);
 
         /// <summary>
         /// 修改${function_name}
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<bool> Update${business_name}Async(${business_name}AddDto dto);
+        Task<bool> Update${business_name}Async(${class_name} dto);
 
         /// <summary>
         /// 删除${function_name}
@@ -38,6 +38,6 @@ namespace ${module_name}.$namespace_name
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<${business_name}Dto> Get${business_name}Async(long id);
+        Task<${class_name}> Get${business_name}Async(long id);
     }
 }
