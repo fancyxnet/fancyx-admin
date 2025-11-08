@@ -17,7 +17,6 @@ namespace Fancyx.Erp.Application
     {
         public override void Configure(ApplicationInitializationContext context)
         {
-            throw new NotImplementedException();
         }
 
         public override void ConfigureServices(ServiceConfigurationContext context)

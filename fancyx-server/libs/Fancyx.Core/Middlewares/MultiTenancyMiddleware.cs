@@ -25,7 +25,7 @@ namespace Fancyx.Core.Middlewares
                 var tenantId = tenant.ToString();
                 if (!string.IsNullOrWhiteSpace(tenantId))
                 {
-                    var checker = (ITenantChecker?)context.RequestServices.GetRequiredService<ITenantChecker>();
+                    var checker = context.RequestServices.GetService<ITenantChecker>();
                     if (checker != null)
                     {
                         if (!await checker.ExistTenantAsync(tenantId))

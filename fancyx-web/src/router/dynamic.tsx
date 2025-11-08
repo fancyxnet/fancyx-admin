@@ -10,6 +10,7 @@ const PageKeys = Object.keys(import.meta.glob(['@/pages/**/index.tsx', '@/pages/
 const PagesList = import.meta.glob(['@/pages/**/index.tsx', '@/pages/**/*.tsx']);
 
 const createElementFromPath = (routePath: string, keepAlive: boolean, componentPath: string) => {
+  // TOOD: 检查路由层级，防止白屏
   if (!PageKeys.includes(componentPath)) return undefined;
 
   const LazyComponent = lazy(() => PagesList[componentPath]() as Promise<{ default: React.ComponentType<any> }>);

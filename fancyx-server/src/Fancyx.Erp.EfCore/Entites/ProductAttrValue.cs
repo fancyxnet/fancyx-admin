@@ -19,7 +19,7 @@ namespace Fancyx.Erp.EfCore.Entites
         /// <summary>
         /// 值
         /// </summary>
-        [Column("code")]
+        [Column("value")]
         public string Value { get; set; } = null!;
 
         /// <summary>

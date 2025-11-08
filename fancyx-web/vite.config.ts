@@ -33,6 +33,18 @@ export default defineConfig(({ mode }) => {
             });
           },
         },
+        '/erp-api': {
+          target: env.VITE_API_BASE_URL,
+          changeOrigin: true,
+          configure: (proxy) => {
+            proxy.on('proxyReq', (proxyReq) => {
+              // 开发环境固定租户ID
+              if (env.VITE_TENANT_ID) {
+                proxyReq.setHeader('X-Tenant', env.VITE_TENANT_ID || 'platform');
+              }
+            });
+          },
+        },
       },
     },
   };

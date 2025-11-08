@@ -315,7 +315,7 @@ namespace Fancyx.Admin.Application.Service.System
 
             isNullable ??= item.IsRequired;
             sb.AppendLine($"  /** {item.ColumnComment} */");
-            sb.AppendLine($"  {field}{(isArray ? "[]" : "")}" + $" {item.TsType}{(isNullable.Value ? " | null" : "")};");
+            sb.AppendLine($"  {field}{(isArray ? "[]" : "")}:" + $" {item.TsType}{(isNullable.Value ? " | null" : "")};");
             return sb;
         }
 
@@ -424,7 +424,6 @@ namespace Fancyx.Admin.Application.Service.System
             if (hasDeletionFlagFields && !hasDeletionFields)
             {
                 arr.Add(nameof(IHasDeletionFlagProperty));
-                AddExceptFields(deletionFlagFields);
             }
             if (!idIsPrimaryKey && hasCreationFields)
             {
@@ -434,17 +433,14 @@ namespace Fancyx.Admin.Application.Service.System
             if (!idIsPrimaryKey && hasModificationFields)
             {
                 arr.Add($"IHasModificationProperty<{primaryKeyCsType}>");
-                AddExceptFields(modificationFields);
             }
             if (hasTenantFields)
             {
                 arr.Add(nameof(ITenant));
-                AddExceptFields(tenantFields);
             }
             if (hasTreeFields)
             {
                 arr.Add($"IHasTreeProperty<{primaryKeyCsType}>");
-                AddExceptFields(treeFields);
             }
 
             void AddExceptFields(params string[][] fields)

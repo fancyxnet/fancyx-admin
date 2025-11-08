@@ -6,7 +6,7 @@ import type { AppResponse, PagedResult, PageSearch } from '@/types/api';
  * @param dto
  */
 export function add${business_name}(dto: ${class_name}) {
-  return httpClient.post<${business_name}Dto, AppResponse<boolean>>('/admin-api/${business_name}/Add', dto);
+  return httpClient.post<${business_name}, AppResponse<boolean>>('/admin-api/${business_name}/Add', dto);
 }
 
 /**
@@ -22,7 +22,7 @@ export function get${business_name}List(dto: ${business_name}QueryDto) {
  * @param dto
  */
 export function update${business_name}(dto: ${class_name}) {
-  return httpClient.put<${business_name}Dto, AppResponse<boolean>>('/admin-api/${business_name}/Update', dto);
+  return httpClient.put<${business_name}, AppResponse<boolean>>('/admin-api/${business_name}/Update', dto);
 }
 
 /**

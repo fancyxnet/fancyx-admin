@@ -69,7 +69,7 @@ const GenEdit = () => {
       title: 'CSharp类型',
       dataIndex: 'csharpType',
     },
-        {
+    {
       title: 'TS类型',
       dataIndex: 'tsType',
     },
@@ -222,6 +222,9 @@ const GenEdit = () => {
           </Form.Item>
           <Form.Item label="业务名" name="businessName" rules={[{ required: true }, { max: 128 }]}>
             <Input placeholder="请输入业务名" />
+          </Form.Item>
+          <Form.Item label="功能名" name="functionName" rules={[{ required: true }, { max: 128 }]}>
+            <Input placeholder="请输入功能名" />
           </Form.Item>
           <Form.Item label="目录/命名空间" name="namespaceName" rules={[{ required: true }, { max: 128 }]}>
             <Input placeholder="请输入目录/命名空间" />

@@ -3,6 +3,7 @@ using Fancyx.Core.Context;
 using Fancyx.Erp.Application;
 using Fancyx.Erp.Application.Remote;
 using Fancyx.Internal.Grpc;
+using Fancyx.Internal.Grpc.System;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.WebApi;
 using Fancyx.Shared.WebApi.JsonConverters;
@@ -77,7 +78,8 @@ namespace Fancyx.Erp
             context.Services.AddRemoteClient(context.Configuration, client =>
             {
                 client.AddHttp<ITestApi>(MicroServiceConsts.AdminApi)
-                      .AddGrpc<Test.TestClient>(MicroServiceConsts.AdminApi);
+                      .AddGrpc<Test.TestClient>(MicroServiceConsts.AdminApi)
+                      .AddGrpc<Dict.DictClient>(MicroServiceConsts.AdminApi);
             });
         }
 

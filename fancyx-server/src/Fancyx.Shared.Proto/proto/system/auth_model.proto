@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package fancyx.internal.grpc.system;
+option csharp_namespace = "Fancyx.Internal.Grpc.System";
+
+message GetUserPermissionReq{
+	int64 user_id = 1;
+}
+
+message GetUserPermissionRes{
+	repeated string auths = 1;
+}
