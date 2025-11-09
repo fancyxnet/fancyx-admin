@@ -1,12 +1,15 @@
-﻿using Fancyx.Shared.WebApi.Attributes;
-using Fancyx.Shared.Logger;
+﻿using DotNetCore.CAP;
+
+using Fancyx.Admin.Application.IService.System;
+using Fancyx.Admin.Application.IService.System.Dtos;
 using Fancyx.Shared.Consts;
+using Fancyx.Shared.Logger;
+using Fancyx.Shared.WebApi.Attributes;
+using Fancyx.Utils;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using Fancyx.Admin.Application.IService.System.Dtos;
-using Fancyx.Admin.Application.IService.System;
 
 namespace Fancyx.Admin.Controllers.System
 {
@@ -17,11 +20,13 @@ namespace Fancyx.Admin.Controllers.System
     {
         private readonly ITenantService _tenantService;
         private readonly IMenuService _menuService;
+        private readonly ICapPublisher _capPublisher;
 
-        public TenantController(ITenantService tenantService, IMenuService menuService)
+        public TenantController(ITenantService tenantService, IMenuService menuService, ICapPublisher capPublisher)
         {
             _tenantService = tenantService;
             _menuService = menuService;
+            _capPublisher = capPublisher;
         }
 
         [HttpPost("Add")]
@@ -101,6 +106,14 @@ namespace Fancyx.Admin.Controllers.System
         {
             var (keys, tree) = await _menuService.GetMenuOptionsAsync(onlyMenu, keyword, true);
             return Result.Data(new Dictionary<string, object> { ["keys"] = keys, ["tree"] = tree });
+        }
+
+        [HttpPost("CreateTenantAccount")]
+        [HasPermission("Sys.Tenant.CreateTenantAccount")]
+        public async Task<AppResponse<TenantAccountInfoDto>> CreateTenantAccount([FromBody] CreateTenantAccountDto dto)
+        {
+            var data = await _tenantService.CreateTenantAccountAsync(dto);
+            return Result.Data(data);
         }
     }
 }

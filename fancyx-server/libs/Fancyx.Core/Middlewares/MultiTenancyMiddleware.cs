@@ -43,6 +43,7 @@ namespace Fancyx.Core.Middlewares
                     await next(context);
                     return;
                 }
+                // TODO: Ocelot网关过来的域名都是localhost
                 if (!IsGrpcRequest(context))
                 {
                     var domain = context.Request.Host.Host;

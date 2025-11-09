@@ -1,8 +1,15 @@
 ﻿import Permission from '@/components/Permission';
-import { deleteTenant, getTenantList, type TenantDto, type TenantListDto } from '@/api/system/tenant.ts';
-import { DeleteOutlined, EditOutlined, HddOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Popconfirm, Space } from 'antd';
-import React, { useRef } from 'react';
+import {
+  deleteTenant,
+  getTenantList,
+  createTenantAccount,
+  type TenantDto,
+  type TenantListDto,
+  type TenantAccountInfoDto,
+} from '@/api/system/tenant.ts';
+import { DeleteOutlined, EditOutlined, HddOutlined, PlusOutlined, UserAddOutlined } from '@ant-design/icons';
+import { Button, Form, Input, Modal, Popconfirm, Space } from 'antd';
+import React, { useRef, useState } from 'react';
 import type { SmartTableRef, SmartTableColumnType } from '@/components/SmartTable/type.ts';
 import SmartTable from '@/components/SmartTable';
 import TenantForm, { type ModalRef } from '@/pages/system/components/TenantForm.tsx';
@@ -13,6 +20,8 @@ const TenantList: React.FC = () => {
   const tableRef = useRef<SmartTableRef>(null);
   const modalRef = useRef<ModalRef>(null);
   const { message } = useApp();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [account, setAccount] = useState<TenantAccountInfoDto>();
   const columns: SmartTableColumnType[] = [
     {
       title: '租户名称',
@@ -103,6 +112,8 @@ const TenantList: React.FC = () => {
         columns={columns}
         ref={tableRef}
         rowKey="tenantId"
+        selection={true}
+        selectionType="radio"
         request={async (params) => {
           const { data } = await getTenantList(params);
           return data;
@@ -125,6 +136,26 @@ const TenantList: React.FC = () => {
                 <PlusOutlined /> 新增
               </Button>
             </Permission>
+            <Permission permissions={'Sys.Tenant.CreateTenantAccount'}>
+              <Button
+                key="createTenantAccount"
+                variant="outlined"
+                onClick={() => {
+                  const keys = tableRef?.current?.getSelectedKeys() as string[] | undefined;
+                  if (!keys || keys?.length === 0) {
+                    message.warning('请先选择租户');
+                    return;
+                  }
+                  createTenantAccount({ tenantId: keys[0] }).then((res) => {
+                    message.success('初始管理员账号创建成功');
+                    setAccount(res.data);
+                    setIsModalOpen(true);
+                  });
+                }}
+              >
+                <UserAddOutlined /> 初始管理员账号
+              </Button>
+            </Permission>
           </Space>
         }
       />
@@ -132,6 +163,19 @@ const TenantList: React.FC = () => {
       <TenantForm ref={modalRef} refresh={() => tableRef?.current?.reload()} />
       {/* 分配功能权限 */}
       <AssignTenantForm ref={assignTenantFormRef} />
+      <Modal
+        title="租户管理员账号"
+        open={isModalOpen}
+        footer={null}
+        onCancel={() => {
+          setIsModalOpen(false);
+        }}
+      >
+        <p>密码只展示一次，请截图保存。</p>
+        <p className='mt-1'>角色：{account?.roleName}</p>
+        <p>账号：{account?.userName}</p>
+        <p>密码：{account?.password}</p>
+      </Modal>
     </>
   );
 };

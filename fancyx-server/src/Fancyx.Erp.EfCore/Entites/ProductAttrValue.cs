@@ -8,7 +8,7 @@ namespace Fancyx.Erp.EfCore.Entites
     /// 产品属性可选值
     /// </summary>
     [Table("product_attr_value")]
-    public class ProductAttrValue : FullAuditedEntity<long>, ITenant
+    public class ProductAttrValue : AuditedEntity<long>, ITenant
     {
         /// <summary>
         /// 编码

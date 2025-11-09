@@ -92,6 +92,7 @@ namespace Fancyx.Admin.Application.Service.System
             if (hasUsers) throw new BusinessException(message: "角色已分配给用户，不能删除");
 
             await _roleRepository.DeleteAsync(x => x.Id == id);
+            await _roleMenuRepository.DeleteAsync(x => x.RoleId == id);
             await _identitySharedService.DelUserPermissionCacheByRoleIdAsync(id);
             return true;
         }

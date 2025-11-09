@@ -16,5 +16,7 @@ namespace Fancyx.Admin.Application.IService.System
         Task AssignTenantMenuAsync(AssignTenantMenuDto dto);
 
         Task<List<long>> GetTenantMenuIdsAsync(string id);
+
+        Task<TenantAccountInfoDto> CreateTenantAccountAsync(CreateTenantAccountDto dto);
     }
 }

@@ -339,7 +339,7 @@ namespace Fancyx.Admin.Application.Service.Account
                 throw new BusinessException("手机号不存在");
             }
 
-            var code = StringUtils.RandomStr(6, true);
+            var code = StringUtils.RandomCode(6);
             await _hybridCache.SetAsync(SystemCacheKey.LoginSmsCode(phone), code, TimeSpan.FromMinutes(5));
             return code;
         }

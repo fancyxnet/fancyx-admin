@@ -11,7 +11,7 @@ namespace Fancyx.Admin.EfCore.Entities.System
     /// 角色表
     /// </summary>
     [Table("role")]
-    public class Role : FullAuditedEntity<long>, ITenant
+    public class Role : AuditedEntity<long>, ITenant
     {
         /// <summary>
         /// 角色名

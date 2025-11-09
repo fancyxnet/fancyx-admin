@@ -5,6 +5,11 @@ namespace Fancyx.Utils
 {
     public static partial class StringUtils
     {
+        // 默认字符集
+        private const string DefaultLetters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        private const string DefaultNumbers = "0123456789";
+        private const string DefaultSpecialChars = "!@#$%^&*()_+-=[]{}|;:,.<>?";
+
         /// <summary>
         /// 检查URL是否合法
         /// </summary>
@@ -53,25 +58,64 @@ namespace Fancyx.Utils
         }
 
         /// <summary>
-        /// 随机字符串
+        /// 随机验证码
         /// </summary>
         /// <param name="len">字符长度</param>
-        /// <param name="isNumber">是否纯数字</param>
-        /// <param name="isWord">是否纯字母</param>
-        /// <param name="hasChar">是否含特殊符号</param>
         /// <returns></returns>
-        public static string RandomStr(int len, bool isNumber = false, bool isWord = false, bool hasChar = false)
+        public static string RandomCode(int len)
         {
             var sb = new StringBuilder();
-            if (isNumber)
+            Random r = new Random();
+            for (int i = 0; i < len; i++)
             {
-                Random r = new Random();
-                for (int i = 0; i < len; i++)
-                {
-                    sb.Append(r.Next(0, 10));
-                }
+                sb.Append(r.Next(0, 10));
             }
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// 生成随机字符串
+        /// </summary>
+        /// <param name="length">字符串长度</param>
+        /// <param name="includeNumbers">是否包含数字</param>
+        /// <param name="includeSpecialChars">是否包含特殊字符</param>
+        /// <param name="customSpecialChars">自定义特殊字符集</param>
+        /// <returns>随机字符串</returns>
+        public static string Generate(
+            int length = 8,
+            bool includeNumbers = false,
+            bool includeSpecialChars = false,
+            string? customSpecialChars = null)
+        {
+            if (length <= 0)
+                throw new ArgumentException("长度必须大于0", nameof(length));
+
+            var charPool = new StringBuilder(DefaultLetters);
+
+            // 添加数字
+            if (includeNumbers)
+            {
+                charPool.Append(DefaultNumbers);
+            }
+
+            // 添加特殊字符
+            if (includeSpecialChars)
+            {
+                var specialChars = string.IsNullOrEmpty(customSpecialChars)
+                    ? DefaultSpecialChars
+                    : customSpecialChars;
+                charPool.Append(specialChars);
+            }
+
+            var random = new Random();
+            var result = new char[length];
+
+            for (int i = 0; i < length; i++)
+            {
+                result[i] = charPool[random.Next(charPool.Length)];
+            }
+
+            return new string(result);
         }
 
         /// <summary>

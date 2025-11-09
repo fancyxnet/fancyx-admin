@@ -53,6 +53,15 @@ export function getTenantMenuIds(id: string) {
 }
 
 /**
+ * 初始管理员账号
+ * @param dto
+ * @returns
+ */
+export function createTenantAccount(dto: CreateTenantAccountDto) {
+  return httpClient.post<CreateTenantAccountDto, AppResponse<TenantAccountInfoDto>>('/admin-api/Tenant/CreateTenantAccount', dto);
+}
+
+/**
  * 获取菜单组成的选项树（全部，不含租户菜单过滤）
  * @param onlyMenu
  * @param keyword
@@ -64,6 +73,16 @@ export function getMenuOptions(onlyMenu: boolean, keyword?: string) {
       keyword: keyword,
     },
   });
+}
+
+export interface TenantAccountInfoDto {
+  roleName: string;
+  userName: string;
+  password: string;
+}
+
+export interface CreateTenantAccountDto {
+  tenantId: string;
 }
 
 export interface AssignTenantMenuDto {

@@ -52,7 +52,7 @@ namespace Fancyx.Admin.Application.Service.Organization
 
             var hasEmployees = await _userRepository.AnyAsync(x => x.DeptId == id);
             if (hasEmployees) throw new BusinessException(message: "部门下存在用户，不能删除");
-            await _deptRepository.Where(x => id == x.Id).SoftDeleteAsync(_currentUser.Id);
+            await _deptRepository.DeleteAsync(x => id == x.Id);
             return true;
         }
 

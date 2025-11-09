@@ -10,7 +10,7 @@ namespace Fancyx.Admin.EfCore.Entities.Organization
     /// 职位表
     /// </summary>
     [Table("position")]
-    public class Position : FullAuditedEntity<long>, ITenant
+    public class Position : AuditedEntity<long>, ITenant
     {
         /// <summary>
         /// 职位编号

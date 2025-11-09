@@ -8,7 +8,7 @@ namespace Fancyx.Erp.EfCore.Entites
     /// 供应商
     /// </summary>
     [Table("supplier")]
-    public class Supplier : FullAuditedEntity<long>, ITenant
+    public class Supplier : AuditedEntity<long>, ITenant
     {
         /// <summary>
         /// 编码

@@ -188,17 +188,16 @@
   //是否允许一个用户多处同时登录
   "AccountManyLogin": true,
   "ConnectionStrings": {
-    "DbType": "PostgreSql", //指定连接驱动，并且根据驱动读取连接字符串
-    "PostgreSql": "Host=localhost;Port=5432;Database=fancyx-admin;User ID=postgres;Password=123456",
-    "MySql": "server=127.0.0.1;uid=root;pwd=123456;database=fancyx-admin"
+    "Default": "server=127.0.0.1;uid=root;pwd=123456;database=fancyx-admin"
   },
   "Redis": {
     //Redis连接字符串
     "Connection": "127.0.0.1:6379,password=123456"
   },
   "Cap": {
-    "TableSchema": "cap", //CAP表前缀或模式
-    "RedisConnection": "127.0.0.1:6379,password=123456,defaultDatabase=1" //基于redis传输的CAP
+    "TableSchema": "cap",
+    "RedisConnection": "127.0.0.1:6379,password=123456,defaultDatabase=1",
+    "DbConnection": "server=127.0.0.1;uid=root;pwd=123456;database=fancyx-admin"
   },
   "Jwt": {
     //JWT误差时间（秒）
@@ -221,6 +220,12 @@
       "Bucket": "",
       "Timeout": 60000,
       "Domain": ""
+    },
+    "S3": {
+      "AccessKey": "minioadmin",
+      "SecretKey": "minioadmin",
+      "Region": "admin",
+      "ServiceURL": "http://localhost:9090"
     }
   },
   "Snowflake": {
@@ -239,6 +244,20 @@
   }
 }
 ```
+
+### 多租户
+
+1. 每个租户可以配置菜单；
+
+2. 租户配置菜单后，租户下的角色才会有对应的菜单；
+
+3. 目前项目中的做法是：平台租户`platform`用来管理所有租户，如果您需要对租户开新账户，需要先添加租户，分配租户能访问的菜单，再通过租户页面初始化管理员账号按钮进行初始化（初始化可以多次，每次账号不同，都有已分配的租户菜单所有权限）。
+
+### 权限使用
+
+1. 按钮权限对应的是接口权限，即时生效（如取消某权限，按钮存在，但提交后接口会报无权限），前端的按钮显示隐藏需要重新登录；
+
+2. 目录和菜单对应的是路由和侧边栏，需要重新登录才生效。
 
 ### 项目启动
 

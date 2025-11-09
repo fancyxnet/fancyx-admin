@@ -7,7 +7,7 @@ namespace Fancyx.Erp.EfCore.Entites
     /// <summary>
     /// 仓库
     /// </summary>
-    public class Warehouse : FullAuditedEntity<long>, ITenant
+    public class Warehouse : AuditedEntity<long>, ITenant
     {
         /// <summary>
         /// 编码

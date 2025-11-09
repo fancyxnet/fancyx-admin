@@ -30,7 +30,7 @@ namespace Fancyx.Admin.Application.IService.System.Dtos
         /// <summary>
         /// 租户域名
         /// </summary>
-        [Required]
+        [Required, NotNull]
         [MaxLength(256)]
         public string? Domain { get; set; }
 

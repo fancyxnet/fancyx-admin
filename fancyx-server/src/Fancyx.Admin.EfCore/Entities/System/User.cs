@@ -13,7 +13,7 @@ namespace Fancyx.Admin.EfCore.Entities.System
     /// 用户表
     /// </summary>
     [Table("user")]
-    public class User : FullAuditedEntity<long>, ITenant
+    public class User : AuditedEntity<long>, ITenant
     {
         [Key]
         [NotNull]

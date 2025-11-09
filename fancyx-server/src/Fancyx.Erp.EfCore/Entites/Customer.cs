@@ -10,7 +10,7 @@ namespace Fancyx.Erp.EfCore.Entites
     /// 客户信息
     /// </summary>
     [Table("customer")]
-    public class Customer : FullAuditedEntity<long>, ITenant
+    public class Customer : AuditedEntity<long>, ITenant
     {
         /// <summary>
         /// 编号
