@@ -7,6 +7,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Content Include="Gen\*">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\..\libs\Fancyx.EventBus\Fancyx.EventBus.csproj" />
 		<ProjectReference Include="..\..\libs\Fancyx.Core\Fancyx.Core.csproj" />
 		<ProjectReference Include="..\..\libs\Fancyx.Redis\Fancyx.Redis.csproj" />
@@ -17,11 +23,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="FluentValidation" Version="12.0.0" />
 		<PackageReference Include="MQTTnet" Version="5.0.1.1416" />
 		<PackageReference Include="MQTTnet.Server" Version="5.0.1.1416" />
 		<PackageReference Include="MQTTnet.AspNetCore" Version="5.0.1.1416" />
 		<PackageReference Include="MiniExcel" Version="1.41.3" />
 		<PackageReference Include="IP2Region.Net" Version="2.0.2" />
 		<PackageReference Include="Coravel" Version="6.0.2" />
+		<PackageReference Include="JinianNet.JNTemplate" Version="2.4.3" />
 	</ItemGroup>
 </Project>

@@ -1,0 +1,43 @@
+﻿using ${module_name}.${namespace_name}.Dtos;
+using Fancyx.Core.Interfaces;
+
+namespace ${module_name}.Application.IService.${namespace_name};
+{
+    public interface I${business_name}Service : IScopedDependency
+    {
+        /// <summary>
+        /// 新增${function_name}
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        Task<bool> Add${business_name}Async(${class_name} dto);
+
+        /// <summary>
+        /// ${function_name}分页列表
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        Task<PagedResult<${business_name}>> Get${business_name}Async(${class_name}QueryDto dto);
+
+        /// <summary>
+        /// 修改${function_name}
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        Task<bool> Update${business_name}Async(${class_name} dto);
+
+        /// <summary>
+        /// 删除${function_name}
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<bool> Delete${business_name}Async(long id);
+
+        /// <summary>
+        /// 查询${function_name}
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<${class_name}> Get${business_name}Async(long id);
+    }
+}

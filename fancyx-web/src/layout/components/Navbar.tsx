@@ -46,9 +46,12 @@ const Navbar = observer(() => {
 
   const onClick = async ({ key }: { key: string }) => {
     if (key === 'logout') {
-      await signOut();
-      clearToken();
-      navigate(StaticRoutes.Login);
+      try {
+        await signOut();
+      } finally {
+        clearToken();
+        navigate(StaticRoutes.Login);
+      }
     } else if (key === 'profile') {
       navigate('/profile');
       dispatch(open({ path: '/profile' }));

@@ -1,4 +1,4 @@
-import { Form, Input, Modal } from 'antd';
+import { Form, Input, Modal, Switch } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import type { AppResponse } from '@/types/api';
 import { addTenant, type TenantDto, updateTenant } from '@/api/system/tenant.ts';
@@ -47,7 +47,7 @@ const TenantForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
     apiAction: (params: TenantDto) => Promise<AppResponse<boolean>>,
     successMsg: string,
   ) => {
-    apiAction({ ...values, id: row?.id }).then(() => {
+    apiAction({ ...values, tenantId: values.tenantId || row?.tenantId }).then(() => {
       message.success(successMsg);
       setIsOpenModal(false);
       form.resetFields();
@@ -55,14 +55,14 @@ const TenantForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
     });
   };
   const onFinish = (values: TenantDto) => {
-    const isEdit = !!row?.id;
+    const isEdit = row?.tenantId;
 
     execute(values, isEdit ? updateTenant : addTenant, isEdit ? '编辑成功' : '新增成功');
   };
 
   return (
     <Modal
-      title={row?.id ? '编辑租户' : '新增租户'}
+      title={row?.tenantId ? '编辑租户' : '新增租户'}
       open={isOpenModal}
       onCancel={onCancel}
       onOk={onOk}
@@ -77,14 +77,17 @@ const TenantForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
         colon={false}
         onFinish={onFinish}
       >
+        <Form.Item label="租户标识" name="tenantId" rules={[{ required: true }, { max: 18 }]}>
+          <Input placeholder="请输入租户标识" disabled={row?.tenantId ? true : false} />
+        </Form.Item>
         <Form.Item label="租户名称" name="name" rules={[{ required: true }, { max: 64 }]}>
           <Input placeholder="请输入租户名称" />
         </Form.Item>
-        <Form.Item label="租户标识" name="tenantId" rules={[{ required: true }, { max: 18 }]}>
-          <Input placeholder="请输入租户标识" />
-        </Form.Item>
-        <Form.Item label="绑定域名" name="domain" rules={[{ max: 256 }]}>
+        <Form.Item label="绑定域名" name="domain" rules={[{ required: true }, { max: 256 }]}>
           <Input placeholder="请输入绑定域名" />
+        </Form.Item>
+        <Form.Item label="启用状态" name="isEnabled" rules={[{ required: true, message: '请选择租户状态' }]}>
+          <Switch />
         </Form.Item>
         <Form.Item label="备注" name="remark" rules={[{ max: 512 }]}>
           <Input placeholder="请输入备注" />

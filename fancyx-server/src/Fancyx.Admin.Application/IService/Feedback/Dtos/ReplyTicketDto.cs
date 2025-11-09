@@ -1,8 +1,13 @@
-﻿namespace Fancyx.Admin.Application.IService.Feedback.Dtos
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
+
+namespace Fancyx.Admin.Application.IService.Feedback.Dtos
 {
     public class ReplyTicketDto
     {
         public long TicketId { get; set; }
-        public long Content { get; set; }
+
+        [Required, NotNull]
+        public string? Content { get; set; }
     }
 }

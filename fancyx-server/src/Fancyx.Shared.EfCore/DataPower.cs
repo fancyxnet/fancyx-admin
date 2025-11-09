@@ -22,7 +22,5 @@
 
         public const string UserIdType = "power_user_ids";
         public const string DeptIdType = "power_dept_ids";
-
-        public const string SuperAdmin = "系统管理员";
     }
 }

@@ -6,6 +6,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fancyx.Shared.Logger.Entities
 {
+    /// <summary>
+    /// API访问日志
+    /// </summary>
     [Table("api_access_log")]
     public class ApiAccessLog : CreationEntity<long>, ITenant
     {

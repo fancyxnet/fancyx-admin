@@ -6,6 +6,7 @@ using Fancyx.Shared.WebApi.Handlers;
 using Fancyx.SnowflakeId;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -32,6 +33,7 @@ namespace Fancyx.Shared.WebApi
 
         public override void Configure(ApplicationInitializationContext context)
         {
+            var app = (WebApplication)context.GetApplicationBuilder();
         }
     }
 }

@@ -43,7 +43,7 @@ namespace Fancyx.Erp.Controllers.BaseInfo
             return Result.Ok();
         }
 
-        [HttpPut("Delete/{id}")]
+        [HttpDelete("Delete/{id}")]
         [HasPermission("Erp.Supplier.Delete")]
         public async Task<AppResponse<bool>> DeleteSupplierAsync(long id)
         {

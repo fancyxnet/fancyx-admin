@@ -6,6 +6,7 @@ namespace Fancyx.EfCore.Aop
 {
     /// <summary>
     /// 自动将代码块放在事务中执行，异常自动回滚（只适合异步方法）
+    /// 如果方法内部使用了Dapper API，使用此注解引发报错，参见 https://mysqlconnector.net/troubleshooting/transaction-usage/
     /// </summary>
     public class AsyncTransactionalAttribute : AsyncAopAttributeBase
     {

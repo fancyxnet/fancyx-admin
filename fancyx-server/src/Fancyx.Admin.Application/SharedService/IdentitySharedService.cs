@@ -1,10 +1,10 @@
 ﻿using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
+using Fancyx.Core;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
 using Fancyx.Redis;
-using Fancyx.Shared.EfCore;
 using Fancyx.Shared.Keys;
 
 using Microsoft.EntityFrameworkCore;
@@ -29,10 +29,14 @@ namespace Fancyx.Admin.Application.SharedService
         private readonly ICurrentUser _currentUser;
         private readonly IRepository<RoleDept> _roleDeptRepository;
         private readonly IRepository<Dept> _deptRepository;
+        private readonly IRepository<Tenant> _tenantRepository;
+        private readonly IRepository<TenantMenu> _tenantMenuRepository;
+        private readonly ICurrentTenant _currentTenant;
 
         public IdentitySharedService(IRepository<UserRole> userRoleRepository, IRepository<RoleMenu> roleMenuRepository, IRepository<Role> roleRepository,
             IRepository<Menu> menuRepository, IConfiguration configuration, IRepository<User> userRepository, IHybridCache hybridCache, ICurrentUser currentUser
-            , IRepository<RoleDept> roleDeptRepository, IRepository<Dept> deptRepository)
+            , IRepository<RoleDept> roleDeptRepository, IRepository<Dept> deptRepository, IRepository<Tenant> tenantRepository, IRepository<TenantMenu> tenantMenuRepository
+            , ICurrentTenant currentTenant)
         {
             _userRoleRepository = userRoleRepository;
             _roleMenuRepository = roleMenuRepository;
@@ -44,6 +48,9 @@ namespace Fancyx.Admin.Application.SharedService
             _currentUser = currentUser;
             _roleDeptRepository = roleDeptRepository;
             _deptRepository = deptRepository;
+            _tenantRepository = tenantRepository;
+            _tenantMenuRepository = tenantMenuRepository;
+            _currentTenant = currentTenant;
         }
 
         /// <summary>
@@ -60,23 +67,34 @@ namespace Fancyx.Admin.Application.SharedService
                 return cacheValue!;
             }
 
-            var roleIds = await _userRoleRepository.Where(x => x.UserId == userId).SelectToListAsync(x => x.RoleId);
-            var roles = await _roleRepository.Where(x => roleIds.Contains(x.Id) && x.IsEnabled).ToListAsync();
-            var isSuperAdmin = roles.Any(r => r.RoleName == DataPower.SuperAdmin);
-            var menuIds = await _roleMenuRepository.Where(x => roleIds.Contains(x.RoleId)).SelectToListAsync(x => x.MenuId);
-            var menus = await _menuRepository.Where(x => menuIds.Contains(x.Id) || isSuperAdmin).SelectToListAsync(x => new { x.Permission, x.Id, x.MenuType, x.Display });
-            if (isSuperAdmin)
+            var roles = (from r in _roleRepository.GetQueryable()
+                         join ur in _userRoleRepository.GetQueryable() on r.Id equals ur.RoleId
+                         where ur.UserId == userId && r.IsEnabled
+                         group r by new { r.Id, r.RoleName } into g
+                         select new { g.Key.Id, g.Key.RoleName }).ToList();
+            var roleIds = roles.Select(x => x.Id).ToArray();
+            var menus = (from m in _menuRepository.GetQueryable()
+                         join rm in _roleMenuRepository.GetQueryable() on m.Id equals rm.MenuId
+                         where roleIds.Contains(rm.RoleId)
+                         select new
+                         {
+                             m.Id,
+                             m.Permission,
+                             m.MenuType,
+                             m.Display,
+                         }).ToList();
+            if (MultiTenancyConsts.IsEnabled)
             {
-                menuIds = menus.Select(x => x.Id).ToList();
+                var tenantMenuIds = await this.GetTenantMenusAsync(_currentTenant.TenantId!);
+                menus = menus.Where(x => tenantMenuIds.Contains(x.Id)).ToList();
             }
             var rs = new UserPermission
             {
                 UserId = userId,
-                Roles = roles.Select(c => c.RoleName).ToArray(),
+                Roles = [.. roles.Select(c => c.RoleName)],
                 Auths = menus.Where(c => !string.IsNullOrEmpty(c.Permission) && c.MenuType == MenuType.Button && c.Display).Select(c => c.Permission!).Distinct().ToArray(),
-                RoleIds = [.. roleIds],
-                MenuIds = [.. menuIds],
-                IsSuperAdmin = isSuperAdmin
+                RoleIds = roleIds,
+                MenuIds = [.. menus.Select(x => x.Id)]
             };
             await _hybridCache.SetAsync(key, rs);
             return rs;
@@ -104,6 +122,26 @@ namespace Fancyx.Admin.Application.SharedService
         public Task DelUserPermissionCacheByUserIdAsync(long userId)
         {
             return _hybridCache.RemoveAsync(SystemCacheKey.UserPermission(userId));
+        }
+
+        /// <summary>
+        /// 删除用户权限缓存（通过租户ID）
+        /// </summary>
+        /// <param name="tenantId"></param>
+        /// <param name="clearToken"></param>
+        /// <returns></returns>
+        public async Task DelUserPermissionCacheByTenantIdAsync(string tenantId, bool clearToken = false)
+        {
+            var userIds = await _userRepository.GetQueryable().IgnoreQueryFilters().Where(x => x.TenantId == tenantId).SelectToListAsync(x => x.Id);
+            foreach (var userId in userIds)
+            {
+                await DelUserPermissionCacheByUserIdAsync(userId);
+                if (clearToken)
+                {
+                    await _hybridCache.RemoveByPatternAsync(SystemCacheKey.AccessToken(userId, "*"));
+                    await _hybridCache.RemoveByPatternAsync(SystemCacheKey.RefreshToken(userId, "*"));
+                }
+            }
         }
 
         /// <summary>
@@ -154,16 +192,6 @@ namespace Fancyx.Admin.Application.SharedService
             {
                 return null;
             }
-        }
-
-        /// <summary>
-        /// 用户是否来源主库
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public Task<bool> UserIsFromMainDbAsync(string id)
-        {
-            return _userRepository.GetQueryable().AsNoTracking().IgnoreQueryFilters().AnyAsync(x => !x.IsDeleted && x.Id.ToString() == id);
         }
 
         /// <summary>
@@ -244,6 +272,16 @@ namespace Fancyx.Admin.Application.SharedService
 
             var key = SystemCacheKey.UserDeptPower(_currentUser.Id.Value);
             await _hybridCache.RemoveAsync(key);
+        }
+
+        /// <summary>
+        /// 通过租户ID查询租户拥有菜单
+        /// </summary>
+        /// <param name="tenantId"></param>
+        /// <returns></returns>
+        public Task<List<long>> GetTenantMenusAsync(string tenantId)
+        {
+            return _tenantMenuRepository.GetQueryable().Where(x => x.TenantId == tenantId).Join(_tenantRepository.GetQueryable(), tm => tm.TenantId, t => t.Id, (tm, t) => tm.MenuId).ToListAsync();
         }
     }
 }

@@ -6,6 +6,9 @@ using Fancyx.EfCore.BaseEntity;
 
 namespace Fancyx.Admin.EfCore.Entities.System
 {
+    /// <summary>
+    /// 站内通知
+    /// </summary>
     [Table("notification")]
     public class Notification : AuditedEntity<long>, ITenant
     {

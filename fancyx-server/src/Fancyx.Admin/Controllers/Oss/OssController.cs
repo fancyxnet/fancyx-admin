@@ -1,5 +1,3 @@
-using Fancyx.Admin.Application.SharedService;
-using Fancyx.Shared.Keys;
 using Fancyx.Storage;
 using Fancyx.Utils;
 
@@ -12,12 +10,10 @@ namespace Fancyx.Admin.Controllers.Oss
     public class OssController : ControllerBase
     {
         private readonly IObjectStorageFactory _objectStorageFactory;
-        private readonly ConfigSharedService _configSharedService;
 
-        public OssController(IObjectStorageFactory objectStorageFactory, ConfigSharedService configSharedService)
+        public OssController(IObjectStorageFactory objectStorageFactory)
         {
             _objectStorageFactory = objectStorageFactory;
-            _configSharedService = configSharedService;
         }
 
         [HttpPost]
@@ -31,8 +27,7 @@ namespace Fancyx.Admin.Controllers.Oss
             {
                 fileName = dir + "/" + fileName;
             }
-            var storageType = await _configSharedService.GetAsync(SystemConfigKey.StorageType);
-            _ = Enum.TryParse(storageType, out StorageType type);
+            var type = StorageType.Local;
             IObjectStorageService objectStorageService = _objectStorageFactory.GetService(type);
             var url = await objectStorageService.UploadAsync(stream, fileName);
 
@@ -50,9 +45,7 @@ namespace Fancyx.Admin.Controllers.Oss
         {
             try
             {
-                var storageType = await _configSharedService.GetAsync(SystemConfigKey.StorageType);
-                _ = Enum.TryParse(storageType, out StorageType type);
-                IObjectStorageService objectStorageService = _objectStorageFactory.GetService(type);
+                IObjectStorageService objectStorageService = _objectStorageFactory.GetService(StorageType.Local);
                 var stream = await objectStorageService.DownloadAsync(fileName);
                 var name = Path.GetFileName(fileName);
                 var mimeType = MimeTypesHelper.Instance.GetMimeType(name);

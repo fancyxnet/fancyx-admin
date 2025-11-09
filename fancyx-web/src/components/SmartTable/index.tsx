@@ -11,7 +11,7 @@ type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection'
 
 const SmartTable = forwardRef<SmartTableRef, SmartTableProps<any>>(
   <T extends object = any>(props: SmartTableProps<T>, ref: ForwardedRef<SmartTableRef>) => {
-    const { columns, selection = false, showPagination = true, ...restProps } = props;
+    const { selectionType, columns, selection = false, showPagination = true, ...restProps } = props;
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [queryParams, setQueryParams] = useState({
@@ -30,6 +30,8 @@ const SmartTable = forwardRef<SmartTableRef, SmartTableProps<any>>(
       setQueryFormFieldValue: (field, value) => {
         form.setFieldValue(field, value);
       },
+      getData: () => dataSource,
+      updateData: (arr: Array<any>) => { setDataSource(arr); }
     }));
 
     useEffect(() => {
@@ -43,7 +45,7 @@ const SmartTable = forwardRef<SmartTableRef, SmartTableProps<any>>(
           // 如果关闭分页，传递pageSize为-1表示获取全部数据
           const requestParams = showPagination ? queryParams : { ...queryParams, pageSize: -1 };
           const result = await props.request(requestParams);
-          
+
           // 只有在显示分页时才需要处理分页逻辑
           if (showPagination && (result.items === null || result.items.length === 0)) {
             if (result.totalCount > 0) {
@@ -130,7 +132,7 @@ const SmartTable = forwardRef<SmartTableRef, SmartTableProps<any>>(
               value = '--';
             }
 
-            return <span>{value}</span>;
+            return <span>{`${value}`}</span>;
           },
         };
       });
@@ -143,13 +145,13 @@ const SmartTable = forwardRef<SmartTableRef, SmartTableProps<any>>(
             <Form layout="inline" form={form} initialValues={{ layout: 'inline' }} style={{ maxWidth: 'none' }}>
               {Array.isArray(props.searchItems)
                 ? React.Children.map(props.searchItems, (child, index) => {
-                    if (React.isValidElement(child)) {
-                      return React.cloneElement(child, {
-                        key: child.key || `child-${index}`,
-                      });
-                    }
-                    return child;
-                  })
+                  if (React.isValidElement(child)) {
+                    return React.cloneElement(child, {
+                      key: child.key || `child-${index}`,
+                    });
+                  }
+                  return child;
+                })
                 : props.searchItems}
               <Form.Item>
                 <Space>
@@ -169,13 +171,13 @@ const SmartTable = forwardRef<SmartTableRef, SmartTableProps<any>>(
             <div className="custom-toolbar mb-2">
               {Array.isArray(props.toolbar)
                 ? React.Children.map(props.toolbar, (child, index) => {
-                    if (React.isValidElement(child)) {
-                      return React.cloneElement(child, {
-                        key: child.key || `child-${index}`,
-                      });
-                    }
-                    return child;
-                  })
+                  if (React.isValidElement(child)) {
+                    return React.cloneElement(child, {
+                      key: child.key || `child-${index}`,
+                    });
+                  }
+                  return child;
+                })
                 : props.toolbar}
             </div>
             <div className={'right-operation-toolbar ' + (props.toolbar ? 'mt-1' : 'mb-1')}>
@@ -215,24 +217,24 @@ const SmartTable = forwardRef<SmartTableRef, SmartTableProps<any>>(
             scroll={undefined}
             onChange={handleTableChange}
             loading={loading}
-            rowSelection={selection ? rowSelection : undefined}
+            rowSelection={selection ? { type: selectionType, ...rowSelection } : undefined}
           />
-            {/* 当关闭分页但需要显示总条数时，在表格下方显示总条数 */}
-            {!showPagination && (
-              <div 
-                className="smart-table-total-count"
-                style={{
-                  textAlign: 'right',
-                  padding: '12px 16px 0',
-                  fontSize: '14px',
-                  color: '#8c8c8c',
-                  borderTop: '1px solid #f0f0f0'
-                }}
-              >
-                共 {total} 条数据
-              </div>
-            )}
-          </Card>
+          {/* 当关闭分页但需要显示总条数时，在表格下方显示总条数 */}
+          {!showPagination && (
+            <div
+              className="smart-table-total-count"
+              style={{
+                textAlign: 'right',
+                padding: '12px 16px 0',
+                fontSize: '14px',
+                color: '#8c8c8c',
+                borderTop: '1px solid #f0f0f0'
+              }}
+            >
+              共 {total} 条数据
+            </div>
+          )}
+        </Card>
       </div>
     );
   },

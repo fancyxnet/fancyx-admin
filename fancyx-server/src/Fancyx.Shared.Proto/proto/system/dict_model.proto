@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package fancyx.internal.grpc.system;
+option csharp_namespace = "Fancyx.Internal.Grpc.System";
+
+message GetDictItemsReq{
+	string dict_type = 1;
+}
+
+message DictItem{
+	string label = 1;
+	string value = 2;
+}
+
+message GetDictItemsRes{
+	repeated DictItem items = 1;
+}

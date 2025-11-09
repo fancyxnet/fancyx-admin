@@ -1,5 +1,6 @@
 import httpClient from '@/utils/httpClient.ts';
 import type { AppResponse, PagedResult, PageSearch } from '@/types/api';
+import type { MenuOptionResultDto } from './menu';
 
 /**
  * 新增租户
@@ -14,7 +15,9 @@ export function addTenant(dto: TenantDto) {
  * @param dto
  */
 export function getTenantList(dto: TenantQueryDto) {
-  return httpClient.get<TenantQueryDto, AppResponse<PagedResult<TenantListDto>>>('/admin-api/Tenant/List', { params: dto });
+  return httpClient.get<TenantQueryDto, AppResponse<PagedResult<TenantListDto>>>('/admin-api/Tenant/List', {
+    params: dto,
+  });
 }
 
 /**
@@ -33,21 +36,56 @@ export function deleteTenant(id: string) {
   return httpClient.delete<string, AppResponse<boolean>>(`/admin-api/Tenant/Delete/${id}`);
 }
 
-export interface TenantDto {
-  id?: string;
-  name: string;
+/**
+ * 分配租户菜单
+ * @param dto
+ */
+export function assignTenantMenu(dto: AssignTenantMenuDto) {
+  return httpClient.post<AssignTenantMenuDto, AppResponse<boolean>>('/admin-api/Tenant/AssignTenantMenu', dto);
+}
+
+/**
+ * 租户已有菜单ID列表
+ * @param dto
+ */
+export function getTenantMenuIds(id: string) {
+  return httpClient.get<string, AppResponse<string[]>>('/admin-api/Tenant/GetTenantMenuIds/' + id);
+}
+
+/**
+ * 获取菜单组成的选项树（全部，不含租户菜单过滤）
+ * @param onlyMenu
+ * @param keyword
+ */
+export function getMenuOptions(onlyMenu: boolean, keyword?: string) {
+  return httpClient.get<number, AppResponse<MenuOptionResultDto>>('/admin-api/Tenant/MenuOptions', {
+    params: {
+      onlyMenu: onlyMenu,
+      keyword: keyword,
+    },
+  });
+}
+
+export interface AssignTenantMenuDto {
   tenantId: string;
+  menuIds: string[] | null;
+}
+
+export interface TenantDto {
+  name: string;
+  tenantId?: string;
   remark?: string;
-  domain?: string;
+  domain: string;
+  isEnabled: boolean;
 }
 
 export interface TenantListDto {
-  id: string;
   name: string;
   tenantId: string;
   remark?: string;
   domain?: string;
   lastModificationTime: string;
+  isEnabled: boolean;
 }
 
 export interface TenantQueryDto extends PageSearch {

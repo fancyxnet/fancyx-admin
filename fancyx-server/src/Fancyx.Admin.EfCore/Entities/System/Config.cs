@@ -36,6 +36,7 @@ namespace Fancyx.Admin.EfCore.Entities.System
         [NotNull]
         [Required]
         [Column("value")]
+        [StringLength(256)]
         public string? Value { get; set; }
 
         /// <summary>

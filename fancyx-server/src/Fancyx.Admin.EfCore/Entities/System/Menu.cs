@@ -1,4 +1,3 @@
-using Fancyx.Core.Interfaces;
 using Fancyx.EfCore.BaseEntity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -11,7 +10,7 @@ namespace Fancyx.Admin.EfCore.Entities.System
     /// 菜单表
     /// </summary>
     [Table("menu")]
-    public class Menu : AuditedEntity<long>, ITenant
+    public class Menu : AuditedEntity<long>
     {
         /// <summary>
         /// 显示标题/名称
@@ -75,20 +74,14 @@ namespace Fancyx.Admin.EfCore.Entities.System
         public bool Display { get; set; }
 
         /// <summary>
-        /// 角色菜单
-        /// </summary>
-        public virtual ICollection<RoleMenu>? RoleMenus { get; set; }
-
-        /// <summary>
-        /// 租户ID
-        /// </summary>
-        [Column("tenant_id")]
-        public string? TenantId { get; set; }
-
-        /// <summary>
         /// 是否外链
         /// </summary>
         [Column("is_external")]
         public bool IsExternal { get; set; } = false;
+
+        /// <summary>
+        /// 是否保活
+        /// </summary>
+        public bool KeepAlive { get; set; }
     }
 }

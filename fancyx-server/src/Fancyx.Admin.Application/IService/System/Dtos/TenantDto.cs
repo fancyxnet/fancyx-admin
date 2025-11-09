@@ -5,8 +5,6 @@ namespace Fancyx.Admin.Application.IService.System.Dtos
 {
     public class TenantDto
     {
-        public long? Id { get; set; }
-
         /// <summary>
         /// 租户名称
         /// </summary>
@@ -32,7 +30,11 @@ namespace Fancyx.Admin.Application.IService.System.Dtos
         /// <summary>
         /// 租户域名
         /// </summary>
+        [Required]
         [MaxLength(256)]
         public string? Domain { get; set; }
+
+        [Required]
+        public bool IsEnabled { get; set; }
     }
 }

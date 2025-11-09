@@ -1,0 +1,50 @@
+import httpClient from '@/utils/httpClient.ts';
+import type { AppResponse, PagedResult, PageSearch } from '@/types/api';
+
+/**
+ * 新增${function_name}
+ * @param dto
+ */
+export function add${business_name}(dto: ${class_name}) {
+  return httpClient.post<${business_name}, AppResponse<boolean>>('/admin-api/${business_name}/Add', dto);
+}
+
+/**
+ * ${function_name}分页列表
+ * @param dto
+ */
+export function get${business_name}List(dto: ${business_name}QueryDto) {
+  return httpClient.get<${business_name}QueryDto, AppResponse<PagedResult<${business_name}>>>('/admin-api/${business_name}/List', { params: dto });
+}
+
+/**
+ * ${function_name}查询
+ * @param dto
+ */
+export function get${business_name}(id: string) {
+  return httpClient.get<string, AppResponse<${class_name}>>('/admin-api/${business_name}/Get${business_name}/' + id);
+}
+
+/**
+ * 修改${function_name}
+ * @param dto
+ */
+export function update${business_name}(dto: ${class_name}) {
+  return httpClient.put<${business_name}, AppResponse<boolean>>('/admin-api/${business_name}/Update', dto);
+}
+
+/**
+ * 删除${function_name}
+ * @param id
+ */
+export function delete${business_name}(id: string) {
+  return httpClient.delete<string, AppResponse<boolean>>('/admin-api/${business_name}/Delete/'+id);
+}
+
+export interface ${class_name} {
+${ts_interface_fields}
+}
+
+export interface ${business_name}QueryDto extends PageSearch {
+${ts_interface_query_fields}
+}

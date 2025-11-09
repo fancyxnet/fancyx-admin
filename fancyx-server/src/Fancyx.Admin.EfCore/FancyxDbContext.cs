@@ -1,4 +1,6 @@
-﻿using Fancyx.Admin.EfCore.Entities.Organization;
+﻿using Fancyx.Admin.EfCore.Entities.Feedback;
+using Fancyx.Admin.EfCore.Entities.Gen;
+using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Shared.EfCore;
 
@@ -27,5 +29,10 @@ namespace Fancyx.Admin.EfCore
         public DbSet<RoleMenu> RoleMenu { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<UserRole> UserRole { get; set; }
+        public DbSet<TenantMenu> TenantMenu { get; set; }
+        public DbSet<Ticket> Ticket { get; set; }
+        public DbSet<TicketReply> TicketReply { get; set; }
+        public DbSet<GenTable> GenTable { get; set; }
+        public DbSet<GenTableColumn> GenTableColumn { get; set; }
     }
 }

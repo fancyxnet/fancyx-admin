@@ -94,6 +94,7 @@ const UserModal = forwardRef<ModalRef, ModalProps>((props, ref) => {
       open={isOpenModal}
       onCancel={onCancel}
       onOk={onOk}
+      width={700}
       maskClosable={false}
     >
       <Form<UserDto>
@@ -105,7 +106,7 @@ const UserModal = forwardRef<ModalRef, ModalProps>((props, ref) => {
         colon={false}
         onFinish={onFinish}
       >
-        <Form.Item label="账号" name="userName" rules={[{ required: true }, { max: 32 }]}>
+        <Form.Item label="账号" name="userName" rules={[{ required: true }, { max: 32 }, { min: 3 }]}>
           <Input placeholder="请输入账号" disabled={Boolean(id) && Boolean(id!.length)} />
         </Form.Item>
         {(id && id.length > 0) ?? (

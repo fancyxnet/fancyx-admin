@@ -14,7 +14,6 @@ import RoleForm, { type ModalRef } from '@/pages/system/components/RoleForm.tsx'
 import AssignMenuForm, { type AssignMenuModalRef } from '@/pages/system/components/AssignMenuForm.tsx';
 import SmartTable from '@/components/SmartTable';
 import type { SmartTableColumnType, SmartTableRef } from '@/components/SmartTable/type.ts';
-import { PermissionConstant } from '@/utils/globalValue.ts';
 import useApp from 'antd/es/app/useApp';
 import Permission from '@/components/Permission';
 import { useAuthProvider } from '@/components/AuthProvider';
@@ -58,7 +57,6 @@ const Role = () => {
       width: 210,
       fixed: 'right',
       render: (_: any, record: RoleListDto) => {
-        if (record.roleName === PermissionConstant.SuperAdmin) return <></>;
         const curDropdownItems = [];
         if (hasPermission!('Sys.Role.AssignMenu')) {
           curDropdownItems.push({

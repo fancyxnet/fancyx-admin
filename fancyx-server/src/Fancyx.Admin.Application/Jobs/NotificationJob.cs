@@ -42,7 +42,7 @@ namespace Fancyx.Admin.Application.Jobs
                 using var redLock = await _redLockFactory.CreateLockAsync(nameof(NotificationJob), expiry, wait, retry);
                 if (redLock.IsAcquired)
                 {
-                    var notis = await _repository.Where(x => !x.IsReaded).ToListAsync();
+                    var notis = await _repository.GetQueryable().IgnoreQueryFilters().Where(x => !x.IsReaded).ToListAsync();
                     var groupMap = notis.GroupBy(x => x.UserId).ToDictionary(k => k.Key, v => v.Count());
                     var random = new Random();
                     if (notis.Count > 0)

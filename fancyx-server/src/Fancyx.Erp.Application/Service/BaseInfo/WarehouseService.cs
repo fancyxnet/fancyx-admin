@@ -10,18 +10,18 @@ namespace Fancyx.Erp.Application.Service.BaseInfo
 {
     public class WarehouseService : IWarehouseService
     {
-        private readonly IRepository<Warehouse> _storeHouseRepository;
+        private readonly IRepository<Warehouse> _warehouseRepository;
         private readonly IMapper _mapper;
 
         public WarehouseService(IRepository<Warehouse> storeHouseRepository, IMapper mapper)
         {
-            _storeHouseRepository = storeHouseRepository;
+            _warehouseRepository = storeHouseRepository;
             _mapper = mapper;
         }
 
         public async Task AddWarehouseAsync(StoreHouseDto dto)
         {
-            var codeIsExist = await _storeHouseRepository.AnyAsync(x => x.Code == dto.Code);
+            var codeIsExist = await _warehouseRepository.AnyAsync(x => x.Code == dto.Code);
             if (codeIsExist)
             {
                 throw new BusinessException("编码已存在");
@@ -33,17 +33,17 @@ namespace Fancyx.Erp.Application.Service.BaseInfo
                 Remark = dto.Remark,
                 IsEnabled = dto.IsEnabled
             };
-            await _storeHouseRepository.InsertAsync(storeHouse);
+            await _warehouseRepository.InsertAsync(storeHouse);
         }
 
         public async Task DeleteWarehouseAsync(long id)
         {
-            await _storeHouseRepository.DeleteAsync(x => x.Id == id);
+            await _warehouseRepository.DeleteAsync(x => x.Id == id);
         }
 
         public async Task<PagedResult<StoreHouseListDto>> GetWarehouseListAsync(StoreHouseQueryDto dto)
         {
-            var resp = await _storeHouseRepository.GetQueryable()
+            var resp = await _warehouseRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.Name), x => x.Name.StartsWith(dto.Name!))
                 .PagedAsync(dto.Current, dto.PageSize);
             return new PagedResult<StoreHouseListDto>(resp.Total, _mapper.Map<List<StoreHouseListDto>>(resp.Items));
@@ -51,8 +51,8 @@ namespace Fancyx.Erp.Application.Service.BaseInfo
 
         public async Task UpdateWarehouseAsync(StoreHouseDto dto)
         {
-            var storeHouse = await _storeHouseRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
-            var codeIsExist = storeHouse.Code != dto.Code && await _storeHouseRepository.AnyAsync(x => x.Code == dto.Code);
+            var storeHouse = await _warehouseRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
+            var codeIsExist = storeHouse.Code != dto.Code && await _warehouseRepository.AnyAsync(x => x.Code == dto.Code);
             if (codeIsExist)
             {
                 throw new BusinessException("编码已存在");
@@ -61,7 +61,13 @@ namespace Fancyx.Erp.Application.Service.BaseInfo
             storeHouse.Name = dto.Name;
             storeHouse.Remark = dto.Remark;
             storeHouse.IsEnabled = dto.IsEnabled;
-            await _storeHouseRepository.UpdateAsync(storeHouse);
+            await _warehouseRepository.UpdateAsync(storeHouse);
+        }
+
+        public async Task<Warehouse> GetWarehouseAsync(long id)
+        {
+            var entity = await _warehouseRepository.FindAsync(id) ?? throw new EntityNotFoundException();
+            return entity;
         }
     }
 }

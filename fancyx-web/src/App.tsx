@@ -1,7 +1,7 @@
 import { useRoutes } from 'react-router-dom';
 import { routes } from '@/router';
 import zhCN from 'antd/locale/zh_CN';
-import { ConfigProvider, Spin } from 'antd';
+import { ConfigProvider } from 'antd';
 import { Suspense, useEffect, useState } from 'react';
 import { generateDynamicRoutes } from './router/dynamic';
 import UserStore from './store/userStore';
@@ -13,6 +13,7 @@ import Application from '@/components/Application';
 import { loadThemeFromStorage } from './utils/themeUtils';
 import type { ThemeType } from './theme';
 import { themeMap, getThemeConfig } from './theme';
+import Fallback from './components/Fallback';
 
 function App() {
   const size = useSelector(selectSize);
@@ -68,19 +69,6 @@ function App() {
     }
   }
 
-  const fallback = (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-      }}
-    >
-      <Spin />
-    </div>
-  );
-
   // 创建 QueryClient 实例（管理缓存和请求）
   const queryClient = new QueryClient();
 
@@ -90,7 +78,7 @@ function App() {
         <ConfigProvider locale={zhCN} componentSize={size} theme={getThemeConfig(currentTheme)}>
           <Application>
             <QueryClientProvider client={queryClient}>
-              <Suspense fallback={fallback}>{useRoutes(renderRoutes)}</Suspense>
+              <Suspense fallback={<Fallback/>}>{useRoutes(renderRoutes)}</Suspense>
             </QueryClientProvider>
           </Application>
         </ConfigProvider>

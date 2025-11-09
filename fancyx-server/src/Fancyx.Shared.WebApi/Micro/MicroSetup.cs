@@ -1,8 +1,10 @@
 ﻿using Calzolari.Grpc.AspNetCore.Validation;
 
 using Fancyx.Consul;
+using Fancyx.Internal.Grpc.System;
+using Fancyx.Shared.Consts;
 using Fancyx.Shared.Models;
-
+using Fancyx.Shared.WebApi.Filters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
@@ -13,35 +15,30 @@ namespace Fancyx.Shared.WebApi.Micro
 {
     public static class MicroSetup
     {
-        public static bool EnabledGrpc { get; private set; }
         public static bool EnabledConsul { get; private set; }
 
         public static void AddMicroService(this IServiceCollection services, IConfiguration configuration)
         {
-            EnabledGrpc = int.TryParse(configuration["Consul:GrpcPort"], out var grpcPort) && grpcPort > 0;
+            int grpcPort = int.Parse(configuration["Consul:GrpcPort"]!);
             EnabledConsul = configuration["Services:Mode"] == "Consul";
             services.Configure<KestrelServerOptions>(options =>
             {
                 options.ListenLocalhost(int.Parse(configuration["Consul:HttpPort"]!), listenOptions => listenOptions.Protocols = HttpProtocols.Http1);
-                if (EnabledGrpc)
-                {
-                    options.ListenLocalhost(grpcPort, listenOptions => listenOptions.Protocols = HttpProtocols.Http2);
-                }
+                options.ListenLocalhost(grpcPort, listenOptions => listenOptions.Protocols = HttpProtocols.Http2);
             });
             services.Configure<MicroServiceOption>(configuration.GetSection("Services"));
             if (EnabledConsul)
             {
                 services.AddConsulSetup(configuration);
             }
-            if (EnabledGrpc)
+            services.AddGrpc(options =>
             {
-                services.AddGrpc(options =>
-                {
-                    options.EnableMessageValidation();
-                });
-                services.AddGrpcReflection();
-                services.AddGrpcValidation();
-            }
+                options.EnableMessageValidation();
+            });
+            services.AddGrpcReflection();
+            services.AddGrpcValidation();
+            services.AddSingleton<GrpcHeaderInterceptor>();
+            services.AddRemoteClient(configuration, options => options.AddGrpc<Auth.AuthClient>(MicroServiceConsts.AdminApi));
         }
 
         public static void UseMicroDiscovery(this WebApplication app)
@@ -51,7 +48,7 @@ namespace Fancyx.Shared.WebApi.Micro
                 ConsulRegistration.Register(app.Services);
                 app.MapHealthChecks(ConsulConstant.ConsulHealthUrl);
             }
-            if (EnabledGrpc && app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment())
             {
                 app.MapGrpcReflectionService().AllowAnonymous();
             }

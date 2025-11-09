@@ -1,6 +1,8 @@
-using Fancyx.Core.Interfaces;
-using Fancyx.EfCore.BaseEntity;
 using System.ComponentModel.DataAnnotations.Schema;
+
+using Fancyx.Core.Interfaces;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.EfCore.Entities.System
 {
@@ -8,7 +10,8 @@ namespace Fancyx.Admin.EfCore.Entities.System
     /// 用户角色关联表
     /// </summary>
     [Table("user_role")]
-    public class UserRole : Entity<long>, ITenant
+    [PrimaryKey(nameof(UserId), nameof(RoleId))]
+    public class UserRole : ITenant
     {
         /// <summary>
         /// 用户ID

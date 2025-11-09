@@ -64,5 +64,10 @@ namespace Fancyx.Admin.Application.IService.System.Dtos
         /// 是否外链
         /// </summary>
         public bool IsExternal { get; set; }
+
+        /// <summary>
+        /// 是否保活
+        /// </summary>
+        public bool KeepAlive { get; set; }
     }
 }

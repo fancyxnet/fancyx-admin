@@ -12,5 +12,12 @@ namespace Fancyx.Shared.Keys
             }
             return key;
         }
+
+        public static string PureKey(string key) 
+        {
+            if (!string.IsNullOrEmpty(TenantManager.Current))
+                return key.Replace($"tenant:{TenantManager.Current}:", "");
+            return key;
+        }
     }
 }

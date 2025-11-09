@@ -23,10 +23,5 @@
         /// 菜单ID
         /// </summary>
         public long[]? MenuIds { get; set; }
-
-        /// <summary>
-        /// 是否超级管理员
-        /// </summary>
-        public bool IsSuperAdmin { get; set; }
     }
 }

@@ -2,8 +2,11 @@ using AutoMapper;
 
 using Fancyx.Admin.Application.IService.System;
 using Fancyx.Admin.Application.IService.System.Dtos;
+using Fancyx.Admin.Application.SharedService;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
+using Fancyx.Core;
+using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
 using Fancyx.Utils;
 
@@ -15,11 +18,15 @@ namespace Fancyx.Admin.Application.Service.System
     {
         private readonly IRepository<Menu> _menuRepository;
         private readonly IMapper _mapper;
+        private readonly IdentitySharedService _identitySharedService;
+        private readonly ICurrentTenant _currentTenant;
 
-        public MenuService(IRepository<Menu> menuRepository, IMapper mapper)
+        public MenuService(IRepository<Menu> menuRepository, IMapper mapper, IdentitySharedService identitySharedService, ICurrentTenant currentTenant)
         {
             _menuRepository = menuRepository;
             _mapper = mapper;
+            _identitySharedService = identitySharedService;
+            _currentTenant = currentTenant;
         }
 
         public async Task<bool> AddMenuAsync(MenuDto dto)
@@ -104,10 +111,16 @@ namespace Fancyx.Admin.Application.Service.System
         }
 
         public async Task<(string[] keys, List<MenuOptionTreeDto> tree)> GetMenuOptionsAsync(bool onlyMenu,
-            string? keyword)
+            string? keyword, bool noTenantMenuFilter = false)
         {
+            var query = _menuRepository.GetQueryable();
+            if (MultiTenancyConsts.IsEnabled && !noTenantMenuFilter)
+            {
+                var tenantMenuIds = await _identitySharedService.GetTenantMenusAsync(_currentTenant.TenantId!);
+                query = query.Where(x => tenantMenuIds.Contains(x.Id));
+            }
             var isKeywordSearch = !string.IsNullOrEmpty(keyword);
-            var all = await _menuRepository.GetQueryable()
+            var all = await query
                 .WhereIf(onlyMenu, x => x.MenuType == MenuType.Folder || x.MenuType == MenuType.Menu)
                 .WhereIf(isKeywordSearch, x => x.Title != null && x.Title.Contains(keyword!)).ToListAsync();
             var keys = all.Select(x => x.Id.ToString()).ToArray();
@@ -202,6 +215,7 @@ namespace Fancyx.Admin.Application.Service.System
             entity.Display = dto.Display;
             entity.Component = dto.Component;
             entity.IsExternal = dto.IsExternal;
+            entity.KeepAlive = dto.KeepAlive;
             await _menuRepository.UpdateAsync(entity);
 
             return true;

@@ -1,8 +1,4 @@
-﻿using System.Net;
-
-using Consul;
-
-using Fancyx.Admin.Application.IService.Monitor;
+﻿using Fancyx.Admin.Application.IService.Monitor;
 using Fancyx.Admin.Application.IService.Monitor.Dtos;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Core.Interfaces;
@@ -58,17 +54,17 @@ namespace Fancyx.Admin.Application.Service.Monitor
                     log => new { log.SessionId, MaxCreationTime = log.CreationTime },
                     (max, log) => new
                     {
-                        UserName = log.UserName,
-                        Ip = log.Ip,
-                        SessionId = log.SessionId,
-                        Address = log.Address,
-                        Browser = log.Browser,
-                        CreationTime = log.CreationTime
+                        log.UserName,
+                        log.Ip,
+                        log.SessionId,
+                        log.Address,
+                        log.Browser,
+                        log.CreationTime
                     })
                 .ToListAsync();
             foreach (var key in tokenKeys)
             {
-                var arr = key.Split(':');
+                var arr = CacheKeyBase.PureKey(key).Split(':');
                 if (arr.Length < 3) continue;
                 var userId = arr[1];
                 var sessionId = arr[2];

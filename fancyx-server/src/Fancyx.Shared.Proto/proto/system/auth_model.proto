@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+
+package fancyx.internal.grpc.system;
+option csharp_namespace = "Fancyx.Internal.Grpc.System";
+
+message GetUserPermissionReq{
+	int64 user_id = 1;
+}
+
+message GetUserPermissionRes{
+	repeated string auths = 1;
+}
+
+message ExistTenantReq{
+	string tenant_id = 1;
+}
+
+message ExistTenantRes{
+	bool is_exist = 1;
+}
+
+message GetTenantByDomainReq{
+	string domain = 1;
+}
+
+message GetTenantByDomainRes{
+	google.protobuf.StringValue tenant_id = 1;
+}

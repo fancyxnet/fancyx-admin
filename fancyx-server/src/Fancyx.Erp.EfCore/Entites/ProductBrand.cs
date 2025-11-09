@@ -4,18 +4,33 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fancyx.Erp.EfCore.Entites
 {
+    /// <summary>
+    /// 产品品牌
+    /// </summary>
     [Table("product_brand")]
-    public class ProductBrand : FullAuditedEntity<long>, ITenant
+    public class ProductBrand : AuditedEntity<long>, ITenant
     {
+        /// <summary>
+        /// 编码
+        /// </summary>
         [Column("code")]
         public string Code { get; set; } = null!;
 
+        /// <summary>
+        /// 名称
+        /// </summary>
         [Column("name")]
         public string Name { get; set; } = null!;
 
+        /// <summary>
+        /// 备注
+        /// </summary>
         [Column("remark")]
         public string? Remark { get; set; }
 
+        /// <summary>
+        /// 是否启用
+        /// </summary>
         [Column("is_enabled")]
         public bool IsEnabled { get; set; }
 

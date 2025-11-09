@@ -2,8 +2,6 @@
 
 public class TenantResultDto
 {
-    public long Id { get; set; }
-
     /// <summary>
     /// 租户名称
     /// </summary>
@@ -33,4 +31,6 @@ public class TenantResultDto
     /// 修改时间
     /// </summary>
     public DateTime? LastModificationTime { get; set; }
+
+    public bool IsEnabled { get; set; }
 }

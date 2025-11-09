@@ -1,0 +1,91 @@
+using Fancyx.Shared.WebApi.Attributes;
+using Fancyx.Shared.Logger;
+using Fancyx.Shared.Consts;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using ${module_name}.Application.IService.${namespace_name}.Dtos;
+using ${module_name}.Application.IService.${namespace_name};
+
+namespace ${module_name}.Controllers.${namespace_name}
+{
+    [Authorize]
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ${business_name}Controller : ControllerBase
+    {
+        private readonly I${business_name}Service _${business_name_inject}Service;
+
+        public ${business_name}Controller(I${business_name}Service ${business_name_inject}Service)
+        {
+            _${business_name_inject}Service = ${business_name_inject}Service;
+        }
+
+        /// <summary>
+        /// 新增${function_name}
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPost("Add")]
+        [HasPermission("Sys.${business_name}.Add")]
+        [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
+        public async Task<AppResponse<bool>> Add${business_name}Async([FromBody] ${class_name} dto)
+        {
+            await _${business_name_inject}Service.Add${business_name}Async(dto);
+            return Result.Ok();
+        }
+
+        /// <summary>
+        /// ${function_name}分页列表
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpGet("List")]
+        [HasPermission("Sys.${business_name}.List")]
+        public async Task<AppResponse<PagedResult<${class_name}>>> Get${business_name}ListAsync([FromQuery] ${class_name}QueryDto dto)
+        {
+            var data = await _${business_name_inject}Service.Get${business_name}ListAsync(dto);
+            return Result.Data(data);
+        }
+
+        /// <summary>
+        /// 修改${function_name}
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPut("Update")]
+        [HasPermission("Sys.${business_name}.Update")]
+        public async Task<AppResponse<bool>> Update${business_name}Async([FromBody] ${class_name} dto)
+        {
+            await _${business_name_inject}Service.Update${business_name}Async(dto);
+            return Result.Ok();
+        }
+
+        /// <summary>
+        /// 删除${function_name}
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("Delete/{id:long}")]
+        [HasPermission("Sys.${business_name}.Delete")]
+        public async Task<AppResponse<bool>> Delete${business_name}Async(long id)
+        {
+            await _${business_name_inject}Service.Delete${business_name}Async(id);
+            return Result.Ok();
+        }
+
+        /// <summary>
+        /// 查询${function_name}
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("Get${business_name}/{id}")]
+        [HasPermission("Sys.${business_name}.List")]
+        public async Task<AppResponse<${class_name}>> Get${business_name}Async(long id) 
+        {
+            var data = await _${business_name_inject}Service.Get${business_name}Async(id);
+            return Result.Data(data);
+        }
+    }
+}

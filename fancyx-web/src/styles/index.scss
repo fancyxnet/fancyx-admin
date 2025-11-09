@@ -5,7 +5,8 @@
   margin: 0;
 }
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
@@ -28,15 +29,15 @@ html, body {
 
 /** ================================ 固定Table表头背景色 ================================ */
 /* 固定antd表格表头背景色为通用灰色，不随主题切换而改变 */
-.ant-table-wrapper .ant-table-thead > tr > th,
-.ant-table-wrapper .ant-table-thead > tr > td {
+.ant-table-wrapper .ant-table-thead>tr>th,
+.ant-table-wrapper .ant-table-thead>tr>td {
   background-color: #fafafa !important;
 }
 
 /* 确保表头在不同状态下也保持固定的背景色 */
-.ant-table-wrapper .ant-table-thead > tr > th.ant-table-column-sort,
-.ant-table-wrapper .ant-table-thead > tr > th.ant-table-cell-row-hover,
-.ant-table-wrapper .ant-table-thead > tr > th:hover {
+.ant-table-wrapper .ant-table-thead>tr>th.ant-table-column-sort,
+.ant-table-wrapper .ant-table-thead>tr>th.ant-table-cell-row-hover,
+.ant-table-wrapper .ant-table-thead>tr>th:hover {
   background-color: #fafafa !important;
 }
 
@@ -112,6 +113,10 @@ html, body {
   }
 }
 
+.border-none {
+  border: none;
+}
+
 .fancyx-table-wrapper {
   .ant-table-cell .ant-btn-link {
     padding-left: 0 !important;
@@ -131,7 +136,7 @@ html, body {
   display: flex;
   flex-direction: row;
   overflow: hidden;
-  
+
   .fancyx-sidebar {
     min-height: 100%;
     height: 100%;
@@ -140,51 +145,51 @@ html, body {
     overflow: hidden;
     background-color: vars.$bg-base;
   }
-  
+
   // 侧边栏菜单内容容器，允许滚动
   .sidebar-content {
     flex: 1;
     min-height: 0; // 确保在flex容器中正确收缩
     overflow-y: auto; // 基础滚动功能
-    
+
     // 关键：使用overlay而不是auto，滚动条不会占用内容空间
     overflow-y: overlay;
-    
+
     // 浅色主题滚动条样式 - 不占用空间的悬浮滚动条
     &::-webkit-scrollbar {
       width: 5px; // 适中宽度确保可见
       height: 5px; // 水平滚动条高度
     }
-    
+
     // 完全隐藏滚动条轨道
     &::-webkit-scrollbar-track {
       background: transparent; // 完全透明的轨道
       border-radius: 3px; // 圆角
     }
-    
+
     // 滚动条滑块样式 - 保持可见性
     &::-webkit-scrollbar-thumb {
       background: rgba(0, 0, 0, 0.25); // 增加透明度使滑块更明显
       border-radius: 3px; // 圆角
       transition: background-color 0.2s ease;
-      
+
       // 滑块悬浮效果增强
       &:hover {
         background: rgba(0, 0, 0, 0.35);
       }
     }
-    
+
     // 隐藏所有滚动条按钮和边角
     &::-webkit-scrollbar-button,
     &::-webkit-scrollbar-corner {
       display: none; // 完全隐藏
     }
-    
+
     // Firefox样式优化
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 0, 0, 0.25) transparent; // 只显示滑块
   }
-  
+
   .ant-layout-sider {
     min-height: 100%;
     background-color: vars.$bg-base;
@@ -244,124 +249,124 @@ html, body {
   }
 
   /* 暗色侧边栏样式 */
-    .dark-sidebar {
-      background-color: #1f1f1f;
-      transition: background-color 0.3s ease;
-      height: 100%;
-    }
-    
-    /* 确保暗色侧边栏在内容滚动时完全填充 */
-    .ant-layout-sider.dark-sidebar {
-      background-color: #1f1f1f;
-      overflow: hidden;
+  .dark-sidebar {
+    background-color: #1f1f1f;
+    transition: background-color 0.3s ease;
+    height: 100%;
+  }
+
+  /* 确保暗色侧边栏在内容滚动时完全填充 */
+  .ant-layout-sider.dark-sidebar {
+    background-color: #1f1f1f;
+    overflow: hidden;
+  }
+
+  .dark-sidebar .sidebar-header {
+    background: linear-gradient(135deg, rgba(50, 50, 50, 0.8), rgba(40, 40, 40, 0.8));
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .dark-sidebar h2 {
+    color: #e0e0e0;
+    /* 细微色差效果 */
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+
+  .dark-sidebar .header-icon {
+    background: linear-gradient(135deg, var(--primary-color, #177ddc), #3b96e8);
+    box-shadow: 0 2px 12px rgba(23, 125, 220, 0.4);
+  }
+
+  .dark-sidebar .sidebar-content {
+    background-color: #1f1f1f;
+    overflow-y: auto; // 基础滚动功能
+
+    // 关键：使用overlay而不是auto，滚动条不会占用内容空间
+    overflow-y: overlay;
+
+    // 暗色主题滚动条样式 - 不占用空间的悬浮滚动条
+    &::-webkit-scrollbar {
+      width: 5px; // 适中宽度确保可见
+      height: 5px; // 水平滚动条高度
     }
 
-    .dark-sidebar .sidebar-header {
-      background: linear-gradient(135deg, rgba(50, 50, 50, 0.8), rgba(40, 40, 40, 0.8));
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    // 完全隐藏滚动条轨道
+    &::-webkit-scrollbar-track {
+      background: transparent; // 完全透明的轨道
+      border-radius: 3px; // 圆角
     }
 
-    .dark-sidebar h2 {
-      color: #e0e0e0;
-      /* 细微色差效果 */
-      text-shadow: 0 0 1px rgba(255, 255, 255, 0.1);
-    }
+    // 滚动条滑块样式 - 保持可见性
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.25); // 增加透明度使滑块更明显
+      border-radius: 3px; // 圆角
+      transition: background-color 0.2s ease;
 
-    .dark-sidebar .header-icon {
-      background: linear-gradient(135deg, var(--primary-color, #177ddc), #3b96e8);
-      box-shadow: 0 2px 12px rgba(23, 125, 220, 0.4);
-    }
-
-    .dark-sidebar .sidebar-content {
-      background-color: #1f1f1f;
-      overflow-y: auto; // 基础滚动功能
-      
-      // 关键：使用overlay而不是auto，滚动条不会占用内容空间
-      overflow-y: overlay;
-      
-      // 暗色主题滚动条样式 - 不占用空间的悬浮滚动条
-      &::-webkit-scrollbar {
-        width: 5px; // 适中宽度确保可见
-        height: 5px; // 水平滚动条高度
+      // 滑块悬浮效果增强
+      &:hover {
+        background: rgba(255, 255, 255, 0.35);
       }
-      
-      // 完全隐藏滚动条轨道
-      &::-webkit-scrollbar-track {
-        background: transparent; // 完全透明的轨道
-        border-radius: 3px; // 圆角
-      }
-      
-      // 滚动条滑块样式 - 保持可见性
-      &::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.25); // 增加透明度使滑块更明显
-        border-radius: 3px; // 圆角
-        transition: background-color 0.2s ease;
-        
-        // 滑块悬浮效果增强
-        &:hover {
-          background: rgba(255, 255, 255, 0.35);
-        }
-      }
-      
-      // 隐藏所有滚动条按钮和边角
-      &::-webkit-scrollbar-button,
-      &::-webkit-scrollbar-corner {
-        display: none; // 完全隐藏
-      }
-      
-      // Firefox样式优化
-      scrollbar-width: thin;
-      scrollbar-color: rgba(255, 255, 255, 0.25) transparent; // 只显示滑块
     }
 
-    .dark-sidebar .ant-menu {
-      background-color: transparent;
+    // 隐藏所有滚动条按钮和边角
+    &::-webkit-scrollbar-button,
+    &::-webkit-scrollbar-corner {
+      display: none; // 完全隐藏
     }
 
-    /* 菜单项基本样式 - 增加亮度 */
-    .dark-sidebar .ant-menu-item,
-    .dark-sidebar .ant-menu-submenu-title {
-      color: #d0d0d0;
-      transition: color 0.2s ease;
-    }
+    // Firefox样式优化
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.25) transparent; // 只显示滑块
+  }
 
-    /* 菜单项悬浮效果 - 文字变亮，添加轻微透明浅色背景 */
-    .dark-sidebar .ant-menu-item:hover,
-    .dark-sidebar .ant-menu-submenu-title:hover {
-      color: #ffffff !important;
-      background-color: rgba(255, 255, 255, 0.08) !important;
-    }
+  .dark-sidebar .ant-menu {
+    background-color: transparent;
+  }
 
-    /* 确保所有可能的悬浮状态都有轻微透明浅色背景且文字更亮 */
-    .dark-sidebar .ant-menu-item:hover,
-    .dark-sidebar .ant-menu-submenu:hover > .ant-menu-submenu-title,
-    .dark-sidebar .ant-menu-submenu-title:hover {
-      color: #ffffff !important;
-      background-color: rgba(255, 255, 255, 0.08) !important;
-    }
+  /* 菜单项基本样式 - 增加亮度 */
+  .dark-sidebar .ant-menu-item,
+  .dark-sidebar .ant-menu-submenu-title {
+    color: #d0d0d0;
+    transition: color 0.2s ease;
+  }
 
-    /* 选中菜单项样式 - 加深背景色 */
-    .dark-sidebar .ant-menu-item-selected {
-      color: var(--primary-color, #177ddc) !important;
-      background-color: rgba(23, 125, 220, 0.2) !important;
-    }
+  /* 菜单项悬浮效果 - 文字变亮，添加轻微透明浅色背景 */
+  .dark-sidebar .ant-menu-item:hover,
+  .dark-sidebar .ant-menu-submenu-title:hover {
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.08) !important;
+  }
 
-    /* 激活菜单项样式 - 仅文字变色 */
-    .dark-sidebar .ant-menu-item-active,
-    .dark-sidebar .ant-menu-submenu-active {
-      color: var(--primary-color, #177ddc);
-      background-color: transparent;
-    }
+  /* 确保所有可能的悬浮状态都有轻微透明浅色背景且文字更亮 */
+  .dark-sidebar .ant-menu-item:hover,
+  .dark-sidebar .ant-menu-submenu:hover>.ant-menu-submenu-title,
+  .dark-sidebar .ant-menu-submenu-title:hover {
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.08) !important;
+  }
 
-    /* 确保子菜单标题颜色与菜单项一致 */
-    .dark-sidebar .ant-menu-submenu-title {
-      color: #d0d0d0 !important;
-    }
+  /* 选中菜单项样式 - 加深背景色 */
+  .dark-sidebar .ant-menu-item-selected {
+    color: var(--primary-color, #177ddc) !important;
+    background-color: rgba(23, 125, 220, 0.2) !important;
+  }
 
-    /* 展开的子菜单标题颜色 */
-    .dark-sidebar .ant-menu-submenu-open > .ant-menu-submenu-title {
-      color: #ffffff !important;
-    }
+  /* 激活菜单项样式 - 仅文字变色 */
+  .dark-sidebar .ant-menu-item-active,
+  .dark-sidebar .ant-menu-submenu-active {
+    color: var(--primary-color, #177ddc);
+    background-color: transparent;
+  }
+
+  /* 确保子菜单标题颜色与菜单项一致 */
+  .dark-sidebar .ant-menu-submenu-title {
+    color: #d0d0d0 !important;
+  }
+
+  /* 展开的子菜单标题颜色 */
+  .dark-sidebar .ant-menu-submenu-open>.ant-menu-submenu-title {
+    color: #ffffff !important;
+  }
 
   .fancyx-navbar {
     height: 50px;
@@ -395,7 +400,7 @@ html, body {
   }
 
   /* 调整内部布局容器为flex列布局 */
-  .ant-layout > .ant-layout {
+  .ant-layout>.ant-layout {
     display: flex;
     flex-direction: column;
     height: 100%;

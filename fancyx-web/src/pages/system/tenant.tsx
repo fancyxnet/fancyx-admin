@@ -1,12 +1,13 @@
 ﻿import Permission from '@/components/Permission';
 import { deleteTenant, getTenantList, type TenantDto, type TenantListDto } from '@/api/system/tenant.ts';
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, HddOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Popconfirm, Space } from 'antd';
 import React, { useRef } from 'react';
 import type { SmartTableRef, SmartTableColumnType } from '@/components/SmartTable/type.ts';
 import SmartTable from '@/components/SmartTable';
 import TenantForm, { type ModalRef } from '@/pages/system/components/TenantForm.tsx';
 import useApp from 'antd/es/app/useApp';
+import AssignTenantForm, { type AssignTenantMenuFormModalRef } from './components/AssignTenantMenuForm';
 
 const TenantList: React.FC = () => {
   const tableRef = useRef<SmartTableRef>(null);
@@ -24,6 +25,11 @@ const TenantList: React.FC = () => {
     {
       title: '绑定域名',
       dataIndex: 'domain',
+    },
+    {
+      title: '状态',
+      dataIndex: 'isEnabled',
+      render: (_: any, record: TenantListDto) => (record.isEnabled ? '启用' : '禁用'),
     },
     {
       title: '备注',
@@ -56,13 +62,25 @@ const TenantList: React.FC = () => {
               编辑
             </Button>
           </Permission>
+          <Permission permissions={'Sys.Tenant.AssignTenantMenu'}>
+            <Button
+              type="link"
+              icon={<HddOutlined />}
+              key="assign"
+              onClick={() => {
+                assignTenantFormRef?.current?.openModal(record);
+              }}
+            >
+              菜单
+            </Button>
+          </Permission>
           <Permission permissions={'Sys.Tenant.Delete'}>
             <Popconfirm
               key="delete"
               title="确定删除吗？"
               description="删除后无法撤销"
               onConfirm={() => {
-                deleteTenant(record.id!).then(() => {
+                deleteTenant(record.tenantId!).then(() => {
                   message.success('删除成功');
                   tableRef.current?.reload();
                 });
@@ -77,13 +95,14 @@ const TenantList: React.FC = () => {
       ),
     },
   ];
+  const assignTenantFormRef = useRef<AssignTenantMenuFormModalRef>(null);
 
   return (
     <>
       <SmartTable
         columns={columns}
         ref={tableRef}
-        rowKey="id"
+        rowKey="tenantId"
         request={async (params) => {
           const { data } = await getTenantList(params);
           return data;
@@ -111,6 +130,8 @@ const TenantList: React.FC = () => {
       />
       {/** 新增/编辑租户弹窗 */}
       <TenantForm ref={modalRef} refresh={() => tableRef?.current?.reload()} />
+      {/* 分配功能权限 */}
+      <AssignTenantForm ref={assignTenantFormRef} />
     </>
   );
 };

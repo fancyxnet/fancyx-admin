@@ -1,11 +1,17 @@
-﻿using Fancyx.Core.Interfaces;
-using Fancyx.EfCore.BaseEntity;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+using Fancyx.Core.Interfaces;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.EfCore.Entities.System
 {
+    /// <summary>
+    /// 角色部门关联
+    /// </summary>
     [Table("role_dept")]
-    public class RoleDept : Entity<long>, ITenant
+    [PrimaryKey(nameof(RoleId), nameof(DeptId))]
+    public class RoleDept : ITenant
     {
         /// <summary>
         /// 角色ID

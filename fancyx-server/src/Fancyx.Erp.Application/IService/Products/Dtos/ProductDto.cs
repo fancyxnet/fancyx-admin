@@ -10,5 +10,7 @@
         public long BrandId { get; set; }
         public long CategoryId { get; set; }
         public List<ProductBindAttrValueDto>? Attrs { get; set; }
+
+        public string? Unit { get; set; }
     }
 }

@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package fancyx.internal.grpc.system;
+option csharp_namespace = "Fancyx.Internal.Grpc.System";
+
+import "system/auth_model.proto";
+
+service Auth{
+	rpc GetUserPermission (GetUserPermissionReq) returns (GetUserPermissionRes);
+	rpc ExistTenant (ExistTenantReq) returns (ExistTenantRes);
+	rpc GetTenantByDomain (GetTenantByDomainReq) returns (GetTenantByDomainRes);
+}

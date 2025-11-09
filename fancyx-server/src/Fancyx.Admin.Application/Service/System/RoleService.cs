@@ -4,9 +4,10 @@ using Fancyx.Admin.Application.SharedService;
 using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
+using Fancyx.Core;
+using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
 using Fancyx.EfCore.Aop;
-using Fancyx.Shared.EfCore;
 
 namespace Fancyx.Admin.Application.Service.System
 {
@@ -18,10 +19,11 @@ namespace Fancyx.Admin.Application.Service.System
         private readonly IdentitySharedService _identitySharedService;
         private readonly IRepository<RoleDept> _roleDeptRepository;
         private readonly IRepository<Dept> _deptRepository;
+        private readonly ICurrentTenant _currentTenant;
 
         public RoleService(IRepository<Role> roleRepository, IRepository<RoleMenu> roleMenuRepository
             , IRepository<UserRole> userRoleRepository, IdentitySharedService identitySharedService
-            , IRepository<RoleDept> roleDeptRepository, IRepository<Dept> deptRepository)
+            , IRepository<RoleDept> roleDeptRepository, IRepository<Dept> deptRepository, ICurrentTenant currentTenant)
         {
             _roleRepository = roleRepository;
             _roleMenuRepository = roleMenuRepository;
@@ -29,6 +31,7 @@ namespace Fancyx.Admin.Application.Service.System
             _identitySharedService = identitySharedService;
             _roleDeptRepository = roleDeptRepository;
             _deptRepository = deptRepository;
+            _currentTenant = currentTenant;
         }
 
         public async Task<bool> AddRoleAsync(RoleDto dto)
@@ -53,6 +56,16 @@ namespace Fancyx.Admin.Application.Service.System
             await _roleMenuRepository.DeleteAsync(x => x.RoleId == dto.RoleId);
             if (dto.MenuIds != null)
             {
+                //租户模式下，检查分配的菜单是否租户已有菜单
+                if (MultiTenancyConsts.IsEnabled)
+                {
+                    var menuIds = await _identitySharedService.GetTenantMenusAsync(_currentTenant.TenantId ?? "");
+                    if (dto.MenuIds.Any(m => !menuIds.Contains(m)))
+                    {
+                        throw new BusinessException("不能分配租户无权限菜单");
+                    }
+                }
+
                 var items = new List<RoleMenu>();
                 foreach (var item in dto.MenuIds)
                 {
@@ -77,12 +90,6 @@ namespace Fancyx.Admin.Application.Service.System
         {
             var hasUsers = await _userRoleRepository.AnyAsync(x => x.RoleId == id);
             if (hasUsers) throw new BusinessException(message: "角色已分配给用户，不能删除");
-
-            var role = await _roleRepository.FindAsync(id) ?? throw new EntityNotFoundException();
-            if (role.RoleName == DataPower.SuperAdmin)
-            {
-                throw new BusinessException(message: $"{role.RoleName}不能删除");
-            }
 
             await _roleRepository.DeleteAsync(x => x.Id == id);
             await _identitySharedService.DelUserPermissionCacheByRoleIdAsync(id);
@@ -117,11 +124,6 @@ namespace Fancyx.Admin.Application.Service.System
             if (entity.RoleName.ToLower() != dto.RoleName.ToLower() && isExist)
             {
                 throw new BusinessException("角色名已存在");
-            }
-
-            if (entity.RoleName == DataPower.SuperAdmin)
-            {
-                throw new BusinessException(message: $"{entity.RoleName}不允许编辑");
             }
 
             entity.RoleName = dto.RoleName;

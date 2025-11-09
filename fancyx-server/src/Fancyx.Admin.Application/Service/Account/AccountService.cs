@@ -6,6 +6,7 @@ using Fancyx.Admin.Application.IService.Account.Dtos;
 using Fancyx.Admin.Application.SharedService;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
+using Fancyx.Core;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
 using Fancyx.Redis;
@@ -31,13 +32,16 @@ namespace Fancyx.Admin.Application.Service.Account
         private readonly IdentitySharedService _identitySharedService;
         private readonly ICapPublisher _capPublisher;
         private readonly IMapper _mapper;
+        private readonly ICurrentTenant _currentTenant;
+        private readonly IRepository<Tenant> _tenantRepository;
         private readonly HttpContext _httpContext;
 
         private delegate Task<User> LoginHandler();
 
         public AccountService(IRepository<User> userRepository, ICurrentUser currentUser, IRepository<Menu> menuRepository
             , IConfiguration configuration, IHybridCache hybridCache, IdentitySharedService identitySharedService
-            , ICapPublisher capPublisher, IHttpContextAccessor httpContextAccessor, IMapper mapper)
+            , ICapPublisher capPublisher, IHttpContextAccessor httpContextAccessor, IMapper mapper, ICurrentTenant currentTenant
+            , IRepository<Tenant> tenantRepository)
         {
             _userRepository = userRepository;
             _currentUser = currentUser;
@@ -47,6 +51,8 @@ namespace Fancyx.Admin.Application.Service.Account
             _identitySharedService = identitySharedService;
             _capPublisher = capPublisher;
             _mapper = mapper;
+            _currentTenant = currentTenant;
+            _tenantRepository = tenantRepository;
             _httpContext = httpContextAccessor.HttpContext!;
         }
 
@@ -142,6 +148,9 @@ namespace Fancyx.Admin.Application.Service.Account
                 var user = await _userRepository.GetAsync(x => x.UserName.ToLower() == dto.UserName.ToLower() && x.IsEnabled) ?? throw new BusinessException(message: "账号或密码不存在");
                 var isOk = user.Password == EncryptionUtils.GenEncodingPassword(dto.Password, user.PasswordSalt);
                 if (!isOk) throw new BusinessException(message: "密码错误");
+
+                await this.CheckTenantIsEnabledAsync(user.TenantId);
+
                 return user;
             });
         }
@@ -155,9 +164,21 @@ namespace Fancyx.Admin.Application.Service.Account
                 var code = await _hybridCache.GetAsync<string>(codeKey);
                 if (string.IsNullOrEmpty(code)) throw new BusinessException("验证码已过期");
                 if (dto.Code != code) throw new BusinessException("验证码错误");
+
+                await this.CheckTenantIsEnabledAsync(user.TenantId);
+
                 await _hybridCache.RemoveAsync(codeKey);
                 return user;
             });
+        }
+
+        private async Task CheckTenantIsEnabledAsync(string? tenantId)
+        {
+            var tenantIsEnabled = await _tenantRepository.AnyAsync(x => x.Id == tenantId && x.IsEnabled);
+            if (MultiTenancyConsts.IsEnabled && !tenantIsEnabled)
+            {
+                throw new BusinessException("租户已禁用");
+            }
         }
 
         private async Task<LoginResultDto> InternalLoginAsync(string userName, LoginHandler loginHandler)
@@ -167,7 +188,8 @@ namespace Fancyx.Admin.Application.Service.Account
                 IsSuccess = true,
                 Ip = HttpUtils.GetIp(_httpContext),
                 OperationMsg = "登录成功",
-                UserName = userName
+                UserName = userName,
+                TenantId = _currentTenant.TenantId
             };
             try
             {
@@ -286,8 +308,8 @@ namespace Fancyx.Admin.Application.Service.Account
         {
             var user = await _userRepository.Where(x => x.Id == _currentUser.Id).FirstAsync()
                 ?? throw new BusinessException(message: "用户不存在");
-            var isRight = user.Password == EncryptionUtils.GenEncodingPassword(dto.OldPwd, user.PasswordSalt);
-            if (!isRight) throw new BusinessException(message: "旧密码错误");
+            var isCorrect = user.Password == EncryptionUtils.GenEncodingPassword(dto.OldPwd, user.PasswordSalt);
+            if (!isCorrect) throw new BusinessException(message: "旧密码错误");
             user.PasswordSalt = EncryptionUtils.GetPasswordSalt();
             user.Password = EncryptionUtils.GenEncodingPassword(dto.NewPwd, user.PasswordSalt);
             await _userRepository.UpdateAsync(user);

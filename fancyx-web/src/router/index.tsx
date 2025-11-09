@@ -7,6 +7,7 @@ import Profile from '@/pages/auth/profile.tsx';
 import Authorize from '@/components/Authorize';
 import { StaticRoutes } from '@/utils/globalValue.ts';
 import ExternalWrapper from '@/components/ExternalWrapper';
+import GenEdit from '@/pages/quickWork/genEdit';
 
 const routes: RouteObject[] = [
   {
@@ -32,6 +33,10 @@ const routes: RouteObject[] = [
       {
         path: '/profile',
         element: <Profile />,
+      },
+      {
+        path: '/quickWork/genEdit/:tableId',
+        element: <GenEdit />,
       },
       {
         path: '/external/*',

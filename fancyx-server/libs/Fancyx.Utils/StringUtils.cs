@@ -81,8 +81,13 @@ namespace Fancyx.Utils
         /// <returns></returns>
         public static string ToPascalCase(string input)
         {
-            if (string.IsNullOrEmpty(input) || !input.Contains('_'))
-                return input;
+            if (string.IsNullOrEmpty(input)) return input;
+            if(!input.Contains('_'))
+            {
+                var firstWord = input[..1].ToUpper();
+                if (input.Length > 1) return firstWord + input[1..];
+                return firstWord;
+            }
 
             // 使用StringBuilder来构建结果字符串
             StringBuilder pascalCase = new StringBuilder();
@@ -104,6 +109,12 @@ namespace Fancyx.Utils
             }
 
             return pascalCase.ToString();
+        }
+
+        public static string ToFirstLetterLowerCase(string input)
+        {
+            if(string.IsNullOrEmpty(input)) return input;
+            return input.Length > 1 ? input[..1].ToLowerInvariant() + input[1..] : input.ToLowerInvariant();
         }
 
         public static string? XssFilte(string? input)
