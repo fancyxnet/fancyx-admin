@@ -1,17 +1,17 @@
 /*
- Navicat Premium Dump SQL
+ Navicat Premium Data Transfer
 
  Source Server         : 本地mysql
  Source Server Type    : MySQL
- Source Server Version : 80406 (8.4.6)
+ Source Server Version : 80042 (8.0.42)
  Source Host           : localhost:3306
  Source Schema         : fancyx-admin
 
  Target Server Type    : MySQL
- Target Server Version : 80406 (8.4.6)
+ Target Server Version : 80042 (8.0.42)
  File Encoding         : 65001
 
- Date: 08/11/2025 17:48:05
+ Date: 09/11/2025 16:18:35
 */
 
 SET NAMES utf8mb4;
@@ -139,7 +139,7 @@ CREATE TABLE `customer`  (
   `deletion_time` datetime(6) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code`(`code` ASC, `tenant_id` ASC) USING BTREE COMMENT '编码唯一'
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '客户信息' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '客户信息' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of customer
@@ -278,7 +278,7 @@ CREATE TABLE `gen_table`  (
   `options` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '其它生成选项',
   `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`table_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '代码生成业务表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '代码生成业务表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of gen_table
@@ -309,7 +309,7 @@ CREATE TABLE `gen_table_column`  (
   `sort` int NULL DEFAULT NULL COMMENT '排序',
   `ts_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'TS类型',
   PRIMARY KEY (`column_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '代码生成业务表字段' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '代码生成业务表字段' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of gen_table_column
@@ -332,7 +332,7 @@ CREATE TABLE `inventory`  (
   `last_modifier_id` bigint NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `inventory_no`(`inventory_no` ASC, `tenant_id` ASC) USING BTREE COMMENT '库存编号唯一'
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '库存' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '库存' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of inventory
@@ -360,7 +360,7 @@ CREATE TABLE `inventory_log`  (
   `last_modification_time` datetime(6) NULL DEFAULT NULL,
   `last_modifier_id` bigint NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '库存日志' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '库存日志' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of inventory_log
@@ -545,6 +545,7 @@ INSERT INTO `menu` VALUES (4507638187321462784, '新增', NULL, NULL, NULL, 3, '
 INSERT INTO `menu` VALUES (4507638308192915456, '查询', NULL, NULL, NULL, 3, 'Erp.Warehouse.List', 4507614022224842752, 2, b'1', b'0', b'0', 631737765623021571, '2025-11-08 17:05:21.563268', '2025-11-08 17:05:35.780708', 631737765623021571);
 INSERT INTO `menu` VALUES (4507638511184646144, '编辑', NULL, NULL, NULL, 3, 'Erp.Warehouse.Update', 4507614022224842752, 3, b'1', b'0', b'0', 631737765623021571, '2025-11-08 17:06:09.960323', NULL, NULL);
 INSERT INTO `menu` VALUES (4507638579119788032, '删除', NULL, NULL, NULL, 3, 'Erp.Warehouse.Delete', 4507614022224842752, 4, b'1', b'0', b'0', 631737765623021571, '2025-11-08 17:06:26.157312', NULL, NULL);
+INSERT INTO `menu` VALUES (4507983597567217664, '租户菜单选项', NULL, NULL, NULL, 3, 'Sys.Tenant.MenuOptions', 4491762374256627770, 6, b'1', b'0', b'0', 631737765623021571, '2025-11-09 15:57:24.964716', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for notification
@@ -648,7 +649,7 @@ CREATE TABLE `product`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `code`(`code` ASC, `tenant_id` ASC) USING BTREE COMMENT '编码唯一',
   INDEX `sku_code`(`sku_code` ASC, `tenant_id` ASC) USING BTREE COMMENT 'SKU编码唯一'
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '产品' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '产品' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of product
@@ -675,7 +676,7 @@ CREATE TABLE `product_attr`  (
   `last_modifier_id` bigint NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code`(`code` ASC, `tenant_id` ASC) USING BTREE COMMENT '编码唯一'
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '产品属性' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '产品属性' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of product_attr
@@ -700,7 +701,7 @@ CREATE TABLE `product_attr_value`  (
   `last_modifier_id` bigint NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code`(`code` ASC, `tenant_id` ASC) USING BTREE COMMENT '编码唯一'
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '产品属性可选值' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '产品属性可选值' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of product_attr_value
@@ -720,7 +721,7 @@ CREATE TABLE `product_bind_attr_value`  (
   `creator_id` bigint NULL DEFAULT NULL,
   `creation_time` datetime(6) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '产品属性绑定值' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '产品属性绑定值' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of product_bind_attr_value
@@ -743,7 +744,7 @@ CREATE TABLE `product_brand`  (
   `last_modifier_id` bigint NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `code`(`code` ASC, `tenant_id` ASC) USING BTREE COMMENT '编码唯一'
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '产品品牌' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '产品品牌' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of product_brand
@@ -766,7 +767,7 @@ CREATE TABLE `product_category`  (
   `last_modifier_id` bigint NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code`(`code` ASC, `tenant_id` ASC) USING BTREE COMMENT '编码唯一'
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '产品分类' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '产品分类' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of product_category
@@ -975,6 +976,7 @@ INSERT INTO `role_menu` VALUES (4507638187321462784, 631737765623021569, 'platfo
 INSERT INTO `role_menu` VALUES (4507638308192915456, 631737765623021569, 'platform');
 INSERT INTO `role_menu` VALUES (4507638511184646144, 631737765623021569, 'platform');
 INSERT INTO `role_menu` VALUES (4507638579119788032, 631737765623021569, 'platform');
+INSERT INTO `role_menu` VALUES (4507983597567217664, 631737765623021569, 'platform');
 
 -- ----------------------------
 -- Table structure for supplier
@@ -996,7 +998,7 @@ CREATE TABLE `supplier`  (
   `deletion_time` datetime(6) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code`(`code` ASC, `tenant_id` ASC) USING BTREE COMMENT '编码唯一'
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '供应商' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '供应商' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of supplier
@@ -1026,7 +1028,7 @@ CREATE TABLE `tenant`  (
 -- Records of tenant
 -- ----------------------------
 INSERT INTO `tenant` VALUES ('mi', '大米公司', NULL, 'mi.crackerwork.cn', b'0', 631737765623021571, '2025-11-01 22:43:37.466969', '2025-11-03 20:49:24.066274', 631737765623021571, 0, NULL, NULL);
-INSERT INTO `tenant` VALUES ('platform', '平台', NULL, 'platform.crackerwork.cn', b'1', 631737765623021571, '2025-10-30 20:38:31.319463', '2025-11-03 20:42:35.571284', 631737765623021571, 0, NULL, NULL);
+INSERT INTO `tenant` VALUES ('platform', '平台', NULL, 'localhost', b'1', 631737765623021571, '2025-10-30 20:38:31.319463', '2025-11-03 20:42:35.571284', 631737765623021571, 0, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for tenant_menu
@@ -1183,6 +1185,7 @@ INSERT INTO `tenant_menu` VALUES ('platform', 4507638187321462784);
 INSERT INTO `tenant_menu` VALUES ('platform', 4507638308192915456);
 INSERT INTO `tenant_menu` VALUES ('platform', 4507638511184646144);
 INSERT INTO `tenant_menu` VALUES ('platform', 4507638579119788032);
+INSERT INTO `tenant_menu` VALUES ('platform', 4507983597567217664);
 
 -- ----------------------------
 -- Table structure for ticket
@@ -1206,7 +1209,7 @@ CREATE TABLE `ticket`  (
   `deleter_id` bigint NULL DEFAULT NULL,
   `deletion_time` datetime(6) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '工单' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '工单' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of ticket
@@ -1225,7 +1228,7 @@ CREATE TABLE `ticket_reply`  (
   `creator_id` bigint NULL DEFAULT NULL,
   `creation_time` datetime(6) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '工单回复' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '工单回复' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of ticket_reply
@@ -1266,6 +1269,7 @@ CREATE TABLE `user`  (
 INSERT INTO `user` VALUES (631737765623021571, 'admin', 'a2fa8ec90f15197c7a4e6e00525b198a', 'vHQZvbz+ng+B4NrSAEYl6g==', 'file/myavatar.jpg', '风汐', 2, 1, 'platform', '18211114444', NULL, NULL, NULL, '2025-09-10 21:13:06.186342', '2025-11-03 20:42:35.619666', 631737765623021571, 0, NULL, NULL);
 INSERT INTO `user` VALUES (4502836036707553280, 'test', '31b34585be7edab0062adaf1c5e8ca54', 'FHvandmgkN55J7rydt4RXA==', 'avatar/male.png', 'test_hdh', 1, 1, NULL, NULL, NULL, NULL, 631737765623021571, '2025-10-26 11:02:50.819162', '2025-10-26 11:03:39.408462', 631737765623021571, 1, 631737765623021571, '2025-10-26 11:08:14.994318');
 INSERT INTO `user` VALUES (4505462198378172416, 'miadmin', 'a2fa8ec90f15197c7a4e6e00525b198a', 'vHQZvbz+ng+B4NrSAEYl6g==', 'avatar/male.png', 'miadmin', 1, 0, 'mi', NULL, NULL, NULL, 631737765623021571, '2025-11-02 16:58:16.553187', '2025-11-03 20:49:24.109932', 631737765623021571, 0, NULL, NULL);
+INSERT INTO `user` VALUES (4507982161622077440, 'test', '85c9794040d8f5a6dbade45adb98fb0e', 'a2eRKdkEBNSGVDtN2abdkw==', 'avatar/male.png', 'test', 1, 1, 'platform', NULL, NULL, NULL, 631737765623021571, '2025-11-09 15:51:42.608881', NULL, NULL, 0, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for user_role
@@ -1306,7 +1310,7 @@ CREATE TABLE `warehouse`  (
   `deletion_time` datetime(6) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code`(`code` ASC, `tenant_id` ASC) USING BTREE COMMENT '编码唯一'
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '仓库' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '仓库' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of warehouse

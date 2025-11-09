@@ -28,7 +28,7 @@ namespace Fancyx.Admin.EfCore.Entities.System
         /// <summary>
         /// 租户域名
         /// </summary>
-        [Required]
+        [Required, NotNull]
         [Column("domain")]
         public string? Domain { get; set; }
 

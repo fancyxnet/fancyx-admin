@@ -17,5 +17,11 @@ namespace Fancyx.Shared.WebApi
             var res = await AuthClient.ExistTenantAsync(new ExistTenantReq { TenantId = tenantId });
             return res.IsExist;
         }
+
+        public async Task<string> GetTenantByDomainAsync(string domain)
+        {
+            var res = await AuthClient.GetTenantByDomainAsync(new GetTenantByDomainReq { Domain = domain });
+            return res.TenantId;
+        }
     }
 }

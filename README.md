@@ -90,10 +90,10 @@
 ## 系统截图
 
 1. 登录
-![登录](./docs/img/login.png "login")
+   ![登录](./docs/img/login.png "login")
 
 2. 首页
-![首页](./docs/img/home.png "home")
+   ![首页](./docs/img/home.png "home")
 
 ## 快速上手
 
@@ -101,15 +101,52 @@
 
 **后端**
 
-![后端目录结构](./docs/img/project_struct.png "fancyx-server")
+| 库                        | 描述                                         |
+| ------------------------ | ------------------------------------------ |
+| Fancyx.Consul            | Consul服务注册与发现,配置中心                         |
+| Fancyx.Core              | 最核心层，该层有服务自动注册、模块化加载、静态帮助类、当前用户/租户接口及中间件   |
+| Fancyx.EfCore            | EFCore公共层，基础仓储类，工作单元等                      |
+| Fancyx.EventBus          | 事件总线类，封装了DotNetCAP包，使用MySql确保正确消费          |
+| Fancyx.Orleans           | Orleans配置,Redis集群,Redis存储                  |
+| Fancyx.Redis             | Redis配置，混合缓存类                              |
+| Fancyx.Serilog           | Serilog公共配置                                |
+| Fancyx.SnowflakeId       | 雪花ID生成                                     |
+| Fancyx.Storage           | 对象存储层，目前支持本地服务器存储和阿里云OSS存储两种               |
+| Fancyx.Swagger           | SwaggerPro配置，增加了SwaggerGroup特性，支持Swagger分组 |
+| Fancyx.Utils             | 工具、帮助类所在                                   |
+| Fancyx.Admin             | 模块入口，主机服务                                  |
+| Fancyx.Admin.Application | 模块业务层，用于写业务逻辑                              |
+| Fancyx.Admin.EfCore      | 模块数据层，包含实体、自定义仓储类                          |
+| Fancyx.Gateway.Ocelot    | Ocelot网关，支持直连和Consul服务注册发现                 |
+| Fancyx.Shared            | 业务共享的模型、常量                                 |
+| Fancyx.Shared.EfCore     | 业务共享的EfCore配置、扩展                           |
+| Fancyx.Shared.Logger     | 业务共享的日志层，含业务日志、异常日志、访问日志                   |
+| Fancyx.Shared.Proto      | GrpcProto生成共享层，引入后可以直接使用生成的代码              |
+| Fancyx.Shared.WebApi     | WebApi共享层，业务权限认证、过滤器等                      |
 
 **前端**
 
-![前端目录结构](./docs/img/frontend_struct.png "fancyx-web")
+| 文件/目录          | 描述                                                         |
+| -------------- | ---------------------------------------------------------- |
+| api            | 使用请求库调用接口的封装，可以当做前端接口控制器                                   |
+| assets         | 静态资源目录                                                     |
+| components     | 公共组件目录                                                     |
+| layout         | 后台管理布局组件                                                   |
+| pages          | 页面/视图代码（业务代码）                                              |
+| router         | react-router封装，静态路由导出、动态路由生成                               |
+| store          | 状态存储，1.使用redux+redux-persist实现本地存储，2.使用mobx+localStorage实现 |
+| types          | 公共类型定义                                                     |
+| utils          | 工具类目录，如：请求库axios封装，全局共享枚举                                  |
+| App.tsx        | 应用入口文件，所有组件都经过此入口                                          |
+| index.scss     | 全局样式，在这里写的样式，每个组件都能用                                       |
+| main.tsx       | 应用启动文件，保活组件域、路由边界、状态机引入等                                   |
+| .env.xxx       | 启动命令使用"--mode xxx"来指定                                      |
+| vite.config.ts | vite项目配置，由vite脚手架生成                                        |
 
 ### 网关配置文件
 
 网关appsettings.json
+
 ```json
 {
   "ServiceMode": "Direct", //指定模式
@@ -241,7 +278,8 @@
 
 *排名按照赞赏时间正序排列*
 
-| 名称      | 金额 |
-| ----------- | ----------- |
-| *杰      | 10元       |
-| **彬   | 16.8元        |
+| 名称    | 金额     |
+| ----- | ------ |
+| *杰    | 10元    |
+| **彬   | 16.8元  |
+| Wo**p | 18.88元 |

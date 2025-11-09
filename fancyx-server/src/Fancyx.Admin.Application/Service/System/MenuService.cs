@@ -111,10 +111,10 @@ namespace Fancyx.Admin.Application.Service.System
         }
 
         public async Task<(string[] keys, List<MenuOptionTreeDto> tree)> GetMenuOptionsAsync(bool onlyMenu,
-            string? keyword)
+            string? keyword, bool noTenantMenuFilter = false)
         {
             var query = _menuRepository.GetQueryable();
-            if (MultiTenancyConsts.IsEnabled)
+            if (MultiTenancyConsts.IsEnabled && !noTenantMenuFilter)
             {
                 var tenantMenuIds = await _identitySharedService.GetTenantMenusAsync(_currentTenant.TenantId!);
                 query = query.Where(x => tenantMenuIds.Contains(x.Id));

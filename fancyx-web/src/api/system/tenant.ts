@@ -1,5 +1,6 @@
 import httpClient from '@/utils/httpClient.ts';
 import type { AppResponse, PagedResult, PageSearch } from '@/types/api';
+import type { MenuOptionResultDto } from './menu';
 
 /**
  * 新增租户
@@ -49,6 +50,20 @@ export function assignTenantMenu(dto: AssignTenantMenuDto) {
  */
 export function getTenantMenuIds(id: string) {
   return httpClient.get<string, AppResponse<string[]>>('/admin-api/Tenant/GetTenantMenuIds/' + id);
+}
+
+/**
+ * 获取菜单组成的选项树（全部，不含租户菜单过滤）
+ * @param onlyMenu
+ * @param keyword
+ */
+export function getMenuOptions(onlyMenu: boolean, keyword?: string) {
+  return httpClient.get<number, AppResponse<MenuOptionResultDto>>('/admin-api/Tenant/MenuOptions', {
+    params: {
+      onlyMenu: onlyMenu,
+      keyword: keyword,
+    },
+  });
 }
 
 export interface AssignTenantMenuDto {

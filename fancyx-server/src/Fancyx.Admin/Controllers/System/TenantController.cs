@@ -16,10 +16,12 @@ namespace Fancyx.Admin.Controllers.System
     public class TenantController : ControllerBase
     {
         private readonly ITenantService _tenantService;
+        private readonly IMenuService _menuService;
 
-        public TenantController(ITenantService tenantService)
+        public TenantController(ITenantService tenantService, IMenuService menuService)
         {
             _tenantService = tenantService;
+            _menuService = menuService;
         }
 
         [HttpPost("Add")]
@@ -87,6 +89,18 @@ namespace Fancyx.Admin.Controllers.System
         {
             var data = await _tenantService.GetTenantMenuIdsAsync(id);
             return Result.Data(data);
+        }
+
+        /// <summary>
+        /// 获取菜单组成的选项树（全部，不含租户菜单过滤）
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("MenuOptions")]
+        [HasPermission("Sys.Tenant.MenuOptions")]
+        public async Task<AppResponse<Dictionary<string, object>>> GetMenuOptionsAsync(bool onlyMenu, string? keyword)
+        {
+            var (keys, tree) = await _menuService.GetMenuOptionsAsync(onlyMenu, keyword, true);
+            return Result.Data(new Dictionary<string, object> { ["keys"] = keys, ["tree"] = tree });
         }
     }
 }

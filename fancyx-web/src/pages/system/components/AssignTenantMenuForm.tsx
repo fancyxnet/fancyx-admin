@@ -1,7 +1,8 @@
 import { Card, Divider, Form, Modal, Switch, Tag, Tree } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { assignTenantMenu, type AssignTenantMenuDto, getTenantMenuIds, type TenantListDto } from '@/api/system/tenant';
-import { getMenuOptions, type MenuOptionTreeDto } from '@/api/system/menu.ts';
+import { type MenuOptionTreeDto } from '@/api/system/menu.ts';
+import { getMenuOptions } from '@/api/system/tenant.ts';
 import useApp from 'antd/es/app/useApp';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type

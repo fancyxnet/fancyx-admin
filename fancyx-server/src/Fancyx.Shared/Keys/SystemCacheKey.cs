@@ -11,6 +11,11 @@
         public const string AllTenant = "all_tenants";
 
         /// <summary>
+        /// 租户域名缓存键
+        /// </summary>
+        public const string TenantDomains = "tenant_domains";
+
+        /// <summary>
         /// 系统配置缓存键
         /// </summary>
         public static string SystemConfig = WithTenantPrefix("system_config");

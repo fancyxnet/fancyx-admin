@@ -3,7 +3,11 @@ using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.EfCore;
 using Fancyx.Internal.Grpc.System;
 using Fancyx.Shared.Keys;
+
 using Grpc.Core;
+
+using Microsoft.EntityFrameworkCore;
+
 using StackExchange.Redis;
 
 namespace Fancyx.Admin.Application.Grpc
@@ -39,12 +43,28 @@ namespace Fancyx.Admin.Application.Grpc
                     IsExist = await _redisClient.HashExistsAsync(SystemCacheKey.AllTenant, tenantId)
                 };
             }
-            var tenants = await _tenantRepository.GetQueryable().SelectToListAsync(x => new { TenantId = x.Id, x.Name });
+            var tenants = await _tenantRepository.Where(x => x.IsEnabled).SelectToListAsync(x => new { TenantId = x.Id, x.Name });
             var map = tenants.ToDictionary(k => k.TenantId, v => v.Name);
             if (map.Count == 0) return new ExistTenantRes { IsExist = false };
 
             await _redisClient.HashSetAsync(SystemCacheKey.AllTenant, map.Select(x => new HashEntry(x.Key, x.Value)).ToArray());
             return new ExistTenantRes { IsExist = map.ContainsKey(tenantId) };
+        }
+
+        public async override Task<GetTenantByDomainRes> GetTenantByDomain(GetTenantByDomainReq request, ServerCallContext context)
+        {
+            if (await _redisClient.KeyExistsAsync(SystemCacheKey.TenantDomains))
+            {
+                return new GetTenantByDomainRes
+                {
+                    TenantId = await _redisClient.HashGetAsync(SystemCacheKey.TenantDomains, request.Domain)
+                };
+            }
+            var map = await _tenantRepository.Where(x => x.IsEnabled).ToDictionaryAsync(x => x.Domain, k => k.Id);
+            if (map.Count == 0) return new GetTenantByDomainRes { TenantId = null };
+
+            await _redisClient.HashSetAsync(SystemCacheKey.TenantDomains, map.Select(x => new HashEntry(x.Key, x.Value)).ToArray());
+            return new GetTenantByDomainRes { TenantId = map.TryGetValue(request.Domain, out var tenantId) ? tenantId : null };
         }
     }
 }

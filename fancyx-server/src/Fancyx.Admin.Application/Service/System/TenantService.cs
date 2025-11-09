@@ -19,9 +19,10 @@ namespace Fancyx.Admin.Application.Service.System
         private readonly IdentitySharedService _identitySharedService;
         private readonly IRepository<User> _userRepository;
         private readonly ICurrentUser _currentUser;
+        private readonly IRepository<RoleMenu> _roleMenuRepository;
 
         public TenantService(IRepository<Tenant> tenantRepository, IRepository<TenantMenu> tenantMenuRepository, IDatabase redis
-            , IdentitySharedService identitySharedService, IRepository<User> userRepository, ICurrentUser currentUser)
+            , IdentitySharedService identitySharedService, IRepository<User> userRepository, ICurrentUser currentUser, IRepository<RoleMenu> roleMenuRepository)
         {
             _tenantRepository = tenantRepository;
             _tenantMenuRepository = tenantMenuRepository;
@@ -29,6 +30,7 @@ namespace Fancyx.Admin.Application.Service.System
             _identitySharedService = identitySharedService;
             _userRepository = userRepository;
             _currentUser = currentUser;
+            _roleMenuRepository = roleMenuRepository;
         }
 
         public async Task AddTenantAsync(TenantDto dto)
@@ -48,12 +50,14 @@ namespace Fancyx.Admin.Application.Service.System
             };
             await _tenantRepository.InsertAsync(entity);
             await _redis.KeyDeleteAsync(SystemCacheKey.AllTenant);
+            await _redis.KeyDeleteAsync(SystemCacheKey.TenantDomains);
         }
 
         public async Task DeleteTenantAsync(string tenantId)
         {
             await _tenantRepository.DeleteAsync(x => x.Id == tenantId);
             await _redis.KeyDeleteAsync(SystemCacheKey.AllTenant);
+            await _redis.KeyDeleteAsync(SystemCacheKey.TenantDomains);
             await this.DisabledTenantSubUserAsync(tenantId);
         }
 
@@ -82,8 +86,9 @@ namespace Fancyx.Admin.Application.Service.System
 
             await _tenantRepository.UpdateAsync(entity);
             await _redis.KeyDeleteAsync(SystemCacheKey.AllTenant);
+            await _redis.KeyDeleteAsync(SystemCacheKey.TenantDomains);
 
-            if(!dto.IsEnabled)
+            if (!dto.IsEnabled)
             {
                 await this.DisabledTenantSubUserAsync(dto.TenantId);
             }
@@ -95,6 +100,11 @@ namespace Fancyx.Admin.Application.Service.System
             await _tenantMenuRepository.DeleteAsync(x => x.TenantId == dto.TenantId);
             if (dto.MenuIds?.Length > 0)
             {
+                // 找到本次移除的菜单ID，移除租户下所有角色已分配的对应菜单ID
+                var existMenuIds = await _roleMenuRepository.Where(x => x.TenantId == dto.TenantId).Select(x => x.MenuId).ToListAsync();
+                var removeMenuIds = existMenuIds.Where(x => !dto.MenuIds.Contains(x)).ToList();
+                await _roleMenuRepository.DeleteAsync(x => removeMenuIds.Contains(x.MenuId));
+
                 var tenantMenus = dto.MenuIds.Select(id => new TenantMenu
                 {
                     TenantId = dto.TenantId,

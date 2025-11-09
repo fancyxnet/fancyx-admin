@@ -4,6 +4,8 @@ using Fancyx.Admin.Application.SharedService;
 using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
+using Fancyx.Core;
+using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
 using Fancyx.EfCore.Aop;
 
@@ -17,10 +19,11 @@ namespace Fancyx.Admin.Application.Service.System
         private readonly IdentitySharedService _identitySharedService;
         private readonly IRepository<RoleDept> _roleDeptRepository;
         private readonly IRepository<Dept> _deptRepository;
+        private readonly ICurrentTenant _currentTenant;
 
         public RoleService(IRepository<Role> roleRepository, IRepository<RoleMenu> roleMenuRepository
             , IRepository<UserRole> userRoleRepository, IdentitySharedService identitySharedService
-            , IRepository<RoleDept> roleDeptRepository, IRepository<Dept> deptRepository)
+            , IRepository<RoleDept> roleDeptRepository, IRepository<Dept> deptRepository, ICurrentTenant currentTenant)
         {
             _roleRepository = roleRepository;
             _roleMenuRepository = roleMenuRepository;
@@ -28,6 +31,7 @@ namespace Fancyx.Admin.Application.Service.System
             _identitySharedService = identitySharedService;
             _roleDeptRepository = roleDeptRepository;
             _deptRepository = deptRepository;
+            _currentTenant = currentTenant;
         }
 
         public async Task<bool> AddRoleAsync(RoleDto dto)
@@ -52,6 +56,16 @@ namespace Fancyx.Admin.Application.Service.System
             await _roleMenuRepository.DeleteAsync(x => x.RoleId == dto.RoleId);
             if (dto.MenuIds != null)
             {
+                //租户模式下，检查分配的菜单是否租户已有菜单
+                if (MultiTenancyConsts.IsEnabled)
+                {
+                    var menuIds = await _identitySharedService.GetTenantMenusAsync(_currentTenant.TenantId ?? "");
+                    if (dto.MenuIds.Any(m => !menuIds.Contains(m)))
+                    {
+                        throw new BusinessException("不能分配租户无权限菜单");
+                    }
+                }
+
                 var items = new List<RoleMenu>();
                 foreach (var item in dto.MenuIds)
                 {
