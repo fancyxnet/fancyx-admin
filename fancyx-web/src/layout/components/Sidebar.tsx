@@ -10,6 +10,7 @@ import { selectCollapsed, selectSidebarMode } from '@/store/themeStore.ts';
 import { HomeOutlined } from '@ant-design/icons';
 import { observer } from 'mobx-react-lite';
 import _ from 'lodash';
+import type { ItemType, MenuItemType } from 'antd/es/menu/interface';
 
 interface MenuItem {
   key: string;
@@ -75,7 +76,7 @@ const Sidebar = observer(() => {
       </div>
       
       <div className="sidebar-content">
-        <Menu mode="inline" items={calcItems} selectedKeys={[activeKey]} inlineCollapsed={collapsed} />
+        <Menu mode="inline" items={calcItems as ItemType<MenuItemType>[]} selectedKeys={[activeKey]} inlineCollapsed={collapsed} />
       </div>
     </div>
   );
