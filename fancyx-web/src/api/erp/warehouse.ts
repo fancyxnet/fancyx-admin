@@ -62,12 +62,6 @@ export interface Warehouse {
   lastModificationTime: Date | null;
   /**  */
   lastModifierId: string | null;
-  /**  */
-  isDeleted: number;
-  /**  */
-  deleterId: string | null;
-  /**  */
-  deletionTime: Date | null;
 }
 
 export interface WarehouseQueryDto extends PageSearch {

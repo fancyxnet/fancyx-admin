@@ -11,6 +11,7 @@ using Fancyx.SnowflakeId;
 using Fancyx.Utils;
 using JinianNet.JNTemplate;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
 using System.Text;
 
 namespace Fancyx.Admin.Application.Service.System
@@ -73,12 +74,17 @@ namespace Fancyx.Admin.Application.Service.System
             var queryConditionPropStrBuilder = new StringBuilder();
             var tsFieldStrBuilder = new StringBuilder();
             var tsFieldQueryStrBuilder = new StringBuilder();
+            var pageColumnsStrBuilder = new StringBuilder();
+            var pageSearchItemsStrBuilder = new StringBuilder();
+            var pageInsertFormItems = new StringBuilder("{{ isEdit && <>");
+            var pageUpdateFormItems = new StringBuilder("{{ !isEdit && <>");
             foreach (var item in genTableColumns)
             {
                 if (!exceptFields.Contains(item.ColumnName!)) this.AddProperties(entityPropStrBuilder, item);
                 this.AddTsProperties(tsFieldStrBuilder, item);
                 if (item.IsQuery)
                 {
+                    pageSearchItemsStrBuilder.Append(this.BuildAntdFormItem(item.ColumnComment!, item.ColumnName!, item.HtmlType!, item.ColumnName!));
                     this.AddProperties(queryPropStrBuilder, item, true, item.QueryType == "BETWEEN");
                     this.AddTsProperties(tsFieldQueryStrBuilder, item, true, item.QueryType == "BETWEEN");
                     if(item.CsharpType == "string")
@@ -115,16 +121,23 @@ namespace Fancyx.Admin.Application.Service.System
                 if (item.IsList)
                 {
                     listAssignPropStrBuilder.AppendLine($"\t\t\t{item.CsharpField} = x.{item.CsharpField}");
+                    pageColumnsStrBuilder.Append(this.BuildAntdColumnItem(item.ColumnComment!, item.ColumnName!));
                 }
                 if (item.IsInsert)
                 {
                     addAssignPropStrBuilder.AppendLine($"\t\tentity.{item.CsharpField} = dto.{item.CsharpField}");
+                    pageUpdateFormItems.Append(this.BuildAntdFormItem(item.ColumnComment!, item.ColumnName!, item.HtmlType!, item.ColumnName!, isRequired: item.IsRequired));
                 }
                 if (item.IsEdit)
                 {
                     updateAssignPropStrBuilder.AppendLine($"\t    entity.{item.CsharpField} = dto.{item.CsharpField}");
+                    pageUpdateFormItems.Append(this.BuildAntdFormItem(item.ColumnComment!, item.ColumnName!, item.HtmlType!, item.ColumnName!, isRequired: item.IsRequired));
                 }
             }
+
+            pageInsertFormItems.Append("}} </>");
+            pageUpdateFormItems.Append("}} </>");
+
             entityTemplate.Set("properties", entityPropStrBuilder.ToString().TrimEnd('\r', '\n'));
             result.Entity = new AppOption($"{genTable.ClassName}.cs", entityTemplate.Render());
 
@@ -146,6 +159,14 @@ namespace Fancyx.Admin.Application.Service.System
             apiTemplate.Set("ts_interface_fields", tsFieldStrBuilder.ToString().TrimEnd('\r', '\n'));
             apiTemplate.Set("ts_interface_query_fields", tsFieldQueryStrBuilder.ToString().TrimEnd('\r', '\n'));
             result.Api = new AppOption("api.ts", apiTemplate.Render());
+
+            // Page
+            var pageTemplate = this.LoadTemplate("page", genTable);
+            var operationFormStr = pageUpdateFormItems.Append(pageInsertFormItems).ToString();
+            pageTemplate.Set("searchItems", pageSearchItemsStrBuilder.ToString());
+            pageTemplate.Set("operationFormItems", operationFormStr);
+            pageTemplate.Set("columns", pageColumnsStrBuilder.ToString());
+            result.Page = new AppOption("page.tsx", pageTemplate.Render());
 
             return result;
         }
@@ -333,6 +354,24 @@ namespace Fancyx.Admin.Application.Service.System
             template.Set("function_name", genTable.FunctionName);
             var businessNameInject = StringUtils.ToFirstLetterLowerCase(genTable.BusinessName ?? "");
             template.Set("business_name_inject", businessNameInject);
+            template.Set("business_name_lower", genTable.BusinessName?.ToLowerInvariant());
+            template.Set("dir", genTable.NamespaceName?.ToLowerInvariant());
+
+            var moduleNamePrefix = "xxx_module_name_prefix";
+            if (!string.IsNullOrWhiteSpace(genTable.ModuleName))
+            {
+                if (genTable.ModuleName.Contains('.'))
+                {
+                    var lastDotIndex = genTable.ModuleName.LastIndexOf('.');
+                    if(lastDotIndex < genTable.ModuleName.Length - 1)
+                    {
+                        moduleNamePrefix = genTable.ModuleName[(lastDotIndex + 1)..];
+                    }
+                }
+            }
+            template.Set("module_name_prefix", moduleNamePrefix);
+            var moduleNameApiPrefix = $"{StringUtils.ToFirstLetterLowerCase(moduleNamePrefix)}";
+            template.Set("module_name_api_prefix", moduleNameApiPrefix);
 
             return template;
         }
@@ -455,6 +494,50 @@ namespace Fancyx.Admin.Application.Service.System
             }
 
             return (string.Join(", ", arr), exceptFields.ToList());
+        }
+
+        private string BuildAntdFormItem(string label, string name, string htmlType, string? key = null, bool? isRequired = false, int? len = 0)
+        {
+            string html = string.Format(@"<Form.Item label=""{0}"" name=""{1}""", label, name);
+            if (!string.IsNullOrWhiteSpace(key))
+            {
+                html += string.Format(@"key=""{0}""", key);
+            }
+            html += " >";
+            if(htmlType == "text")
+            {
+                html += string.Format(@"<Input placeholder=""请输入{0}"" />", label);
+            }
+            if (htmlType == "textarea")
+            {
+                html += string.Format(@"<TextArea placeholder=""请输入{0}"" />", label);
+            }
+            var hasRule = isRequired.GetValueOrDefault() == true || len.GetValueOrDefault() > 0;
+            if (hasRule)
+            {
+                html += "{[";
+                if(isRequired == true)
+                {
+                    html += "{ required: true }, ";
+                }
+                if(len > 0)
+                {
+                    html += "{ max: 256 }, ";
+                }
+                html += "]}";
+            }
+
+            html += "</Form.Item>";
+            return html.ToString();
+        }
+    
+        private string BuildAntdColumnItem(string title, string dataIndex)
+        {
+            var html = @"{
+                  title: '" + title +@"',
+                  dataIndex: '" + dataIndex +@"',
+                },";
+            return html;
         }
     }
 }

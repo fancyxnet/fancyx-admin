@@ -6,7 +6,7 @@ import type { AppResponse, PagedResult, PageSearch } from '@/types/api';
  * @param dto
  */
 export function add${business_name}(dto: ${class_name}) {
-  return httpClient.post<${business_name}, AppResponse<boolean>>('/admin-api/${business_name}/Add', dto);
+  return httpClient.post<${business_name}, AppResponse<boolean>>('/${module_name_api_prefix}-api/${business_name}/Add', dto);
 }
 
 /**
@@ -14,7 +14,7 @@ export function add${business_name}(dto: ${class_name}) {
  * @param dto
  */
 export function get${business_name}List(dto: ${business_name}QueryDto) {
-  return httpClient.get<${business_name}QueryDto, AppResponse<PagedResult<${business_name}>>>('/admin-api/${business_name}/List', { params: dto });
+  return httpClient.get<${business_name}QueryDto, AppResponse<PagedResult<${business_name}>>>('/${module_name_api_prefix}-api/${business_name}/List', { params: dto });
 }
 
 /**
@@ -22,7 +22,7 @@ export function get${business_name}List(dto: ${business_name}QueryDto) {
  * @param dto
  */
 export function get${business_name}(id: string) {
-  return httpClient.get<string, AppResponse<${class_name}>>('/admin-api/${business_name}/Get${business_name}/' + id);
+  return httpClient.get<string, AppResponse<${class_name}>>('/${module_name_api_prefix}-api/${business_name}/Get${business_name}/' + id);
 }
 
 /**
@@ -30,7 +30,7 @@ export function get${business_name}(id: string) {
  * @param dto
  */
 export function update${business_name}(dto: ${class_name}) {
-  return httpClient.put<${business_name}, AppResponse<boolean>>('/admin-api/${business_name}/Update', dto);
+  return httpClient.put<${business_name}, AppResponse<boolean>>('/${module_name_api_prefix}-api/${business_name}/Update', dto);
 }
 
 /**
@@ -38,7 +38,7 @@ export function update${business_name}(dto: ${class_name}) {
  * @param id
  */
 export function delete${business_name}(id: string) {
-  return httpClient.delete<string, AppResponse<boolean>>('/admin-api/${business_name}/Delete/'+id);
+  return httpClient.delete<string, AppResponse<boolean>>('/${module_name_api_prefix}-api/${business_name}/Delete/'+id);
 }
 
 export interface ${class_name} {

@@ -8,5 +8,6 @@
         public AppOption Controller { get; set; } = null!;
         public AppOption QueryDto { get; set; } = null!;
         public AppOption Api { get; set; } = null!;
+        public AppOption Page { get; set; } = null!;
     }
 }

@@ -299,6 +299,11 @@ const PerviewModal: React.FC<{
             key: 'api',
             label: code?.api?.label,
             children: renderCode(code?.api?.label, code?.api?.value),
+        },
+        {
+            key: 'page',
+            label: code?.page?.label,
+            children: renderCode(code?.page?.label, code?.page?.value),
         }
     ];
     const onTabChange = (key: string) => {
