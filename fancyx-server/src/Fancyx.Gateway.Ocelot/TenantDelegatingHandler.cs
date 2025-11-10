@@ -8,7 +8,7 @@
             const string tenantDomainHeaderKey = "X-Tenant-Domain";
             if (!request.Headers.Contains(tenantDomainHeaderKey))
             {
-                string? domain = null;
+                string? domain;
                 if (request.Headers.Contains("X-Forwarded-Host"))
                 {
                     domain = request.Headers.GetValues("X-Forwarded-Host").FirstOrDefault();
