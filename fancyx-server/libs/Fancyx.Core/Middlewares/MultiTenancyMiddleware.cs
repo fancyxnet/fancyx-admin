@@ -20,7 +20,7 @@ namespace Fancyx.Core.Middlewares
 
         public async Task InvokeAsync(HttpContext context)
         {
-            // 使用X-Tenant解析租户ID，是最开始方案，但无论通过Nginx配置还是Ocelot配置转发过来，都需要刷新配置(Consul刷新)或重启才生效
+            // 使用X-Tenant解析租户ID，是最开始方案，但无论通过Nginx配置还是Ocelot配置转发过来，都需要更新配置(Consul自动刷新)或重启才生效，内部Grpc也传递此请求头
             // 使用X-Tenant-Domain将原始域名通过Nginx和Ocelot转发过来，再从缓存中读取域名绑定的租户ID，这样可以无感解析租户，无需重启/刷新
 
             try
