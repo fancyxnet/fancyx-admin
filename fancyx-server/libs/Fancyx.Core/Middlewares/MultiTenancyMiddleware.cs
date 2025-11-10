@@ -20,18 +20,20 @@ namespace Fancyx.Core.Middlewares
 
         public async Task InvokeAsync(HttpContext context)
         {
+            // 使用X-Tenant解析租户ID，是最开始方案，但无论通过Nginx配置还是Ocelot配置转发过来，都需要刷新配置(Consul刷新)或重启才生效
+            // 使用X-Tenant-Domain将原始域名通过Nginx和Ocelot转发过来，再从缓存中读取域名绑定的租户ID，这样可以无感解析租户，无需重启/刷新
+
             try
             {
-                var hasTenantId = context.Request.Headers.TryGetValue("X-Tenant", out var tenant);
-                var tenantId = tenant.ToString();
                 var checker = context.RequestServices.GetService<ITenantChecker>();
                 if (checker == null)
                 {
                     await next(context);
                     return;
                 }
-                if (!string.IsNullOrWhiteSpace(tenantId))
+                if (context.Request.Headers.TryGetValue("X-Tenant", out var tenant) && !string.IsNullOrWhiteSpace(tenant))
                 {
+                    var tenantId = tenant.ToString();
                     if (!await checker.ExistTenantAsync(tenantId))
                     {
                         logger.LogWarning("租户{tenantId}不存在", tenantId);
@@ -43,11 +45,9 @@ namespace Fancyx.Core.Middlewares
                     await next(context);
                     return;
                 }
-                // TODO: Ocelot网关过来的域名都是localhost
-                if (!IsGrpcRequest(context))
+                if (!IsGrpcRequest(context) && context.Request.Headers.TryGetValue("X-Tenant-Domain", out var domain) && !string.IsNullOrWhiteSpace(domain))
                 {
-                    var domain = context.Request.Host.Host;
-                    tenantId = await checker.GetTenantByDomainAsync(domain);
+                    var tenantId = await checker.GetTenantByDomainAsync(domain!);
                     if (!string.IsNullOrWhiteSpace(tenantId))
                     {
                         context.Features.Set(new CurrentTenant(tenantId));

@@ -1,3 +1,4 @@
+using Fancyx.Gateway.Ocelot;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Ocelot.Provider.Consul;
@@ -10,12 +11,14 @@ var configurationBuilder = new ConfigurationBuilder();
 if (serviceMode == "Direct")
 {
     configurationBuilder.AddJsonFile("ocelot.direct.json");
-    builder.Services.AddOcelot(configurationBuilder.Build());
+    builder.Services.AddOcelot(configurationBuilder.Build())
+        .AddDelegatingHandler<TenantDelegatingHandler>(true);
 }
 else
 {
     configurationBuilder.AddJsonFile("ocelot.consul.json");
-    builder.Services.AddOcelot(configurationBuilder.Build()).AddConsul();
+    builder.Services.AddOcelot(configurationBuilder.Build()).AddConsul()
+        .AddDelegatingHandler<TenantDelegatingHandler>(true);
 }
 // Íø¹Ø¿çÓò
 if (!string.IsNullOrEmpty(builder.Configuration["CorsOrigins"]))
