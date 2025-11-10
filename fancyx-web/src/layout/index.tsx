@@ -15,7 +15,7 @@ const { Content, Sider } = Layout;
 function Index() {
   const curOutlet = useOutlet();
   const collapsed = useSelector(selectCollapsed);
-  const isMinScreen = useMediaQuery({ maxWidth: '768px' });
+  const isMinScreen = useMediaQuery({ maxWidth: '1024px' });
   const dispatch = useDispatch();
 
   useEffect(() => {

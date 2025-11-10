@@ -37,7 +37,7 @@ const WarehouseList: React.FC = () => {
       fixed: 'right',
       render: (_: any, record: Warehouse) => (
         <Space>
-          <Permission permissions={'Sys.Config.Update'}>
+          <Permission permissions={'Erp.Warehouse.Update'}>
             <Button
               type="link"
               icon={<EditOutlined />}
@@ -50,7 +50,7 @@ const WarehouseList: React.FC = () => {
               编辑
             </Button>
           </Permission>
-          <Permission permissions={'Sys.Config.Delete'}>
+          <Permission permissions={'Erp.Warehouse.Delete'}>
             <Popconfirm
               key="delete"
               title="确定删除吗？"
@@ -104,10 +104,17 @@ const WarehouseList: React.FC = () => {
         }
       />
       {/** 新增/编辑弹窗 */}
-      <WarehouseModal id={rowId} show={isOpenModal} onOk={() => {
-        setIsOpenModal(false);
-        tableRef?.current?.reload();
-      }} onCancel={() => setIsOpenModal(false)} />
+      <WarehouseModal id={rowId}
+        show={isOpenModal}
+        onOk={() => {
+          setRowId('');
+          setIsOpenModal(false);
+          tableRef?.current?.reload();
+        }}
+        onCancel={() => {
+          setRowId('');
+          setIsOpenModal(false);
+        }} />
     </>
   );
 };
@@ -131,16 +138,23 @@ const WarehouseModal: React.FC<{
   }, [id])
 
   const onFinish = (values: Warehouse) => {
-    if (isEdit) {
-      updateWarehouse(values).then(() => {
-        message.success('编辑成功')
-        onOk();
-      })
-    } else {
-      addWarehouse(values).then(() => {
-        message.success('新增成功')
-        onOk();
-      })
+    try {
+      if (isEdit) {
+
+        updateWarehouse({ ...values, id }).then(() => {
+          message.success('编辑成功')
+          onOk();
+        })
+
+      } else {
+        addWarehouse(values).then(() => {
+          message.success('新增成功')
+          onOk();
+        })
+      }
+    }
+    finally {
+      form.resetFields();
     }
   };
 
