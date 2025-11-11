@@ -4,6 +4,17 @@ import { ErrorCode, StaticRoutes } from '@/utils/globalValue.ts';
 import { message } from 'antd';
 import dayjs from 'dayjs';
 
+function getCleanDomain() {
+    const origin = window.location.origin;
+    try {
+        const url = new URL(origin);
+        return url.hostname;  // 直接返回域名，不包含端口和协议
+    } catch (error) {
+        // 备用方案
+        return window.location.hostname;
+    }
+}
+
 class HttpClient {
   private readonly instance: AxiosInstance;
   allowAnonymousApis: string[] = ['/admin-api/account/login']; //允许匿名访问接口
@@ -19,6 +30,8 @@ class HttpClient {
     // 请求拦截器
     this.instance.interceptors.request.use(
       async (config) => {
+        //添加域名
+        config.headers['X-Tenant-Domain'] = getCleanDomain();
         if (config.url && this.allowAnonymousApis.includes(config.url)) {
           return config;
         }
