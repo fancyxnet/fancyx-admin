@@ -163,6 +163,7 @@ namespace Fancyx.Admin.Application.Service.System
                 };
                 var user = new User()
                 {
+                    Id = IdGenerater.Instance.NextId(),
                     TenantId = dto.TenantId,
                     UserName = info.UserName,
                     NickName = info.UserName,
@@ -176,8 +177,11 @@ namespace Fancyx.Admin.Application.Service.System
                 var roleMenu = menuIds.Select(x => new RoleMenu() { TenantId = dto.TenantId, MenuId = x, RoleId = role.Id }).ToList();
                 if (roleMenu.Count > 0) _dbContext.AddRange(roleMenu);
 
+                var userRole = new UserRole { RoleId = role.Id, UserId = user.Id, TenantId = dto.TenantId };
+
                 _dbContext.Add(user);
                 _dbContext.Add(role);
+                _dbContext.Add(userRole);
                 await _dbContext.SaveChangesAsync();
             }
             catch (Exception)
