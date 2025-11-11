@@ -34,6 +34,8 @@
 
 ## 在线预览
 
+*可使用提供的多租户域名测试多租户功能*
+
 在线文档： https://doc.crackerwork.cn <br/>
 预览地址： https://crackerwork.cn <br/>
 预览账号： admin <br/>
@@ -279,20 +281,6 @@
 * 提前安装`yarn`，运行命令：`npm install -g yarn`
 * 安装依赖包，运行命令：`yarn install`
 * 开发环境启动，运行命令：`yarn run dev`
-
-### 部署
-
-后端使用Nginx反向代理，配置如：
-
-> 需要通过X-Tenant-Domain将域名传入Ocelot网关层
-
-```conf
-location / {
-	proxy_pass http://localhost:9000;
-			
-	proxy_set_header X-Tenant-Domain $host;
-}
-```
 
 ## 参与贡献
 
