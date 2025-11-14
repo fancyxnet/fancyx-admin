@@ -1,5 +1,5 @@
 import Permission from '@/components/Permission';
-import { delete${business_name}, get${business_name}List, add${business_name}, update${business_name}, get${business_name}, type ${business_name} } from '@/api/${module_name_api_prefix}/${dir}/${business_name_lower}.ts';
+import { delete${business_name}, get${business_name}List, add${business_name}, update${business_name}, get${business_name}, type ${class_name} } from '@/api/${module_name_api_prefix}/${dir}/${business_name_lower}.ts';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Modal, Popconfirm, Space } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';

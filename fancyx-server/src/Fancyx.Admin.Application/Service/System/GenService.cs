@@ -11,7 +11,7 @@ using Fancyx.SnowflakeId;
 using Fancyx.Utils;
 using JinianNet.JNTemplate;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Primitives;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Fancyx.Admin.Application.Service.System
@@ -76,8 +76,9 @@ namespace Fancyx.Admin.Application.Service.System
             var tsFieldQueryStrBuilder = new StringBuilder();
             var pageColumnsStrBuilder = new StringBuilder();
             var pageSearchItemsStrBuilder = new StringBuilder();
-            var pageInsertFormItems = new StringBuilder("{{ isEdit && <>");
-            var pageUpdateFormItems = new StringBuilder("{{ !isEdit && <>");
+            var pageInsertFormItems = new StringBuilder("{ !isEdit && <>");
+            var pageUpdateFormItems = new StringBuilder("{ isEdit && <>");
+            var pageInsertAndUpdateItems = new StringBuilder();
             foreach (var item in genTableColumns)
             {
                 if (!exceptFields.Contains(item.ColumnName!)) this.AddProperties(entityPropStrBuilder, item);
@@ -87,10 +88,10 @@ namespace Fancyx.Admin.Application.Service.System
                     pageSearchItemsStrBuilder.Append(this.BuildAntdFormItem(item.ColumnComment!, item.ColumnName!, item.HtmlType!, item.ColumnName!));
                     this.AddProperties(queryPropStrBuilder, item, true, item.QueryType == "BETWEEN");
                     this.AddTsProperties(tsFieldQueryStrBuilder, item, true, item.QueryType == "BETWEEN");
-                    if(item.CsharpType == "string")
+                    if (item.CsharpType == "string")
                     {
                         queryConditionPropStrBuilder.Append($".WhereIf(!string.IsNullOrEmpty(dto.{item.CsharpField}), x => ");
-                        if(item.QueryType == "LIKE")
+                        if (item.QueryType == "LIKE")
                         {
                             queryConditionPropStrBuilder.Append($"x.StartWith(dto.{item.CsharpField})");
                         }
@@ -98,7 +99,7 @@ namespace Fancyx.Admin.Application.Service.System
                     else
                     {
                         queryConditionPropStrBuilder.Append($".WhereIf({item.CsharpField}.HasValue, x => ");
-                        if(item.QueryType == ">" ||  item.QueryType == ">=" || item.QueryType == "<"
+                        if (item.QueryType == ">" || item.QueryType == ">=" || item.QueryType == "<"
                             || item.QueryType == "<=")
                         {
                             queryConditionPropStrBuilder.Append($"x.{item.CsharpField} {item.QueryType} dto.{item.CsharpField}");
@@ -123,20 +124,40 @@ namespace Fancyx.Admin.Application.Service.System
                     listAssignPropStrBuilder.AppendLine($"\t\t\t{item.CsharpField} = x.{item.CsharpField}");
                     pageColumnsStrBuilder.Append(this.BuildAntdColumnItem(item.ColumnComment!, item.ColumnName!));
                 }
+                bool isInsertAndUpdate = item.IsInsert && item.IsEdit;
+                var formItem = this.BuildAntdFormItem(item.ColumnComment!, item.ColumnName!, item.HtmlType!, item.ColumnName!, isRequired: item.IsRequired);
+                if (isInsertAndUpdate)
+                {
+                    pageInsertAndUpdateItems.Append(formItem);
+                }
                 if (item.IsInsert)
                 {
                     addAssignPropStrBuilder.AppendLine($"\t\tentity.{item.CsharpField} = dto.{item.CsharpField}");
-                    pageUpdateFormItems.Append(this.BuildAntdFormItem(item.ColumnComment!, item.ColumnName!, item.HtmlType!, item.ColumnName!, isRequired: item.IsRequired));
+                    if (!isInsertAndUpdate) pageInsertFormItems.Append(formItem);
                 }
                 if (item.IsEdit)
                 {
                     updateAssignPropStrBuilder.AppendLine($"\t    entity.{item.CsharpField} = dto.{item.CsharpField}");
-                    pageUpdateFormItems.Append(this.BuildAntdFormItem(item.ColumnComment!, item.ColumnName!, item.HtmlType!, item.ColumnName!, isRequired: item.IsRequired));
+                    if (!isInsertAndUpdate) pageUpdateFormItems.Append(formItem);
                 }
             }
 
-            pageInsertFormItems.Append("}} </>");
-            pageUpdateFormItems.Append("}} </>");
+            if (pageInsertFormItems.Length < 20)
+            {
+                pageInsertFormItems.Clear();
+            }
+            else
+            {
+                pageInsertFormItems.Append(" </> } ");
+            }
+            if (pageUpdateFormItems.Length < 20)
+            {
+                pageUpdateFormItems.Clear();
+            }
+            else
+            {
+                pageUpdateFormItems.Append(" </> } ");
+            }
 
             entityTemplate.Set("properties", entityPropStrBuilder.ToString().TrimEnd('\r', '\n'));
             result.Entity = new AppOption($"{genTable.ClassName}.cs", entityTemplate.Render());
@@ -162,9 +183,9 @@ namespace Fancyx.Admin.Application.Service.System
 
             // Page
             var pageTemplate = this.LoadTemplate("page", genTable);
-            var operationFormStr = pageUpdateFormItems.Append(pageInsertFormItems).ToString();
+            pageInsertAndUpdateItems.Append(pageUpdateFormItems.Append(pageInsertFormItems));
             pageTemplate.Set("searchItems", pageSearchItemsStrBuilder.ToString());
-            pageTemplate.Set("operationFormItems", operationFormStr);
+            pageTemplate.Set("operationFormItems", pageInsertAndUpdateItems.ToString());
             pageTemplate.Set("columns", pageColumnsStrBuilder.ToString());
             result.Page = new AppOption("page.tsx", pageTemplate.Render());
 
@@ -215,7 +236,7 @@ namespace Fancyx.Admin.Application.Service.System
         {
             var genTable = await _genTableRepository.FindAsync(tableId) ?? throw new EntityNotFoundException();
             var tableInfo = await _genRepository.QueryTableAsync(genTable.TableName!) ?? throw new BusinessException($"数据库表{genTable.TableName}不存在");
-            
+
             genTable.TableName = tableInfo.TableName;
             genTable.TableComment = tableInfo.TableComment;
             genTable.ClassName = StringUtils.ToPascalCase(tableInfo.TableName);
@@ -326,7 +347,7 @@ namespace Fancyx.Admin.Application.Service.System
             sb.AppendLine("\t/// <summary>");
             sb.AppendLine($"\t/// {item.ColumnComment}");
             sb.AppendLine("\t/// </summary>");
-            sb.AppendLine($"\tpublic {item.CsharpType}{(isNullable.Value ? "?" : "")} {item.CsharpField}{(isArray ? "[]": "")}" + " { get; set; } \r\n");
+            sb.AppendLine($"\tpublic {item.CsharpType}{(isNullable.Value ? "?" : "")} {item.CsharpField}{(isArray ? "[]" : "")}" + " { get; set; } \r\n");
             return sb;
         }
 
@@ -363,7 +384,7 @@ namespace Fancyx.Admin.Application.Service.System
                 if (genTable.ModuleName.Contains('.'))
                 {
                     var lastDotIndex = genTable.ModuleName.LastIndexOf('.');
-                    if(lastDotIndex < genTable.ModuleName.Length - 1)
+                    if (lastDotIndex < genTable.ModuleName.Length - 1)
                     {
                         moduleNamePrefix = genTable.ModuleName[(lastDotIndex + 1)..];
                     }
@@ -378,40 +399,109 @@ namespace Fancyx.Admin.Application.Service.System
 
         private string MapToCSharpType(string columnType)
         {
-            // columnType值如：varchar(16)
-            if (columnType.Contains('('))
+            // 移除长度、精度等括号内的信息，并转换为小写便于比较
+            string baseType = columnType.ToLower();
+            if (baseType.Contains('('))
             {
-                columnType = columnType[..columnType.IndexOf('(')];
+                baseType = baseType[..baseType.IndexOf('(')].Trim();
             }
 
-            return columnType switch
+            // 处理无符号类型
+            bool isUnsigned = baseType.Contains("unsigned");
+            if (isUnsigned)
             {
-                "bigint" => "long",
-                "varchar" or "text" or "longtext" or "json" => "string",
-                "int" => "int",
-                "tinyint" => "int",
+                baseType = baseType.Replace("unsigned", "").Trim();
+            }
+
+            return baseType switch
+            {
+                // 整数类型
+                "bigint" => isUnsigned ? "ulong" : "long",
+                "int" or "integer" => isUnsigned ? "uint" : "int",
+                "mediumint" => isUnsigned ? "uint" : "int",
+                "smallint" => isUnsigned ? "ushort" : "short",
+                "tinyint" => "int", // MySQL中tinyint(1)通常表示bool，但其他情况表示byte
                 "bit" => "bool",
+
+                // 浮点类型
+                "decimal" or "dec" or "numeric" => "decimal",
+                "float" => "float",
+                "double" or "real" => "double",
+
+                // 字符串类型
+                "varchar" or "char" or "text" or "tinytext"
+                    or "mediumtext" or "longtext" or "json"
+                    or "enum" or "set" => "string",
+
+                // 二进制类型
+                "binary" or "varbinary" or "blob" or "tinyblob"
+                    or "mediumblob" or "longblob" => "byte[]",
+
+                // 日期时间类型
+                "date" => "DateTime",
                 "datetime" => "DateTime",
-                "decimal" => "decimal",
-                _ => throw new NotSupportedException($"不支持的列类型 => {columnType}"),
+                "timestamp" => "DateTime",
+                "time" => "TimeSpan",
+                "year" => "int",
+
+                // 空间数据类型
+                "geometry" or "point" or "linestring" or "polygon"
+                    or "multipoint" or "multilinestring" or "multipolygon"
+                    or "geometrycollection" => "byte[]", // 或者使用特定的空间类型如MySqlGeometry
+
+                // 其他类型
+                "bool" or "boolean" => "bool",
+
+                _ => throw new NotSupportedException($"不支持的列类型: {columnType}"),
             };
         }
 
         private string MapToTsType(string columnType)
         {
-            // columnType值如：varchar(16)
-            if (columnType.Contains('('))
+            // 移除长度、精度等括号内的信息，并转换为小写便于比较
+            string baseType = columnType.ToLower();
+            if (baseType.Contains('('))
             {
-                columnType = columnType[..columnType.IndexOf('(')];
+                baseType = baseType[..baseType.IndexOf('(')].Trim();
             }
 
-            return columnType switch
+            // 处理无符号类型
+            bool isUnsigned = baseType.Contains("unsigned");
+            if (isUnsigned)
             {
-                "bigint" or "varchar" or "text" or "longtext" or "json" => "string",
-                "int" or "tinyint" or "decimal" => "number",
-                "bit" => "boolean",
-                "datetime" => "Date",
-                _ => throw new NotSupportedException($"不支持的列类型 => {columnType}"),
+                baseType = baseType.Replace("unsigned", "").Trim();
+            }
+
+            return baseType switch
+            {
+                // 整数类型
+                "bigint" or "int" or "integer" or "mediumint" or "smallint" or "tinyint" => "number",
+
+                // 浮点类型
+                "decimal" or "dec" or "numeric" or "float" or "double" or "real" => "number",
+
+                // 字符串类型
+                "varchar" or "char" or "text" or "tinytext" or "mediumtext"
+                    or "longtext" or "json" or "enum" or "set" => "string",
+
+                // 二进制类型 - 在前端通常用string表示(base64)或忽略
+                "binary" or "varbinary" or "blob" or "tinyblob"
+                    or "mediumblob" or "longblob" => "string", // 或者 "Uint8Array"
+
+                // 布尔类型
+                "bit" or "bool" or "boolean" => "boolean",
+
+                // 日期时间类型
+                "date" or "datetime" or "timestamp" => "Date",
+                "time" => "string", // TimeSpan在TS中没有直接对应类型
+                "year" => "number",
+
+                // 空间数据类型 - 通常在前端不需要处理或作为string
+                "geometry" or "point" or "linestring" or "polygon"
+                    or "multipoint" or "multilinestring" or "multipolygon"
+                    or "geometrycollection" => "string", // 或者特定的接口类型
+
+                _ => "any", // 对于未知类型返回any而不是抛出异常
             };
         }
 
@@ -501,10 +591,24 @@ namespace Fancyx.Admin.Application.Service.System
             string html = string.Format(@"<Form.Item label=""{0}"" name=""{1}""", label, name);
             if (!string.IsNullOrWhiteSpace(key))
             {
-                html += string.Format(@"key=""{0}""", key);
+                html += string.Format(@" key=""{0}""", key);
+            }
+            var hasRule = isRequired.GetValueOrDefault() == true || len.GetValueOrDefault() > 0;
+            if (hasRule)
+            {
+                html += " rules={[";
+                if (isRequired == true)
+                {
+                    html += "{ required: true }, ";
+                }
+                if (len > 0)
+                {
+                    html += "{ max: 256 }, ";
+                }
+                html += "]}";
             }
             html += " >";
-            if(htmlType == "text")
+            if (htmlType == "text")
             {
                 html += string.Format(@"<Input placeholder=""请输入{0}"" />", label);
             }
@@ -512,30 +616,16 @@ namespace Fancyx.Admin.Application.Service.System
             {
                 html += string.Format(@"<TextArea placeholder=""请输入{0}"" />", label);
             }
-            var hasRule = isRequired.GetValueOrDefault() == true || len.GetValueOrDefault() > 0;
-            if (hasRule)
-            {
-                html += "{[";
-                if(isRequired == true)
-                {
-                    html += "{ required: true }, ";
-                }
-                if(len > 0)
-                {
-                    html += "{ max: 256 }, ";
-                }
-                html += "]}";
-            }
 
             html += "</Form.Item>";
             return html.ToString();
         }
-    
+
         private string BuildAntdColumnItem(string title, string dataIndex)
         {
             var html = @"{
-                  title: '" + title +@"',
-                  dataIndex: '" + dataIndex +@"',
+                  title: '" + title + @"',
+                  dataIndex: '" + dataIndex + @"',
                 },";
             return html;
         }
