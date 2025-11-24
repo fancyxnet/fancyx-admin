@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+
 using Fancyx.Admin.Application.IService.System;
 using Fancyx.Admin.Application.IService.System.Dtos;
 using Fancyx.Admin.EfCore.Entities.Gen;
@@ -9,9 +10,11 @@ using Fancyx.EfCore.Aop;
 using Fancyx.EfCore.BaseEntity;
 using Fancyx.SnowflakeId;
 using Fancyx.Utils;
+
 using JinianNet.JNTemplate;
+
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.CompilerServices;
+
 using System.Text;
 
 namespace Fancyx.Admin.Application.Service.System
@@ -121,7 +124,7 @@ namespace Fancyx.Admin.Application.Service.System
                 }
                 if (item.IsList)
                 {
-                    listAssignPropStrBuilder.AppendLine($"\t\t\t{item.CsharpField} = x.{item.CsharpField}");
+                    listAssignPropStrBuilder.AppendLine($"\t\t{item.CsharpField} = x.{item.CsharpField},");
                     pageColumnsStrBuilder.Append(this.BuildAntdColumnItem(item.ColumnComment!, item.ColumnName!));
                 }
                 bool isInsertAndUpdate = item.IsInsert && item.IsEdit;
@@ -132,12 +135,12 @@ namespace Fancyx.Admin.Application.Service.System
                 }
                 if (item.IsInsert)
                 {
-                    addAssignPropStrBuilder.AppendLine($"\t\tentity.{item.CsharpField} = dto.{item.CsharpField}");
+                    addAssignPropStrBuilder.AppendLine($"\t{item.CsharpField} = dto.{item.CsharpField},");
                     if (!isInsertAndUpdate) pageInsertFormItems.Append(formItem);
                 }
                 if (item.IsEdit)
                 {
-                    updateAssignPropStrBuilder.AppendLine($"\t    entity.{item.CsharpField} = dto.{item.CsharpField}");
+                    updateAssignPropStrBuilder.AppendLine($"\tentity.{item.CsharpField} = dto.{item.CsharpField};");
                     if (!isInsertAndUpdate) pageUpdateFormItems.Append(formItem);
                 }
             }

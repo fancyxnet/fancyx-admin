@@ -6,55 +6,54 @@ using Fancyx.Erp.EfCore.Entites;
 using Fancyx.Shared.Exceptions;
 using Fancyx.Shared.Models;
 
-namespace ${module_name}.Application.Service.${namespace_name}
+namespace ${module_name}.Application.Service.${namespace_name};
+
+public class ${business_name}Service : I${business_name}Service
 {
-    public class ${business_name}Service : I${business_name}Service
+    private readonly IRepository<${business_name}> _${business_name_inject}Repository;
+    private readonly IMapper _mapper;
+
+    public ${business_name}Service(IRepository<${business_name}> ${business_name_inject}Repository, IMapper mapper)
     {
-        private readonly IRepository<${business_name}> _${business_name_inject}Repository;
-        private readonly IMapper _mapper;
+        _${business_name_inject}Repository = ${business_name_inject}Repository;
+        _mapper = mapper;
+    }
 
-        public ${business_name}Service(IRepository<${business_name}> ${business_name_inject}Repository, IMapper mapper)
+    public async Task Add${business_name}Async(${business_name} dto)
+    {
+        var entity = new ${business_name}() 
         {
-            _${business_name_inject}Repository = ${business_name_inject}Repository;
-            _mapper = mapper;
-        }
-
-        public async Task Add${business_name}Async(${business_name} dto)
-        {
-            var entity = new ${business_name}() 
-            {
 ${addProperties}
-            };
-            await _${business_name_inject}Repository.InsertAsync(entity);
-        }
+        };
+        await _${business_name_inject}Repository.InsertAsync(entity);
+    }
 
-        public Task Delete${business_name}Async(long id)
-        {
-            return _${business_name_inject}Repository.DeleteAsync(x => x.Id == id);
-        }
+    public Task Delete${business_name}Async(long id)
+    {
+        return _${business_name_inject}Repository.DeleteAsync(x => x.Id == id);
+    }
 
-        public async Task<PagedResult<${business_name}>> Get${business_name}ListAsync(${business_name}QueryDto dto)
-        {
-            var resp = await _${business_name_inject}Repository.GetQueryable()
-                ${queryConditions}
-                .Select(x => new ${business_name}
-                {
+    public async Task<PagedResult<${business_name}>> Get${business_name}ListAsync(${business_name}QueryDto dto)
+    {
+        var resp = await _${business_name_inject}Repository.GetQueryable()
+            ${queryConditions}
+            .Select(x => new ${business_name}
+            {
 ${listProperties}
-                }).PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<${business_name}>(dto, resp.Total, resp.Items);
-        }
+            }).PagedAsync(dto.Current, dto.PageSize);
+        return new PagedResult<${business_name}>(dto, resp.Total, resp.Items);
+    }
 
-        public async Task Update${business_name}Async(${business_name} dto)
-        {
-            var entity = await _${business_name_inject}Repository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
+    public async Task Update${business_name}Async(${business_name} dto)
+    {
+        var entity = await _${business_name_inject}Repository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
 ${updateProperties}
-            await _${business_name_inject}Repository.UpdateAsync(entity);
-        }
+        await _${business_name_inject}Repository.UpdateAsync(entity);
+    }
 
-        public async Task<${class_name}> Get${business_name}Async(long id)
-        {
-            var entity = await _${business_name_inject}Repository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
-            return entity;
-        }
+    public async Task<${class_name}> Get${business_name}Async(long id)
+    {
+        var entity = await _${business_name_inject}Repository.FindAsync(id) ?? throw new EntityNotFoundException();
+        return entity;
     }
 }
