@@ -28,7 +28,7 @@ namespace Fancyx.Admin.Controllers.System
         [HttpPost("Add")]
         [HasPermission("Sys.Config.Add")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
-        public async Task<AppResponse<bool>> AddConfigAsync([FromBody] ConfigDto dto)
+        public async Task<AppResponse<bool>> AddConfigAsync([FromBody] AddOrUpdateConfigRequest dto)
         {
             await _configService.AddConfigAsync(dto);
             return Result.Data(true);
@@ -36,7 +36,7 @@ namespace Fancyx.Admin.Controllers.System
 
         [HttpGet("List")]
         [HasPermission("Sys.Config.List")]
-        public async Task<AppResponse<PagedResult<ConfigListDto>>> GetConfigListAsync([FromQuery] ConfigQueryDto dto)
+        public async Task<AppResponse<PagedResult<ConfigListDto>>> GetConfigListAsync([FromQuery] GetConfigListRequest dto)
         {
             var data = await _configService.GetConfigListAsync(dto);
             return Result.Data(data);
@@ -45,7 +45,7 @@ namespace Fancyx.Admin.Controllers.System
         [HttpPut("Update")]
         [HasPermission("Sys.Config.Update")]
         [ApiAccessLog(operateName: "修改配置", operateType: [OperateType.Update], reponseEnable: true)]
-        public async Task<AppResponse<bool>> UpdateConfigAsync(ConfigDto dto)
+        public async Task<AppResponse<bool>> UpdateConfigAsync(AddOrUpdateConfigRequest dto)
         {
             await _configService.UpdateConfigAsync(dto);
             return Result.Data(true);

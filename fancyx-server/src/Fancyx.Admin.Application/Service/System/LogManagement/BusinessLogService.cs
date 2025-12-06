@@ -21,7 +21,7 @@ namespace Fancyx.Admin.Application.Service.System.LogManagement
             _mapper = mapper;
         }
 
-        public async Task<PagedResult<BusinessLogListDto>> GetBusinessLogListAsync(BusinessLogQueryDto dto)
+        public async Task<PagedResult<BusinessLogItem>> GetBusinessLogListAsync(GetBusinessLogListRequest dto)
         {
             var resp = await _logRecordRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.Type), x => x.Type == dto.Type)
@@ -30,7 +30,7 @@ namespace Fancyx.Admin.Application.Service.System.LogManagement
                 .WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.UserName != null && x.UserName.Contains(dto.UserName!))
                 .OrderByDescending(x => x.CreationTime)
                 .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<BusinessLogListDto>(dto, resp.Total, _mapper.Map<List<LogRecord>, List<BusinessLogListDto>>(resp.Items));
+            return new PagedResult<BusinessLogItem>(dto, resp.Total, _mapper.Map<List<LogRecord>, List<BusinessLogItem>>(resp.Items));
         }
 
         public Task<List<AppOption>> GetBusinessTypeOptionsAsync(string? type)

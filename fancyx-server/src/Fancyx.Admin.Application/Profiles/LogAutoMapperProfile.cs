@@ -11,10 +11,10 @@ namespace Fancyx.Admin.Application.Profiles
     {
         public LogAutoMapperProfile()
         {
-            CreateMap<ApiAccessLog, ApiAccessLogListDto>();
-            CreateMap<ExceptionLog, ExceptionLogListDto>();
-            CreateMap<LogRecord, BusinessLogListDto>();
-            CreateMap<LoginLog, LoginLogListDto>();
+            CreateMap<ApiAccessLog, ApiAccessLogItem>();
+            CreateMap<ExceptionLog, ExceptionLogItem>();
+            CreateMap<LogRecord, BusinessLogItem>();
+            CreateMap<LoginLog, LoginLogItem>();
         }
     }
 }

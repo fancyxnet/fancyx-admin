@@ -27,7 +27,7 @@ namespace Fancyx.Admin.Controllers.System
         /// <returns></returns>
         [HttpPost("Add")]
         [HasPermission("Sys.DictData.Add")]
-        public async Task<AppResponse<bool>> AddDictDataAsync(DictDataDto dto)
+        public async Task<AppResponse<bool>> AddDictDataAsync(AddOrUpdateDictDataRequest dto)
         {
             await _dictService.AddDictDataAsync(dto);
             return Result.Ok();
@@ -40,7 +40,7 @@ namespace Fancyx.Admin.Controllers.System
         /// <returns></returns>
         [HttpGet("List")]
         [HasPermission("Sys.DictData.List")]
-        public async Task<AppResponse<PagedResult<DictDataListDto>>> GetDictDataListAsync([FromQuery] DictDataQueryDto dto)
+        public async Task<AppResponse<PagedResult<DictDataItem>>> GetDictDataListAsync([FromQuery] GetDictDataListRequest dto)
         {
             var data = await _dictService.GetDictDataListAsync(dto);
             return Result.Data(data);
@@ -53,7 +53,7 @@ namespace Fancyx.Admin.Controllers.System
         /// <returns></returns>
         [HttpPut("Update")]
         [HasPermission("Sys.DictData.Update")]
-        public async Task<AppResponse<bool>> UpdateDictDataAsync(DictDataDto dto)
+        public async Task<AppResponse<bool>> UpdateDictDataAsync(AddOrUpdateDictDataRequest dto)
         {
             await _dictService.UpdateDictDataAsync(dto);
             return Result.Ok();

@@ -10,7 +10,7 @@ namespace Fancyx.Admin.Application.IService.System.LogManagement
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<PagedResult<BusinessLogListDto>> GetBusinessLogListAsync(BusinessLogQueryDto dto);
+        Task<PagedResult<BusinessLogItem>> GetBusinessLogListAsync(GetBusinessLogListRequest dto);
 
         /// <summary>
         /// 获取所有业务类型选项

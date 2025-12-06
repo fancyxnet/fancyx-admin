@@ -40,7 +40,7 @@ namespace Fancyx.Admin.Application.Service.System
             _mapper = mapper;
         }
 
-        public async Task<long> AddUserAsync(UserDto dto)
+        public async Task<long> AddUserAsync(AddUserRequest dto)
         {
             var userNameIsExist = await _userRepository.AnyAsync(x => x.UserName.ToLower() == dto.UserName.ToLower());
             if (userNameIsExist)
@@ -77,7 +77,7 @@ namespace Fancyx.Admin.Application.Service.System
         }
 
         [AsyncTransactional]
-        public async Task<bool> AssignRoleAsync(AssignRoleDto dto)
+        public async Task<bool> AssignRoleAsync(AssignRoleRequest dto)
         {
             await _userRoleRepository.DeleteAsync(x => x.UserId == dto.UserId);
             if (dto.RoleIds != null)
@@ -111,7 +111,7 @@ namespace Fancyx.Admin.Application.Service.System
             return true;
         }
 
-        public async Task<PagedResult<UserListDto>> GetUserListAsync(UserQueryDto dto)
+        public async Task<PagedResult<UserItem>> GetUserListAsync(GetUserListRequest dto)
         {
             var resp = await _context.User.PowerFilter(_currentUser).GroupJoin(_context.Dept, u => u.DeptId, d => d.Id, (u, d) => new { u, d })
                 .SelectMany(x => x.d.DefaultIfEmpty(), (x, d) => new { x.u, d })
@@ -119,7 +119,7 @@ namespace Fancyx.Admin.Application.Service.System
                 .WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.m.u.UserName.Contains(dto.UserName!))
                 .WhereIf(dto.DeptId.HasValue, x => x.m.u.DeptId == dto.DeptId!.Value)
                 .OrderByDescending(x => x.m.u.CreationTime)
-                .SelectMany(x => x.p.DefaultIfEmpty(), (x, p) => new UserListDto
+                .SelectMany(x => x.p.DefaultIfEmpty(), (x, p) => new UserItem
                 {
                     Id = x.m.u.Id,
                     Avatar = x.m.u.Avatar,
@@ -132,7 +132,7 @@ namespace Fancyx.Admin.Application.Service.System
                     DeptName = x.m.d != null ? x.m.d.Name : null
                 }).PagedAsync(dto.Current, dto.PageSize);
 
-            return new PagedResult<UserListDto>(resp.Total, resp.Items);
+            return new PagedResult<UserItem>(resp.Total, resp.Items);
         }
 
         public async Task<long[]> GetUserRoleIdsAsync(long uid)
@@ -155,7 +155,7 @@ namespace Fancyx.Admin.Application.Service.System
         }
 
         [AsyncLogRecord(LogRecordConsts.User, LogRecordConsts.UserResetPwdSubType, "{{id}}", LogRecordConsts.UserResetPwdContent)]
-        public async Task ResetUserPasswordAsync(ResetUserPwdDto dto)
+        public async Task ResetUserPasswordAsync(ResetUserPwdRequest dto)
         {
             var user = await _userRepository.FindAsync(dto.UserId) ?? throw new EntityNotFoundException();
             if (!RegexCodeGen.Password().IsMatch(dto.Password))
@@ -180,16 +180,16 @@ namespace Fancyx.Admin.Application.Service.System
                 .ToListAsync();
         }
 
-        public Task<List<UserListDto>> ExportUserListAsync(UserQueryDto dto)
+        public Task<List<UserItem>> ExportUserListAsync(GetUserListRequest dto)
         {
             return _userRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.UserName.Contains(dto.UserName!))
                 .OrderByDescending(x => x.CreationTime)
-                .Select(x => new UserListDto { Id = x.Id, UserName = x.UserName, Phone = x.Phone, Avatar = x.Avatar, IsEnabled = x.IsEnabled, NickName = x.NickName, Sex = x.Sex.GetHashCode() })
+                .Select(x => new UserItem { Id = x.Id, UserName = x.UserName, Phone = x.Phone, Avatar = x.Avatar, IsEnabled = x.IsEnabled, NickName = x.NickName, Sex = x.Sex.GetHashCode() })
                 .ToListAsync();
         }
 
-        public async Task UpdateUserAsync(UserEditDto dto)
+        public async Task UpdateUserAsync(UpdateUserRequest dto)
         {
             var user = await _userRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
             if (!string.IsNullOrEmpty(dto.Phone) && user.Phone != dto.Phone)
@@ -207,10 +207,10 @@ namespace Fancyx.Admin.Application.Service.System
             await _userRepository.UpdateAsync(user);
         }
 
-        public async Task<UserEditInfoDto> GetUserEditInfoAsync(long id)
+        public async Task<UserDetails> GetUserEditInfoAsync(long id)
         {
             var user = await _userRepository.FindAsync(id) ?? throw new EntityNotFoundException();
-            return _mapper.Map<User, UserEditInfoDto>(user);
+            return _mapper.Map<User, UserDetails>(user);
         }
     }
 }

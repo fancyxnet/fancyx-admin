@@ -5,11 +5,11 @@ namespace Fancyx.Admin.Application.IService.System
 {
     public interface IConfigService : IScopedDependency
     {
-        Task AddConfigAsync(ConfigDto dto);
+        Task AddConfigAsync(AddOrUpdateConfigRequest dto);
 
-        Task<PagedResult<ConfigListDto>> GetConfigListAsync(ConfigQueryDto dto);
+        Task<PagedResult<ConfigListDto>> GetConfigListAsync(GetConfigListRequest dto);
 
-        Task UpdateConfigAsync(ConfigDto dto);
+        Task UpdateConfigAsync(AddOrUpdateConfigRequest dto);
 
         Task DeleteConfigAsync(long id);
     }

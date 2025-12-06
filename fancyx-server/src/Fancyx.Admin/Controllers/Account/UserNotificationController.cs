@@ -18,7 +18,7 @@ namespace Fancyx.Admin.Controllers.Account
         }
 
         [HttpGet("MyNotificationList")]
-        public async Task<AppResponse<PagedResult<UserNotificationListDto>>> GetMyNotificationListAsync([FromQuery] UserNotificationQueryDto dto)
+        public async Task<AppResponse<PagedResult<UserNotificationItem>>> GetMyNotificationListAsync([FromQuery] GetMyNotificationListRequest dto)
         {
             var data = await _userNotificationService.GetMyNotificationListAsync(dto);
             return Result.Data(data);
@@ -32,7 +32,7 @@ namespace Fancyx.Admin.Controllers.Account
         }
 
         [HttpGet("MyNotificationNavbarInfo")]
-        public async Task<AppResponse<UserNotificationNavbarDto>> GetMyNotificationNavbarInfoAsync()
+        public async Task<AppResponse<UserNotificationNavbarInfo>> GetMyNotificationNavbarInfoAsync()
         {
             var data = await _userNotificationService.GetMyNotificationNavbarInfoAsync();
             return Result.Data(data);

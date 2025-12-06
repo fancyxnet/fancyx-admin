@@ -30,7 +30,7 @@ namespace Fancyx.Admin.Controllers.System
         [HttpPost("Add")]
         [HasPermission("Sys.Menu.Add")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
-        public async Task<AppResponse<bool>> AddMenuAsync([FromBody] MenuDto dto)
+        public async Task<AppResponse<bool>> AddMenuAsync([FromBody] AddOrUpdateMenuRequest dto)
         {
             await _menuService.AddMenuAsync(dto);
             return Result.Ok();
@@ -44,7 +44,7 @@ namespace Fancyx.Admin.Controllers.System
         [HttpGet("List")]
         [HasPermission("Sys.Menu.List")]
         [ApiAccessLog(operateType: [OperateType.Query])]
-        public async Task<AppResponse<List<MenuListDto>>> GetMenuListAsync([FromQuery] MenuQueryDto dto)
+        public async Task<AppResponse<List<MenuItem>>> GetMenuListAsync([FromQuery] GetMenuListRequest dto)
         {
             var data = await _menuService.GetMenuListAsync(dto);
             return Result.Data(data);
@@ -58,7 +58,7 @@ namespace Fancyx.Admin.Controllers.System
         [HttpPut("Update")]
         [HasPermission("Sys.Menu.Update")]
         [ApiAccessLog(operateName: "修改菜单", operateType: [OperateType.Update], reponseEnable: true)]
-        public async Task<AppResponse<bool>> UpdateMenuAsync([FromBody] MenuDto dto)
+        public async Task<AppResponse<bool>> UpdateMenuAsync([FromBody] AddOrUpdateMenuRequest dto)
         {
             await _menuService.UpdateMenuAsync(dto);
             return Result.Ok();

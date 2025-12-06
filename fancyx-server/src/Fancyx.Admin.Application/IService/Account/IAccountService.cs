@@ -10,35 +10,35 @@ namespace Fancyx.Admin.Application.IService.Account
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<LoginResultDto> LoginAsync(LoginDto dto);
+        Task<LoginRespone> LoginAsync(LoginRequest dto);
 
         /// <summary>
         /// 短信验证码登录
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<LoginResultDto> SmsLoginAsync(SmsLoginDto dto);
+        Task<LoginRespone> SmsLoginAsync(SmsLoginRequest dto);
 
         /// <summary>
         /// 刷新token
         /// </summary>
         /// <param name="refreshToken"></param>
         /// <returns></returns>
-        Task<TokenResultDto> GetAccessTokenAsync(string refreshToken);
+        Task<TokenResponse> GetAccessTokenAsync(string refreshToken);
 
         /// <summary>
         /// 修改个人基本信息
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<bool> UpdateUserInfoAsync(PersonalInfoDto dto);
+        Task<bool> UpdateUserInfoAsync(UpdateUserInfoRequest dto);
 
         /// <summary>
         /// 修改个人密码
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<bool> UpdateUserPwdAsync(UserPwdDto dto);
+        Task<bool> UpdateUserPwdAsync(UpdateUserPwdRequest dto);
 
         /// <summary>
         /// 注销
@@ -50,7 +50,7 @@ namespace Fancyx.Admin.Application.IService.Account
         /// 获取用户权限信息
         /// </summary>
         /// <returns></returns>
-        Task<UserAuthInfoDto> GetUserAuthInfoAsync();
+        Task<GetUserAuthInfoResponse> GetUserAuthInfoAsync();
 
         /// <summary>
         /// 发送登录短信验证码

@@ -5,7 +5,7 @@ namespace Fancyx.Admin.Application.IService.Monitor
 {
     public interface IOnlineUserService : IScopedDependency
     {
-        Task<List<OnlineUserResultDto>> GetOnlineUserListAsync(OnlineUserSearchDto dto);
+        Task<List<OnlineUserItem>> GetOnlineUserListAsync(GetOnlineUserListRequest dto);
 
         Task LogoutAsync(string key);
     }

@@ -11,21 +11,21 @@ namespace Fancyx.Admin.Application.Profiles
     {
         public SystemAutoMapperProfile()
         {
-            CreateMap<TokenResultDto, LoginResultDto>();
-            CreateMap<MenuDto, Menu>();
-            CreateMap<Menu, MenuListDto>();
-            CreateMap<DictDataDto, DictData>();
+            CreateMap<TokenResponse, LoginRespone>();
+            CreateMap<AddOrUpdateMenuRequest, Menu>();
+            CreateMap<Menu, MenuItem>();
+            CreateMap<AddOrUpdateDictDataRequest, DictData>();
             CreateMap<Menu, FrontendMenu>();
-            CreateMap<Notification, UserNotificationListDto>();
+            CreateMap<Notification, UserNotificationItem>();
             CreateMap<Config, ConfigListDto>();
-            CreateMap<DictData, DictDataListDto>();
-            CreateMap<User, UserEditInfoDto>(MemberList.None);
-            CreateMap<TableInfo, TableInfoDto>(MemberList.None);
-            CreateMap<GenTable, GenTableListDto>(MemberList.None);
-            CreateMap<GenTableColumn, GenTableColumnListDto>(MemberList.None);
+            CreateMap<DictData, DictDataItem>();
+            CreateMap<User, UserDetails>(MemberList.None);
+            CreateMap<TableInfo, TableInfoItem>(MemberList.None);
+            CreateMap<GenTable, GenTableItem>(MemberList.None);
+            CreateMap<GenTableColumn, GenTableColumnItem>(MemberList.None);
             CreateMap<GenTableInfoDto, GenTable>(MemberList.None);
-            CreateMap<GenTableColumnDto, GenTableColumn>(MemberList.None);
-            CreateMap<GenTable, GenDetailsInfoDto>(MemberList.None);
+            CreateMap<GenTableColumnRequest, GenTableColumn>(MemberList.None);
+            CreateMap<GenTable, GenDetails>(MemberList.None);
         }
     }
 }

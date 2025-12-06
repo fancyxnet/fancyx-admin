@@ -10,21 +10,21 @@ namespace Fancyx.Admin.Application.IService.System
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<bool> AddRoleAsync(RoleDto dto);
+        Task<bool> AddRoleAsync(AddOrUpdateRoleRequest dto);
 
         /// <summary>
         /// 角色分页列表
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<PagedResult<RoleListDto>> GetRoleListAsync(RoleQueryDto dto);
+        Task<PagedResult<RoleItem>> GetRoleListAsync(GetRoleListRequest dto);
 
         /// <summary>
         /// 修改角色
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<bool> UpdateRoleAsync(RoleDto dto);
+        Task<bool> UpdateRoleAsync(AddOrUpdateRoleRequest dto);
 
         /// <summary>
         /// 删除角色
@@ -38,7 +38,7 @@ namespace Fancyx.Admin.Application.IService.System
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<bool> AssignMenuAsync(AssignMenuDto dto);
+        Task<bool> AssignMenuAsync(AssignMenuRequest dto);
 
         /// <summary>
         /// 获取角色
@@ -58,13 +58,13 @@ namespace Fancyx.Admin.Application.IService.System
         /// </summary>
         /// <param name="roleId">角色ID</param>
         /// <returns></returns>
-        Task<(RolePowerInfoDto, List<DeptTreeOptionDto>)> GetRoleDeptPowerInfoAsync(long roleId);
+        Task<(RolePowerInfo, List<DeptTreeOption>)> GetRoleDeptPowerInfoAsync(long roleId);
 
         /// <summary>
         /// 分配角色数据权限
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task AssignDataScopeAsync(AssignDataScopeDto dto);
+        Task AssignDataScopeAsync(AssignDataScopeRequest dto);
     }
 }

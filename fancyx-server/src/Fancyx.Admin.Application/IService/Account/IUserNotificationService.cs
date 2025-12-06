@@ -4,10 +4,10 @@ namespace Fancyx.Admin.Application.IService.Account
 {
     public interface IUserNotificationService
     {
-        Task<PagedResult<UserNotificationListDto>> GetMyNotificationListAsync(UserNotificationQueryDto dto);
+        Task<PagedResult<UserNotificationItem>> GetMyNotificationListAsync(GetMyNotificationListRequest dto);
 
         Task ReadedAsync(long[] ids);
 
-        Task<UserNotificationNavbarDto> GetMyNotificationNavbarInfoAsync();
+        Task<UserNotificationNavbarInfo> GetMyNotificationNavbarInfoAsync();
     }
 }

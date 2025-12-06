@@ -23,7 +23,7 @@ namespace Fancyx.Admin.Controllers.System.LogManagement
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpGet("List")]
-        public async Task<AppResponse<PagedResult<BusinessLogListDto>>> GetBusinessLogListAsync([FromQuery] BusinessLogQueryDto dto)
+        public async Task<AppResponse<PagedResult<BusinessLogItem>>> GetBusinessLogListAsync([FromQuery] GetBusinessLogListRequest dto)
         {
             var data = await _businessLogService.GetBusinessLogListAsync(dto);
             return Result.Data(data);

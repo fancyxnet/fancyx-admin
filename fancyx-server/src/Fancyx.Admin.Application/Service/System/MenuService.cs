@@ -29,7 +29,7 @@ namespace Fancyx.Admin.Application.Service.System
             _currentTenant = currentTenant;
         }
 
-        public async Task<bool> AddMenuAsync(MenuDto dto)
+        public async Task<bool> AddMenuAsync(AddOrUpdateMenuRequest dto)
         {
             if (dto.MenuType == (int)MenuType.Menu && string.IsNullOrWhiteSpace(dto.Path))
             {
@@ -57,7 +57,7 @@ namespace Fancyx.Admin.Application.Service.System
                 throw new BusinessException(message: $"已存在【{dto.Path}】菜单路由");
             }
 
-            var entity = _mapper.Map<MenuDto, Menu>(dto);
+            var entity = _mapper.Map<AddOrUpdateMenuRequest, Menu>(dto);
             await _menuRepository.InsertAsync(entity);
             return true;
         }
@@ -75,7 +75,7 @@ namespace Fancyx.Admin.Application.Service.System
             return true;
         }
 
-        public async Task<List<MenuListDto>> GetMenuListAsync(MenuQueryDto dto)
+        public async Task<List<MenuItem>> GetMenuListAsync(GetMenuListRequest dto)
         {
             //是否过滤
             var isFilter = !string.IsNullOrEmpty(dto.Title) || !string.IsNullOrEmpty(dto.Path);
@@ -87,18 +87,18 @@ namespace Fancyx.Admin.Application.Service.System
                 .ToListAsync();
             var top = all.Where(x => isFilter || !x.ParentId.HasValue).OrderBy(x => x.Sort)
                 .ToList();
-            var topMap = _mapper.Map<List<Menu>, List<MenuListDto>>(top);
+            var topMap = _mapper.Map<List<Menu>, List<MenuItem>>(top);
             if (isFilter) return topMap;
             foreach (var item in topMap)
             {
                 item.Children = getChildren(item.Id);
             }
 
-            List<MenuListDto>? getChildren(long currentId)
+            List<MenuItem>? getChildren(long currentId)
             {
                 var children = all.Where(x => x.ParentId == currentId).OrderBy(x => x.Sort).ToList();
                 if (children.Count == 0) return null;
-                var childrenMap = _mapper.Map<List<Menu>, List<MenuListDto>>(children);
+                var childrenMap = _mapper.Map<List<Menu>, List<MenuItem>>(children);
                 foreach (var item in childrenMap)
                 {
                     item.Children = getChildren(item.Id);
@@ -110,7 +110,7 @@ namespace Fancyx.Admin.Application.Service.System
             return topMap;
         }
 
-        public async Task<(string[] keys, List<MenuOptionTreeDto> tree)> GetMenuOptionsAsync(bool onlyMenu,
+        public async Task<(string[] keys, List<MenuOptionTree> tree)> GetMenuOptionsAsync(bool onlyMenu,
             string? keyword, bool noTenantMenuFilter = false)
         {
             var query = _menuRepository.GetQueryable();
@@ -127,17 +127,17 @@ namespace Fancyx.Admin.Application.Service.System
 
             if (isKeywordSearch)
             {
-                var list = all.Select(x => new MenuOptionTreeDto()
+                var list = all.Select(x => new MenuOptionTree()
                 { Key = x.Id.ToString(), Title = x.Title, MenuType = (int)x.MenuType }).ToList();
                 return (keys, list);
             }
 
             var top = all.Where(x => !x.ParentId.HasValue && (x.MenuType == MenuType.Folder || x.MenuType == MenuType.Menu))
                 .OrderBy(x => x.Sort).ToList();
-            var topMap = new List<MenuOptionTreeDto>();
+            var topMap = new List<MenuOptionTree>();
             foreach (var item in top)
             {
-                topMap.Add(new MenuOptionTreeDto
+                topMap.Add(new MenuOptionTree
                 {
                     Key = item.Id.ToString(),
                     Title = item.Title,
@@ -146,14 +146,14 @@ namespace Fancyx.Admin.Application.Service.System
                 });
             }
 
-            List<MenuOptionTreeDto>? getChildren(long currentId)
+            List<MenuOptionTree>? getChildren(long currentId)
             {
                 var children = all.Where(x => x.ParentId == currentId).OrderBy(x => x.Sort).ToList();
                 if (children.Count == 0) return null;
-                var childrenMap = new List<MenuOptionTreeDto>();
+                var childrenMap = new List<MenuOptionTree>();
                 foreach (var item in children)
                 {
-                    childrenMap.Add(new MenuOptionTreeDto
+                    childrenMap.Add(new MenuOptionTree
                     {
                         Key = item.Id.ToString(),
                         Title = item.Title,
@@ -168,7 +168,7 @@ namespace Fancyx.Admin.Application.Service.System
             return (keys, topMap);
         }
 
-        public async Task<bool> UpdateMenuAsync(MenuDto dto)
+        public async Task<bool> UpdateMenuAsync(AddOrUpdateMenuRequest dto)
         {
             if (dto.MenuType == (int)MenuType.Menu && string.IsNullOrWhiteSpace(dto.Path))
             {

@@ -21,9 +21,9 @@ namespace Fancyx.Admin.Application.Service.Organization
             _mapper = mapper;
         }
 
-        public async Task<bool> AddPositionGroupAsync(PositionGroupDto dto)
+        public async Task<bool> AddPositionGroupAsync(AddOrUpdatePositionGroupRequest dto)
         {
-            var entity = _mapper.Map<PositionGroupDto, PositionGroup>(dto);
+            var entity = _mapper.Map<AddOrUpdatePositionGroupRequest, PositionGroup>(dto);
             entity.SetTreeProperties(await _positionGroupRepository.FindAsync(dto.ParentId));
 
             await _positionGroupRepository.InsertAsync(entity);
@@ -48,20 +48,20 @@ namespace Fancyx.Admin.Application.Service.Organization
             return true;
         }
 
-        public async Task<List<PositionGroupListDto>> GetPositionGroupListAsync(PositionGroupQueryDto dto)
+        public async Task<List<PositionGroupItem>> GetPositionGroupListAsync(GetPositionGroupListRequest dto)
         {
             var allNodes = await _positionGroupRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.GroupName), x => x.GroupName.Contains(dto.GroupName!))
                 .OrderBy(x => x.Sort)
                 .ToDictionaryAsync(k => k.Id);
 
-            var tree = new List<PositionGroupListDto>();
-            var nodeDtos = new Dictionary<long, PositionGroupListDto>();
-            var endDtos = new List<PositionGroupListDto>();
+            var tree = new List<PositionGroupItem>();
+            var nodeDtos = new Dictionary<long, PositionGroupItem>();
+            var endDtos = new List<PositionGroupItem>();
 
             foreach (var node in allNodes.Values)
             {
-                var tmp = _mapper.Map<PositionGroup, PositionGroupListDto>(node);
+                var tmp = _mapper.Map<PositionGroup, PositionGroupItem>(node);
                 nodeDtos[tmp.Id] = tmp;
                 if (node.ParentId.HasValue)
                 {
@@ -84,7 +84,7 @@ namespace Fancyx.Admin.Application.Service.Organization
             return tree.OrderBy(x => x.Sort).Concat(endDtos).ToList();
         }
 
-        public async Task<bool> UpdatePositionGroupAsync(PositionGroupDto dto)
+        public async Task<bool> UpdatePositionGroupAsync(AddOrUpdatePositionGroupRequest dto)
         {
             if (!dto.Id.HasValue) throw new ArgumentNullException(nameof(dto.Id));
             var entity = await _positionGroupRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();

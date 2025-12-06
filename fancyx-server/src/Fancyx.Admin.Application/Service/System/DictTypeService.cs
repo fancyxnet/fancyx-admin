@@ -25,7 +25,7 @@ public class DictTypeService : IDictTypeService
     }
 
     [AsyncLogRecord(LogRecordConsts.DictType, LogRecordConsts.DictAddSubType, "{{dict.Id}}", LogRecordConsts.DictAddContent)]
-    public async Task AddDictTypeAsync(DictTypeDto dto)
+    public async Task AddDictTypeAsync(AddOrUpdateDictTypeRequest dto)
     {
         if (await _dictTypeRepository.AnyAsync(x => x.Type.ToLower() == dto.DictType.ToLower()))
         {
@@ -56,13 +56,13 @@ public class DictTypeService : IDictTypeService
         LogRecordContext.PutVariable("dict", dict);
     }
 
-    public async Task<PagedResult<DictTypeResultDto>> GetDictTypeListAsync(DictTypeSearchDto dto)
+    public async Task<PagedResult<DictTypeItem>> GetDictTypeListAsync(GetDictTypeListRequest dto)
     {
         var resp = await _dictTypeRepository.GetQueryable()
             .WhereIf(!string.IsNullOrEmpty(dto.Name), x => x.Name.Contains(dto.Name!))
             .WhereIf(!string.IsNullOrEmpty(dto.DictType), x => x.Type.Contains(dto.DictType!))
             .OrderByDescending(x => x.CreationTime)
-            .Select(x => new DictTypeResultDto
+            .Select(x => new DictTypeItem
             {
                 Name = x.Name,
                 Id = x.Id,
@@ -72,7 +72,7 @@ public class DictTypeService : IDictTypeService
                 CreationTime = x.CreationTime
             })
             .PagedAsync(dto.Current, dto.PageSize);
-        return new PagedResult<DictTypeResultDto>(dto)
+        return new PagedResult<DictTypeItem>(dto)
         {
             TotalCount = resp.Total,
             Items = resp.Items
@@ -80,7 +80,7 @@ public class DictTypeService : IDictTypeService
     }
 
     [AsyncTransactional]
-    public async Task UpdateDictTypeAsync(DictTypeDto dto)
+    public async Task UpdateDictTypeAsync(AddOrUpdateDictTypeRequest dto)
     {
         var entity = await _dictTypeRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
         var isUpdateType = !entity.Type.Equals(dto.DictType, StringComparison.CurrentCultureIgnoreCase);

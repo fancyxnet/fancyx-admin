@@ -30,7 +30,7 @@ namespace Fancyx.Admin.Controllers.System
         [HttpPost("Add")]
         [HasPermission("Sys.Role.Add")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
-        public async Task<AppResponse<bool>> AddRoleAsync([FromBody] RoleDto dto)
+        public async Task<AppResponse<bool>> AddRoleAsync([FromBody] AddOrUpdateRoleRequest dto)
         {
             await _roleService.AddRoleAsync(dto);
             return Result.Ok();
@@ -43,7 +43,7 @@ namespace Fancyx.Admin.Controllers.System
         /// <returns></returns>
         [HttpGet("List")]
         [HasPermission("Sys.Role.List")]
-        public async Task<AppResponse<PagedResult<RoleListDto>>> GetRoleListAsync([FromQuery] RoleQueryDto dto)
+        public async Task<AppResponse<PagedResult<RoleItem>>> GetRoleListAsync([FromQuery] GetRoleListRequest dto)
         {
             var data = await _roleService.GetRoleListAsync(dto);
             return Result.Data(data);
@@ -57,7 +57,7 @@ namespace Fancyx.Admin.Controllers.System
         [HttpPut("Update")]
         [HasPermission("Sys.Role.Update")]
         [ApiAccessLog(operateName: "修改角色", operateType: [OperateType.Update], reponseEnable: true)]
-        public async Task<AppResponse<bool>> UpdateRoleAsync([FromBody] RoleDto dto)
+        public async Task<AppResponse<bool>> UpdateRoleAsync([FromBody] AddOrUpdateRoleRequest dto)
         {
             await _roleService.UpdateRoleAsync(dto);
             return Result.Ok();
@@ -85,7 +85,7 @@ namespace Fancyx.Admin.Controllers.System
         [HttpPost("AssignMenu")]
         [HasPermission("Sys.Role.AssignMenu")]
         [ApiAccessLog(operateName: "分配菜单权限", operateType: [OperateType.Update], reponseEnable: true)]
-        public async Task<AppResponse<bool>> AssignMenuAsync([FromBody] AssignMenuDto dto)
+        public async Task<AppResponse<bool>> AssignMenuAsync([FromBody] AssignMenuRequest dto)
         {
             await _roleService.AssignMenuAsync(dto);
             return Result.Ok();
@@ -133,7 +133,7 @@ namespace Fancyx.Admin.Controllers.System
         /// <returns></returns>
         [HttpPost("AssignDataScope")]
         [HasPermission("Sys.Role.AssignDataScope")]
-        public async Task<AppResponse<bool>> AssignDataScopeAsync([FromBody] AssignDataScopeDto dto)
+        public async Task<AppResponse<bool>> AssignDataScopeAsync([FromBody] AssignDataScopeRequest dto)
         {
             await _roleService.AssignDataScopeAsync(dto);
             return Result.Ok();

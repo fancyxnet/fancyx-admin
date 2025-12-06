@@ -22,9 +22,9 @@ namespace Fancyx.Admin.Application.Service.Account
             _mapper = mapper;
         }
 
-        public async Task<PagedResult<UserNotificationListDto>> GetMyNotificationListAsync(UserNotificationQueryDto dto)
+        public async Task<PagedResult<UserNotificationItem>> GetMyNotificationListAsync(GetMyNotificationListRequest dto)
         {
-            if (!_currentUser.Id.HasValue) return new PagedResult<UserNotificationListDto>();
+            if (!_currentUser.Id.HasValue) return new PagedResult<UserNotificationItem>();
 
             var resp = await _repository
                 .Where(x => x.UserId == _currentUser.Id)
@@ -33,12 +33,12 @@ namespace Fancyx.Admin.Application.Service.Account
                 .OrderBy(x => x.IsReaded)
                 .OrderByDescending(x => x.CreationTime)
                 .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<UserNotificationListDto>(dto, resp.Total, _mapper.Map<List<Notification>, List<UserNotificationListDto>>(resp.Items));
+            return new PagedResult<UserNotificationItem>(dto, resp.Total, _mapper.Map<List<Notification>, List<UserNotificationItem>>(resp.Items));
         }
 
-        public async Task<UserNotificationNavbarDto> GetMyNotificationNavbarInfoAsync()
+        public async Task<UserNotificationNavbarInfo> GetMyNotificationNavbarInfoAsync()
         {
-            var result = new UserNotificationNavbarDto();
+            var result = new UserNotificationNavbarInfo();
             if (!_currentUser.Id.HasValue) return result;
 
             var query = _repository.Where(x => x.UserId == _currentUser.Id);

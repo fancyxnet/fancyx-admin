@@ -21,14 +21,14 @@ namespace Fancyx.Admin.Application.Service.System
             _mapper = mapper;
         }
 
-        public async Task<bool> AddDictDataAsync(DictDataDto dto)
+        public async Task<bool> AddDictDataAsync(AddOrUpdateDictDataRequest dto)
         {
             var isExist = await _dictRepository.AnyAsync(x => x.Value.ToLower() == dto.Value.ToLower());
             if (isExist)
             {
                 throw new BusinessException("字典值已存在");
             }
-            var entity = _mapper.Map<DictDataDto, DictData>(dto);
+            var entity = _mapper.Map<AddOrUpdateDictDataRequest, DictData>(dto);
             await _dictRepository.InsertAsync(entity);
 
             return true;
@@ -44,7 +44,7 @@ namespace Fancyx.Admin.Application.Service.System
             return true;
         }
 
-        public async Task<PagedResult<DictDataListDto>> GetDictDataListAsync(DictDataQueryDto dto)
+        public async Task<PagedResult<DictDataItem>> GetDictDataListAsync(GetDictDataListRequest dto)
         {
             var resp = await _dictRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.Label), x => x.Label != null && x.Label.Contains(dto.Label!))
@@ -52,11 +52,11 @@ namespace Fancyx.Admin.Application.Service.System
                 .OrderBy(x => x.Sort).OrderByDescending(x => x.CreationTime)
                 .PagedAsync(dto.Current, dto.PageSize);
 
-            return new PagedResult<DictDataListDto>(resp.Total, _mapper.Map<List<DictData>, List<DictDataListDto>>(resp.Items));
+            return new PagedResult<DictDataItem>(resp.Total, _mapper.Map<List<DictData>, List<DictDataItem>>(resp.Items));
         }
 
         [AsyncLogRecord(LogRecordConsts.DictData, LogRecordConsts.DictDataUpdateSubType, "{{id}}", LogRecordConsts.DictDataUpdateContent)]
-        public async Task<bool> UpdateDictDataAsync(DictDataDto dto)
+        public async Task<bool> UpdateDictDataAsync(AddOrUpdateDictDataRequest dto)
         {
             if (!dto.Id.HasValue) throw new ArgumentNullException(nameof(dto.Id));
             var entity = await _dictRepository.FindAsync(dto.Id) ?? throw new BusinessException("数据不存在");

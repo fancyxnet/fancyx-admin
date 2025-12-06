@@ -30,7 +30,7 @@ namespace Fancyx.Admin.Controllers.Organization
         [HttpPost("Add")]
         [HasPermission("Org.Dept.Add")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
-        public async Task<AppResponse<bool>> AddDeptAsync([FromBody] DeptDto dto)
+        public async Task<AppResponse<bool>> AddDeptAsync([FromBody] AddOrUpdateDeptRequest dto)
         {
             await _deptService.AddDeptAsync(dto);
             return Result.Ok();
@@ -43,7 +43,7 @@ namespace Fancyx.Admin.Controllers.Organization
         /// <returns></returns>
         [HttpGet("List")]
         [HasPermission("Org.Dept.List")]
-        public async Task<AppResponse<List<DeptListDto>>> GetDeptListAsync([FromQuery] DeptQueryDto dto)
+        public async Task<AppResponse<List<DeptItem>>> GetDeptListAsync([FromQuery] GetDeptListRequest dto)
         {
             var data = await _deptService.GetDeptListAsync(dto);
             return Result.Data(data);
@@ -56,7 +56,7 @@ namespace Fancyx.Admin.Controllers.Organization
         /// <returns></returns>
         [HttpPut("Update")]
         [HasPermission("Org.Dept.Update")]
-        public async Task<AppResponse<bool>> UpdateDeptAsync([FromBody] DeptDto dto)
+        public async Task<AppResponse<bool>> UpdateDeptAsync([FromBody] AddOrUpdateDeptRequest dto)
         {
             await _deptService.UpdateDeptAsync(dto);
             return Result.Ok();
@@ -78,7 +78,7 @@ namespace Fancyx.Admin.Controllers.Organization
 
         [HttpGet("GetDeptSimpleInfos")]
         [HasPermission("Org.Dept.GetDeptSimpleInfos")]
-        public async Task<AppResponse<List<DeptSimpleInfoDto>>> GetDeptSimpleInfosAsync([FromQuery] string? keyword)
+        public async Task<AppResponse<List<DeptSimpleInfo>>> GetDeptSimpleInfosAsync([FromQuery] string? keyword)
         {
             var data = await _deptService.GetDeptSimpleInfosAsync(keyword);
             return Result.Data(data);

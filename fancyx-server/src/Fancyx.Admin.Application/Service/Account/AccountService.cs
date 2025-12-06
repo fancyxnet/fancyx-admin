@@ -64,7 +64,7 @@ namespace Fancyx.Admin.Application.Service.Account
         /// <param name="sessionId">会话ID</param>
         /// <param name="otherClaims">其它证件单元</param>
         /// <returns></returns>
-        private async Task<(TokenResultDto tokenRes, string sessionId)> GenerateTokenAsync(long userId, string userName, string? sessionId = null, IEnumerable<Claim>? otherClaims = null)
+        private async Task<(TokenResponse tokenRes, string sessionId)> GenerateTokenAsync(long userId, string userName, string? sessionId = null, IEnumerable<Claim>? otherClaims = null)
         {
             var time = DateTime.Now;
             var refreshToken = Guid.NewGuid().ToString("N").ToLower();
@@ -84,7 +84,7 @@ namespace Fancyx.Admin.Application.Service.Account
             }
 
             var tokenExpired = time.AddHours(AdminConsts.TokenExpiredHour);
-            var rs = new LoginResultDto
+            var rs = new LoginRespone
             {
                 UserName = userName,
                 ExpiredTime = tokenExpired,
@@ -106,7 +106,7 @@ namespace Fancyx.Admin.Application.Service.Account
             return (rs, sessionId);
         }
 
-        public async Task<TokenResultDto> GetAccessTokenAsync(string refreshToken)
+        public async Task<TokenResponse> GetAccessTokenAsync(string refreshToken)
         {
             var sessionId = _currentUser.FindClaim(AdminConsts.SessionId)!.Value;
             var key = SystemCacheKey.RefreshToken(_currentUser.Id!.Value, sessionId);
@@ -119,14 +119,14 @@ namespace Fancyx.Admin.Application.Service.Account
             return (await GenerateTokenAsync(_currentUser.Id!.Value, _currentUser.UserName!, sessionId, otherClaims)).tokenRes;
         }
 
-        public async Task<UserAuthInfoDto> GetUserAuthInfoAsync()
+        public async Task<GetUserAuthInfoResponse> GetUserAuthInfoAsync()
         {
             var uid = _currentUser.Id!.Value;
             var user = await _userRepository.FindAsync(uid) ?? throw new BusinessException(message: "用户不存在");
             var permission = await _identitySharedService.GetUserPermissionAsync(uid);
-            UserAuthInfoDto result = new()
+            GetUserAuthInfoResponse result = new()
             {
-                User = new UserInfoDto
+                User = new CurrentUserInfo
                 {
                     UserId = user.Id,
                     UserName = user.UserName,
@@ -141,7 +141,7 @@ namespace Fancyx.Admin.Application.Service.Account
             return result;
         }
 
-        public async Task<LoginResultDto> LoginAsync(LoginDto dto)
+        public async Task<LoginRespone> LoginAsync(LoginRequest dto)
         {
             return await InternalLoginAsync(dto.UserName, async () =>
             {
@@ -155,7 +155,7 @@ namespace Fancyx.Admin.Application.Service.Account
             });
         }
 
-        public async Task<LoginResultDto> SmsLoginAsync(SmsLoginDto dto)
+        public async Task<LoginRespone> SmsLoginAsync(SmsLoginRequest dto)
         {
             return await InternalLoginAsync(dto.Phone, async () =>
             {
@@ -181,7 +181,7 @@ namespace Fancyx.Admin.Application.Service.Account
             }
         }
 
-        private async Task<LoginResultDto> InternalLoginAsync(string userName, LoginHandler loginHandler)
+        private async Task<LoginRespone> InternalLoginAsync(string userName, LoginHandler loginHandler)
         {
             var loginLog = new LoginLog
             {
@@ -219,7 +219,7 @@ namespace Fancyx.Admin.Application.Service.Account
 
                 var (tokenRes, sessionId) = await GenerateTokenAsync(user.Id, user.UserName, otherClaims: claims);
                 loginLog.SessionId = sessionId;
-                var rs = _mapper.Map<TokenResultDto, LoginResultDto>(tokenRes);
+                var rs = _mapper.Map<TokenResponse, LoginRespone>(tokenRes);
                 rs.UserId = user.Id;
                 rs.UserName = user.UserName;
                 rs.SessionId = sessionId;
@@ -276,7 +276,7 @@ namespace Fancyx.Admin.Application.Service.Account
             return topMap;
         }
 
-        public async Task<bool> UpdateUserInfoAsync(PersonalInfoDto dto)
+        public async Task<bool> UpdateUserInfoAsync(UpdateUserInfoRequest dto)
         {
             var user = await _userRepository.Where(x => x.Id == _currentUser.Id).FirstAsync();
             if (!string.IsNullOrEmpty(dto.NickName))
@@ -304,7 +304,7 @@ namespace Fancyx.Admin.Application.Service.Account
             return true;
         }
 
-        public async Task<bool> UpdateUserPwdAsync(UserPwdDto dto)
+        public async Task<bool> UpdateUserPwdAsync(UpdateUserPwdRequest dto)
         {
             var user = await _userRepository.Where(x => x.Id == _currentUser.Id).FirstAsync()
                 ?? throw new BusinessException(message: "用户不存在");

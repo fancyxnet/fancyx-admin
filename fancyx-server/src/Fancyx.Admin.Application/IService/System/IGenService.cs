@@ -5,24 +5,24 @@ namespace Fancyx.Admin.Application.IService.System
 {
     public interface IGenService : IScopedDependency
     {
-        Task<GenCodeResultDto> GenCodeAsync(long tableId);
+        Task<GenCodeResponse> GenCodeAsync(long tableId);
 
         Task ImportTableAsync(string table);
 
-        Task<PagedResult<TableInfoDto>> GetTableListAsync(GetTableQueryDto dto);
+        Task<PagedResult<TableInfoItem>> GetTableListAsync(GetTableListRequest dto);
 
         Task GenSyncFromDb(long tableId);
 
-        Task<PagedResult<GenTableListDto>> GetGenTableListAsync(GenTableQueryDto dto);
+        Task<PagedResult<GenTableItem>> GetGenTableListAsync(GetGenTableListRequest dto);
 
-        Task<PagedResult<GenTableColumnListDto>> GetGenTableColumnListAsync(GenTableColumnQueryDto dto);
+        Task<PagedResult<GenTableColumnItem>> GetGenTableColumnListAsync(GenTableColumnRequest dto);
 
         Task DeleteGenTableAsync(long tableId);
 
         Task SaveGenTableInfoAsync(GenTableInfoDto dto);
 
-        Task SaveGenColumnInfoAsync(List<GenTableColumnDto> dtos);
+        Task SaveGenColumnInfoAsync(List<SaveGenColumnInfoItem> dtos);
 
-        Task<GenDetailsInfoDto> GetGenDetailsInfoAsync(long tableId);
+        Task<GenDetails> GetGenDetailsInfoAsync(long tableId);
     }
 }

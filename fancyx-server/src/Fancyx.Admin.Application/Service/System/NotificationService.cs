@@ -18,7 +18,7 @@ namespace Fancyx.Admin.Application.Service.System
             _userRepository = userRepository;
         }
 
-        public Task AddNotificationAsync(NotificationDto dto)
+        public Task AddNotificationAsync(AddOrUpdateNotificationRequest dto)
         {
             var entity = new Notification()
             {
@@ -35,10 +35,10 @@ namespace Fancyx.Admin.Application.Service.System
             return _repository.DeleteAsync(x => ids.Contains(x.Id));
         }
 
-        public async Task<PagedResult<NotificationResultDto>> GetNotificationListAsync(NotificationQueryDto dto)
+        public async Task<PagedResult<NotificationItem>> GetNotificationListAsync(GetNotificationListRequest dto)
         {
             var resp = await _repository.GetQueryable().Join(_userRepository.GetQueryable().AsNoTracking(), n => n.UserId, u => u.Id, (n, u) =>
-                new NotificationResultDto
+                new NotificationItem
                 {
                     Id = n.Id,
                     Title = n.Title,
@@ -53,10 +53,10 @@ namespace Fancyx.Admin.Application.Service.System
                 .WhereIf(dto.IsReaded.HasValue, u => u.IsReaded == dto.IsReaded)
                 .OrderByDescending(u => u.CreationTime)
                 .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<NotificationResultDto>(dto, resp.Total, resp.Items);
+            return new PagedResult<NotificationItem>(dto, resp.Total, resp.Items);
         }
 
-        public async Task UpdateNotificationAsync(NotificationDto dto)
+        public async Task UpdateNotificationAsync(AddOrUpdateNotificationRequest dto)
         {
             var entity = await _repository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
             if (entity.IsReaded)

@@ -5,18 +5,18 @@ namespace Fancyx.Admin.Application.IService.System
 {
     public interface ITenantService : IScopedDependency
     {
-        Task AddTenantAsync(TenantDto dto);
+        Task AddTenantAsync(AddOrUpdateTenantRequest dto);
 
-        Task<PagedResult<TenantResultDto>> GetTenantListAsync(TenantSearchDto dto);
+        Task<PagedResult<TenantItem>> GetTenantListAsync(GetTenantListRequest dto);
 
-        Task UpdateTenantAsync(TenantDto dto);
+        Task UpdateTenantAsync(AddOrUpdateTenantRequest dto);
 
         Task DeleteTenantAsync(string id);
 
-        Task AssignTenantMenuAsync(AssignTenantMenuDto dto);
+        Task AssignTenantMenuAsync(AssignTenantMenuRequest dto);
 
         Task<List<long>> GetTenantMenuIdsAsync(string id);
 
-        Task<TenantAccountInfoDto> CreateTenantAccountAsync(CreateTenantAccountDto dto);
+        Task<TenantAccountInfo> CreateTenantAccountAsync(CreateTenantAccountRequest dto);
     }
 }

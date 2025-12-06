@@ -10,21 +10,21 @@ namespace Fancyx.Admin.Application.IService.Organization
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<bool> AddDeptAsync(DeptDto dto);
+        Task<bool> AddDeptAsync(AddOrUpdateDeptRequest dto);
 
         /// <summary>
         /// 部门树形列表
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<List<DeptListDto>> GetDeptListAsync(DeptQueryDto dto);
+        Task<List<DeptItem>> GetDeptListAsync(GetDeptListRequest dto);
 
         /// <summary>
         /// 修改部门
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<bool> UpdateDeptAsync(DeptDto dto);
+        Task<bool> UpdateDeptAsync(AddOrUpdateDeptRequest dto);
 
         /// <summary>
         /// 删除部门
@@ -38,6 +38,6 @@ namespace Fancyx.Admin.Application.IService.Organization
         /// </summary>
         /// <param name="keyword"></param>
         /// <returns></returns>
-        Task<List<DeptSimpleInfoDto>> GetDeptSimpleInfosAsync(string? keyword);
+        Task<List<DeptSimpleInfo>> GetDeptSimpleInfosAsync(string? keyword);
     }
 }

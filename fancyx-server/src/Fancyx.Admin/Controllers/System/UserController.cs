@@ -34,7 +34,7 @@ namespace Fancyx.Admin.Controllers.System
         [HasPermission("Sys.User.Add")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
         [ApiAccessLog(operateName: "新增用户", operateType: [OperateType.Create], reponseEnable: true)]
-        public async Task<AppResponse<bool>> AddUserAsync([FromBody] UserDto dto)
+        public async Task<AppResponse<bool>> AddUserAsync([FromBody] AddUserRequest dto)
         {
             await _userService.AddUserAsync(dto);
             return Result.Ok();
@@ -48,7 +48,7 @@ namespace Fancyx.Admin.Controllers.System
         [HttpGet("List")]
         [HasPermission("Sys.User.List")]
         [ApiAccessLog(operateName: "用户分页列表")]
-        public async Task<AppResponse<PagedResult<UserListDto>>> GetUserListAsync([FromQuery] UserQueryDto dto)
+        public async Task<AppResponse<PagedResult<UserItem>>> GetUserListAsync([FromQuery] GetUserListRequest dto)
         {
             var data = await _userService.GetUserListAsync(dto);
             return Result.Data(data);
@@ -75,7 +75,7 @@ namespace Fancyx.Admin.Controllers.System
         [HttpPost("AssignRole")]
         [HasPermission("Sys.User.AssignRole")]
         [ApiAccessLog(operateName: "分配角色", operateType: [OperateType.Update], reponseEnable: true)]
-        public async Task<AppResponse<bool>> AssignRoleAsync([FromBody] AssignRoleDto dto)
+        public async Task<AppResponse<bool>> AssignRoleAsync([FromBody] AssignRoleRequest dto)
         {
             await _userService.AssignRoleAsync(dto);
             return Result.Ok();
@@ -115,7 +115,7 @@ namespace Fancyx.Admin.Controllers.System
         [HttpPut("ResetPwd")]
         [HasPermission("Sys.User.ResetPwd")]
         [ApiAccessLog(operateName: "重置用户密码", operateType: [OperateType.Update], reponseEnable: true)]
-        public async Task<AppResponse<bool>> ResetUserPasswordAsync([FromBody] ResetUserPwdDto dto)
+        public async Task<AppResponse<bool>> ResetUserPasswordAsync([FromBody] ResetUserPwdRequest dto)
         {
             await _userService.ResetUserPasswordAsync(dto);
             return Result.Ok();
@@ -141,7 +141,7 @@ namespace Fancyx.Admin.Controllers.System
         [HttpGet("Export")]
         [HasPermission("Sys.User.Export")]
         [ApiAccessLog(operateName: "导出用户列表")]
-        public async Task<IActionResult> ExportUserListAsync([FromQuery] UserQueryDto dto)
+        public async Task<IActionResult> ExportUserListAsync([FromQuery] GetUserListRequest dto)
         {
             var data = await _userService.ExportUserListAsync(dto);
             var memoryStream = new MemoryStream();
@@ -158,7 +158,7 @@ namespace Fancyx.Admin.Controllers.System
         [HttpPut("Update")]
         [HasPermission("Sys.User.Update")]
         [ApiAccessLog(operateName: "修改用户")]
-        public async Task<AppResponse<bool>> UpdateUserAsync([FromBody] UserEditDto dto)
+        public async Task<AppResponse<bool>> UpdateUserAsync([FromBody] UpdateUserRequest dto)
         {
             await _userService.UpdateUserAsync(dto);
             return Result.Ok();
@@ -170,7 +170,7 @@ namespace Fancyx.Admin.Controllers.System
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("EditInfo")]
-        public async Task<AppResponse<UserEditInfoDto>> GetUserEditInfoAsync(long id)
+        public async Task<AppResponse<UserDetails>> GetUserEditInfoAsync(long id)
         {
             var data = await _userService.GetUserEditInfoAsync(id);
             return Result.Data(data);

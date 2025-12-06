@@ -27,7 +27,7 @@ public class DictTypeController : ControllerBase
     /// <returns></returns>
     [HttpPost]
     [HasPermission("Sys.DictType.Add")]
-    public async Task<AppResponse<bool>> AddDictTypeAsync([FromBody] DictTypeDto dto)
+    public async Task<AppResponse<bool>> AddDictTypeAsync([FromBody] AddOrUpdateDictTypeRequest dto)
     {
         await _dictTypeService.AddDictTypeAsync(dto);
         return Result.Ok();
@@ -40,7 +40,7 @@ public class DictTypeController : ControllerBase
     /// <returns></returns>
     [HttpGet]
     [HasPermission("Sys.DictType.List")]
-    public async Task<AppResponse<PagedResult<DictTypeResultDto>>> GetDictTypeListAsync([FromQuery] DictTypeSearchDto dto)
+    public async Task<AppResponse<PagedResult<DictTypeItem>>> GetDictTypeListAsync([FromQuery] GetDictTypeListRequest dto)
     {
         var data = await _dictTypeService.GetDictTypeListAsync(dto);
         return Result.Data(data);
@@ -53,7 +53,7 @@ public class DictTypeController : ControllerBase
     /// <returns></returns>
     [HttpPut]
     [HasPermission("Sys.DictType.Update")]
-    public async Task<AppResponse<bool>> UpdateDictTypeAsync([FromBody] DictTypeDto dto)
+    public async Task<AppResponse<bool>> UpdateDictTypeAsync([FromBody] AddOrUpdateDictTypeRequest dto)
     {
         await _dictTypeService.UpdateDictTypeAsync(dto);
         return Result.Ok();

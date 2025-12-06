@@ -33,7 +33,7 @@ namespace Fancyx.Admin.Controllers.System
         [HasPermission("Sys.Tenant.Add")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
         [ApiAccessLog(operateName: "添加租户", operateType: [OperateType.Create], reponseEnable: true)]
-        public async Task<AppResponse<bool>> AddTenantAsync([FromBody] TenantDto dto)
+        public async Task<AppResponse<bool>> AddTenantAsync([FromBody] AddOrUpdateTenantRequest dto)
         {
             await _tenantService.AddTenantAsync(dto);
             return Result.Ok();
@@ -46,7 +46,7 @@ namespace Fancyx.Admin.Controllers.System
         /// <returns></returns>
         [HttpGet("List")]
         [HasPermission("Sys.Tenant.List")]
-        public async Task<AppResponse<PagedResult<TenantResultDto>>> GetTenantListAsync([FromQuery] TenantSearchDto dto)
+        public async Task<AppResponse<PagedResult<TenantItem>>> GetTenantListAsync([FromQuery] GetTenantListRequest dto)
         {
             var data = await _tenantService.GetTenantListAsync(dto);
             return Result.Data(data);
@@ -60,7 +60,7 @@ namespace Fancyx.Admin.Controllers.System
         [HttpPut("Update")]
         [HasPermission("Sys.Tenant.Update")]
         [ApiAccessLog(operateName: "修改租户", operateType: [OperateType.Update], reponseEnable: true)]
-        public async Task<AppResponse<bool>> UpdateTenantAsync([FromBody] TenantDto dto)
+        public async Task<AppResponse<bool>> UpdateTenantAsync([FromBody] AddOrUpdateTenantRequest dto)
         {
             await _tenantService.UpdateTenantAsync(dto);
             return Result.Ok();
@@ -82,7 +82,7 @@ namespace Fancyx.Admin.Controllers.System
 
         [HttpPost("AssignTenantMenu")]
         [HasPermission("Sys.Tenant.AssignTenantMenu")]
-        public async Task<AppResponse<bool>> AssignTenantMenuAsync([FromBody] AssignTenantMenuDto dto)
+        public async Task<AppResponse<bool>> AssignTenantMenuAsync([FromBody] AssignTenantMenuRequest dto)
         {
             await _tenantService.AssignTenantMenuAsync(dto);
             return Result.Ok();
@@ -110,7 +110,7 @@ namespace Fancyx.Admin.Controllers.System
 
         [HttpPost("CreateTenantAccount")]
         [HasPermission("Sys.Tenant.CreateTenantAccount")]
-        public async Task<AppResponse<TenantAccountInfoDto>> CreateTenantAccount([FromBody] CreateTenantAccountDto dto)
+        public async Task<AppResponse<TenantAccountInfo>> CreateTenantAccount([FromBody] CreateTenantAccountRequest dto)
         {
             var data = await _tenantService.CreateTenantAccountAsync(dto);
             return Result.Data(data);

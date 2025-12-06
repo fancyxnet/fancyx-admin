@@ -34,7 +34,7 @@ namespace Fancyx.Admin.Application.Service.System
             _currentTenant = currentTenant;
         }
 
-        public async Task<bool> AddRoleAsync(RoleDto dto)
+        public async Task<bool> AddRoleAsync(AddOrUpdateRoleRequest dto)
         {
             var isExist = await _roleRepository.AnyAsync(x => x.RoleName.ToLower() == dto.RoleName.ToLower());
             if (isExist)
@@ -51,7 +51,7 @@ namespace Fancyx.Admin.Application.Service.System
             return true;
         }
 
-        public async Task<bool> AssignMenuAsync(AssignMenuDto dto)
+        public async Task<bool> AssignMenuAsync(AssignMenuRequest dto)
         {
             await _roleMenuRepository.DeleteAsync(x => x.RoleId == dto.RoleId);
             if (dto.MenuIds != null)
@@ -97,15 +97,15 @@ namespace Fancyx.Admin.Application.Service.System
             return true;
         }
 
-        public async Task<PagedResult<RoleListDto>> GetRoleListAsync(RoleQueryDto dto)
+        public async Task<PagedResult<RoleItem>> GetRoleListAsync(GetRoleListRequest dto)
         {
             var resp = await _roleRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.RoleName), x => x.RoleName.Contains(dto.RoleName!))
                 .OrderByDescending(x => x.CreationTime)
-                .Select(x => new RoleListDto() { Id = x.Id, IsEnabled = x.IsEnabled, Remark = x.Remark, CreationTime = x.CreationTime, RoleName = x.RoleName })
+                .Select(x => new RoleItem() { Id = x.Id, IsEnabled = x.IsEnabled, Remark = x.Remark, CreationTime = x.CreationTime, RoleName = x.RoleName })
                 .PagedAsync(dto.Current, dto.PageSize);
 
-            return new PagedResult<RoleListDto>(resp.Total, resp.Items);
+            return new PagedResult<RoleItem>(resp.Total, resp.Items);
         }
 
         public async Task<List<AppOption>> GetRoleOptionsAsync()
@@ -117,7 +117,7 @@ namespace Fancyx.Admin.Application.Service.System
             });
         }
 
-        public async Task<bool> UpdateRoleAsync(RoleDto dto)
+        public async Task<bool> UpdateRoleAsync(AddOrUpdateRoleRequest dto)
         {
             ArgumentNullException.ThrowIfNull(dto.Id);
             var entity = await _roleRepository.FindAsync(dto.Id) ?? throw new BusinessException("数据不存在");
@@ -145,12 +145,12 @@ namespace Fancyx.Admin.Application.Service.System
             return [.. await _roleMenuRepository.Where(x => x.RoleId == id).SelectToListAsync(x => x.MenuId)];
         }
 
-        public async Task<(RolePowerInfoDto, List<DeptTreeOptionDto>)> GetRoleDeptPowerInfoAsync(long roleId)
+        public async Task<(RolePowerInfo, List<DeptTreeOption>)> GetRoleDeptPowerInfoAsync(long roleId)
         {
             var role = await _roleRepository.FindAsync(roleId);
-            if (role == null) return (new RolePowerInfoDto(), []);
+            if (role == null) return (new RolePowerInfo(), []);
 
-            var info = new RolePowerInfoDto()
+            var info = new RolePowerInfo()
             {
                 DeptPowerType = role.DeptPowerType
             };
@@ -162,10 +162,10 @@ namespace Fancyx.Admin.Application.Service.System
             var allDept = await _deptRepository.GetQueryable().SelectToListAsync(x => new { x.Id, x.Name, x.Code, x.ParentId });
             info.AllDeptIds = allDept.Select(x => x.Id).ToList();
             var rootDept = allDept.Where(x => !x.ParentId.HasValue).ToList();
-            var resultList = new List<DeptTreeOptionDto>();
+            var resultList = new List<DeptTreeOption>();
             rootDept.ForEach(x =>
             {
-                var tmp = new DeptTreeOptionDto
+                var tmp = new DeptTreeOption
                 {
                     Title = x.Name,
                     Key = x.Id,
@@ -176,14 +176,14 @@ namespace Fancyx.Admin.Application.Service.System
 
             return (info, resultList);
 
-            List<DeptTreeOptionDto>? GetChildren(long itemId)
+            List<DeptTreeOption>? GetChildren(long itemId)
             {
                 var subDeptList = allDept.Where(x => x.ParentId == itemId).ToList();
                 if (subDeptList.Count == 0) return null;
-                var children = new List<DeptTreeOptionDto>();
+                var children = new List<DeptTreeOption>();
                 subDeptList.ForEach(x =>
                 {
-                    var tmp = new DeptTreeOptionDto
+                    var tmp = new DeptTreeOption
                     {
                         Title = x.Name,
                         Key = x.Id,
@@ -197,7 +197,7 @@ namespace Fancyx.Admin.Application.Service.System
         }
 
         [AsyncTransactional]
-        public async Task AssignDataScopeAsync(AssignDataScopeDto dto)
+        public async Task AssignDataScopeAsync(AssignDataScopeRequest dto)
         {
             var role = await _roleRepository.FindAsync(dto.RoleId);
             if (role == null) throw new BusinessException("角色不存在");

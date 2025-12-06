@@ -10,12 +10,12 @@ namespace Fancyx.Admin.Application.Profiles
         {
             AllowNullCollections = true;
 
-            CreateMap<DeptDto, Dept>();
-            CreateMap<Dept, DeptListDto>();
-            CreateMap<PositionGroupDto, PositionGroup>();
-            CreateMap<PositionGroup, PositionGroupListDto>();
-            CreateMap<Position, PositionListDto>();
-            CreateMap<PositionDto, Position>();
+            CreateMap<AddOrUpdateDeptRequest, Dept>();
+            CreateMap<Dept, DeptItem>();
+            CreateMap<AddOrUpdatePositionGroupRequest, PositionGroup>();
+            CreateMap<PositionGroup, PositionGroupItem>();
+            CreateMap<Position, PositionItem>();
+            CreateMap<AddPositionRequest, Position>();
         }
     }
 }

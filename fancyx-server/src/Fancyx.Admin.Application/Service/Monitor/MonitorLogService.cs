@@ -24,23 +24,23 @@ namespace Fancyx.Admin.Application.Service.Monitor
             _mapper = mapper;
         }
 
-        public async Task<PagedResult<ApiAccessLogListDto>> GetApiAccessLogListAsync(ApiAccessLogQueryDto dto)
+        public async Task<PagedResult<ApiAccessLogItem>> GetApiAccessLogListAsync(GetApiAccessLogListRequest dto)
         {
             var resp = await _apiAccessRepository.GetQueryable().WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.UserName != null && x.UserName.Contains(dto.UserName!))
                 .WhereIf(!string.IsNullOrEmpty(dto.Path), x => x.Path.Contains(dto.Path!))
                 .OrderByDescending(x => x.CreationTime)
                 .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<ApiAccessLogListDto>(dto, resp.Total, _mapper.Map<List<ApiAccessLog>, List<ApiAccessLogListDto>>(resp.Items));
+            return new PagedResult<ApiAccessLogItem>(dto, resp.Total, _mapper.Map<List<ApiAccessLog>, List<ApiAccessLogItem>>(resp.Items));
         }
 
-        public async Task<PagedResult<ExceptionLogListDto>> GetExceptionLogListAsync(ExceptionLogQueryDto dto)
+        public async Task<PagedResult<ExceptionLogItem>> GetExceptionLogListAsync(GetExceptionLogListRequest dto)
         {
             var resp = await _exceptionLogRepository.GetQueryable().WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.UserName != null && x.UserName.Contains(dto.UserName!))
                 .WhereIf(!string.IsNullOrEmpty(dto.Path), x => x.RequestPath != null && x.RequestPath.Contains(dto.Path!))
                 .WhereIf(dto.IsHandled.HasValue, x => x.IsHandled == dto.IsHandled!)
                 .OrderByDescending(x => x.CreationTime)
                 .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<ExceptionLogListDto>(dto, resp.Total, _mapper.Map<List<ExceptionLog>, List<ExceptionLogListDto>>(resp.Items));
+            return new PagedResult<ExceptionLogItem>(dto, resp.Total, _mapper.Map<List<ExceptionLog>, List<ExceptionLogItem>>(resp.Items));
         }
 
         public async Task HandleExceptionAsync(long exceptionId)

@@ -26,7 +26,7 @@ namespace Fancyx.Admin.Application.Service.Monitor
             _currentUser = currentUser;
         }
 
-        public async Task<List<OnlineUserResultDto>> GetOnlineUserListAsync(OnlineUserSearchDto dto)
+        public async Task<List<OnlineUserItem>> GetOnlineUserListAsync(GetOnlineUserListRequest dto)
         {
             var pattern = SystemCacheKey.AccessToken("*:*");
             if (!string.IsNullOrEmpty(dto.UserName))
@@ -40,7 +40,7 @@ namespace Fancyx.Admin.Application.Service.Monitor
             var tokenKeys = await _hybridCache.KeyPatternAsync(pattern);
             if (tokenKeys.Count <= 0) return [];
 
-            var result = new List<OnlineUserResultDto>();
+            var result = new List<OnlineUserItem>();
             var currentSessionId = _currentUser.FindClaim(AdminConsts.SessionId).Value;
             var subQuery = _loginLogRepository.Where(x => x.CreationTime >= x.CreationTime.AddDays(-1)).GroupBy(x => x.SessionId)
                 .Select(g => new
@@ -70,7 +70,7 @@ namespace Fancyx.Admin.Application.Service.Monitor
                 var sessionId = arr[2];
                 var loginLog = loginLogs.FirstOrDefault(x => x.SessionId == sessionId);
                 if (loginLog == null) continue;
-                result.Add(new OnlineUserResultDto
+                result.Add(new OnlineUserItem
                 {
                     UserId = userId,
                     UserName = loginLog.UserName,

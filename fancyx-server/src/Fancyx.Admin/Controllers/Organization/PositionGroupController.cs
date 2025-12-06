@@ -30,7 +30,7 @@ namespace Fancyx.Admin.Controllers.Organization
         [HttpPost("Add")]
         [HasPermission("Org.PositionGroup.Add")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
-        public async Task<AppResponse<bool>> AddPositionGroupAsync([FromBody] PositionGroupDto dto)
+        public async Task<AppResponse<bool>> AddPositionGroupAsync([FromBody] AddOrUpdatePositionGroupRequest dto)
         {
             await _positionGroupService.AddPositionGroupAsync(dto);
             return Result.Ok();
@@ -43,7 +43,7 @@ namespace Fancyx.Admin.Controllers.Organization
         /// <returns></returns>
         [HttpGet("List")]
         [HasPermission("Org.PositionGroup.List")]
-        public async Task<AppResponse<List<PositionGroupListDto>>> GetPositionGroupListAsync([FromQuery] PositionGroupQueryDto dto)
+        public async Task<AppResponse<List<PositionGroupItem>>> GetPositionGroupListAsync([FromQuery] GetPositionGroupListRequest dto)
         {
             var data = await _positionGroupService.GetPositionGroupListAsync(dto);
             return Result.Data(data);
@@ -56,7 +56,7 @@ namespace Fancyx.Admin.Controllers.Organization
         /// <returns></returns>
         [HttpPut("Update")]
         [HasPermission("Org.PositionGroup.Update")]
-        public async Task<AppResponse<bool>> UpdatePositionGroupAsync([FromBody] PositionGroupDto dto)
+        public async Task<AppResponse<bool>> UpdatePositionGroupAsync([FromBody] AddOrUpdatePositionGroupRequest dto)
         {
             await _positionGroupService.UpdatePositionGroupAsync(dto);
             return Result.Ok();

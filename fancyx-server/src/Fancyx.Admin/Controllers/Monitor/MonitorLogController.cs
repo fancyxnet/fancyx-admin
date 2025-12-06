@@ -26,7 +26,7 @@ namespace Fancyx.Admin.Controllers.Monitor
         /// <returns></returns>
         [HttpGet("ApiAccessLogList")]
         [HasPermission("Monitor.ApiAccessLogList")]
-        public async Task<AppResponse<PagedResult<ApiAccessLogListDto>>> GetApiAccessLogListAsync([FromQuery] ApiAccessLogQueryDto dto)
+        public async Task<AppResponse<PagedResult<ApiAccessLogItem>>> GetApiAccessLogListAsync([FromQuery] GetApiAccessLogListRequest dto)
         {
             var data = await _monitorLogService.GetApiAccessLogListAsync(dto);
             return Result.Data(data);
@@ -39,7 +39,7 @@ namespace Fancyx.Admin.Controllers.Monitor
         /// <returns></returns>
         [HttpGet("ExceptionLogList")]
         [HasPermission("Monitor.ExceptionLogList")]
-        public async Task<AppResponse<PagedResult<ExceptionLogListDto>>> GetExceptionLogListAsync([FromQuery] ExceptionLogQueryDto dto)
+        public async Task<AppResponse<PagedResult<ExceptionLogItem>>> GetExceptionLogListAsync([FromQuery] GetExceptionLogListRequest dto)
         {
             var data = await _monitorLogService.GetExceptionLogListAsync(dto);
             return Result.Data(data);

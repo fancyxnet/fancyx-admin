@@ -18,7 +18,7 @@ namespace Fancyx.Admin.Application.Service.System.LogManagement
             _mapper = mapper;
         }
 
-        public async Task<PagedResult<LoginLogListDto>> GetLoginLogListAsync(LoginLogQueryDto dto)
+        public async Task<PagedResult<LoginLogItem>> GetLoginLogListAsync(GetLoginLogListRequest dto)
         {
             var resp = await _loginLogRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.UserName.Contains(dto.UserName!))
@@ -28,7 +28,7 @@ namespace Fancyx.Admin.Application.Service.System.LogManagement
                 .OrderByDescending(x => x.CreationTime)
                 .PagedAsync(dto.Current, dto.PageSize);
 
-            return new PagedResult<LoginLogListDto>(resp.Total, _mapper.Map<List<LoginLog>, List<LoginLogListDto>>(resp.Items));
+            return new PagedResult<LoginLogItem>(resp.Total, _mapper.Map<List<LoginLog>, List<LoginLogItem>>(resp.Items));
         }
     }
 }

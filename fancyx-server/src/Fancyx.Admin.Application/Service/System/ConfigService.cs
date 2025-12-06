@@ -26,7 +26,7 @@ namespace Fancyx.Admin.Application.Service.System
             _mapper = mapper;
         }
 
-        public async Task AddConfigAsync(ConfigDto dto)
+        public async Task AddConfigAsync(AddOrUpdateConfigRequest dto)
         {
             if (await _configRepository.AnyAsync(x => x.Key.ToLower() == dto.Key.ToLower()))
             {
@@ -44,7 +44,7 @@ namespace Fancyx.Admin.Application.Service.System
             await _configRepository.InsertAsync(entity);
         }
 
-        public async Task<PagedResult<ConfigListDto>> GetConfigListAsync(ConfigQueryDto dto)
+        public async Task<PagedResult<ConfigListDto>> GetConfigListAsync(GetConfigListRequest dto)
         {
             var resp = await _configRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.Name), x => x.Name.ToLower().Contains(dto.Name!.ToLower()))
@@ -72,7 +72,7 @@ namespace Fancyx.Admin.Application.Service.System
         }
 
         [AsyncLogRecord(LogRecordConsts.Config, LogRecordConsts.ConfigUpdateSubType, "{{id}}", LogRecordConsts.ConfigUpdateContent)]
-        public async Task UpdateConfigAsync(ConfigDto dto)
+        public async Task UpdateConfigAsync(AddOrUpdateConfigRequest dto)
         {
             var entity = await _configRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
 

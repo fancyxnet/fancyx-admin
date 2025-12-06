@@ -5,11 +5,11 @@ namespace Fancyx.Admin.Application.IService.System
 {
     public interface IDictTypeService : IScopedDependency
     {
-        Task AddDictTypeAsync(DictTypeDto dto);
+        Task AddDictTypeAsync(AddOrUpdateDictTypeRequest dto);
 
-        Task<PagedResult<DictTypeResultDto>> GetDictTypeListAsync(DictTypeSearchDto dto);
+        Task<PagedResult<DictTypeItem>> GetDictTypeListAsync(GetDictTypeListRequest dto);
 
-        Task UpdateDictTypeAsync(DictTypeDto dto);
+        Task UpdateDictTypeAsync(AddOrUpdateDictTypeRequest dto);
 
         Task DeleteDictTypeAsync(string dictType);
 

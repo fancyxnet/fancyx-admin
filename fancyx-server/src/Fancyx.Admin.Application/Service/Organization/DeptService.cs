@@ -26,14 +26,14 @@ namespace Fancyx.Admin.Application.Service.Organization
             _mapper = mapper;
         }
 
-        public async Task<bool> AddDeptAsync(DeptDto dto)
+        public async Task<bool> AddDeptAsync(AddOrUpdateDeptRequest dto)
         {
             if (await _deptRepository.Where(x => x.Code.ToLower() == dto.Code!.ToLower()).AnyAsync())
             {
                 throw new BusinessException(message: "部门编号已存在");
             }
 
-            var entity = _mapper.Map<DeptDto, Dept>(dto);
+            var entity = _mapper.Map<AddOrUpdateDeptRequest, Dept>(dto);
             entity.ParentId = dto.ParentId;
             entity.Code = dto.Code;
             entity.SetTreeProperties(await _deptRepository.FindAsync(dto.ParentId));
@@ -56,7 +56,7 @@ namespace Fancyx.Admin.Application.Service.Organization
             return true;
         }
 
-        public async Task<List<DeptListDto>> GetDeptListAsync(DeptQueryDto dto)
+        public async Task<List<DeptItem>> GetDeptListAsync(GetDeptListRequest dto)
         {
             bool hasFilter = !string.IsNullOrEmpty(dto.Name) || !string.IsNullOrEmpty(dto.Code) || dto.Status > 0;
             if (hasFilter)
@@ -66,19 +66,19 @@ namespace Fancyx.Admin.Application.Service.Organization
                     .WhereIf(!string.IsNullOrEmpty(dto.Code), x => x.Code.Contains(dto.Code!)) // ==
                     .WhereIf(dto.Status > 0, x => x.Status == dto.Status) // ==
                     .OrderBy(x => x.Sort).ToListAsync();
-                var result = _mapper.Map<List<Dept>, List<DeptListDto>>(filter);
+                var result = _mapper.Map<List<Dept>, List<DeptItem>>(filter);
 
                 return result;
             }
 
             var allNodes = await _deptRepository.GetQueryable().PowerFilter(_currentUser).OrderBy(x => x.TreePath).ToDictionaryAsync(k => k.Id);
-            var tree = new List<DeptListDto>();
-            var nodeDtos = new Dictionary<long, DeptListDto>();
-            var endDtos = new List<DeptListDto>();
+            var tree = new List<DeptItem>();
+            var nodeDtos = new Dictionary<long, DeptItem>();
+            var endDtos = new List<DeptItem>();
 
             foreach (var node in allNodes.Values)
             {
-                var tmp = _mapper.Map<Dept, DeptListDto>(node);
+                var tmp = _mapper.Map<Dept, DeptItem>(node);
                 nodeDtos[tmp.Id] = tmp;
                 if (node.ParentId.HasValue)
                 {
@@ -101,7 +101,7 @@ namespace Fancyx.Admin.Application.Service.Organization
             return tree.OrderBy(x => x.Sort).Concat(endDtos).ToList();
         }
 
-        public async Task<bool> UpdateDeptAsync(DeptDto dto)
+        public async Task<bool> UpdateDeptAsync(AddOrUpdateDeptRequest dto)
         {
             if (!dto.Id.HasValue) throw new ArgumentNullException(nameof(dto.Id));
 
@@ -140,20 +140,20 @@ namespace Fancyx.Admin.Application.Service.Organization
             return true;
         }
 
-        public async Task<List<DeptSimpleInfoDto>> GetDeptSimpleInfosAsync(string? keyword)
+        public async Task<List<DeptSimpleInfo>> GetDeptSimpleInfosAsync(string? keyword)
         {
             var depts = await _deptRepository.GetQueryable().PowerFilter(_currentUser).WhereIf(!string.IsNullOrEmpty(keyword),
                     x => x.Name.StartsWith(keyword!) || x.Code.StartsWith(keyword!))
                 .SelectToListAsync(x => new { x.Id, x.Name, x.Code, x.ParentId, x.Sort, x.CreationTime, x.TreeLevel });
-            var list = new List<DeptSimpleInfoDto>();
+            var list = new List<DeptSimpleInfo>();
             //顶级部门放前面
             var topDepts = depts.Where(x => !x.ParentId.HasValue).OrderBy(x => x.TreeLevel)
                 .ThenBy(x => x.Sort).ThenBy(x => x.CreationTime).ToList();
-            topDepts.ForEach(x => { list.Add(new DeptSimpleInfoDto { Id = x.Id, Name = x.Name, Code = x.Code }); });
+            topDepts.ForEach(x => { list.Add(new DeptSimpleInfo { Id = x.Id, Name = x.Name, Code = x.Code }); });
             //子部门放后面
             depts.Where(x => x.ParentId.HasValue).OrderBy(x => x.TreeLevel).ThenBy(x => x.Sort).ThenBy(x => x.CreationTime).ToList().ForEach(x =>
             {
-                list.Add(new DeptSimpleInfoDto { Id = x.Id, Name = x.Name, Code = x.Code });
+                list.Add(new DeptSimpleInfo { Id = x.Id, Name = x.Name, Code = x.Code });
             });
             return list;
         }

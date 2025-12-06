@@ -42,9 +42,9 @@ namespace Fancyx.Admin.Application.Service.System
         private readonly string[] treeFields = ["parent_id", "tree_path", "tree_level"];
         private readonly string[] tenantFields = ["tenant_id"];
 
-        public async Task<GenCodeResultDto> GenCodeAsync(long tableId)
+        public async Task<GenCodeResponse> GenCodeAsync(long tableId)
         {
-            var result = new GenCodeResultDto();
+            var result = new GenCodeResponse();
 
             var genTable = await _genTableRepository.FindAsync(tableId) ?? throw new EntityNotFoundException();
             var genTableColumns = await _genTableColumnRepository.Where(x => x.TableId == tableId).AsNoTracking().ToListAsync();
@@ -215,24 +215,24 @@ namespace Fancyx.Admin.Application.Service.System
             await this.InsertGenTableColumnsFromDb(genTable.TableId, tableInfo.TableName);
         }
 
-        public async Task<PagedResult<TableInfoDto>> GetTableListAsync(GetTableQueryDto dto)
+        public async Task<PagedResult<TableInfoItem>> GetTableListAsync(GetTableListRequest dto)
         {
             var resp = await _genRepository.QueryTablesAsync(dto.Current, dto.PageSize, dto.TableName);
-            return new PagedResult<TableInfoDto>(resp.Total, _mapper.Map<List<TableInfoDto>>(resp.Items));
+            return new PagedResult<TableInfoItem>(resp.Total, _mapper.Map<List<TableInfoItem>>(resp.Items));
         }
 
-        public async Task<PagedResult<GenTableListDto>> GetGenTableListAsync(GenTableQueryDto dto)
+        public async Task<PagedResult<GenTableItem>> GetGenTableListAsync(GetGenTableListRequest dto)
         {
             var resp = await _genTableRepository.GetQueryable().WhereIf(!string.IsNullOrEmpty(dto.TableName), x => x.TableName != null && x.TableName.StartsWith(dto.TableName!))
                 .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<GenTableListDto>(resp.Total, _mapper.Map<List<GenTableListDto>>(resp.Items));
+            return new PagedResult<GenTableItem>(resp.Total, _mapper.Map<List<GenTableItem>>(resp.Items));
         }
 
-        public async Task<PagedResult<GenTableColumnListDto>> GetGenTableColumnListAsync(GenTableColumnQueryDto dto)
+        public async Task<PagedResult<GenTableColumnItem>> GetGenTableColumnListAsync(GenTableColumnRequest dto)
         {
             var resp = await _genTableColumnRepository.Where(x => x.TableId == dto.TableId)
                 .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<GenTableColumnListDto>(resp.Total, _mapper.Map<List<GenTableColumnListDto>>(resp.Items));
+            return new PagedResult<GenTableColumnItem>(resp.Total, _mapper.Map<List<GenTableColumnItem>>(resp.Items));
         }
 
         public async Task GenSyncFromDb(long tableId)
@@ -273,7 +273,7 @@ namespace Fancyx.Admin.Application.Service.System
         }
 
         [AsyncTransactional]
-        public async Task SaveGenColumnInfoAsync(List<GenTableColumnDto> dtos)
+        public async Task SaveGenColumnInfoAsync(List<SaveGenColumnInfoItem> dtos)
         {
             var columnIds = dtos.Select(x => x.ColumnId).ToList();
             var genTableColumns = await _genTableColumnRepository.AsNoTracking().Where(x => columnIds.Contains(x.ColumnId)).ToListAsync();
@@ -302,10 +302,10 @@ namespace Fancyx.Admin.Application.Service.System
             await _genTableColumnRepository.UpdateManyAsync(genTableColumns);
         }
 
-        public async Task<GenDetailsInfoDto> GetGenDetailsInfoAsync(long tableId)
+        public async Task<GenDetails> GetGenDetailsInfoAsync(long tableId)
         {
             var genTable = await _genTableRepository.FindAsync(tableId) ?? throw new EntityNotFoundException();
-            return _mapper.Map<GenDetailsInfoDto>(genTable);
+            return _mapper.Map<GenDetails>(genTable);
         }
 
         private async Task InsertGenTableColumnsFromDb(long tableId, string tableName)

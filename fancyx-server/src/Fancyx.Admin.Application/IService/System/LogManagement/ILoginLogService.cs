@@ -10,6 +10,6 @@ namespace Fancyx.Admin.Application.IService.System.LogManagement
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<PagedResult<LoginLogListDto>> GetLoginLogListAsync(LoginLogQueryDto dto);
+        Task<PagedResult<LoginLogItem>> GetLoginLogListAsync(GetLoginLogListRequest dto);
     }
 }

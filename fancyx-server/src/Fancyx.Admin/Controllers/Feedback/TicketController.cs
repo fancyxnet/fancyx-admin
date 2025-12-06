@@ -1,5 +1,6 @@
 ﻿using Fancyx.Admin.Application.IService.Feedback;
 using Fancyx.Admin.Application.IService.Feedback.Dtos;
+using Fancyx.Admin.EfCore.Models;
 using Fancyx.Shared.WebApi.Attributes;
 using Fancyx.Swagger;
 using Microsoft.AspNetCore.Authorization;
@@ -22,7 +23,7 @@ namespace Fancyx.Admin.Controllers.Feedback
 
         [HttpPost("Create")]
         [HasPermission("Feedback.Ticket.UserCreate")]
-        public async Task<AppResponse<bool>> CreateTicketAsync([FromBody] TicketCreateDto dto)
+        public async Task<AppResponse<bool>> CreateTicketAsync([FromBody] TicketCreateRequest dto)
         {
             await _ticketService.CreateTicketAsync(dto);
             return Result.Ok();
@@ -38,7 +39,7 @@ namespace Fancyx.Admin.Controllers.Feedback
 
         [HttpGet("ListForAdmin")]
         [HasPermission("Feedback.Ticket.ListForAdmin")]
-        public async Task<AppResponse<PagedResult<TicketListDto>>> GetTicketListAsync([FromQuery] TicketQueryDto dto)
+        public async Task<AppResponse<PagedResult<TicketItem>>> GetTicketListAsync([FromQuery] GetTicketListRequest dto)
         {
             var data = await _ticketService.GetTicketListAsync(dto);
             return Result.Data(data);
@@ -46,7 +47,7 @@ namespace Fancyx.Admin.Controllers.Feedback
 
         [HttpGet("ListForUser")]
         [HasPermission("Feedback.Ticket.ListForUser")]
-        public async Task<AppResponse<PagedResult<UserTicketListDto>>> GetUserTicketListAsync([FromQuery] UserTicketQueryDto dto)
+        public async Task<AppResponse<PagedResult<UserTicketItem>>> GetUserTicketListAsync([FromQuery] GetUserTicketListRequest dto)
         {
             var data = await _ticketService.GetUserTicketListAsync(dto);
             return Result.Data(data);
@@ -54,7 +55,7 @@ namespace Fancyx.Admin.Controllers.Feedback
 
         [HttpPost("Reply")]
         [HasPermission("Feedback.Ticket.Reply")]
-        public async Task<AppResponse<bool>> ReplyTicketAsync([FromBody] ReplyTicketDto dto)
+        public async Task<AppResponse<bool>> ReplyTicketAsync([FromBody] ReplyTicketRequest dto)
         {
             await _ticketService.ReplyTicketAsync(dto);
             return Result.Ok();
@@ -62,7 +63,7 @@ namespace Fancyx.Admin.Controllers.Feedback
 
         [HttpPost("Evaluation")]
         [HasPermission("Feedback.Ticket.Evaluation")]
-        public async Task<AppResponse<bool>> EvaluationTicketAsync([FromBody] EvaluationTicketDto dto)
+        public async Task<AppResponse<bool>> EvaluationTicketAsync([FromBody] EvaluationTicketRequest dto)
         {
             await _ticketService.EvaluationTicketAsync(dto);
             return Result.Ok();
@@ -70,7 +71,7 @@ namespace Fancyx.Admin.Controllers.Feedback
 
         [HttpGet("Details")]
         [HasPermission("Feedback.Ticket.Details")]
-        public async Task<AppResponse<TicketDetailsDto>> GetTicketDetailsAsync(long id)
+        public async Task<AppResponse<TicketDetails>> GetTicketDetailsAsync(long id)
         {
             var data = await _ticketService.GetTicketDetailsAsync(id);
             return Result.Data(data);

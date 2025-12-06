@@ -43,7 +43,7 @@ namespace Fancyx.Admin.Application.Service.System
             _dbContext = dbContext;
         }
 
-        public async Task AddTenantAsync(TenantDto dto)
+        public async Task AddTenantAsync(AddOrUpdateTenantRequest dto)
         {
             if (await _tenantRepository.AnyAsync(x => x.Id.ToLower() == dto.TenantId.ToLower()))
             {
@@ -76,21 +76,21 @@ namespace Fancyx.Admin.Application.Service.System
             await this.DisabledTenantSubUserAsync(tenantId);
         }
 
-        public async Task<PagedResult<TenantResultDto>> GetTenantListAsync(TenantSearchDto dto)
+        public async Task<PagedResult<TenantItem>> GetTenantListAsync(GetTenantListRequest dto)
         {
             var resp = await _tenantRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.Keyword), x => x.Name.Contains(dto.Keyword!) || x.Id.Contains(dto.Keyword!))
                 .OrderByDescending(x => x.CreationTime)
-                .Select(x => new TenantResultDto { IsEnabled = x.IsEnabled, CreationTime = x.CreationTime, Domain = x.Domain, LastModificationTime = x.LastModificationTime, Name = x.Name, Remark = x.Remark, TenantId = x.Id })
+                .Select(x => new TenantItem { IsEnabled = x.IsEnabled, CreationTime = x.CreationTime, Domain = x.Domain, LastModificationTime = x.LastModificationTime, Name = x.Name, Remark = x.Remark, TenantId = x.Id })
                 .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<TenantResultDto>(dto)
+            return new PagedResult<TenantItem>(dto)
             {
                 TotalCount = resp.Total,
                 Items = resp.Items
             };
         }
 
-        public async Task UpdateTenantAsync(TenantDto dto)
+        public async Task UpdateTenantAsync(AddOrUpdateTenantRequest dto)
         {
             var entity = await _tenantRepository.FindAsync(dto.TenantId) ?? throw new EntityNotFoundException();
 
@@ -116,7 +116,7 @@ namespace Fancyx.Admin.Application.Service.System
         }
 
         [AsyncTransactional]
-        public async Task AssignTenantMenuAsync(AssignTenantMenuDto dto)
+        public async Task AssignTenantMenuAsync(AssignTenantMenuRequest dto)
         {
             await _tenantMenuRepository.DeleteAsync(x => x.TenantId == dto.TenantId);
             if (dto.MenuIds?.Length > 0)
@@ -142,10 +142,10 @@ namespace Fancyx.Admin.Application.Service.System
         }
 
         [AsyncTransactional]
-        public async Task<TenantAccountInfoDto> CreateTenantAccountAsync(CreateTenantAccountDto dto)
+        public async Task<TenantAccountInfo> CreateTenantAccountAsync(CreateTenantAccountRequest dto)
         {
             if (dto.ErrCount > 3) throw new BusinessException("创建失败，请联系管理员");
-            var info = new TenantAccountInfoDto()
+            var info = new TenantAccountInfo()
             {
                 RoleName = StringUtils.Generate(12).ToLowerInvariant(),
                 UserName = StringUtils.Generate(18).ToLowerInvariant(),

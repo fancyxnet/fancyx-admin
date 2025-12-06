@@ -3,6 +3,7 @@ using Fancyx.Admin.Application.IService.Feedback;
 using Fancyx.Admin.Application.IService.Feedback.Dtos;
 using Fancyx.Admin.EfCore.Entities.Feedback;
 using Fancyx.Admin.EfCore.Enums;
+using Fancyx.Admin.EfCore.Models;
 using Fancyx.Admin.EfCore.Repositories;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
@@ -36,7 +37,7 @@ namespace Fancyx.Admin.Application.Service.Feedback
                 .SetProperty(s => s.LastModifierId, _currentUser.Id));
         }
 
-        public Task CreateTicketAsync(TicketCreateDto dto)
+        public Task CreateTicketAsync(TicketCreateRequest dto)
         {
             var ticket = new Ticket()
             {
@@ -47,7 +48,7 @@ namespace Fancyx.Admin.Application.Service.Feedback
             return _ticketRepository.InsertAsync(ticket);
         }
 
-        public async Task EvaluationTicketAsync(EvaluationTicketDto dto)
+        public async Task EvaluationTicketAsync(EvaluationTicketRequest dto)
         {
             var ticket = await _ticketRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
             if (!_currentUser.Id.Equals(ticket.UserId))
@@ -67,10 +68,10 @@ namespace Fancyx.Admin.Application.Service.Feedback
             await _ticketRepository.UpdateAsync(ticket);
         }
 
-        public async Task<TicketDetailsDto> GetTicketDetailsAsync(long id)
+        public async Task<TicketDetails> GetTicketDetailsAsync(long id)
         {
             var ticket = await _ticketRepository.FindAsync(id) ?? throw new EntityNotFoundException();
-            var model = new TicketDetailsDto
+            var model = new TicketDetails
             {
                 Id = ticket.Id,
                 Title = ticket.Title,
@@ -85,17 +86,17 @@ namespace Fancyx.Admin.Application.Service.Feedback
             return model;
         }
 
-        public async Task<PagedResult<TicketListDto>> GetTicketListAsync(TicketQueryDto dto)
+        public async Task<PagedResult<TicketItem>> GetTicketListAsync(GetTicketListRequest dto)
         {
             var data = await _ticketRepository.QueryListAsync(dto.Current, dto.PageSize);
-            return new PagedResult<TicketListDto>(data.Total, _mapper.Map<List<TicketListDto>>(data.Items));
+            return new PagedResult<TicketItem>(data.Total, _mapper.Map<List<TicketItem>>(data.Items));
         }
 
-        public async Task<PagedResult<UserTicketListDto>> GetUserTicketListAsync(UserTicketQueryDto dto)
+        public async Task<PagedResult<UserTicketItem>> GetUserTicketListAsync(GetUserTicketListRequest dto)
         {
             var query = _ticketRepository.GetQueryable().Where(x => x.UserId == _currentUser.Id).WhereIf(!string.IsNullOrEmpty(dto.Title), x => x.Title.StartsWith(dto.Title!));
             var data = await query.GroupJoin(_ticketReplyRepository.GetQueryable(), t => t.Id, g => g.TicketId,
-                (t, g) => new UserTicketListDto
+                (t, g) => new UserTicketItem
                 {
                     Id = t.Id,
                     Title = t.Title,
@@ -105,10 +106,10 @@ namespace Fancyx.Admin.Application.Service.Feedback
                     CreationTime = t.CreationTime,
                     ReplyCount = g.Where(gs => gs.SenderId != t.UserId).Count()
                 }).PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<UserTicketListDto>(data.Total, data.Items);
+            return new PagedResult<UserTicketItem>(data.Total, data.Items);
         }
 
-        public async Task ReplyTicketAsync(ReplyTicketDto dto)
+        public async Task ReplyTicketAsync(ReplyTicketRequest dto)
         {
             var ticket = await _ticketRepository.FindAsync(dto.TicketId) ?? throw new EntityNotFoundException();
             if (ticket.Status.Equals(TicketStatus.Closed))

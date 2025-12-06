@@ -10,21 +10,21 @@ namespace Fancyx.Admin.Application.IService.System
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<bool> AddMenuAsync(MenuDto dto);
+        Task<bool> AddMenuAsync(AddOrUpdateMenuRequest dto);
 
         /// <summary>
         /// 菜单树形列表
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<List<MenuListDto>> GetMenuListAsync(MenuQueryDto dto);
+        Task<List<MenuItem>> GetMenuListAsync(GetMenuListRequest dto);
 
         /// <summary>
         /// 修改菜单
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<bool> UpdateMenuAsync(MenuDto dto);
+        Task<bool> UpdateMenuAsync(AddOrUpdateMenuRequest dto);
 
         /// <summary>
         /// 删除菜单
@@ -39,6 +39,6 @@ namespace Fancyx.Admin.Application.IService.System
         /// <param name="onlyMenu">true:只要目录+菜单</param>
         /// <param name="keyword">关键字筛选</param>
         /// <returns></returns>
-        Task<(string[] keys, List<MenuOptionTreeDto> tree)> GetMenuOptionsAsync(bool onlyMenu, string? keyword, bool noTenantMenuFilter = false);
+        Task<(string[] keys, List<MenuOptionTree> tree)> GetMenuOptionsAsync(bool onlyMenu, string? keyword, bool noTenantMenuFilter = false);
     }
 }

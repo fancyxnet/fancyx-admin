@@ -27,7 +27,7 @@ namespace Fancyx.Admin.Controllers.Account
         [AllowAnonymous]
         [HttpPost("login")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
-        public async Task<AppResponse<LoginResultDto>> LoginAsync([FromBody] LoginDto dto)
+        public async Task<AppResponse<LoginRespone>> LoginAsync([FromBody] LoginRequest dto)
         {
             var data = await _accountService.LoginAsync(dto);
             return Result.Data(data);
@@ -41,7 +41,7 @@ namespace Fancyx.Admin.Controllers.Account
         [AllowAnonymous]
         [HttpPost("SmsLogin")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
-        public async Task<AppResponse<LoginResultDto>> SmsLoginAsync([FromBody] SmsLoginDto dto)
+        public async Task<AppResponse<LoginRespone>> SmsLoginAsync([FromBody] SmsLoginRequest dto)
         {
             var data = await _accountService.SmsLoginAsync(dto);
             return Result.Data(data);
@@ -53,7 +53,7 @@ namespace Fancyx.Admin.Controllers.Account
         /// <param name="refreshToken"></param>
         /// <returns></returns>
         [HttpPost("RefreshToken")]
-        public async Task<AppResponse<TokenResultDto>> GetAccessTokenAsync(string refreshToken)
+        public async Task<AppResponse<TokenResponse>> GetAccessTokenAsync(string refreshToken)
         {
             var data = await _accountService.GetAccessTokenAsync(refreshToken);
             return Result.Data(data);
@@ -65,7 +65,7 @@ namespace Fancyx.Admin.Controllers.Account
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPut("UpdateInfo")]
-        public async Task<AppResponse<bool>> UpdateUserInfoAsync([FromBody] PersonalInfoDto dto)
+        public async Task<AppResponse<bool>> UpdateUserInfoAsync([FromBody] UpdateUserInfoRequest dto)
         {
             await _accountService.UpdateUserInfoAsync(dto);
             return Result.Ok();
@@ -77,7 +77,7 @@ namespace Fancyx.Admin.Controllers.Account
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPut("UpdatePwd")]
-        public async Task<AppResponse<bool>> UpdateUserPwdAsync([FromBody] UserPwdDto dto)
+        public async Task<AppResponse<bool>> UpdateUserPwdAsync([FromBody] UpdateUserPwdRequest dto)
         {
             await _accountService.UpdateUserPwdAsync(dto);
             return Result.Ok();
@@ -100,7 +100,7 @@ namespace Fancyx.Admin.Controllers.Account
         /// </summary>
         /// <returns></returns>
         [HttpGet("UserAuth")]
-        public async Task<AppResponse<UserAuthInfoDto>> GetUserAuthInfoAsync()
+        public async Task<AppResponse<GetUserAuthInfoResponse>> GetUserAuthInfoAsync()
         {
             var data = await _accountService.GetUserAuthInfoAsync();
             return Result.Data(data);

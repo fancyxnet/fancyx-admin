@@ -10,21 +10,21 @@ namespace Fancyx.Admin.Application.IService.Organization
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<bool> AddPositionGroupAsync(PositionGroupDto dto);
+        Task<bool> AddPositionGroupAsync(AddOrUpdatePositionGroupRequest dto);
 
         /// <summary>
         /// 职位分组分页列表
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<List<PositionGroupListDto>> GetPositionGroupListAsync(PositionGroupQueryDto dto);
+        Task<List<PositionGroupItem>> GetPositionGroupListAsync(GetPositionGroupListRequest dto);
 
         /// <summary>
         /// 修改职位分组
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<bool> UpdatePositionGroupAsync(PositionGroupDto dto);
+        Task<bool> UpdatePositionGroupAsync(AddOrUpdatePositionGroupRequest dto);
 
         /// <summary>
         /// 删除职位分组

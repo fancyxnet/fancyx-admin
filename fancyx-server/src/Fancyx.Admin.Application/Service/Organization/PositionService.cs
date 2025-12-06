@@ -54,13 +54,13 @@ namespace Fancyx.Admin.Application.Service.Organization
             return list;
         }
 
-        public async Task<bool> AddPositionAsync(PositionDto dto)
+        public async Task<bool> AddPositionAsync(AddPositionRequest dto)
         {
             if (await _positionRepository.AnyAsync(x => x.Code.ToLower() == dto.Code!.ToLower()))
             {
                 throw new BusinessException("职位编号已存在");
             }
-            var entity = _mapper.Map<PositionDto, Position>(dto);
+            var entity = _mapper.Map<AddPositionRequest, Position>(dto);
             await _positionRepository.InsertAsync(entity);
             return true;
         }
@@ -73,7 +73,7 @@ namespace Fancyx.Admin.Application.Service.Organization
             return true;
         }
 
-        public async Task<PagedResult<PositionListDto>> GetPositionListAsync(PositionQueryDto dto)
+        public async Task<PagedResult<PositionItem>> GetPositionListAsync(GetPositionListRequest dto)
         {
             var pagedResp = await _positionRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.Keyword), x => x.Name.Contains(dto.Keyword!) || x.Code.Contains(dto.Keyword!))
@@ -84,17 +84,17 @@ namespace Fancyx.Admin.Application.Service.Organization
                 .OrderBy(x => x.CreationTime)
                 .PagedAsync(dto.Current, dto.PageSize);
             var ids = pagedResp.Items.Select(x => x.Id).ToList();
-            var list = _mapper.Map<List<Position>, List<PositionListDto>>(pagedResp.Items);
+            var list = _mapper.Map<List<Position>, List<PositionItem>>(pagedResp.Items);
             var names = await GetPosistionGroupNameAsync(ids);
             foreach (var item in list)
             {
                 var tmp = names.FirstOrDefault(x => x.Id == item.Id);
                 item.LayerName = tmp?.LayerName;
             }
-            return new PagedResult<PositionListDto>(pagedResp.Total, list);
+            return new PagedResult<PositionItem>(pagedResp.Total, list);
         }
 
-        public async Task<bool> UpdatePositionAsync(PositionDto dto)
+        public async Task<bool> UpdatePositionAsync(AddPositionRequest dto)
         {
             if (!dto.Id.HasValue) throw new ArgumentNullException(nameof(dto.Id));
             var entity = await _positionRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
