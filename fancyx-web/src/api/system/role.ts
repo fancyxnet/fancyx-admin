@@ -5,24 +5,24 @@ import type { AppResponse, PagedResult, PageSearch, AppOption } from '@/types/ap
  * 新增角色
  * @param dto
  */
-export function addRole(dto: RoleDto) {
-  return httpClient.post<RoleDto, AppResponse<boolean>>('/admin-api/Role/Add', dto);
+export function addRole(dto: AddOrUpdateRoleRequest) {
+  return httpClient.post<AddOrUpdateRoleRequest, AppResponse<boolean>>('/admin-api/Role/Add', dto);
 }
 
 /**
  * 角色分页列表
  * @param dto
  */
-export function getRoleList(dto: RoleQueryDto) {
-  return httpClient.get<RoleQueryDto, AppResponse<PagedResult<RoleListDto>>>('/admin-api/Role/List', { params: dto });
+export function getRoleList(dto: GetRoleListRequest) {
+  return httpClient.get<GetRoleListRequest, AppResponse<PagedResult<RoleItem>>>('/admin-api/Role/List', { params: dto });
 }
 
 /**
  * 修改角色
  * @param dto
  */
-export function updateRole(dto: RoleDto) {
-  return httpClient.put<RoleDto, AppResponse<boolean>>('/admin-api/Role/Update', dto);
+export function updateRole(dto: AddOrUpdateRoleRequest) {
+  return httpClient.put<AddOrUpdateRoleRequest, AppResponse<boolean>>('/admin-api/Role/Update', dto);
 }
 
 /**
@@ -37,8 +37,8 @@ export function deleteRole(id: string) {
  * 分配菜单
  * @param dto
  */
-export function assignMenu(dto: AssignMenuDto) {
-  return httpClient.post<AssignMenuDto, AppResponse<boolean>>('/admin-api/Role/AssignMenu', dto);
+export function assignMenu(dto: AssignMenuRequest) {
+  return httpClient.post<AssignMenuRequest, AppResponse<boolean>>('/admin-api/Role/AssignMenu', dto);
 }
 
 /**
@@ -60,8 +60,8 @@ export function getRoleMenuIds(id: string) {
  * 分配数据
  * @param dto
  */
-export function assignData(dto: AssignDataDto) {
-  return httpClient.post<AssignDataDto, AppResponse<boolean>>('/admin-api/Role/AssignData', dto);
+export function assignData(dto: AssignDataScopeRequest) {
+  return httpClient.post<AssignDataScopeRequest, AppResponse<boolean>>('/admin-api/Role/AssignData', dto);
 }
 
 /**
@@ -82,14 +82,14 @@ export function assignDataScope(dto: AssignDataScopeDto) {
   return httpClient.post<AssignDataScopeDto, AppResponse<boolean>>('/admin-api/Role/AssignDataScope', dto);
 }
 
-export interface RoleDto {
+export interface AddOrUpdateRoleRequest {
   id?: string | null;
   roleName: string;
   remark?: string | null;
   isEnabled: boolean;
 }
 
-export interface RoleListDto {
+export interface RoleItem {
   id: string;
   roleName: string;
   remark: string | null;
@@ -97,16 +97,16 @@ export interface RoleListDto {
   creationTime: string;
 }
 
-export interface RoleQueryDto extends PageSearch {
+export interface GetRoleListRequest extends PageSearch {
   roleName?: string | null;
 }
 
-export interface AssignMenuDto {
+export interface AssignMenuRequest {
   menuIds: string[] | null;
   roleId: string;
 }
 
-export interface AssignDataDto {
+export interface AssignDataScopeRequest {
   roleId: string;
   powerDataType: number;
   deptIds: string[] | null;

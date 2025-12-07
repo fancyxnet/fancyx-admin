@@ -5,8 +5,8 @@ import type { AppResponse, PageSearch } from '@/types/api';
  * 在线用户列表
  * @param dto
  */
-export function getOnlineUsers(dto: OnlineUserSearchDto) {
-  return httpClient.get<OnlineUserSearchDto, AppResponse<OnlineUserResultDto[]>>(
+export function getOnlineUsers(dto: GetOnlineUserListRequest) {
+  return httpClient.get<GetOnlineUserListRequest, AppResponse<OnlineUserItem[]>>(
     '/admin-api/OnlineUser/GetOnlineUserList',
     {
       params: dto,
@@ -22,11 +22,11 @@ export function onlineUserLogout(key: string) {
   return httpClient.post<string, AppResponse<boolean>>('/admin-api/OnlineUser/Logout?key=' + key);
 }
 
-export interface OnlineUserSearchDto extends PageSearch {
+export interface GetOnlineUserListRequest extends PageSearch {
   userName?: string;
 }
 
-export interface OnlineUserResultDto {
+export interface OnlineUserItem {
   userId: string;
   userName: string;
   ip: string | null;

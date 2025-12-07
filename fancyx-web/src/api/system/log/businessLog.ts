@@ -5,8 +5,8 @@ import type { AppResponse, PageSearch, PagedResult, AppOption } from '@/types/ap
  * 业务日志分页列表
  * @param dto
  */
-export function getBusinessLogList(dto: BusinessLogQueryDto) {
-  return httpClient.get<BusinessLogQueryDto, AppResponse<PagedResult<BusinessLogListDto>>>('/admin-api/BusinessLog/List', {
+export function getBusinessLogList(dto: GetBusinessLogListRequest) {
+  return httpClient.get<GetBusinessLogListRequest, AppResponse<PagedResult<BusinessLogItem>>>('/admin-api/BusinessLog/List', {
     params: dto,
   });
 }
@@ -21,13 +21,13 @@ export function getBusinessTypeOptions(type?: string | null) {
   });
 }
 
-export interface BusinessLogQueryDto extends PageSearch {
+export interface GetBusinessLogListRequest extends PageSearch {
   type?: string;
   subType?: string;
   content?: string;
 }
 
-export interface BusinessLogListDto {
+export interface BusinessLogItem {
   id: string;
   userName: string;
   type: string;

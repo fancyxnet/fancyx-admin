@@ -2,7 +2,7 @@ import { Space, Form, Input, Button, Switch, Tag } from 'antd';
 import { useRef } from 'react';
 import { PlusOutlined, ExclamationCircleFilled, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import MenuForm, { type ModalRef } from '@/pages/system/components/MenuForm.tsx';
-import { deleteMenu, getMenuList, type MenuListDto } from '@/api/system/menu.ts';
+import { deleteMenu, getMenuList, type MenuItem } from '@/api/system/menu.ts';
 import type { SmartTableRef, SmartTableColumnType } from '@/components/SmartTable/type';
 import SmartTable from '@/components/SmartTable';
 import { MenuType } from '@/utils/globalValue.ts';
@@ -57,7 +57,7 @@ const MenuTable = () => {
       key: 'action',
       width: 140,
       fixed: 'right',
-      render: (_: any, record: MenuListDto) => (
+      render: (_: any, record: MenuItem) => (
         <Space>
           {(record.menuType === MenuType.Folder || record.menuType === MenuType.Menu) && (
             <Permission permissions={'Sys.Menu.Add'}>
@@ -98,10 +98,10 @@ const MenuTable = () => {
       },
     });
   };
-  const rowEdit = (record: MenuListDto) => {
+  const rowEdit = (record: MenuItem) => {
     modalRef.current?.openModal(record);
   };
-  const addSubItem = (record: MenuListDto) => {
+  const addSubItem = (record: MenuItem) => {
     modalRef.current?.openModal(record, true);
   };
 

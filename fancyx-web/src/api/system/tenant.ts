@@ -1,21 +1,21 @@
 import httpClient from '@/utils/httpClient.ts';
 import type { AppResponse, PagedResult, PageSearch } from '@/types/api';
-import type { MenuOptionResultDto } from './menu';
+import type { GetMenuOptionsResponse } from './menu';
 
 /**
  * 新增租户
  * @param dto
  */
-export function addTenant(dto: TenantDto) {
-  return httpClient.post<TenantDto, AppResponse<boolean>>('/admin-api/Tenant/Add', dto);
+export function addTenant(dto: AddOrUpdateTenantRequest) {
+  return httpClient.post<AddOrUpdateTenantRequest, AppResponse<boolean>>('/admin-api/Tenant/Add', dto);
 }
 
 /**
  * 租户分页列表
  * @param dto
  */
-export function getTenantList(dto: TenantQueryDto) {
-  return httpClient.get<TenantQueryDto, AppResponse<PagedResult<TenantListDto>>>('/admin-api/Tenant/List', {
+export function getTenantList(dto: GetTenantListRequest) {
+  return httpClient.get<GetTenantListRequest, AppResponse<PagedResult<TenantItem>>>('/admin-api/Tenant/List', {
     params: dto,
   });
 }
@@ -24,8 +24,8 @@ export function getTenantList(dto: TenantQueryDto) {
  * 修改租户
  * @param dto
  */
-export function updateTenant(dto: TenantDto) {
-  return httpClient.put<TenantDto, AppResponse<boolean>>('/admin-api/Tenant/Update', dto);
+export function updateTenant(dto: AddOrUpdateTenantRequest) {
+  return httpClient.put<AddOrUpdateTenantRequest, AppResponse<boolean>>('/admin-api/Tenant/Update', dto);
 }
 
 /**
@@ -40,8 +40,8 @@ export function deleteTenant(id: string) {
  * 分配租户菜单
  * @param dto
  */
-export function assignTenantMenu(dto: AssignTenantMenuDto) {
-  return httpClient.post<AssignTenantMenuDto, AppResponse<boolean>>('/admin-api/Tenant/AssignTenantMenu', dto);
+export function assignTenantMenu(dto: AssignTenantMenuRequest) {
+  return httpClient.post<AssignTenantMenuRequest, AppResponse<boolean>>('/admin-api/Tenant/AssignTenantMenu', dto);
 }
 
 /**
@@ -57,8 +57,8 @@ export function getTenantMenuIds(id: string) {
  * @param dto
  * @returns
  */
-export function createTenantAccount(dto: CreateTenantAccountDto) {
-  return httpClient.post<CreateTenantAccountDto, AppResponse<TenantAccountInfoDto>>('/admin-api/Tenant/CreateTenantAccount', dto);
+export function createTenantAccount(dto: CreateTenantAccountRequest) {
+  return httpClient.post<CreateTenantAccountRequest, AppResponse<TenantAccountInfo>>('/admin-api/Tenant/CreateTenantAccount', dto);
 }
 
 /**
@@ -67,7 +67,7 @@ export function createTenantAccount(dto: CreateTenantAccountDto) {
  * @param keyword
  */
 export function getMenuOptions(onlyMenu: boolean, keyword?: string) {
-  return httpClient.get<number, AppResponse<MenuOptionResultDto>>('/admin-api/Tenant/MenuOptions', {
+  return httpClient.get<number, AppResponse<GetMenuOptionsResponse>>('/admin-api/Tenant/MenuOptions', {
     params: {
       onlyMenu: onlyMenu,
       keyword: keyword,
@@ -75,22 +75,22 @@ export function getMenuOptions(onlyMenu: boolean, keyword?: string) {
   });
 }
 
-export interface TenantAccountInfoDto {
+export interface TenantAccountInfo {
   roleName: string;
   userName: string;
   password: string;
 }
 
-export interface CreateTenantAccountDto {
+export interface CreateTenantAccountRequest {
   tenantId: string;
 }
 
-export interface AssignTenantMenuDto {
+export interface AssignTenantMenuRequest {
   tenantId: string;
   menuIds: string[] | null;
 }
 
-export interface TenantDto {
+export interface AddOrUpdateTenantRequest {
   name: string;
   tenantId?: string;
   remark?: string;
@@ -98,7 +98,7 @@ export interface TenantDto {
   isEnabled: boolean;
 }
 
-export interface TenantListDto {
+export interface TenantItem {
   name: string;
   tenantId: string;
   remark?: string;
@@ -107,6 +107,6 @@ export interface TenantListDto {
   isEnabled: boolean;
 }
 
-export interface TenantQueryDto extends PageSearch {
+export interface GetTenantListRequest extends PageSearch {
   keyword?: string;
 }

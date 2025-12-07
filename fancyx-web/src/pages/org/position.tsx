@@ -3,7 +3,7 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Popconfirm, Space } from 'antd';
 import React, { useRef } from 'react';
 import Permission from '@/components/Permission';
-import type { PositionListDto } from '@/api/organization/position';
+import type { PositionItem } from '@/api/organization/position';
 import PositionForm, { type PositionModalRef } from '@/pages/org/components/PositionForm.tsx';
 import SmartTable from '@/components/SmartTable';
 import type { SmartTableRef, SmartTableColumnType } from '@/components/SmartTable/type.ts';
@@ -34,7 +34,7 @@ const Position: React.FC = () => {
     {
       title: '职位状态',
       dataIndex: 'status',
-      render: (_: number, record: PositionListDto) => {
+      render: (_: number, record: PositionItem) => {
         return record.status === 1 ? '正常' : '停用';
       },
     },
@@ -51,7 +51,7 @@ const Position: React.FC = () => {
       dataIndex: 'option',
       width: 140,
       fixed: 'right',
-      render: (_: any, record: PositionListDto) => (
+      render: (_: any, record: PositionItem) => (
         <Space>
           <Permission permissions={'Org.Position.Update'}>
             <Button
@@ -95,7 +95,7 @@ const Position: React.FC = () => {
       tableRef?.current?.reload();
     });
   };
-  const rowEdit = (record: PositionListDto) => {
+  const rowEdit = (record: PositionItem) => {
     modalRef.current?.openModal(record);
   };
 

@@ -1,7 +1,7 @@
 import { Form, Input, InputNumber, Modal, Switch } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import type { AppResponse } from '@/types/api';
-import { addDictData, type DictDataDto, updateDictData } from '@/api/system/dictData.ts';
+import { addDictData, type AddOrUpdateDictDataRequest, updateDictData } from '@/api/system/dictData.ts';
 import { useParams } from 'react-router-dom';
 import useApp from 'antd/es/app/useApp';
 import TextArea from 'antd/es/input/TextArea';
@@ -11,13 +11,13 @@ interface ModalProps {
 }
 
 export interface ModalRef {
-  openModal: (row?: DictDataDto) => void;
+  openModal: (row?: AddOrUpdateDictDataRequest) => void;
 }
 
 const DictDataForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [form] = Form.useForm();
-  const [row, setRow] = useState<DictDataDto | null>();
+  const [row, setRow] = useState<AddOrUpdateDictDataRequest | null>();
   const urlParams = useParams();
   const { message } = useApp();
 
@@ -25,7 +25,7 @@ const DictDataForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
     openModal,
   }));
 
-  const openModal = (row?: DictDataDto) => {
+  const openModal = (row?: AddOrUpdateDictDataRequest) => {
     setIsOpenModal(true);
     if (row) {
       setRow(row);
@@ -47,8 +47,8 @@ const DictDataForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
   };
 
   const execute = (
-    values: DictDataDto,
-    apiAction: (params: DictDataDto) => Promise<AppResponse<boolean>>,
+    values: AddOrUpdateDictDataRequest,
+    apiAction: (params: AddOrUpdateDictDataRequest) => Promise<AppResponse<boolean>>,
     successMsg: string,
   ) => {
     apiAction({ ...values, id: row?.id }).then(() => {
@@ -58,7 +58,7 @@ const DictDataForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
       props?.refresh?.();
     });
   };
-  const onFinish = (values: DictDataDto) => {
+  const onFinish = (values: AddOrUpdateDictDataRequest) => {
     if (!urlParams?.dictType) {
       message.error('字典类型不能为空');
       return;
@@ -77,7 +77,7 @@ const DictDataForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
       onOk={onOk}
       maskClosable={false}
     >
-      <Form<DictDataDto>
+      <Form<AddOrUpdateDictDataRequest>
         name="wrap"
         labelCol={{ flex: '90px' }}
         labelWrap

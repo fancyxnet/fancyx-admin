@@ -1,25 +1,25 @@
 import { Form, Input, InputNumber, Modal, Switch, TreeSelect, Select } from 'antd';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
-import { addDept, getDeptList, type DeptDto, type DeptListDto, updateDept } from '@/api/organization/dept';
+import { addDept, getDeptList, type AddOrUpdateDeptRequest, type DeptItem, updateDept } from '@/api/organization/dept';
 import type { AppResponse } from '@/types/api';
 import useApp from 'antd/es/app/useApp';
-import { getUserSimpleInfos, type UserSimpleInfoDto } from '@/api/system/user';
+import { getUserSimpleInfos, type UserSimpleInfo } from '@/api/system/user';
 
 interface ModalProps {
   refresh?: () => void;
 }
 
 export interface DeptModalRef {
-  openModal: (row?: DeptDto) => void;
+  openModal: (row?: AddOrUpdateDeptRequest) => void;
 }
 
 const DeptForm = forwardRef<DeptModalRef, ModalProps>((props, ref) => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [form] = Form.useForm();
-  const [row, setRow] = useState<DeptDto | null>();
-  const [treeData, setTreeData] = useState<DeptListDto[]>([]);
+  const [row, setRow] = useState<AddOrUpdateDeptRequest | null>();
+  const [treeData, setTreeData] = useState<DeptItem[]>([]);
   const { message } = useApp();
-  const [userOptions, setUserOptions] = useState<UserSimpleInfoDto[]>([]);
+  const [userOptions, setUserOptions] = useState<UserSimpleInfo[]>([]);
 
   useImperativeHandle(ref, () => ({
     openModal,
@@ -44,7 +44,7 @@ const DeptForm = forwardRef<DeptModalRef, ModalProps>((props, ref) => {
     });
   };
 
-  const openModal = (row?: DeptDto) => {
+  const openModal = (row?: AddOrUpdateDeptRequest) => {
     setIsOpenModal(true);
     if (row) {
       setRow(row);
@@ -66,8 +66,8 @@ const DeptForm = forwardRef<DeptModalRef, ModalProps>((props, ref) => {
   };
 
   const execute = (
-    values: DeptDto,
-    apiAction: (params: DeptDto) => Promise<AppResponse<boolean>>,
+    values: AddOrUpdateDeptRequest,
+    apiAction: (params: AddOrUpdateDeptRequest) => Promise<AppResponse<boolean>>,
     successMsg: string,
   ) => {
     apiAction({ ...values, id: row?.id }).then(() => {
@@ -77,7 +77,7 @@ const DeptForm = forwardRef<DeptModalRef, ModalProps>((props, ref) => {
       props?.refresh?.();
     });
   };
-  const onFinish = (values: DeptDto) => {
+  const onFinish = (values: AddOrUpdateDeptRequest) => {
     const isEdit = !!row?.id;
 
     execute(values, isEdit ? updateDept : addDept, isEdit ? '编辑成功' : '新增成功');
@@ -92,7 +92,7 @@ const DeptForm = forwardRef<DeptModalRef, ModalProps>((props, ref) => {
       onOk={onOk}
       maskClosable={false}
     >
-      <Form<DeptDto>
+      <Form<AddOrUpdateDeptRequest>
         name="wrap"
         labelCol={{ flex: '90px' }}
         labelWrap

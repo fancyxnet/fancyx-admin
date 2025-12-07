@@ -5,16 +5,16 @@ import type { AppResponse, PagedResult, PageSearch } from '@/types/api';
  * 新增通知
  * @param dto
  */
-export function addNotification(dto: NotificationDto) {
-  return httpClient.post<NotificationDto, AppResponse<boolean>>('/admin-api/Notification/add', dto);
+export function addNotification(dto: AddOrUpdateNotificationRequest) {
+  return httpClient.post<AddOrUpdateNotificationRequest, AppResponse<boolean>>('/admin-api/Notification/add', dto);
 }
 
 /**
  * 通知分页列表
  * @param dto
  */
-export function getNotificationList(dto: NotificationQueryDto) {
-  return httpClient.get<NotificationQueryDto, AppResponse<PagedResult<NotificationListDto>>>('/admin-api/Notification/list', {
+export function getNotificationList(dto: GetNotificationListRequest) {
+  return httpClient.get<GetNotificationListRequest, AppResponse<PagedResult<NotificationItem>>>('/admin-api/Notification/list', {
     params: dto,
   });
 }
@@ -23,8 +23,8 @@ export function getNotificationList(dto: NotificationQueryDto) {
  * 修改通知
  * @param dto
  */
-export function updateNotification(dto: NotificationDto) {
-  return httpClient.put<NotificationDto, AppResponse<boolean>>('/admin-api/Notification/update', dto);
+export function updateNotification(dto: AddOrUpdateNotificationRequest) {
+  return httpClient.put<AddOrUpdateNotificationRequest, AppResponse<boolean>>('/admin-api/Notification/update', dto);
 }
 
 /**
@@ -37,14 +37,14 @@ export function deleteNotifications(ids: string[]) {
   });
 }
 
-export interface NotificationDto {
+export interface AddOrUpdateNotificationRequest {
   id?: string;
   title: string;
   content: string | null;
   userId: string;
 }
 
-export interface NotificationListDto {
+export interface NotificationItem {
   id: string;
   title: string;
   content: string | null;
@@ -55,7 +55,7 @@ export interface NotificationListDto {
   nickName: string;
 }
 
-export interface NotificationQueryDto extends PageSearch {
+export interface GetNotificationListRequest extends PageSearch {
   keyword?: string;
   isReaded?: boolean;
 }

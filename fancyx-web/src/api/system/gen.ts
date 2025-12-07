@@ -6,7 +6,7 @@ import type { AppResponse, PagedResult, PageSearch, AppOption } from '@/types/ap
  * @param dto
  */
 export function genCode(tableId: string) {
-    return httpClient.post<string, AppResponse<GenCodeResultDto>>('/admin-api/Gen/GenCode?tableId=' + tableId);
+    return httpClient.post<string, AppResponse<GenCodeResponse>>('/admin-api/Gen/GenCode?tableId=' + tableId);
 }
 
 /**
@@ -14,15 +14,15 @@ export function genCode(tableId: string) {
  * @param dto
  */
 export function importTable(table: string) {
-    return httpClient.post<string, AppResponse<GenCodeResultDto>>('/admin-api/Gen/ImportTable?table=' + table);
+    return httpClient.post<string, AppResponse<GenCodeResponse>>('/admin-api/Gen/ImportTable?table=' + table);
 }
 
 /**
  * 获取未生成过的表
  * @param dto
  */
-export function getTableList(dto: GetTableQueryDto) {
-    return httpClient.get<GetTableQueryDto, AppResponse<PagedResult<TableInfoDto>>>('/admin-api/Gen/GetTableList', { params: dto });
+export function getTableList(dto: GetTableListRequest) {
+    return httpClient.get<GetTableListRequest, AppResponse<PagedResult<TableInfoDto>>>('/admin-api/Gen/GetTableList', { params: dto });
 }
 
 /**
@@ -37,16 +37,16 @@ export function genSyncFromDb(tableId: string) {
  * 获取已经生成过的表
  * @param dto
  */
-export function getGenTableList(dto: GenTableQueryDto) {
-    return httpClient.get<GenTableQueryDto, AppResponse<PagedResult<GenTableListDto>>>('/admin-api/Gen/GetGenTableList', { params: dto });
+export function getGenTableList(dto: GetGenTableListRequest) {
+    return httpClient.get<GetGenTableListRequest, AppResponse<PagedResult<GenTableListDto>>>('/admin-api/Gen/GetGenTableList', { params: dto });
 }
 
 /**
  * 获取已经生成过的表列信息
  * @param dto
  */
-export function getGenTableColumnList(dto: GenTableColumnQueryDto) {
-    return httpClient.get<GenTableColumnQueryDto, AppResponse<PagedResult<GenTableColumnListDto>>>('/admin-api/Gen/GetGenTableColumnList', { params: dto });
+export function getGenTableColumnList(dto: GenTableColumnRequest) {
+    return httpClient.get<GenTableColumnRequest, AppResponse<PagedResult<GenTableColumnItem>>>('/admin-api/Gen/GetGenTableColumnList', { params: dto });
 }
 
 /**
@@ -61,16 +61,16 @@ export function deleteGenTable(tableId: string) {
  * 保存生成表配置
  * @param dto
  */
-export function saveGenTableInfo(dto: GenTableInfoDto) {
-    return httpClient.put<GenTableInfoDto, AppResponse<boolean>>('/admin-api/Gen/SaveGenTableInfo', dto);
+export function saveGenTableInfo(dto: SaveGenTableInfoRequest) {
+    return httpClient.put<SaveGenTableInfoRequest, AppResponse<boolean>>('/admin-api/Gen/SaveGenTableInfo', dto);
 }
 
 /**
  * 保存生成表列配置
  * @param dto
  */
-export function saveGenColumnInfo(dtos: GenTableColumnDto[]) {
-    return httpClient.put<GenTableColumnDto[], AppResponse<boolean>>('/admin-api/Gen/SaveGenColumnInfo', dtos);
+export function saveGenColumnInfo(dtos: SaveGenColumnInfoItem[]) {
+    return httpClient.put<SaveGenColumnInfoItem[], AppResponse<boolean>>('/admin-api/Gen/SaveGenColumnInfo', dtos);
 }
 
 /**
@@ -78,10 +78,10 @@ export function saveGenColumnInfo(dtos: GenTableColumnDto[]) {
  * @param dto
  */
 export function getGenDetailsInfo(tableId: string) {
-    return httpClient.get<string, AppResponse<GenDetailsInfoDto>>('/admin-api/Gen/GetGenDetailsInfo?tableId=' + tableId);
+    return httpClient.get<string, AppResponse<GenDetails>>('/admin-api/Gen/GetGenDetailsInfo?tableId=' + tableId);
 }
 
-export interface GetTableQueryDto extends PageSearch {
+export interface GetTableListRequest extends PageSearch {
     tableName?: string
 }
 export interface TableInfoDto {
@@ -90,7 +90,7 @@ export interface TableInfoDto {
     createTime: string;
     updateTime: string;
 }
-export interface GenCodeResultDto {
+export interface GenCodeResponse {
     entity: AppOption;
     iService: AppOption;
     service: AppOption;
@@ -99,7 +99,7 @@ export interface GenCodeResultDto {
     api: AppOption;
     page: AppOption;
 }
-export interface GenTableQueryDto extends PageSearch {
+export interface GetGenTableListRequest extends PageSearch {
     tableName?: string
 }
 export interface GenTableListDto {
@@ -116,10 +116,10 @@ export interface GenTableListDto {
     options?: string;
     remark?: string;
 }
-export interface GenTableColumnQueryDto extends PageSearch {
+export interface GenTableColumnRequest extends PageSearch {
     tableId: string
 }
-export interface GenTableColumnListDto {
+export interface GenTableColumnItem {
     columnId: string;
     tableId: string;
     columnName?: string;
@@ -139,7 +139,7 @@ export interface GenTableColumnListDto {
     dictType?: string;
     sort: number;
 }
-export interface GenTableInfoDto {
+export interface SaveGenTableInfoRequest {
     tableId: string;
     tableComment?: string;
     className?: string;
@@ -152,7 +152,7 @@ export interface GenTableInfoDto {
     options?: string;
     remark?: string;
 }
-export interface GenTableColumnDto {
+export interface SaveGenColumnInfoItem {
     columnId: string;
     columnName?: string;
     columnComment?: string;
@@ -170,7 +170,7 @@ export interface GenTableColumnDto {
     dictType?: string;
     sort: number;
 }
-export interface GenDetailsInfoDto {
+export interface GenDetails {
     tableId: string;
     tableName?: string;
     tableComment?: string;

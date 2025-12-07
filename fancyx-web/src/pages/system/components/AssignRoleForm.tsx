@@ -1,6 +1,6 @@
 import { Form, Input, Modal, Select } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
-import { assignRole, type AssignRoleDto, getUserRoleIds, type UserListDto } from '@/api/system/user.ts';
+import { assignRole, type AssignRoleRequest, getUserRoleIds, type UserItem } from '@/api/system/user.ts';
 import { getRoleOptions } from '@/api/system/role.ts';
 import type { AppOption } from '@/types/api';
 import useApp from 'antd/es/app/useApp';
@@ -9,21 +9,21 @@ import useApp from 'antd/es/app/useApp';
 interface ModalProps {}
 
 export interface AssignRoleFormRef {
-  openModal: (row: UserListDto) => void; // 定义 ref 的类型
+  openModal: (row: UserItem) => void; // 定义 ref 的类型
 }
 
 const AssignRoleForm = forwardRef<AssignRoleFormRef, ModalProps>((_, ref) => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [form] = Form.useForm();
   const [roleOptions, setRoleOptions] = useState<AppOption[]>([]);
-  const [currentRow, setCurrentRow] = useState<UserListDto>();
+  const [currentRow, setCurrentRow] = useState<UserItem>();
   const { message } = useApp();
 
   useImperativeHandle(ref, () => ({
     openModal,
   }));
 
-  const openModal = (row: UserListDto) => {
+  const openModal = (row: UserItem) => {
     setCurrentRow(row);
     form.setFieldValue('userName', row.userName);
     form.setFieldValue('nickName', row.nickName);
@@ -47,7 +47,7 @@ const AssignRoleForm = forwardRef<AssignRoleFormRef, ModalProps>((_, ref) => {
     form.submit();
   };
 
-  const onFinish = (values: AssignRoleDto) => {
+  const onFinish = (values: AssignRoleRequest) => {
     assignRole({ ...values, userId: currentRow!.id }).then(() => {
       message.success('分配成功');
       setIsOpenModal(false);
@@ -57,7 +57,7 @@ const AssignRoleForm = forwardRef<AssignRoleFormRef, ModalProps>((_, ref) => {
 
   return (
     <Modal title="分配角色" open={isOpenModal} onCancel={onCancel} onOk={onOk} maskClosable={false} width="40%">
-      <Form<AssignRoleDto>
+      <Form<AssignRoleRequest>
         name="wrap"
         labelCol={{ flex: '80px' }}
         labelWrap

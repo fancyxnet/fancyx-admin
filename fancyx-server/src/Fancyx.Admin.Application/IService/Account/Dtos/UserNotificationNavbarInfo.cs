@@ -4,10 +4,10 @@
     {
         public int NoReadedCount { get; set; }
 
-        public List<UserNotificationNavbarItemDto>? Items { get; set; }
+        public List<UserNotificationNavbarItem>? Items { get; set; }
     }
 
-    public class UserNotificationNavbarItemDto
+    public class UserNotificationNavbarItem
     {
         public long Id { get; set; }
 

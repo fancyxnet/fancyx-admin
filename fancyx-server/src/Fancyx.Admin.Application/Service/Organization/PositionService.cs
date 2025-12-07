@@ -54,13 +54,13 @@ namespace Fancyx.Admin.Application.Service.Organization
             return list;
         }
 
-        public async Task<bool> AddPositionAsync(AddPositionRequest dto)
+        public async Task<bool> AddPositionAsync(AddOrUpdatePositionRequest dto)
         {
             if (await _positionRepository.AnyAsync(x => x.Code.ToLower() == dto.Code!.ToLower()))
             {
                 throw new BusinessException("职位编号已存在");
             }
-            var entity = _mapper.Map<AddPositionRequest, Position>(dto);
+            var entity = _mapper.Map<AddOrUpdatePositionRequest, Position>(dto);
             await _positionRepository.InsertAsync(entity);
             return true;
         }
@@ -94,7 +94,7 @@ namespace Fancyx.Admin.Application.Service.Organization
             return new PagedResult<PositionItem>(pagedResp.Total, list);
         }
 
-        public async Task<bool> UpdatePositionAsync(AddPositionRequest dto)
+        public async Task<bool> UpdatePositionAsync(AddOrUpdatePositionRequest dto)
         {
             if (!dto.Id.HasValue) throw new ArgumentNullException(nameof(dto.Id));
             var entity = await _positionRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();

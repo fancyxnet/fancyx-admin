@@ -1,9 +1,9 @@
 import { Form, Input, Modal, Radio, TreeSelect } from 'antd';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
-import { addUser, getUserEditInfo, updateUser, type UserDto, type UserEditDto } from '@/api/system/user.ts';
+import { addUser, getUserEditInfo, updateUser, type AddUserRequest, type UpdateUserRequest } from '@/api/system/user.ts';
 import { Patterns } from '@/utils/globalValue.ts';
 import useApp from 'antd/es/app/useApp';
-import { type DeptListDto, getDeptList } from '@/api/organization/dept.ts';
+import { type DeptItem, getDeptList } from '@/api/organization/dept.ts';
 import { getPositionOptions } from '@/api/organization/position.ts';
 import type { AppOptionTree } from '@/types/api';
 
@@ -19,7 +19,7 @@ const UserModal = forwardRef<ModalRef, ModalProps>((props, ref) => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [form] = Form.useForm();
   const { message } = useApp();
-  const [deptData, setDeptData] = useState<DeptListDto[]>([]);
+  const [deptData, setDeptData] = useState<DeptItem[]>([]);
   const [positionData, setPositionData] = useState<AppOptionTree[]>([]);
   const [id, setId] = useState<string>();
 
@@ -63,9 +63,9 @@ const UserModal = forwardRef<ModalRef, ModalProps>((props, ref) => {
     form.submit();
   };
 
-  const onFinish = (values: UserDto | UserEditDto) => {
+  const onFinish = (values: AddUserRequest | UpdateUserRequest) => {
     if (id && id.length > 0) {
-      const editDto = values as UserEditDto;
+      const editDto = values as UpdateUserRequest;
       editDto.id = id;
       updateUser(editDto).then(() => {
         message.success('编辑成功');
@@ -75,7 +75,7 @@ const UserModal = forwardRef<ModalRef, ModalProps>((props, ref) => {
         props?.refresh?.();
       });
     } else {
-      addUser(values as UserDto).then(() => {
+      addUser(values as AddUserRequest).then(() => {
         message.success('新增成功');
         setIsOpenModal(false);
         form.resetFields();
@@ -97,7 +97,7 @@ const UserModal = forwardRef<ModalRef, ModalProps>((props, ref) => {
       width={700}
       maskClosable={false}
     >
-      <Form<UserDto>
+      <Form<AddUserRequest>
         name="wrap"
         labelCol={{ flex: '80px' }}
         labelWrap
@@ -110,7 +110,7 @@ const UserModal = forwardRef<ModalRef, ModalProps>((props, ref) => {
           <Input placeholder="请输入账号" disabled={Boolean(id) && Boolean(id!.length)} />
         </Form.Item>
         {(id && id.length > 0) ?? (
-          <Form.Item<UserDto> label="密码" name="password" rules={[{ required: true }, pwdPatternValidateItem]}>
+          <Form.Item<AddUserRequest> label="密码" name="password" rules={[{ required: true }, pwdPatternValidateItem]}>
             <Input.Password placeholder="请输入密码" />
           </Form.Item>
         )}

@@ -59,7 +59,7 @@ public interface IUserService : IScopedDependency
     /// </summary>
     /// <param name="keyword">账号/昵称</param>
     /// <returns></returns>
-    Task<List<UserSimpleInfoDto>> GetUserSimpleInfosAsync(string? keyword);
+    Task<List<UserSimpleInfo>> GetUserSimpleInfosAsync(string? keyword);
 
     /// <summary>
     /// 导出用户列表

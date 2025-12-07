@@ -1,4 +1,4 @@
-﻿import { getOnlineUsers, onlineUserLogout, type OnlineUserResultDto } from '@/api/monitor/onlineUser';
+﻿import { getOnlineUsers, onlineUserLogout, type OnlineUserItem } from '@/api/monitor/onlineUser';
 import { Button, Form, Input, Tag } from 'antd';
 import React, { useRef } from 'react';
 import Permission from '@/components/Permission';
@@ -15,7 +15,7 @@ const OnlineUserList: React.FC = () => {
     {
       title: '账号',
       dataIndex: 'userName',
-      render: (userName: string, record: OnlineUserResultDto) => {
+      render: (userName: string, record: OnlineUserItem) => {
         if (UserStore.token && UserStore.token.sessionId === record.sessionId) {
           return (
             <div>
@@ -50,7 +50,7 @@ const OnlineUserList: React.FC = () => {
       dataIndex: 'option',
       width: 80,
       fixed: 'right',
-      render: (_: any, record: OnlineUserResultDto) => {
+      render: (_: any, record: OnlineUserItem) => {
         return (
           <Permission permissions={'Monitor.Logout'}>
             <Button

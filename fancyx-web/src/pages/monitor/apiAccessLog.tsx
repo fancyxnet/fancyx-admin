@@ -1,4 +1,4 @@
-﻿import { type ApiAccessLogListDto, getApiAccessLogList } from '@/api/monitor/monitorLog.ts';
+﻿import { type ApiAccessLogItem, getApiAccessLogList } from '@/api/monitor/monitorLog.ts';
 import { Button, Descriptions, Form, Input, Modal, Tag, Tooltip } from 'antd';
 import React, { useMemo } from 'react';
 import type { SmartTableColumnType } from '@/components/SmartTable/type.ts';
@@ -8,7 +8,7 @@ import { FileTextOutlined } from '@ant-design/icons';
 
 const BusinessLogList: React.FC = () => {
   const [isOpenModal, setIsOpenModal] = React.useState(false);
-  const [details, setDetails] = React.useState<ApiAccessLogListDto | null>();
+  const [details, setDetails] = React.useState<ApiAccessLogItem | null>();
   const columns: SmartTableColumnType[] = [
     {
       title: '请求时间',
@@ -64,7 +64,7 @@ const BusinessLogList: React.FC = () => {
       dataIndex: 'operate',
       width: 70,
       fixed: 'right',
-      render: (_: any, record: ApiAccessLogListDto) => {
+      render: (_: any, record: ApiAccessLogItem) => {
         return (
           <Button
             type="link"

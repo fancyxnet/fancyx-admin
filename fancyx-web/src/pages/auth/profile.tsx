@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Card, Form, Input, Upload, Avatar, Divider, Row, Col, Typography, Menu, Radio, Button } from 'antd';
 import { UserOutlined, CameraOutlined, LockOutlined } from '@ant-design/icons';
 import './style/profile.scss';
-import { type PersonalInfoDto, updateInfo, updatePwd, type UserPwdDto } from '@/api/auth.ts';
+import { type UpdateUserInfoRequest, updateInfo, updatePwd, type UpdateUserPwdRequest } from '@/api/auth.ts';
 import { ErrorCode, Patterns } from '@/utils/globalValue.ts';
 import { useApplication } from '@/components/Application';
 import { uploadFile } from '@/api/oss';
@@ -56,7 +56,7 @@ const Profile = observer(() => {
     return isJpgOrPng && isLt2M;
   };
 
-  const updateUserInfo = (info: PersonalInfoDto) => {
+  const updateUserInfo = (info: UpdateUserInfoRequest) => {
     setLoading(true);
     updateInfo(info)
       .then(() => {
@@ -202,7 +202,7 @@ const Profile = observer(() => {
               <Form
                 form={pwdForm}
                 layout="vertical"
-                onFinish={(values: UserPwdDto) => {
+                onFinish={(values: UpdateUserPwdRequest) => {
                   setLoading(true);
                   updatePwd(values)
                     .then(() => {

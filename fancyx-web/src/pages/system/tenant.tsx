@@ -3,9 +3,9 @@ import {
   deleteTenant,
   getTenantList,
   createTenantAccount,
-  type TenantDto,
-  type TenantListDto,
-  type TenantAccountInfoDto,
+  type AddOrUpdateTenantRequest,
+  type TenantItem,
+  type TenantAccountInfo,
 } from '@/api/system/tenant.ts';
 import { DeleteOutlined, EditOutlined, HddOutlined, PlusOutlined, UserAddOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Modal, Popconfirm, Space } from 'antd';
@@ -21,7 +21,7 @@ const TenantList: React.FC = () => {
   const modalRef = useRef<ModalRef>(null);
   const { message } = useApp();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [account, setAccount] = useState<TenantAccountInfoDto>();
+  const [account, setAccount] = useState<TenantAccountInfo>();
   const columns: SmartTableColumnType[] = [
     {
       title: '租户名称',
@@ -38,7 +38,7 @@ const TenantList: React.FC = () => {
     {
       title: '状态',
       dataIndex: 'isEnabled',
-      render: (_: any, record: TenantListDto) => (record.isEnabled ? '启用' : '禁用'),
+      render: (_: any, record: TenantItem) => (record.isEnabled ? '启用' : '禁用'),
     },
     {
       title: '备注',
@@ -57,7 +57,7 @@ const TenantList: React.FC = () => {
       dataIndex: 'option',
       width: 210,
       fixed: 'right',
-      render: (_: any, record: TenantListDto) => (
+      render: (_: any, record: TenantItem) => (
         <Space>
           <Permission permissions={'Sys.Tenant.Update'}>
             <Button
@@ -65,7 +65,7 @@ const TenantList: React.FC = () => {
               icon={<EditOutlined />}
               key="edit"
               onClick={() => {
-                modalRef?.current?.openModal(record as TenantDto);
+                modalRef?.current?.openModal(record as AddOrUpdateTenantRequest);
               }}
             >
               编辑

@@ -19,7 +19,7 @@ namespace Fancyx.Admin.Application.IService.System
 
         Task DeleteGenTableAsync(long tableId);
 
-        Task SaveGenTableInfoAsync(GenTableInfoDto dto);
+        Task SaveGenTableInfoAsync(SaveGenTableInfoRequest dto);
 
         Task SaveGenColumnInfoAsync(List<SaveGenColumnInfoItem> dtos);
 

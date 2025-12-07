@@ -4,9 +4,9 @@ import type { AppResponse } from '@/types/api';
 import {
   addMenu,
   getMenuOptions,
-  type MenuDto,
-  type MenuListDto,
-  type MenuOptionTreeDto,
+  type AddOrUpdateMenuRequest,
+  type MenuItem,
+  type MenuOptionTree,
   updateMenu,
 } from '@/api/system/menu';
 import { MenuType } from '@/utils/globalValue.ts';
@@ -18,14 +18,14 @@ interface ModalProps {
 }
 
 export interface ModalRef {
-  openModal: (row?: MenuListDto, isAddSub?: boolean) => void;
+  openModal: (row?: MenuItem, isAddSub?: boolean) => void;
 }
 
 const MenuForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [form] = Form.useForm();
-  const [row, setRow] = useState<MenuListDto | null>();
-  const [treeData, setTreeData] = useState<MenuOptionTreeDto[]>([]);
+  const [row, setRow] = useState<MenuItem | null>();
+  const [treeData, setTreeData] = useState<MenuOptionTree[]>([]);
   const [menuType, setMenuType] = useState<number>(1);
   const { message } = useApp();
 
@@ -45,7 +45,7 @@ const MenuForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
     }
   }, [isOpenModal]);
 
-  const openModal = (row?: MenuListDto, isAddSub?: boolean) => {
+  const openModal = (row?: MenuItem, isAddSub?: boolean) => {
     setIsOpenModal(true);
     if (row && !isAddSub) {
       setRow(row);
@@ -78,8 +78,8 @@ const MenuForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
   };
 
   const execute = (
-    values: MenuDto,
-    apiAction: (params: MenuDto) => Promise<AppResponse<boolean>>,
+    values: AddOrUpdateMenuRequest,
+    apiAction: (params: AddOrUpdateMenuRequest) => Promise<AppResponse<boolean>>,
     successMsg: string,
   ) => {
     apiAction({ ...values, id: row?.id }).then(() => {
@@ -89,7 +89,7 @@ const MenuForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
       props?.refresh?.();
     });
   };
-  const onFinish = (values: MenuDto) => {
+  const onFinish = (values: AddOrUpdateMenuRequest) => {
     const isEdit = !!row?.id;
 
     execute(values, isEdit ? updateMenu : addMenu, isEdit ? '编辑成功' : '新增成功');
@@ -104,7 +104,7 @@ const MenuForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
       width="50%"
       maskClosable={false}
     >
-      <Form<MenuDto>
+      <Form<AddOrUpdateMenuRequest>
         name="wrap"
         labelCol={{ flex: '90px' }}
         form={form}

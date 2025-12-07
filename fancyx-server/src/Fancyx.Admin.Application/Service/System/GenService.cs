@@ -255,7 +255,7 @@ namespace Fancyx.Admin.Application.Service.System
             await _genTableRepository.DeleteAsync(x => x.TableId == tableId);
         }
 
-        public async Task SaveGenTableInfoAsync(GenTableInfoDto dto)
+        public async Task SaveGenTableInfoAsync(SaveGenTableInfoRequest dto)
         {
             var genTable = await _genTableRepository.FindAsync(dto.TableId) ?? throw new EntityNotFoundException();
             genTable.TableId = dto.TableId;

@@ -5,7 +5,7 @@ import ProIcon from '@/components/ProIcon';
 import {
   getMyNotificationNavbarInfo,
   readed,
-  type UserNotificationNavbarItemDto,
+  type UserNotificationNavbarItem,
 } from '@/api/organization/myNotification.ts';
 import useApp from 'antd/es/app/useApp'; // 自定义样式
 import { useNavigate } from 'react-router-dom';
@@ -16,7 +16,7 @@ import UserStore from '@/store/userStore.ts';
 
 const NotificationPopover = observer(() => {
   const [visible, setVisible] = useState(false);
-  const [notifications, setNotifications] = useState<UserNotificationNavbarItemDto[]>([]);
+  const [notifications, setNotifications] = useState<UserNotificationNavbarItem[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const { message } = useApp();
   const navigate = useNavigate();

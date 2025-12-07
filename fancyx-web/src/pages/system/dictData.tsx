@@ -1,5 +1,5 @@
 ﻿import Permission from '@/components/Permission';
-import { deleteDictData, getDictDataList, type DictDataDto, type DictDataListDto } from '@/api/system/dictData';
+import { deleteDictData, getDictDataList, type AddOrUpdateDictDataRequest, type DictDataItem } from '@/api/system/dictData';
 import { CopyOutlined, DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Popconfirm, Space, Switch } from 'antd';
 import React, { useRef } from 'react';
@@ -48,7 +48,7 @@ const DictDataList: React.FC = () => {
       width: 210,
       fixed: 'right',
       dataIndex: 'option',
-      render: (_: any, record: DictDataListDto) => (
+      render: (_: any, record: DictDataItem) => (
         <Space>
           <Permission permissions={'Sys.DictData.Update'}>
             <Button
@@ -68,7 +68,7 @@ const DictDataList: React.FC = () => {
               type="link"
               icon={<CopyOutlined />}
               onClick={() => {
-                const row = record as DictDataDto;
+                const row = record as AddOrUpdateDictDataRequest;
                 row.id = undefined;
                 modalRef?.current?.openModal(record);
               }}

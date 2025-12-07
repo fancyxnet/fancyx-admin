@@ -5,20 +5,20 @@ import type { AppResponse, PageSearch, PagedResult } from '@/types/api';
  * 登录日志分页列表
  * @param dto
  */
-export function getLoginLogList(dto: LoginLogQueryDto) {
-  return httpClient.get<LoginLogQueryDto, AppResponse<PagedResult<LoginLogListDto>>>('/admin-api/LoginLog/GetLoginLogList', {
+export function getLoginLogList(dto: GetLoginLogListRequest) {
+  return httpClient.get<GetLoginLogListRequest, AppResponse<PagedResult<LoginLogItem>>>('/admin-api/LoginLog/GetLoginLogList', {
     params: dto,
   });
 }
 
-export interface LoginLogQueryDto extends PageSearch {
+export interface GetLoginLogListRequest extends PageSearch {
   userName?: string | null;
   status?: number;
   address?: string | null;
   os?: string | null;
 }
 
-export interface LoginLogListDto {
+export interface LoginLogItem {
   id: number;
   userName: string;
   ip: string;

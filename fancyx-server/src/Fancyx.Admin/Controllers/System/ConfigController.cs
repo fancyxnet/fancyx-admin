@@ -36,7 +36,7 @@ namespace Fancyx.Admin.Controllers.System
 
         [HttpGet("List")]
         [HasPermission("Sys.Config.List")]
-        public async Task<AppResponse<PagedResult<ConfigListDto>>> GetConfigListAsync([FromQuery] GetConfigListRequest dto)
+        public async Task<AppResponse<PagedResult<ConfigItem>>> GetConfigListAsync([FromQuery] GetConfigListRequest dto)
         {
             var data = await _configService.GetConfigListAsync(dto);
             return Result.Data(data);

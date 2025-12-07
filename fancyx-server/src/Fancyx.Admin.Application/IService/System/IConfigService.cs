@@ -7,7 +7,7 @@ namespace Fancyx.Admin.Application.IService.System
     {
         Task AddConfigAsync(AddOrUpdateConfigRequest dto);
 
-        Task<PagedResult<ConfigListDto>> GetConfigListAsync(GetConfigListRequest dto);
+        Task<PagedResult<ConfigItem>> GetConfigListAsync(GetConfigListRequest dto);
 
         Task UpdateConfigAsync(AddOrUpdateConfigRequest dto);
 

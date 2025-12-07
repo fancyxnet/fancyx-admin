@@ -1,7 +1,7 @@
 import { Form, Input, Modal, Switch } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import type { AppResponse } from '@/types/api';
-import { addDictType, type DictTypeDto, updateDictType } from '@/api/system/dictType.ts';
+import { addDictType, type AddOrUpdateDictTypeRequest, updateDictType } from '@/api/system/dictType.ts';
 import useApp from 'antd/es/app/useApp';
 
 interface ModalProps {
@@ -9,20 +9,20 @@ interface ModalProps {
 }
 
 export interface ModalRef {
-  openModal: (row?: DictTypeDto) => void;
+  openModal: (row?: AddOrUpdateDictTypeRequest) => void;
 }
 
 const DictTypeForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [form] = Form.useForm();
-  const [row, setRow] = useState<DictTypeDto | null>();
+  const [row, setRow] = useState<AddOrUpdateDictTypeRequest | null>();
   const { message } = useApp();
 
   useImperativeHandle(ref, () => ({
     openModal,
   }));
 
-  const openModal = (row?: DictTypeDto) => {
+  const openModal = (row?: AddOrUpdateDictTypeRequest) => {
     setIsOpenModal(true);
     if (row) {
       setRow(row);
@@ -44,8 +44,8 @@ const DictTypeForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
   };
 
   const execute = (
-    values: DictTypeDto,
-    apiAction: (params: DictTypeDto) => Promise<AppResponse<boolean>>,
+    values: AddOrUpdateDictTypeRequest,
+    apiAction: (params: AddOrUpdateDictTypeRequest) => Promise<AppResponse<boolean>>,
     successMsg: string,
   ) => {
     apiAction({ ...values, id: row?.id }).then(() => {
@@ -55,7 +55,7 @@ const DictTypeForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
       props?.refresh?.();
     });
   };
-  const onFinish = (values: DictTypeDto) => {
+  const onFinish = (values: AddOrUpdateDictTypeRequest) => {
     const isEdit = !!row?.id;
 
     execute(values, isEdit ? updateDictType : addDictType, isEdit ? '编辑成功' : '新增成功');
@@ -69,7 +69,7 @@ const DictTypeForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
       onOk={onOk}
       maskClosable={false}
     >
-      <Form<DictTypeDto>
+      <Form<AddOrUpdateDictTypeRequest>
         name="wrap"
         labelCol={{ flex: '90px' }}
         labelWrap

@@ -5,8 +5,8 @@ import type { AppResponse, PagedResult, PageSearch } from '@/types/api';
  * API访问日志列表
  * @param dto
  */
-export function getApiAccessLogList(dto: ApiAccessLogQueryDto) {
-  return httpClient.get<ApiAccessLogQueryDto, AppResponse<PagedResult<ApiAccessLogListDto[]>>>(
+export function getApiAccessLogList(dto: GetApiAccessLogListRequest) {
+  return httpClient.get<GetApiAccessLogListRequest, AppResponse<PagedResult<ApiAccessLogItem[]>>>(
     '/admin-api/MonitorLog/ApiAccessLogList',
     {
       params: dto,
@@ -18,8 +18,8 @@ export function getApiAccessLogList(dto: ApiAccessLogQueryDto) {
  * 异常日志列表
  * @param dto
  */
-export function getExceptionLogList(dto: ExceptionLogQueryDto) {
-  return httpClient.get<ExceptionLogQueryDto, AppResponse<PagedResult<ExceptionLogListDto[]>>>(
+export function getExceptionLogList(dto: GetExceptionLogListRequest) {
+  return httpClient.get<GetExceptionLogListRequest, AppResponse<PagedResult<ExceptionLogItem[]>>>(
     '/admin-api/MonitorLog/ExceptionLogList',
     {
       params: dto,
@@ -35,12 +35,12 @@ export function handleException(exceptionId: string) {
   return httpClient.post<string, AppResponse<boolean>>('/admin-api/MonitorLog/HandleException?exceptionId=' + exceptionId);
 }
 
-export interface ApiAccessLogQueryDto extends PageSearch {
+export interface GetApiAccessLogListRequest extends PageSearch {
   userName?: string;
   path?: string;
 }
 
-export interface ApiAccessLogListDto {
+export interface ApiAccessLogItem {
   id: string;
   path: string;
   method: string;
@@ -59,7 +59,7 @@ export interface ApiAccessLogListDto {
   operateName: string | null;
 }
 
-export interface ExceptionLogListDto {
+export interface ExceptionLogItem {
   id: string;
   exceptionType: string;
   message: string;
@@ -78,6 +78,6 @@ export interface ExceptionLogListDto {
   creationTime: string;
 }
 
-export interface ExceptionLogQueryDto extends PageSearch {
+export interface GetExceptionLogListRequest extends PageSearch {
   userName?: string;
 }

@@ -5,24 +5,24 @@ import type { AppResponse } from '@/types/api';
  * 新增部门
  * @param dto
  */
-export function addDept(dto: DeptDto) {
-  return httpClient.post<DeptDto, AppResponse<boolean>>('/admin-api/Dept/Add', dto);
+export function addDept(dto: AddOrUpdateDeptRequest) {
+  return httpClient.post<AddOrUpdateDeptRequest, AppResponse<boolean>>('/admin-api/Dept/Add', dto);
 }
 
 /**
  * 部门树形列表
  * @param dto
  */
-export function getDeptList(dto: DeptQueryDto) {
-  return httpClient.get<DeptQueryDto, AppResponse<DeptListDto[]>>('/admin-api/Dept/List', { params: dto });
+export function getDeptList(dto: GetDeptListRequest) {
+  return httpClient.get<GetDeptListRequest, AppResponse<DeptItem[]>>('/admin-api/Dept/List', { params: dto });
 }
 
 /**
  * 修改部门
  * @param dto
  */
-export function updateDept(dto: DeptDto) {
-  return httpClient.put<DeptDto, AppResponse<boolean>>('/admin-api/Dept/Update', dto);
+export function updateDept(dto: AddOrUpdateDeptRequest) {
+  return httpClient.put<AddOrUpdateDeptRequest, AppResponse<boolean>>('/admin-api/Dept/Update', dto);
 }
 
 /**
@@ -39,10 +39,10 @@ export function deleteDept(id: string) {
  * @returns
  */
 export function getDeptSimpleInfos(keyword?: string) {
-  return httpClient.get<string, AppResponse<DeptSimpleInfoDto[]>>('/admin-api/Dept/GetDeptSimpleInfos', { params: { keyword } });
+  return httpClient.get<string, AppResponse<DeptSimpleInfo[]>>('/admin-api/Dept/GetDeptSimpleInfos', { params: { keyword } });
 }
 
-export interface DeptDto {
+export interface AddOrUpdateDeptRequest {
   id?: string | null;
   name: string;
   code: string;
@@ -55,14 +55,14 @@ export interface DeptDto {
   parentId?: string | null;
 }
 
-export interface DeptQueryDto {
+export interface GetDeptListRequest {
   id?: string | null;
   code?: string | null;
   name?: string | null;
   status?: number;
 }
 
-export interface DeptListDto {
+export interface DeptItem {
   id: string;
   code: string;
   name: string;
@@ -74,10 +74,10 @@ export interface DeptListDto {
   email: string | null;
   phone: string | null;
   parentId: string | null;
-  children?: DeptListDto[];
+  children?: DeptItem[];
 }
 
-export interface DeptSimpleInfoDto {
+export interface DeptSimpleInfo {
   id: string;
   name: string;
   code: string;

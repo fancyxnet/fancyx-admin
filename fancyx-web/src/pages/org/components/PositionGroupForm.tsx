@@ -3,8 +3,8 @@ import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import {
   addPositionGroup,
   getPositionGroupList,
-  type PositionGroupDto,
-  type PositionGroupListDto,
+  type AddOrUpdatePositionGroupRequest,
+  type PositionGroupItem,
   updatePositionGroup,
 } from '@/api/organization/positionGroup';
 import type { AppResponse } from '@/types/api';
@@ -16,14 +16,14 @@ interface ModalProps {
 }
 
 export interface ModalRef {
-  openModal: (row?: PositionGroupDto) => void;
+  openModal: (row?: AddOrUpdatePositionGroupRequest) => void;
 }
 
 const RoleForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [form] = Form.useForm();
-  const [row, setRow] = useState<PositionGroupDto | null>();
-  const [treeData, setTreeData] = useState<PositionGroupListDto[]>([]);
+  const [row, setRow] = useState<AddOrUpdatePositionGroupRequest | null>();
+  const [treeData, setTreeData] = useState<PositionGroupItem[]>([]);
   const { message } = useApp();
 
   useImperativeHandle(ref, () => ({
@@ -42,7 +42,7 @@ const RoleForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
     });
   };
 
-  const openModal = (row?: PositionGroupDto) => {
+  const openModal = (row?: AddOrUpdatePositionGroupRequest) => {
     setIsOpenModal(true);
     if (row) {
       setRow(row);
@@ -63,8 +63,8 @@ const RoleForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
   };
 
   const execute = (
-    values: PositionGroupDto,
-    apiAction: (params: PositionGroupDto) => Promise<AppResponse<boolean>>,
+    values: AddOrUpdatePositionGroupRequest,
+    apiAction: (params: AddOrUpdatePositionGroupRequest) => Promise<AppResponse<boolean>>,
     successMsg: string,
   ) => {
     apiAction({ ...values, id: row?.id }).then(() => {
@@ -74,7 +74,7 @@ const RoleForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
       props?.refresh?.();
     });
   };
-  const onFinish = (values: PositionGroupDto) => {
+  const onFinish = (values: AddOrUpdatePositionGroupRequest) => {
     const isEdit = !!row?.id;
 
     execute(values, isEdit ? updatePositionGroup : addPositionGroup, isEdit ? '编辑成功' : '新增成功');
@@ -88,7 +88,7 @@ const RoleForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
       onOk={onOk}
       maskClosable={false}
     >
-      <Form<PositionGroupDto>
+      <Form<AddOrUpdatePositionGroupRequest>
         name="wrap"
         labelCol={{ flex: '90px' }}
         labelWrap

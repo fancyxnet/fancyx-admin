@@ -1,4 +1,4 @@
-﻿import { deleteDept, getDeptList, type DeptListDto } from '@/api/organization/dept';
+﻿import { deleteDept, getDeptList, type DeptItem } from '@/api/organization/dept';
 import { DeleteOutlined, EditOutlined, ExclamationCircleFilled, PlusOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Select, Space } from 'antd';
 import React, { useRef } from 'react';
@@ -38,7 +38,7 @@ const DepartmentList: React.FC = () => {
       dataIndex: 'option',
       width: 140,
       fixed: 'right',
-      render: (_: any, record: DeptListDto) => (
+      render: (_: any, record: DeptItem) => (
         <Space>
           <Permission permissions={'Org.Dept.Update'}>
             <Button
@@ -74,7 +74,7 @@ const DepartmentList: React.FC = () => {
       },
     });
   };
-  const rowEdit = (record: DeptListDto) => {
+  const rowEdit = (record: DeptItem) => {
     modalRef.current?.openModal(record);
   };
   const handleOpenModal = () => {

@@ -1,7 +1,7 @@
 import { Card, Divider, Form, Modal, Switch, Tag, Tree } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
-import { assignTenantMenu, type AssignTenantMenuDto, getTenantMenuIds, type TenantListDto } from '@/api/system/tenant';
-import { type MenuOptionTreeDto } from '@/api/system/menu.ts';
+import { assignTenantMenu, type AssignTenantMenuRequest, getTenantMenuIds, type TenantItem } from '@/api/system/tenant';
+import { type MenuOptionTree } from '@/api/system/menu.ts';
 import { getMenuOptions } from '@/api/system/tenant.ts';
 import useApp from 'antd/es/app/useApp';
 
@@ -9,14 +9,14 @@ import useApp from 'antd/es/app/useApp';
 interface ModalProps {}
 
 export interface AssignTenantMenuFormModalRef {
-  openModal: (row: TenantListDto) => void; // 定义 ref 的类型
+  openModal: (row: TenantItem) => void; // 定义 ref 的类型
 }
 
 const AssignTenantMenuFormForm = forwardRef<AssignTenantMenuFormModalRef, ModalProps>((_, ref) => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [form] = Form.useForm();
-  const [menuOptions, setMenuOptions] = useState<MenuOptionTreeDto[]>([]);
-  const [currentRow, setCurrentRow] = useState<TenantListDto>();
+  const [menuOptions, setMenuOptions] = useState<MenuOptionTree[]>([]);
+  const [currentRow, setCurrentRow] = useState<TenantItem>();
   const [menuIds, setMenuIds] = useState<string[] | null>();
   const [allKeys, setAllKeys] = useState<string[]>();
   const [expandKeys, setExpandKeys] = useState<string[]>();
@@ -27,7 +27,7 @@ const AssignTenantMenuFormForm = forwardRef<AssignTenantMenuFormModalRef, ModalP
     openModal,
   }));
 
-  const openModal = (row: TenantListDto) => {
+  const openModal = (row: TenantItem) => {
     setCurrentRow(row);
     getMenuOptions(false).then(async (menuRes) => {
       setMenuOptions(menuRes.data.tree);
@@ -78,7 +78,7 @@ const AssignTenantMenuFormForm = forwardRef<AssignTenantMenuFormModalRef, ModalP
         <Form.Item label="租户名称" name="name">
           <Tag color="magenta">{currentRow?.name}</Tag>
         </Form.Item>
-        <Form.Item<AssignTenantMenuDto> label="菜单权限" name="menuIds">
+        <Form.Item<AssignTenantMenuRequest> label="菜单权限" name="menuIds">
           <Card size="small">
             <div className="flex align-center">
               <div className="mr-5">全部展开/折叠</div>

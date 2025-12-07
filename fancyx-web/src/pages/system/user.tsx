@@ -13,8 +13,8 @@ import {
   deleteUser,
   getUserList,
   switchUserEnabledStatus,
-  type UserListDto,
-  type UserQueryDto,
+  type UserItem,
+  type GetUserListRequest,
 } from '@/api/system/user';
 import UserEditForm, { type ModalRef } from '@/pages/system/components/UserForm.tsx';
 import AssignRoleForm, { type AssignRoleFormRef } from '@/pages/system/components/AssignRoleForm.tsx';
@@ -24,7 +24,7 @@ import ResetUserPwdForm, { type ResetUserPwdFormRef } from '@/pages/system/compo
 import ProIcon from '@/components/ProIcon';
 import { useApplication } from '@/components/Application';
 import Permission from '@/components/Permission';
-import { getDeptSimpleInfos, type DeptSimpleInfoDto } from '@/api/organization/dept';
+import { getDeptSimpleInfos, type DeptSimpleInfo } from '@/api/organization/dept';
 import Search from 'antd/es/input/Search';
 import './styles/user.scss';
 import { useAuthProvider } from '@/components/AuthProvider';
@@ -68,7 +68,7 @@ const UserTable = () => {
       title: '状态',
       dataIndex: 'isEnabled',
       key: 'isEnabled',
-      render: (text: boolean, record: UserListDto) => (
+      render: (text: boolean, record: UserItem) => (
         <Switch
           checked={text}
           checkedChildren="启用"
@@ -94,7 +94,7 @@ const UserTable = () => {
       key: 'action',
       width: 180,
       fixed: 'right',
-      render: (_: any, record: UserListDto) => {
+      render: (_: any, record: UserItem) => {
         const curDropdownItems = [];
         if (hasPermission!('Sys.User.AssignRole')) {
           curDropdownItems.push({
@@ -164,9 +164,9 @@ const UserTable = () => {
       },
     },
   ];
-  const [deptData, setDeptData] = useState<DeptSimpleInfoDto[]>([]);
+  const [deptData, setDeptData] = useState<DeptSimpleInfo[]>([]);
   const [deptKeyword, setDeptKeyword] = useState<string>('');
-  const [curDept, setCurDept] = useState<DeptSimpleInfoDto | null>(null);
+  const [curDept, setCurDept] = useState<DeptSimpleInfo | null>(null);
   const [deptLoading, setDeptLoading] = useState<boolean>(false);
   useEffect(() => {
     setDeptLoading(true);
@@ -202,7 +202,7 @@ const UserTable = () => {
       },
     });
   };
-  const onUserStatusChange = (record: UserListDto) => {
+  const onUserStatusChange = (record: UserItem) => {
     switchUserEnabledStatus(record.id).then(() => {
       message.success('状态更改成功');
       tableRef?.current?.reload();
@@ -250,7 +250,7 @@ const UserTable = () => {
               return data;
             }}
             searchItems={
-              <Form.Item<UserQueryDto> label="账号" name="userName">
+              <Form.Item<GetUserListRequest> label="账号" name="userName">
                 <Input placeholder="请输入账号" />
               </Form.Item>
             }

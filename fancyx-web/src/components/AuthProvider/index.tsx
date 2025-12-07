@@ -1,12 +1,12 @@
 import React, { createContext, useContext } from 'react';
 import UserStore from '@/store/userStore.ts';
-import { getUserAuth, login, type LoginDto, smsLogin, type SmsLoginDto } from '@/api/auth.ts';
+import { getUserAuth, login, type LoginRequest, smsLogin, type SmsLoginRequest } from '@/api/auth.ts';
 import { clearTabs } from '@/store/tabStore.ts';
 import { useDispatch } from 'react-redux';
 
 export interface AuthProviderType {
-  pwdLogin?: (values: LoginDto) => Promise<void>;
-  smsLogin?: (values: SmsLoginDto) => Promise<void>;
+  pwdLogin?: (values: LoginRequest) => Promise<void>;
+  smsLogin?: (values: SmsLoginRequest) => Promise<void>;
   clearToken: () => void;
   refreshUserAuthInfo?: () => Promise<void>;
   hasPermission?: (permission: string | string[], mode?: string) => boolean;
@@ -19,7 +19,7 @@ const AuthContext = createContext<AuthProviderType>({
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useDispatch();
 
-  const pwdLogin = async (values: LoginDto) => {
+  const pwdLogin = async (values: LoginRequest) => {
     const res = await login(values);
     if (res.data) {
       UserStore.setToken({
@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await setOrRefreshUserAuthInfo();
     }
   };
-  const _smsLogin = async (values: SmsLoginDto) => {
+  const _smsLogin = async (values: SmsLoginRequest) => {
     const res = await smsLogin(values);
     if (res.data) {
       UserStore.setToken({

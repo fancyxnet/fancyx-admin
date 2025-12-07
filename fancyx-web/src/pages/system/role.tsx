@@ -9,7 +9,7 @@ import {
   DoubleRightOutlined,
   PieChartOutlined,
 } from '@ant-design/icons';
-import { deleteRole, getRoleList, type RoleListDto } from '@/api/system/role';
+import { deleteRole, getRoleList, type RoleItem } from '@/api/system/role';
 import RoleForm, { type ModalRef } from '@/pages/system/components/RoleForm.tsx';
 import AssignMenuForm, { type AssignMenuModalRef } from '@/pages/system/components/AssignMenuForm.tsx';
 import SmartTable from '@/components/SmartTable';
@@ -56,7 +56,7 @@ const Role = () => {
       key: 'action',
       width: 210,
       fixed: 'right',
-      render: (_: any, record: RoleListDto) => {
+      render: (_: any, record: RoleItem) => {
         const curDropdownItems = [];
         if (hasPermission!('Sys.Role.AssignMenu')) {
           curDropdownItems.push({
@@ -112,10 +112,10 @@ const Role = () => {
     },
   ];
 
-  const openAssignModal = (row: RoleListDto) => {
+  const openAssignModal = (row: RoleItem) => {
     assignMenuForRef?.current?.openModal(row);
   };
-  const openAssignDataScopeModal = (row: RoleListDto) => {
+  const openAssignDataScopeModal = (row: RoleItem) => {
     assignDataScopeForRef?.current?.openModal(row);
   };
 
@@ -137,7 +137,7 @@ const Role = () => {
       },
     });
   };
-  const rowEdit = (record: RoleListDto) => {
+  const rowEdit = (record: RoleItem) => {
     modalRef.current?.openModal(record);
   };
 

@@ -5,16 +5,16 @@ import type { AppResponse, PagedResult, PageSearch, AppOptionTree } from '@/type
  * 新增职位
  * @param dto
  */
-export function addPosition(dto: PositionDto) {
-  return httpClient.post<PositionDto, AppResponse<boolean>>('/admin-api/Position/Add', dto);
+export function addPosition(dto: AddOrUpdatePositionRequest) {
+  return httpClient.post<AddOrUpdatePositionRequest, AppResponse<boolean>>('/admin-api/Position/Add', dto);
 }
 
 /**
  * 职位分页列表
  * @param dto
  */
-export function getPositionList(dto: PositionQueryDto) {
-  return httpClient.get<PositionQueryDto, AppResponse<PagedResult<PositionListDto>>>('/admin-api/Position/List', {
+export function getPositionList(dto: GetPositionListRequest) {
+  return httpClient.get<GetPositionListRequest, AppResponse<PagedResult<PositionItem>>>('/admin-api/Position/List', {
     params: dto,
   });
 }
@@ -23,8 +23,8 @@ export function getPositionList(dto: PositionQueryDto) {
  * 编辑职位
  * @param dto
  */
-export function updatePosition(dto: PositionDto) {
-  return httpClient.put<PositionDto, AppResponse<boolean>>('/admin-api/Position/Update', dto);
+export function updatePosition(dto: AddOrUpdatePositionRequest) {
+  return httpClient.put<AddOrUpdatePositionRequest, AppResponse<boolean>>('/admin-api/Position/Update', dto);
 }
 
 /**
@@ -42,7 +42,7 @@ export function getPositionOptions() {
   return httpClient.get<unknown, AppResponse<AppOptionTree[]>>('/admin-api/Position/Options');
 }
 
-export interface PositionDto {
+export interface AddOrUpdatePositionRequest {
   id?: string | null;
   name: string;
   code: string;
@@ -52,14 +52,14 @@ export interface PositionDto {
   groupId?: string | null;
 }
 
-export interface PositionQueryDto extends PageSearch {
+export interface GetPositionListRequest extends PageSearch {
   keyword?: string | null;
   level?: string | null;
   status?: number | null;
   groupId?: number | null;
 }
 
-export interface PositionListDto {
+export interface PositionItem {
   id: string;
   code: string | null;
   name: string | null;

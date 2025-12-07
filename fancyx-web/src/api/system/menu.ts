@@ -5,24 +5,24 @@ import type { AppResponse } from '@/types/api';
  * 新增菜单
  * @param dto
  */
-export function addMenu(dto: MenuDto) {
-  return httpClient.post<MenuDto, AppResponse<boolean>>('/admin-api/Menu/Add', dto);
+export function addMenu(dto: AddOrUpdateMenuRequest) {
+  return httpClient.post<AddOrUpdateMenuRequest, AppResponse<boolean>>('/admin-api/Menu/Add', dto);
 }
 
 /**
  * 菜单树形列表
  * @param dto
  */
-export function getMenuList(dto: MenuQueryDto) {
-  return httpClient.get<MenuQueryDto, AppResponse<MenuListDto[]>>('/admin-api/Menu/List', { params: dto });
+export function getMenuList(dto: GetMenuListRequest) {
+  return httpClient.get<GetMenuListRequest, AppResponse<MenuItem[]>>('/admin-api/Menu/List', { params: dto });
 }
 
 /**
  * 修改菜单
  * @param dto
  */
-export function updateMenu(dto: MenuDto) {
-  return httpClient.put<MenuDto, AppResponse<boolean>>('/admin-api/Menu/Update', dto);
+export function updateMenu(dto: AddOrUpdateMenuRequest) {
+  return httpClient.put<AddOrUpdateMenuRequest, AppResponse<boolean>>('/admin-api/Menu/Update', dto);
 }
 
 /**
@@ -41,7 +41,7 @@ export function deleteMenu(ids: string[]) {
  * @param keyword
  */
 export function getMenuOptions(onlyMenu: boolean, keyword?: string) {
-  return httpClient.get<number, AppResponse<MenuOptionResultDto>>('/admin-api/Menu/MenuOptions', {
+  return httpClient.get<number, AppResponse<GetMenuOptionsResponse>>('/admin-api/Menu/MenuOptions', {
     params: {
       onlyMenu: onlyMenu,
       keyword: keyword,
@@ -49,7 +49,7 @@ export function getMenuOptions(onlyMenu: boolean, keyword?: string) {
   });
 }
 
-export interface MenuDto {
+export interface AddOrUpdateMenuRequest {
   id?: string | null;
   title: string;
   name: string;
@@ -65,24 +65,24 @@ export interface MenuDto {
   keepAlive: boolean;
 }
 
-export interface MenuQueryDto {
+export interface GetMenuListRequest {
   title?: string | null;
   path?: string | null;
 }
 
-export interface MenuOptionResultDto {
+export interface GetMenuOptionsResponse {
   keys: string[];
-  tree: MenuOptionTreeDto[];
+  tree: MenuOptionTree[];
 }
 
-export interface MenuOptionTreeDto {
+export interface MenuOptionTree {
   key: string;
   title?: string;
   extra?: never;
-  children?: MenuOptionTreeDto[];
+  children?: MenuOptionTree[];
 }
 
-export interface MenuListDto {
+export interface MenuItem {
   id: string;
   title: string;
   icon: string | null;
@@ -93,7 +93,7 @@ export interface MenuListDto {
   sort: number;
   display: boolean;
   component: string;
-  children: MenuListDto[];
+  children: MenuItem[];
   isExternal: boolean;
   keepAlive: boolean;
 }

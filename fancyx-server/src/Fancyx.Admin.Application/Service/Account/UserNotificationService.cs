@@ -43,7 +43,7 @@ namespace Fancyx.Admin.Application.Service.Account
 
             var query = _repository.Where(x => x.UserId == _currentUser.Id);
             result.Items = await query.OrderBy(x => x.IsReaded).OrderByDescending(x => x.CreationTime)
-                .Take(5).SelectToListAsync(x => new UserNotificationNavbarItemDto
+                .Take(5).SelectToListAsync(x => new UserNotificationNavbarItem
                 {
                     Id = x.Id,
                     Title = x.Title,

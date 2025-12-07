@@ -1,4 +1,4 @@
-﻿import { type ExceptionLogListDto, getExceptionLogList, handleException } from '@/api/monitor/monitorLog.ts';
+﻿import { type ExceptionLogItem, getExceptionLogList, handleException } from '@/api/monitor/monitorLog.ts';
 import { Button, Collapse, Descriptions, Form, Input, Modal, Select, Space, Tag } from 'antd';
 import React, { useMemo, useRef, useState } from 'react';
 import type { SmartTableColumnType, SmartTableRef } from '@/components/SmartTable/type.ts';
@@ -8,7 +8,7 @@ import useApp from 'antd/es/app/useApp';
 
 const BusinessLogList: React.FC = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const [details, setDetails] = useState<ExceptionLogListDto | null>();
+  const [details, setDetails] = useState<ExceptionLogItem | null>();
   const { message, modal } = useApp();
   const tableRef = useRef<SmartTableRef>(null);
   const columns: SmartTableColumnType[] = [
@@ -47,7 +47,7 @@ const BusinessLogList: React.FC = () => {
       dataIndex: 'operate',
       width: 140,
       fixed: 'right',
-      render: (_: any, record: ExceptionLogListDto) => {
+      render: (_: any, record: ExceptionLogItem) => {
         return (
           <Space>
             <Button

@@ -15,7 +15,7 @@ namespace Fancyx.Admin.Application.Profiles
             CreateMap<AddOrUpdatePositionGroupRequest, PositionGroup>();
             CreateMap<PositionGroup, PositionGroupItem>();
             CreateMap<Position, PositionItem>();
-            CreateMap<AddPositionRequest, Position>();
+            CreateMap<AddOrUpdatePositionRequest, Position>();
         }
     }
 }

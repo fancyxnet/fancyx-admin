@@ -5,16 +5,16 @@ import type { AppResponse, PagedResult, PageSearch } from '@/types/api';
  * 新增用户
  * @param dto
  */
-export function addUser(dto: UserDto) {
-  return httpClient.post<UserDto, AppResponse<boolean>>('/admin-api/User/Add', dto);
+export function addUser(dto: AddUserRequest) {
+  return httpClient.post<AddUserRequest, AppResponse<boolean>>('/admin-api/User/Add', dto);
 }
 
 /**
  * 用户分页列表
  * @param dto
  */
-export function getUserList(dto: UserQueryDto) {
-  return httpClient.get<UserQueryDto, AppResponse<PagedResult<UserListDto>>>('/admin-api/User/List', { params: dto });
+export function getUserList(dto: GetUserListRequest) {
+  return httpClient.get<GetUserListRequest, AppResponse<PagedResult<UserItem>>>('/admin-api/User/List', { params: dto });
 }
 
 /**
@@ -22,15 +22,15 @@ export function getUserList(dto: UserQueryDto) {
  * @param id
  */
 export function deleteUser(id: string) {
-  return httpClient.delete<UserDto, AppResponse<boolean>>('/admin-api/User/Delete/' + id);
+  return httpClient.delete<AddUserRequest, AppResponse<boolean>>('/admin-api/User/Delete/' + id);
 }
 
 /**
  * 分配角色
  * @param dto
  */
-export function assignRole(dto: AssignRoleDto) {
-  return httpClient.post<AssignRoleDto, AppResponse<boolean>>('/admin-api/User/AssignRole', dto);
+export function assignRole(dto: AssignRoleRequest) {
+  return httpClient.post<AssignRoleRequest, AppResponse<boolean>>('/admin-api/User/AssignRole', dto);
 }
 
 /**
@@ -53,7 +53,7 @@ export function getUserRoleIds(uid: string) {
  * 重置用户密码
  * @param dto
  */
-export function resetUserPwd(dto: ResetUserPwdDto) {
+export function resetUserPwd(dto: ResetUserPwdRequest) {
   return httpClient.put<string, AppResponse<boolean>>('/admin-api/User/ResetPwd', dto);
 }
 
@@ -62,7 +62,7 @@ export function resetUserPwd(dto: ResetUserPwdDto) {
  * @param keyword 账号/昵称
  */
 export function getUserSimpleInfos(keyword?: string) {
-  return httpClient.get<string, AppResponse<UserSimpleInfoDto[]>>('/admin-api/User/SimpleUserInfos', {
+  return httpClient.get<string, AppResponse<UserSimpleInfo[]>>('/admin-api/User/SimpleUserInfos', {
     params: {
       keyword,
     },
@@ -75,7 +75,7 @@ export function getUserSimpleInfos(keyword?: string) {
  * @returns
  */
 export function getUserEditInfo(id: string) {
-  return httpClient.get<string, AppResponse<UserEditInfoDto[]>>('/admin-api/User/EditInfo?id=' + id);
+  return httpClient.get<string, AppResponse<UserDetails[]>>('/admin-api/User/EditInfo?id=' + id);
 }
 
 /**
@@ -83,11 +83,11 @@ export function getUserEditInfo(id: string) {
  * @param dto
  * @returns
  */
-export function updateUser(dto: UserEditDto) {
-  return httpClient.put<UserEditDto, AppResponse<boolean>>('/admin-api/User/Update', dto);
+export function updateUser(dto: UpdateUserRequest) {
+  return httpClient.put<UpdateUserRequest, AppResponse<boolean>>('/admin-api/User/Update', dto);
 }
 
-export interface UserEditInfoDto {
+export interface UserDetails {
   id?: string | null;
   userName: string;
   nickName?: string | null;
@@ -97,7 +97,7 @@ export interface UserEditInfoDto {
   postId?: string | null;
 }
 
-export interface UserEditDto {
+export interface UpdateUserRequest {
   id?: string | null;
   nickName?: string | null;
   sex: number;
@@ -106,7 +106,7 @@ export interface UserEditDto {
   postId?: string | null;
 }
 
-export interface UserDto {
+export interface AddUserRequest {
   id?: string | null;
   userName: string;
   password: string;
@@ -119,11 +119,11 @@ export interface UserDto {
   postId?: string | null;
 }
 
-export interface UserQueryDto extends PageSearch {
+export interface GetUserListRequest extends PageSearch {
   userName?: string | null;
 }
 
-export interface UserListDto {
+export interface UserItem {
   id: string;
   userName: string | null;
   avatar: string | null;
@@ -134,17 +134,17 @@ export interface UserListDto {
   postName: string | null;
 }
 
-export interface AssignRoleDto {
+export interface AssignRoleRequest {
   userId: string;
   roleIds: string[] | null;
 }
 
-export interface ResetUserPwdDto {
+export interface ResetUserPwdRequest {
   userId: string;
   password: string;
 }
 
-export interface UserSimpleInfoDto {
+export interface UserSimpleInfo {
   id: string;
   userName: string;
   nickName: string;

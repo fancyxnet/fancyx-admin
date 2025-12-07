@@ -1,4 +1,4 @@
-﻿import { readed, getMyNotificationList, type MyNotificationListDto } from '@/api/organization/myNotification.ts';
+﻿import { readed, getMyNotificationList, type UserNotificationItem } from '@/api/organization/myNotification.ts';
 import { CheckOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Select, Tag } from 'antd';
 import React, { useRef } from 'react';
@@ -35,7 +35,7 @@ const NotificationList: React.FC = () => {
       dataIndex: 'option',
       width: 70,
       fixed: 'right',
-      render: (_: any, record: MyNotificationListDto) => {
+      render: (_: any, record: UserNotificationItem) => {
         if (!record.isReaded) {
           return (
             <Button

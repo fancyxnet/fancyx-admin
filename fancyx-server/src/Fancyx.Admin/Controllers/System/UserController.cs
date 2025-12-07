@@ -127,7 +127,7 @@ namespace Fancyx.Admin.Controllers.System
         /// <param name="keyword"></param>
         /// <returns></returns>
         [HttpGet("SimpleUserInfos")]
-        public async Task<AppResponse<List<UserSimpleInfoDto>>> GetUserSimpleInfosAsync(string? keyword)
+        public async Task<AppResponse<List<UserSimpleInfo>>> GetUserSimpleInfosAsync(string? keyword)
         {
             var data = await _userService.GetUserSimpleInfosAsync(keyword);
             return Result.Data(data);

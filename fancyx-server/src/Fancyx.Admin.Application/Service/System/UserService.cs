@@ -171,12 +171,12 @@ namespace Fancyx.Admin.Application.Service.System
             LogRecordContext.PutVariable("userName", user.UserName);
         }
 
-        public Task<List<UserSimpleInfoDto>> GetUserSimpleInfosAsync(string? keyword)
+        public Task<List<UserSimpleInfo>> GetUserSimpleInfosAsync(string? keyword)
         {
             return _userRepository.Where(x => x.IsEnabled)
                 .WhereIf(!string.IsNullOrEmpty(keyword), x => x.UserName.Contains(keyword!) || x.NickName.Contains(keyword!))
                 .OrderBy(x => x.NickName)
-                .Select(x => new UserSimpleInfoDto { Id = x.Id.ToString(), NickName = x.NickName, UserName = x.UserName })
+                .Select(x => new UserSimpleInfo { Id = x.Id.ToString(), NickName = x.NickName, UserName = x.UserName })
                 .ToListAsync();
         }
 

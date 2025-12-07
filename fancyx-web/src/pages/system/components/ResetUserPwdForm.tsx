@@ -1,6 +1,6 @@
 import { Form, Input, Modal } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
-import { resetUserPwd, type ResetUserPwdDto, type UserListDto } from '@/api/system/user.ts';
+import { resetUserPwd, type ResetUserPwdRequest, type UserItem } from '@/api/system/user.ts';
 import { Patterns } from '@/utils/globalValue.ts';
 import useApp from 'antd/es/app/useApp';
 
@@ -8,20 +8,20 @@ import useApp from 'antd/es/app/useApp';
 interface ModalProps {}
 
 export interface ResetUserPwdFormRef {
-  openModal: (row: UserListDto) => void; // 定义 ref 的类型
+  openModal: (row: UserItem) => void; // 定义 ref 的类型
 }
 
 const ResetUserPwdForm = forwardRef<ResetUserPwdFormRef, ModalProps>((_, ref) => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [form] = Form.useForm();
-  const [currentRow, setCurrentRow] = useState<UserListDto>();
+  const [currentRow, setCurrentRow] = useState<UserItem>();
   const { message } = useApp();
 
   useImperativeHandle(ref, () => ({
     openModal,
   }));
 
-  const openModal = (row: UserListDto) => {
+  const openModal = (row: UserItem) => {
     setCurrentRow(row);
     setIsOpenModal(true);
   };
@@ -35,7 +35,7 @@ const ResetUserPwdForm = forwardRef<ResetUserPwdFormRef, ModalProps>((_, ref) =>
     form.submit();
   };
 
-  const onFinish = (values: ResetUserPwdDto) => {
+  const onFinish = (values: ResetUserPwdRequest) => {
     resetUserPwd({ ...values, userId: currentRow!.id }).then(() => {
       message.success('重置成功');
       setIsOpenModal(false);
@@ -49,7 +49,7 @@ const ResetUserPwdForm = forwardRef<ResetUserPwdFormRef, ModalProps>((_, ref) =>
 
   return (
     <Modal title="重置密码" open={isOpenModal} onCancel={onCancel} onOk={onOk} maskClosable={false} width="40%">
-      <Form<ResetUserPwdDto>
+      <Form<ResetUserPwdRequest>
         name="wrap"
         labelCol={{ flex: '80px' }}
         labelWrap

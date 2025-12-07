@@ -5,15 +5,15 @@ import type { AppResponse, PageSearch, AppOption, PagedResult } from '@/types/ap
  * 新增字典类型
  * @param dto
  */
-export function addDictType(dto: DictTypeDto) {
-  return httpClient.post<DictTypeDto, AppResponse<boolean>>('/admin-api/DictType/AddDictType', dto);
+export function addDictType(dto: AddOrUpdateDictTypeRequest) {
+  return httpClient.post<AddOrUpdateDictTypeRequest, AppResponse<boolean>>('/admin-api/DictType/AddDictType', dto);
 }
 
 /**
  * 分页查询字典类型列表
  */
-export function getDictTypeList(dto: DictTypeSearchDto) {
-  return httpClient.get<DictTypeSearchDto, AppResponse<PagedResult<DictTypeResultDto>>>(
+export function getDictTypeList(dto: GetDictTypeListRequest) {
+  return httpClient.get<GetDictTypeListRequest, AppResponse<PagedResult<DictTypeItem>>>(
     '/admin-api/dictType/getDictTypeList',
     { params: dto },
   );
@@ -23,8 +23,8 @@ export function getDictTypeList(dto: DictTypeSearchDto) {
  * 修改字典类型
  * @param dto
  */
-export function updateDictType(dto: DictTypeDto) {
-  return httpClient.put<DictTypeDto, AppResponse<boolean>>('/admin-api/DictType/UpdateDictType', dto);
+export function updateDictType(dto: AddOrUpdateDictTypeRequest) {
+  return httpClient.put<AddOrUpdateDictTypeRequest, AppResponse<boolean>>('/admin-api/DictType/UpdateDictType', dto);
 }
 
 /**
@@ -54,7 +54,7 @@ export function getDictDataOptions(type: string) {
   return httpClient.get<string, AppResponse<AppOption[]>>('/admin-api/dictType/getDictDataOptions?type=' + type);
 }
 
-export interface DictTypeDto {
+export interface AddOrUpdateDictTypeRequest {
   name: string;
   id?: string | null;
   isEnabled: boolean;
@@ -62,12 +62,12 @@ export interface DictTypeDto {
   remark?: string | null;
 }
 
-export interface DictTypeSearchDto extends PageSearch {
+export interface GetDictTypeListRequest extends PageSearch {
   name?: string | null;
   dictType?: string | null;
 }
 
-export interface DictTypeResultDto {
+export interface DictTypeItem {
   name: string;
   id: string;
   isEnabled: boolean;

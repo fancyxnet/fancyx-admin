@@ -1,7 +1,7 @@
 import { Form, Input, Modal } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import type { AppResponse } from '@/types/api';
-import { addConfig, type ConfigDto, updateConfig } from '@/api/system/config.ts';
+import { addConfig, type AddOrUpdateConfigRequest, updateConfig } from '@/api/system/config.ts';
 import useApp from 'antd/es/app/useApp';
 import TextArea from 'antd/es/input/TextArea';
 
@@ -10,20 +10,20 @@ interface ModalProps {
 }
 
 export interface ModalRef {
-  openModal: (row?: ConfigDto) => void;
+  openModal: (row?: AddOrUpdateConfigRequest) => void;
 }
 
 const ConfigForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [form] = Form.useForm();
-  const [row, setRow] = useState<ConfigDto | null>();
+  const [row, setRow] = useState<AddOrUpdateConfigRequest | null>();
   const { message } = useApp();
 
   useImperativeHandle(ref, () => ({
     openModal,
   }));
 
-  const openModal = (row?: ConfigDto) => {
+  const openModal = (row?: AddOrUpdateConfigRequest) => {
     setIsOpenModal(true);
     if (row) {
       setRow(row);
@@ -44,8 +44,8 @@ const ConfigForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
   };
 
   const execute = (
-    values: ConfigDto,
-    apiAction: (params: ConfigDto) => Promise<AppResponse<boolean>>,
+    values: AddOrUpdateConfigRequest,
+    apiAction: (params: AddOrUpdateConfigRequest) => Promise<AppResponse<boolean>>,
     successMsg: string,
   ) => {
     apiAction({ ...values, id: row?.id }).then(() => {
@@ -55,7 +55,7 @@ const ConfigForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
       props?.refresh?.();
     });
   };
-  const onFinish = (values: ConfigDto) => {
+  const onFinish = (values: AddOrUpdateConfigRequest) => {
     const isEdit = !!row?.id;
 
     execute(values, isEdit ? updateConfig : addConfig, isEdit ? '编辑成功' : '新增成功');
@@ -69,7 +69,7 @@ const ConfigForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
       onOk={onOk}
       maskClosable={false}
     >
-      <Form<ConfigDto>
+      <Form<AddOrUpdateConfigRequest>
         name="wrap"
         labelCol={{ flex: '90px' }}
         labelWrap

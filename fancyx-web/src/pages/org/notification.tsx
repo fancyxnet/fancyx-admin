@@ -2,8 +2,8 @@
 import {
   deleteNotifications,
   getNotificationList,
-  type NotificationDto,
-  type NotificationListDto,
+  type AddOrUpdateNotificationRequest,
+  type NotificationItem,
 } from '@/api/organization/notification.ts';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Popconfirm, Select, Space, Tag } from 'antd';
@@ -46,7 +46,7 @@ const NotificationList: React.FC = () => {
       dataIndex: 'option',
       width: 210,
       fixed: 'right',
-      render: (_: any, record: NotificationListDto) => (
+      render: (_: any, record: NotificationItem) => (
         <Space>
           <Permission permissions={'Sys.Notification.Update'}>
             <Button
@@ -54,7 +54,7 @@ const NotificationList: React.FC = () => {
               icon={<EditOutlined />}
               key="edit"
               onClick={() => {
-                modalRef?.current?.openModal(record as NotificationDto);
+                modalRef?.current?.openModal(record as AddOrUpdateNotificationRequest);
               }}
             >
               编辑

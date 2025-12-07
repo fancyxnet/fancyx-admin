@@ -44,14 +44,14 @@ namespace Fancyx.Admin.Application.Service.System
             await _configRepository.InsertAsync(entity);
         }
 
-        public async Task<PagedResult<ConfigListDto>> GetConfigListAsync(GetConfigListRequest dto)
+        public async Task<PagedResult<ConfigItem>> GetConfigListAsync(GetConfigListRequest dto)
         {
             var resp = await _configRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(dto.Name), x => x.Name.ToLower().Contains(dto.Name!.ToLower()))
                 .WhereIf(!string.IsNullOrEmpty(dto.Key), x => x.Key.ToLower().Contains(dto.Key!.ToLower()))
                 .PagedAsync(dto.Current, dto.PageSize);
 
-            return new PagedResult<ConfigListDto>(resp.Total, _mapper.Map<List<Config>, List<ConfigListDto>>(resp.Items));
+            return new PagedResult<ConfigItem>(resp.Total, _mapper.Map<List<Config>, List<ConfigItem>>(resp.Items));
         }
 
         public async Task DeleteConfigAsync(long id)

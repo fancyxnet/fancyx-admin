@@ -5,16 +5,16 @@ import type { AppResponse } from '@/types/api';
  * 新增职位分组
  * @param dto
  */
-export function addPositionGroup(dto: PositionGroupDto) {
-  return httpClient.post<PositionGroupDto, AppResponse<boolean>>('/admin-api/PositionGroup/Add', dto);
+export function addPositionGroup(dto: AddOrUpdatePositionGroupRequest) {
+  return httpClient.post<AddOrUpdatePositionGroupRequest, AppResponse<boolean>>('/admin-api/PositionGroup/Add', dto);
 }
 
 /**
  * 职位分组分页列表
  * @param dto
  */
-export function getPositionGroupList(dto?: PositionGroupQueryDto) {
-  return httpClient.get<PositionGroupQueryDto, AppResponse<PositionGroupListDto[]>>('/admin-api/PositionGroup/List', {
+export function getPositionGroupList(dto?: GetPositionGroupListRequest) {
+  return httpClient.get<GetPositionGroupListRequest, AppResponse<PositionGroupItem[]>>('/admin-api/PositionGroup/List', {
     params: dto,
   });
 }
@@ -23,8 +23,8 @@ export function getPositionGroupList(dto?: PositionGroupQueryDto) {
  * 修改职位分组
  * @param dto
  */
-export function updatePositionGroup(dto: PositionGroupDto) {
-  return httpClient.put<PositionGroupDto, AppResponse<boolean>>('/admin-api/PositionGroup/Update', dto);
+export function updatePositionGroup(dto: AddOrUpdatePositionGroupRequest) {
+  return httpClient.put<AddOrUpdatePositionGroupRequest, AppResponse<boolean>>('/admin-api/PositionGroup/Update', dto);
 }
 
 /**
@@ -35,7 +35,7 @@ export function deletePositionGroup(id: string) {
   return httpClient.delete<AppResponse<boolean>>(`/admin-api/PositionGroup/Delete/${id}`);
 }
 
-export interface PositionGroupDto {
+export interface AddOrUpdatePositionGroupRequest {
   id?: string | null;
   parentId?: string | null;
   groupName: string;
@@ -43,15 +43,15 @@ export interface PositionGroupDto {
   sort: number;
 }
 
-export interface PositionGroupQueryDto {
+export interface GetPositionGroupListRequest {
   groupName?: string | null;
 }
 
-export interface PositionGroupListDto {
+export interface PositionGroupItem {
   id: string;
   groupName: string;
   remark: string | null;
   parentId: string | null;
   sort: number;
-  positionGroupListDto: PositionGroupDto[];
+  PositionGroupItem: AddOrUpdatePositionGroupRequest[];
 }

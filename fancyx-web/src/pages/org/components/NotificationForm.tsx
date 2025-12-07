@@ -1,25 +1,25 @@
 import { Form, Input, Modal, Select } from 'antd';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import type { AppResponse } from '@/types/api';
-import { addNotification, type NotificationDto, updateNotification } from '@/api/organization/notification.ts';
+import { addNotification, type AddOrUpdateNotificationRequest, updateNotification } from '@/api/organization/notification.ts';
 import useApp from 'antd/es/app/useApp';
 import TextArea from 'antd/es/input/TextArea';
-import { getUserSimpleInfos, type UserSimpleInfoDto } from '@/api/system/user';
+import { getUserSimpleInfos, type UserSimpleInfo } from '@/api/system/user';
 
 interface ModalProps {
   refresh?: () => void;
 }
 
 export interface ModalRef {
-  openModal: (row?: NotificationDto) => void;
+  openModal: (row?: AddOrUpdateNotificationRequest) => void;
 }
 
 const NotificationForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [form] = Form.useForm();
-  const [row, setRow] = useState<NotificationDto | null>();
+  const [row, setRow] = useState<AddOrUpdateNotificationRequest | null>();
   const { message } = useApp();
-  const [userOptions, setUserOptions] = useState<UserSimpleInfoDto[]>([]);
+  const [userOptions, setUserOptions] = useState<UserSimpleInfo[]>([]);
 
   useImperativeHandle(ref, () => ({
     openModal,
@@ -37,7 +37,7 @@ const NotificationForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
     });
   };
 
-  const openModal = (row?: NotificationDto) => {
+  const openModal = (row?: AddOrUpdateNotificationRequest) => {
     setIsOpenModal(true);
     if (row) {
       setRow(row);
@@ -58,8 +58,8 @@ const NotificationForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
   };
 
   const execute = (
-    values: NotificationDto,
-    apiAction: (params: NotificationDto) => Promise<AppResponse<boolean>>,
+    values: AddOrUpdateNotificationRequest,
+    apiAction: (params: AddOrUpdateNotificationRequest) => Promise<AppResponse<boolean>>,
     successMsg: string,
   ) => {
     apiAction({ ...values, id: row?.id }).then(() => {
@@ -69,7 +69,7 @@ const NotificationForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
       props?.refresh?.();
     });
   };
-  const onFinish = (values: NotificationDto) => {
+  const onFinish = (values: AddOrUpdateNotificationRequest) => {
     const isEdit = !!row?.id;
 
     execute(values, isEdit ? updateNotification : addNotification, isEdit ? '编辑成功' : '新增成功');
@@ -83,7 +83,7 @@ const NotificationForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
       onOk={onOk}
       maskClosable={false}
     >
-      <Form<NotificationDto>
+      <Form<AddOrUpdateNotificationRequest>
         name="wrap"
         labelCol={{ flex: '90px' }}
         labelWrap

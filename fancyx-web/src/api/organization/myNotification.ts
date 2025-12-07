@@ -13,8 +13,8 @@ export function readed(ids: string[]) {
  * 我的通知分页列表
  * @param dto
  */
-export function getMyNotificationList(dto: UserNotificationQueryDto) {
-  return httpClient.get<UserNotificationQueryDto, AppResponse<PagedResult<MyNotificationListDto>>>(
+export function getMyNotificationList(dto: GetMyNotificationListRequest) {
+  return httpClient.get<GetMyNotificationListRequest, AppResponse<PagedResult<UserNotificationItem>>>(
     '/admin-api/UserNotification/MyNotificationList',
     {
       params: dto,
@@ -27,12 +27,12 @@ export function getMyNotificationList(dto: UserNotificationQueryDto) {
  * @param dto
  */
 export function getMyNotificationNavbarInfo() {
-  return httpClient.get<unknown, AppResponse<UserNotificationNavbarDto>>(
+  return httpClient.get<unknown, AppResponse<UserNotificationNavbarInfo>>(
     '/admin-api/UserNotification/MyNotificationNavbarInfo',
   );
 }
 
-export interface MyNotificationListDto {
+export interface UserNotificationItem {
   id: string;
   title: string;
   content: string | null;
@@ -41,17 +41,17 @@ export interface MyNotificationListDto {
   readedTime: string;
 }
 
-export interface UserNotificationQueryDto {
+export interface GetMyNotificationListRequest {
   title?: string;
   isReaded?: boolean;
 }
 
-export interface UserNotificationNavbarDto {
+export interface UserNotificationNavbarInfo {
   noReadedCount: number;
-  items: UserNotificationNavbarItemDto[];
+  items: UserNotificationNavbarItem[];
 }
 
-export interface UserNotificationNavbarItemDto {
+export interface UserNotificationNavbarItem {
   id: string;
   title?: string;
   content: string | null;

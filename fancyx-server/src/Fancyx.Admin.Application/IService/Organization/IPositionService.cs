@@ -10,7 +10,7 @@ namespace Fancyx.Admin.Application.IService.Organization
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<bool> AddPositionAsync(AddPositionRequest dto);
+        Task<bool> AddPositionAsync(AddOrUpdatePositionRequest dto);
 
         /// <summary>
         /// 职位分页列表
@@ -24,7 +24,7 @@ namespace Fancyx.Admin.Application.IService.Organization
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        Task<bool> UpdatePositionAsync(AddPositionRequest dto);
+        Task<bool> UpdatePositionAsync(AddOrUpdatePositionRequest dto);
 
         /// <summary>
         /// 删除职位

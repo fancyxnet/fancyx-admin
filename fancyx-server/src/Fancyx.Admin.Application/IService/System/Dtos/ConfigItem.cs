@@ -2,7 +2,7 @@
 
 namespace Fancyx.Admin.Application.IService.System.Dtos
 {
-    public class ConfigListDto
+    public class ConfigItem
     {
         public long Id { get; set; }
 

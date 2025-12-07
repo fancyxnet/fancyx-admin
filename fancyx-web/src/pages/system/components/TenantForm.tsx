@@ -1,7 +1,7 @@
 import { Form, Input, Modal, Switch } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import type { AppResponse } from '@/types/api';
-import { addTenant, type TenantDto, updateTenant } from '@/api/system/tenant.ts';
+import { addTenant, type AddOrUpdateTenantRequest, updateTenant } from '@/api/system/tenant.ts';
 import useApp from 'antd/es/app/useApp';
 
 interface ModalProps {
@@ -9,20 +9,20 @@ interface ModalProps {
 }
 
 export interface ModalRef {
-  openModal: (row?: TenantDto) => void;
+  openModal: (row?: AddOrUpdateTenantRequest) => void;
 }
 
 const TenantForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [form] = Form.useForm();
-  const [row, setRow] = useState<TenantDto | null>();
+  const [row, setRow] = useState<AddOrUpdateTenantRequest | null>();
   const { message } = useApp();
 
   useImperativeHandle(ref, () => ({
     openModal,
   }));
 
-  const openModal = (row?: TenantDto) => {
+  const openModal = (row?: AddOrUpdateTenantRequest) => {
     setIsOpenModal(true);
     if (row) {
       setRow(row);
@@ -43,8 +43,8 @@ const TenantForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
   };
 
   const execute = (
-    values: TenantDto,
-    apiAction: (params: TenantDto) => Promise<AppResponse<boolean>>,
+    values: AddOrUpdateTenantRequest,
+    apiAction: (params: AddOrUpdateTenantRequest) => Promise<AppResponse<boolean>>,
     successMsg: string,
   ) => {
     apiAction({ ...values, tenantId: values.tenantId || row?.tenantId }).then(() => {
@@ -54,7 +54,7 @@ const TenantForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
       props?.refresh?.();
     });
   };
-  const onFinish = (values: TenantDto) => {
+  const onFinish = (values: AddOrUpdateTenantRequest) => {
     const isEdit = row?.tenantId;
 
     execute(values, isEdit ? updateTenant : addTenant, isEdit ? '编辑成功' : '新增成功');
@@ -68,7 +68,7 @@ const TenantForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
       onOk={onOk}
       maskClosable={false}
     >
-      <Form<TenantDto>
+      <Form<AddOrUpdateTenantRequest>
         name="wrap"
         labelCol={{ flex: '90px' }}
         labelWrap

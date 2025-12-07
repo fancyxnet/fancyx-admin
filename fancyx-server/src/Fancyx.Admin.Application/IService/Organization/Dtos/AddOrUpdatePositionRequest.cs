@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Fancyx.Admin.Application.IService.Organization.Dtos
 {
-    public class AddPositionRequest
+    public class AddOrUpdatePositionRequest
     {
         public long? Id { get; set; }
 

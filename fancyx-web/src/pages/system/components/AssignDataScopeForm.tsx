@@ -1,6 +1,6 @@
 import { Card, Divider, Form, Modal, Select, Switch, Tag, Tree } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
-import { assignDataScope, type AssignDataScopeDto, type RoleListDto } from '@/api/system/role.ts';
+import { assignDataScope, type AssignDataScopeDto, type RoleItem } from '@/api/system/role.ts';
 import { getRoleDeptPowerInfo, type DeptTreeOptionDto } from '@/api/system/role.ts';
 import useApp from 'antd/es/app/useApp';
 
@@ -8,14 +8,14 @@ import useApp from 'antd/es/app/useApp';
 interface ModalProps {}
 
 export interface AssignDataScopeModalRef {
-  openModal: (row: RoleListDto) => void; // 定义 ref 的类型
+  openModal: (row: RoleItem) => void; // 定义 ref 的类型
 }
 
 const AssignDataScopeForm = forwardRef<AssignDataScopeModalRef, ModalProps>((_, ref) => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [form] = Form.useForm();
   const [deptOptions, setDeptOptions] = useState<DeptTreeOptionDto[]>([]);
-  const [currentRow, setCurrentRow] = useState<RoleListDto>();
+  const [currentRow, setCurrentRow] = useState<RoleItem>();
   const [deptIds, setDeptIds] = useState<string[] | null>();
   const [allKeys, setAllKeys] = useState<string[]>();
   const [expandKeys, setExpandKeys] = useState<string[]>();
@@ -27,7 +27,7 @@ const AssignDataScopeForm = forwardRef<AssignDataScopeModalRef, ModalProps>((_, 
     openModal,
   }));
 
-  const openModal = (row: RoleListDto) => {
+  const openModal = (row: RoleItem) => {
     setCurrentRow(row);
     getRoleDeptPowerInfo(row.id).then(async (res) => {
       setDeptOptions(res.data.deptOptions);

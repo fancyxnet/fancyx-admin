@@ -1,8 +1,8 @@
 import { Form, Input, Modal, Switch, TreeSelect } from 'antd';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
-import { addPosition, type PositionDto, type PositionListDto, updatePosition } from '@/api/organization/position.ts';
+import { addPosition, type AddOrUpdatePositionRequest, type PositionItem, updatePosition } from '@/api/organization/position.ts';
 import type { AppResponse } from '@/types/api';
-import { getPositionGroupList, type PositionGroupListDto } from '@/api/organization/positionGroup.ts';
+import { getPositionGroupList, type PositionGroupItem } from '@/api/organization/positionGroup.ts';
 import SysDict from '@/components/SysDict';
 import { DictType } from '@/utils/globalValue.ts';
 import useApp from 'antd/es/app/useApp';
@@ -13,14 +13,14 @@ interface ModalProps {
 }
 
 export interface PositionModalRef {
-  openModal: (row?: PositionListDto) => void;
+  openModal: (row?: PositionItem) => void;
 }
 
 const PositionForm = forwardRef<PositionModalRef, ModalProps>((props, ref) => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [form] = Form.useForm();
-  const [row, setRow] = useState<PositionDto | null>();
-  const [treeData, setTreeData] = useState<PositionGroupListDto[]>([]);
+  const [row, setRow] = useState<AddOrUpdatePositionRequest | null>();
+  const [treeData, setTreeData] = useState<PositionGroupItem[]>([]);
   const [positionLevel, setPositionLevel] = useState<number>(0);
   const { message } = useApp();
 
@@ -40,10 +40,10 @@ const PositionForm = forwardRef<PositionModalRef, ModalProps>((props, ref) => {
     }
   }, [isOpenModal]);
 
-  const openModal = (row?: PositionListDto) => {
+  const openModal = (row?: PositionItem) => {
     setIsOpenModal(true);
     if (row) {
-      setRow(row as PositionDto);
+      setRow(row as AddOrUpdatePositionRequest);
       form.setFieldsValue(row);
       form.setFieldValue('level', row.level.toString());
       setPositionLevel(row.level);
@@ -64,8 +64,8 @@ const PositionForm = forwardRef<PositionModalRef, ModalProps>((props, ref) => {
   };
 
   const execute = (
-    values: PositionDto,
-    apiAction: (params: PositionDto) => Promise<AppResponse<boolean>>,
+    values: AddOrUpdatePositionRequest,
+    apiAction: (params: AddOrUpdatePositionRequest) => Promise<AppResponse<boolean>>,
     successMsg: string,
   ) => {
     apiAction({ ...values, id: row?.id }).then(() => {
@@ -75,7 +75,7 @@ const PositionForm = forwardRef<PositionModalRef, ModalProps>((props, ref) => {
       props?.refresh?.();
     });
   };
-  const onFinish = (values: PositionDto) => {
+  const onFinish = (values: AddOrUpdatePositionRequest) => {
     const isEdit = !!row?.id;
 
     execute(values, isEdit ? updatePosition : addPosition, isEdit ? '编辑成功' : '新增成功');
@@ -94,7 +94,7 @@ const PositionForm = forwardRef<PositionModalRef, ModalProps>((props, ref) => {
       onOk={onOk}
       maskClosable={false}
     >
-      <Form<PositionDto>
+      <Form<AddOrUpdatePositionRequest>
         name="wrap"
         labelCol={{ flex: '90px' }}
         labelWrap

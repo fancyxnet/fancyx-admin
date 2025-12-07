@@ -1,21 +1,21 @@
 import { Card, Divider, Form, Modal, Switch, Tag, Tree } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
-import { assignMenu, type AssignMenuDto, getRoleMenuIds, type RoleListDto } from '@/api/system/role.ts';
-import { getMenuOptions, type MenuOptionTreeDto } from '@/api/system/menu.ts';
+import { assignMenu, type AssignMenuRequest, getRoleMenuIds, type RoleItem } from '@/api/system/role.ts';
+import { getMenuOptions, type MenuOptionTree } from '@/api/system/menu.ts';
 import useApp from 'antd/es/app/useApp';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface ModalProps {}
 
 export interface AssignMenuModalRef {
-  openModal: (row: RoleListDto) => void; // 定义 ref 的类型
+  openModal: (row: RoleItem) => void; // 定义 ref 的类型
 }
 
 const AssignMenuForm = forwardRef<AssignMenuModalRef, ModalProps>((_, ref) => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [form] = Form.useForm();
-  const [menuOptions, setMenuOptions] = useState<MenuOptionTreeDto[]>([]);
-  const [currentRow, setCurrentRow] = useState<RoleListDto>();
+  const [menuOptions, setMenuOptions] = useState<MenuOptionTree[]>([]);
+  const [currentRow, setCurrentRow] = useState<RoleItem>();
   const [roleMenuIds, setRoleMenuIds] = useState<string[] | null>();
   const [allKeys, setAllKeys] = useState<string[]>();
   const [expandKeys, setExpandKeys] = useState<string[]>();
@@ -26,7 +26,7 @@ const AssignMenuForm = forwardRef<AssignMenuModalRef, ModalProps>((_, ref) => {
     openModal,
   }));
 
-  const openModal = (row: RoleListDto) => {
+  const openModal = (row: RoleItem) => {
     setCurrentRow(row);
     getMenuOptions(false).then(async (menuRes) => {
       setMenuOptions(menuRes.data.tree);
@@ -77,7 +77,7 @@ const AssignMenuForm = forwardRef<AssignMenuModalRef, ModalProps>((_, ref) => {
         <Form.Item label="角色名称" name="roleName">
           <Tag color="magenta">{currentRow?.roleName}</Tag>
         </Form.Item>
-        <Form.Item<AssignMenuDto> label="菜单权限" name="menuIds">
+        <Form.Item<AssignMenuRequest> label="菜单权限" name="menuIds">
           <Card size="small">
             <div className="flex align-center">
               <div className="mr-5">全部展开/折叠</div>

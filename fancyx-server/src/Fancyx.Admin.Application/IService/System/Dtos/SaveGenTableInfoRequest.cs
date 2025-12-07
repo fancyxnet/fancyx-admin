@@ -1,6 +1,6 @@
 ﻿namespace Fancyx.Admin.Application.IService.System.Dtos
 {
-    public class GenTableInfoDto
+    public class SaveGenTableInfoRequest
     {
         /// <summary>
         /// 编号

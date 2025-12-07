@@ -5,16 +5,16 @@ import type { AppResponse } from '@/types/api';
  * 登录
  * @param dto
  */
-export function login(dto: LoginDto) {
-  return httpClient.post<LoginDto, AppResponse<LoginResultDto>>('/admin-api/Account/Login', dto);
+export function login(dto: LoginRequest) {
+  return httpClient.post<LoginRequest, AppResponse<LoginRespone>>('/admin-api/Account/Login', dto);
 }
 
 /**
  * 短信登录
  * @param dto
  */
-export function smsLogin(dto: SmsLoginDto) {
-  return httpClient.post<SmsLoginDto, AppResponse<LoginResultDto>>('/admin-api/Account/SmsLogin', dto);
+export function smsLogin(dto: SmsLoginRequest) {
+  return httpClient.post<SmsLoginRequest, AppResponse<LoginRespone>>('/admin-api/Account/SmsLogin', dto);
 }
 
 /**
@@ -31,23 +31,23 @@ export function sendLoginSmsCode(phone: string) {
  * @returns
  */
 export function refreshToken(refreshToken: string) {
-  return httpClient.post<string, AppResponse<TokenResultDto>>('/admin-api/Account/RefreshToken?refreshToken=' + refreshToken);
+  return httpClient.post<string, AppResponse<TokenResponse>>('/admin-api/Account/RefreshToken?refreshToken=' + refreshToken);
 }
 
 /**
  * 修改个人基本信息
  * @param info
  */
-export function updateInfo(info: PersonalInfoDto) {
-  return httpClient.put<PersonalInfoDto, AppResponse<boolean>>('/admin-api/Account/UpdateInfo', info);
+export function updateInfo(info: UpdateUserInfoRequest) {
+  return httpClient.put<UpdateUserInfoRequest, AppResponse<boolean>>('/admin-api/Account/UpdateInfo', info);
 }
 
 /**
  * 修改个人密码
  * @param dto
  */
-export function updatePwd(dto: UserPwdDto) {
-  return httpClient.put<UserPwdDto, AppResponse<boolean>>('/admin-api/Account/UpdatePwd', dto);
+export function updatePwd(dto: UpdateUserPwdRequest) {
+  return httpClient.put<UpdateUserPwdRequest, AppResponse<boolean>>('/admin-api/Account/UpdatePwd', dto);
 }
 
 /**
@@ -61,39 +61,39 @@ export function signOut() {
  * 用户权限信息
  */
 export function getUserAuth() {
-  return httpClient.get<unknown, AppResponse<UserAuthInfoDto>>('/admin-api/Account/UserAuth');
+  return httpClient.get<unknown, AppResponse<GetUserAuthInfoResponse>>('/admin-api/Account/UserAuth');
 }
 
-export interface LoginDto {
+export interface LoginRequest {
   userName: string;
   password: string;
 }
 
-interface TokenResultDto {
+interface TokenResponse {
   accessToken: string;
   refreshToken: string;
   expiredTime: Date;
 }
 
-interface LoginResultDto extends TokenResultDto {
+interface LoginRespone extends TokenResponse {
   sessionId: string;
   userId: string;
   userName: string;
 }
 
-export interface PersonalInfoDto {
+export interface UpdateUserInfoRequest {
   avatar?: string;
   nickName?: string;
   sex?: number;
   phone?: string;
 }
 
-export interface UserPwdDto {
+export interface UpdateUserPwdRequest {
   oldPwd: string;
   newPwd: string;
 }
 
-interface UserInfoDto {
+interface CurrentUserInfo {
   userId: string;
   userName: string;
   avatar: string;
@@ -116,13 +116,13 @@ export interface FrontendMenu {
   keepAlive: boolean;
 }
 
-interface UserAuthInfoDto {
-  user: UserInfoDto;
+interface GetUserAuthInfoResponse {
+  user: CurrentUserInfo;
   permissions: string[];
   menus: FrontendMenu[];
 }
 
-export interface SmsLoginDto {
+export interface SmsLoginRequest {
   phone: string;
   code: string;
 }

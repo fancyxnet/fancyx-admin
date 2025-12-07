@@ -78,7 +78,7 @@ namespace Fancyx.Admin.Controllers.System
 
         [HttpPut("SaveGenTableInfo")]
         [HasPermission("Sys.Gen.SaveGenTableInfo")]
-        public async Task<AppResponse<bool>> SaveGenTableInfoAsync([FromBody] GenTableInfoDto dto)
+        public async Task<AppResponse<bool>> SaveGenTableInfoAsync([FromBody] SaveGenTableInfoRequest dto)
         {
             await _genService.SaveGenTableInfoAsync(dto);
             return Result.Ok();

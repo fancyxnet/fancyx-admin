@@ -2,8 +2,8 @@
 import {
   deleteDictType,
   getDictTypeList,
-  type DictTypeDto,
-  type DictTypeResultDto,
+  type AddOrUpdateDictTypeRequest,
+  type DictTypeItem,
   deleteDictTypes,
 } from '@/api/system/dictType';
 import { DeleteOutlined, EditOutlined, ExclamationCircleFilled, PlusOutlined } from '@ant-design/icons';
@@ -53,7 +53,7 @@ const DictList: React.FC = () => {
       dataIndex: 'option',
       width: 210,
       fixed: 'right',
-      render: (_: any, record: DictTypeResultDto) => (
+      render: (_: any, record: DictTypeItem) => (
         <Space>
           <Permission permissions={'Sys.DictType.Update'}>
             <Button
@@ -61,7 +61,7 @@ const DictList: React.FC = () => {
               icon={<EditOutlined />}
               key="edit"
               onClick={() => {
-                modalRef?.current?.openModal(record as DictTypeDto);
+                modalRef?.current?.openModal(record as AddOrUpdateDictTypeRequest);
               }}
             >
               编辑

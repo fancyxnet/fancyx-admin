@@ -5,10 +5,10 @@ import {
   saveGenTableInfo,
   getGenTableColumnList,
   saveGenColumnInfo,
-  type GenTableColumnDto,
-  type GenTableColumnListDto,
-  type GenTableInfoDto,
-  type GenDetailsInfoDto,
+  type SaveGenColumnInfoItem,
+  type GenTableColumnItem,
+  type SaveGenTableInfoRequest,
+  type GenDetails,
 } from '@/api/system/gen.ts';
 import useApp from 'antd/es/app/useApp';
 import TextArea from 'antd/es/input/TextArea';
@@ -24,7 +24,7 @@ export interface ModalRef {
 const GenEdit = () => {
   const [form] = Form.useForm();
   const tableRef = useRef<SmartTableRef>(null);
-  const [genTableInfo, setGenTableInfo] = useState<GenDetailsInfoDto | null>();
+  const [genTableInfo, setGenTableInfo] = useState<GenDetails | null>();
   const { message } = useApp();
   const urlParams = useParams();
   const [activeKey, setActiveKey] = useState<string>('genTable');
@@ -36,7 +36,7 @@ const GenEdit = () => {
     });
   }, []);
 
-  const onFinish = (values: GenTableInfoDto) => {
+  const onFinish = (values: SaveGenTableInfoRequest) => {
     saveGenTableInfo({ ...values, tableId: genTableInfo!.tableId }).then(() => {
       message.success('保存成功');
     });
@@ -57,7 +57,7 @@ const GenEdit = () => {
     {
       title: '字段描述',
       dataIndex: 'columnComment',
-      render: (value: string, record: GenTableColumnListDto) => {
+      render: (value: string, record: GenTableColumnItem) => {
         return cellInput('columnComment', value, record.columnId);
       },
     },
@@ -76,42 +76,42 @@ const GenEdit = () => {
     {
       title: 'CSharp属性',
       dataIndex: 'csharpField',
-      render: (value: string, record: GenTableColumnListDto) => {
+      render: (value: string, record: GenTableColumnItem) => {
         return cellInput('csharpField', value, record.columnId);
       },
     },
     {
       title: '插入',
       dataIndex: 'isInsert',
-      render: (value: boolean, record: GenTableColumnListDto) => {
+      render: (value: boolean, record: GenTableColumnItem) => {
         return booleanCheckbox('isInsert', value, record.columnId);
       },
     },
     {
       title: '编辑',
       dataIndex: 'isEdit',
-      render: (value: boolean, record: GenTableColumnListDto) => {
+      render: (value: boolean, record: GenTableColumnItem) => {
         return booleanCheckbox('isEdit', value, record.columnId);
       },
     },
     {
       title: '列表',
       dataIndex: 'isList',
-      render: (value: boolean, record: GenTableColumnListDto) => {
+      render: (value: boolean, record: GenTableColumnItem) => {
         return booleanCheckbox('isList', value, record.columnId);
       },
     },
     {
       title: '查询',
       dataIndex: 'isQuery',
-      render: (value: boolean, record: GenTableColumnListDto) => {
+      render: (value: boolean, record: GenTableColumnItem) => {
         return booleanCheckbox('isQuery', value, record.columnId);
       },
     },
     {
       title: '查询方式',
       dataIndex: 'queryType',
-      render: (value: string, record: GenTableColumnListDto) => {
+      render: (value: string, record: GenTableColumnItem) => {
         return queryTypeSelect('queryType', value, record.columnId);
       },
       minWidth: 90,
@@ -119,14 +119,14 @@ const GenEdit = () => {
     {
       title: '必填',
       dataIndex: 'isRequired',
-      render: (value: boolean, record: GenTableColumnListDto) => {
+      render: (value: boolean, record: GenTableColumnItem) => {
         return booleanCheckbox('isRequired', value, record.columnId);
       },
     },
     {
       title: '显示类型',
       dataIndex: 'htmlType',
-      render: (value: string, record: GenTableColumnListDto) => {
+      render: (value: string, record: GenTableColumnItem) => {
         return htmlTypeSelect('isQuery', value, record.columnId);
       },
     },
@@ -199,7 +199,7 @@ const GenEdit = () => {
       key: 'genTable',
       label: '基本信息',
       children: (
-        <Form<GenTableInfoDto>
+        <Form<SaveGenTableInfoRequest>
           name="wrap"
           labelCol={{ flex: '120px' }}
           labelWrap
@@ -258,7 +258,7 @@ const GenEdit = () => {
     if (activeKey === 'genTable') {
       form.submit();
     } else {
-      const arr = tableRef?.current?.getData() as GenTableColumnDto[];
+      const arr = tableRef?.current?.getData() as SaveGenColumnInfoItem[];
       saveGenColumnInfo(arr).then(() => {
         message.success('保存成功');
       });

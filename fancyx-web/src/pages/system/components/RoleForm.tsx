@@ -1,6 +1,6 @@
 import { Form, Input, Modal, Switch } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
-import { addRole, type RoleDto, updateRole } from '@/api/system/role';
+import { addRole, type AddOrUpdateRoleRequest, updateRole } from '@/api/system/role';
 import type { AppResponse } from '@/types/api';
 import useApp from 'antd/es/app/useApp';
 
@@ -9,20 +9,20 @@ interface ModalProps {
 }
 
 export interface ModalRef {
-  openModal: (row?: RoleDto) => void;
+  openModal: (row?: AddOrUpdateRoleRequest) => void;
 }
 
 const RoleForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [form] = Form.useForm();
-  const [row, setRow] = useState<RoleDto | null>();
+  const [row, setRow] = useState<AddOrUpdateRoleRequest | null>();
   const { message } = useApp();
 
   useImperativeHandle(ref, () => ({
     openModal,
   }));
 
-  const openModal = (row?: RoleDto) => {
+  const openModal = (row?: AddOrUpdateRoleRequest) => {
     setIsOpenModal(true);
     if (row) {
       setRow(row);
@@ -44,8 +44,8 @@ const RoleForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
   };
 
   const execute = (
-    values: RoleDto,
-    apiAction: (params: RoleDto) => Promise<AppResponse<boolean>>,
+    values: AddOrUpdateRoleRequest,
+    apiAction: (params: AddOrUpdateRoleRequest) => Promise<AppResponse<boolean>>,
     successMsg: string,
   ) => {
     apiAction({ ...values, id: row?.id }).then(() => {
@@ -55,7 +55,7 @@ const RoleForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
       props?.refresh?.();
     });
   };
-  const onFinish = (values: RoleDto) => {
+  const onFinish = (values: AddOrUpdateRoleRequest) => {
     const isEdit = !!row?.id;
 
     execute(values, isEdit ? updateRole : addRole, isEdit ? '编辑成功' : '新增成功');
@@ -69,7 +69,7 @@ const RoleForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
       onOk={onOk}
       maskClosable={false}
     >
-      <Form<RoleDto>
+      <Form<AddOrUpdateRoleRequest>
         name="wrap"
         labelCol={{ flex: '80px' }}
         labelWrap

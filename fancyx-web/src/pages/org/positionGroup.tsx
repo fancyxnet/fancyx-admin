@@ -1,5 +1,5 @@
 ﻿import Permission from '@/components/Permission';
-import { deletePositionGroup, getPositionGroupList, type PositionGroupListDto } from '@/api/organization/positionGroup';
+import { deletePositionGroup, getPositionGroupList, type PositionGroupItem } from '@/api/organization/positionGroup';
 import { DeleteOutlined, EditOutlined, ExclamationCircleFilled, PlusOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Popconfirm, Space } from 'antd';
 import React, { useRef } from 'react';
@@ -30,7 +30,7 @@ const PositionGroupList: React.FC = () => {
       dataIndex: 'option',
       width: 140,
       fixed: 'right',
-      render: (_: any, record: PositionGroupListDto) => (
+      render: (_: any, record: PositionGroupItem) => (
         <Space>
           <Permission permissions={'Org.PositionGroup.Update'}>
             <Button
@@ -78,7 +78,7 @@ const PositionGroupList: React.FC = () => {
       },
     });
   };
-  const rowEdit = (record: PositionGroupListDto) => {
+  const rowEdit = (record: PositionGroupItem) => {
     modalRef.current?.openModal(record);
   };
 

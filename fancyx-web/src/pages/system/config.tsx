@@ -1,5 +1,5 @@
 ﻿import Permission from '@/components/Permission';
-import { deleteConfig, getConfigList, type ConfigDto, type ConfigListDto } from '@/api/system/config.ts';
+import { deleteConfig, getConfigList, type AddOrUpdateConfigRequest, type ConfigItem } from '@/api/system/config.ts';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Popconfirm, Space } from 'antd';
 import React, { useRef } from 'react';
@@ -46,7 +46,7 @@ const ConfigList: React.FC = () => {
       dataIndex: 'option',
       width: 210,
       fixed: 'right',
-      render: (_: any, record: ConfigListDto) => (
+      render: (_: any, record: ConfigItem) => (
         <Space>
           <Permission permissions={'Sys.Config.Update'}>
             <Button
@@ -54,7 +54,7 @@ const ConfigList: React.FC = () => {
               icon={<EditOutlined />}
               key="edit"
               onClick={() => {
-                modalRef?.current?.openModal(record as ConfigDto);
+                modalRef?.current?.openModal(record as AddOrUpdateConfigRequest);
               }}
             >
               编辑

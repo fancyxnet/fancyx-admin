@@ -7,7 +7,7 @@ import {
     getTableList,
     genSyncFromDb,
     type GenTableListDto,
-    type GenCodeResultDto,
+    type GenCodeResponse,
 } from '@/api/system/gen.ts';
 import { DeleteOutlined, EditOutlined, EyeOutlined, ImportOutlined } from '@ant-design/icons';
 import { Button, Form, Input, message, Modal, Popconfirm, Space, Tabs, type TabsProps } from 'antd';
@@ -29,7 +29,7 @@ const GenList: React.FC = () => {
     const [perviewModalVisible, setPreviewModalVisible] = useState<boolean>(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [code, setCode] = useState<GenCodeResultDto>();
+    const [code, setCode] = useState<GenCodeResponse>();
     const columns: SmartTableColumnType[] = [
         {
             title: '表名',
@@ -255,7 +255,7 @@ const PerviewModal: React.FC<{
     show: boolean;
     onOk: () => void;
     onCancel: () => void;
-    code: GenCodeResultDto | undefined;
+    code: GenCodeResponse | undefined;
 }> = ({ show, code, onCancel }) => {
     const [activeKey, setActiveKey] = useState<string>('entity');
     const renderCode = (name?: string, content?: string) => {

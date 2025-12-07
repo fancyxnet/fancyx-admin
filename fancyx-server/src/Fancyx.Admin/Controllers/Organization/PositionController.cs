@@ -30,7 +30,7 @@ namespace Fancyx.Admin.Controllers.Organization
         [HttpPost("Add")]
         [HasPermission("Org.Position.Add")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
-        public async Task<AppResponse<bool>> AddPositionAsync([FromBody] AddPositionRequest dto)
+        public async Task<AppResponse<bool>> AddPositionAsync([FromBody] AddOrUpdatePositionRequest dto)
         {
             await _positionService.AddPositionAsync(dto);
             return Result.Ok();
@@ -56,7 +56,7 @@ namespace Fancyx.Admin.Controllers.Organization
         /// <returns></returns>
         [HttpPut("Update")]
         [HasPermission("Org.Position.Update")]
-        public async Task<AppResponse<bool>> UpdatePositionAsync([FromBody] AddPositionRequest dto)
+        public async Task<AppResponse<bool>> UpdatePositionAsync([FromBody] AddOrUpdatePositionRequest dto)
         {
             await _positionService.UpdatePositionAsync(dto);
             return Result.Ok();
