@@ -9,7 +9,7 @@ function getCleanDomain() {
     try {
         const url = new URL(origin);
         return url.hostname;  // 直接返回域名，不包含端口和协议
-    } catch (error) {
+    } catch {
         // 备用方案
         return window.location.hostname;
     }

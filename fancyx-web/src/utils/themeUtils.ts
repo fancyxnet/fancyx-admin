@@ -50,10 +50,10 @@ export const getTheme = (themeType?: ThemeType): ThemeConfig => {
 export const switchTheme = (themeType: ThemeType, callback?: (theme: ThemeConfig) => void): void => {
   saveThemeToStorage(themeType);
   const themeConfig = getTheme(themeType);
-  
+
   // 更新CSS变量（如果需要）
   updateCssVariables(themeType);
-  
+
   // 执行回调
   if (callback) {
     callback(themeConfig);
@@ -79,12 +79,12 @@ const hexToRgb = (hex: string): [number, number, number] => {
  */
 export const updateCssVariables = (themeType: ThemeType): void => {
   const root = document.documentElement;
-  
+
   const theme = themeMap[themeType];
   if (!theme) return;
-  
+
   const { token } = theme.config;
-  
+
   // 设置CSS变量
   if (token) {
     // 主要颜色变量
@@ -114,18 +114,18 @@ export const updateCssVariables = (themeType: ThemeType): void => {
     if (token.colorInfo) {
       root.style.setProperty('--info-color', token.colorInfo);
     }
-    
+
     // 文本颜色变量
-      if ('colorTextPrimary' in token && token.colorTextPrimary) {
-        root.style.setProperty('--text-primary', token.colorTextPrimary as string);
-      }
-      if (token.colorTextBase) {
-        root.style.setProperty('--text-base', token.colorTextBase);
-      }
-      if (token.colorTextSecondary) {
-        root.style.setProperty('--text-secondary', token.colorTextSecondary);
-      }
-    
+    if ('colorTextPrimary' in token && token.colorTextPrimary) {
+      root.style.setProperty('--text-primary', token.colorTextPrimary as string);
+    }
+    if (token.colorTextBase) {
+      root.style.setProperty('--text-base', token.colorTextBase);
+    }
+    if (token.colorTextSecondary) {
+      root.style.setProperty('--text-secondary', token.colorTextSecondary);
+    }
+
     // 背景颜色变量
     if (token.colorBgBase) {
       root.style.setProperty('--bg-base', token.colorBgBase);
@@ -141,15 +141,15 @@ export const updateCssVariables = (themeType: ThemeType): void => {
  */
 export const applyCustomTheme = (): void => {
   const root = document.documentElement;
-  
+
   // 从 localStorage 获取自定义颜色
   const customColor = loadCustomThemeColor();
-  
+
   if (customColor) {
     // 设置CSS变量 - 确保这些变量与Ant Design主题系统兼容
     root.style.setProperty('--primary-color', customColor);
     root.style.setProperty('--ant-primary-color', customColor);
-    
+
     // 从颜色代码中提取RGB值
     const hexToRgb = (hex: string): [number, number, number] => {
       // 移除#符号
@@ -158,33 +158,33 @@ export const applyCustomTheme = (): void => {
       const b = parseInt(hex.slice(5, 7), 16);
       return [r, g, b];
     };
-    
+
     // 简单的颜色处理函数
     const [r, g, b] = hexToRgb(customColor);
-    
+
     // 计算悬停颜色（稍微亮一点）
     const hoverColor = `rgb(${Math.min(r + 20, 255)}, ${Math.min(g + 20, 255)}, ${Math.min(b + 20, 255)})`;
     root.style.setProperty('--primary-color-hover', hoverColor);
     root.style.setProperty('--contexify-activeItem-bgColor', hoverColor);
     root.style.setProperty('--ant-primary-color-hover', hoverColor);
-    
+
     // 计算激活颜色（稍微暗一点）
     const activeColor = `rgb(${Math.max(r - 20, 0)}, ${Math.max(g - 20, 0)}, ${Math.max(b - 20, 0)})`;
     root.style.setProperty('--primary-color-active', activeColor);
     root.style.setProperty('--ant-primary-color-active', activeColor);
-    
+
     // 计算浅色（增加透明度）
     const lightColor = `rgba(${r}, ${g}, ${b}, 0.1)`;
     root.style.setProperty('--primary-color-light', lightColor);
     root.style.setProperty('--ant-primary-5', lightColor);
-    
+
     // 设置轮廓颜色
     root.style.setProperty('--ant-primary-color-outline', `rgba(${r}, ${g}, ${b}, 0.2)`);
   } else {
     // 如果没有自定义颜色，使用默认主题配置
     switchTheme('default');
   }
-  
+
   // 为了确保更改生效，触发一次重绘
   const body = document.body;
   const display = body.style.display;
@@ -247,7 +247,7 @@ export const isThemeSupported = (): boolean => {
     localStorage.setItem(testKey, testKey);
     localStorage.removeItem(testKey);
     return true;
-  } catch (e) {
+  } catch {
     return false;
   }
 };

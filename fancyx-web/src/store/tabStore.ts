@@ -12,7 +12,8 @@ export const tabSlice = createSlice({
   },
   reducers: {
     open: (state, action) => {
-      let { name, path } = action.payload;
+      let { name } = action.payload;
+      const { path } = action.payload;
       if (!name) {
         const findStaticRoute = needDisplayRoutes.find(x => x.path === path);
         if (!findStaticRoute) {

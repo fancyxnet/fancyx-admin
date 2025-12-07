@@ -14,7 +14,9 @@ export function addWarehouse(dto: Warehouse) {
  * @param dto
  */
 export function getWarehouseList(dto: WarehouseQueryDto) {
-  return httpClient.get<WarehouseQueryDto, AppResponse<PagedResult<Warehouse>>>('/erp-api/Warehouse/List', { params: dto });
+  return httpClient.get<WarehouseQueryDto, AppResponse<PagedResult<Warehouse>>>('/erp-api/Warehouse/List', {
+    params: dto,
+  });
 }
 
 /**
@@ -38,7 +40,7 @@ export function updateWarehouse(dto: Warehouse) {
  * @param id
  */
 export function deleteWarehouse(id: string) {
-  return httpClient.delete<string, AppResponse<boolean>>('/erp-api/Warehouse/Delete/'+id);
+  return httpClient.delete<string, AppResponse<boolean>>('/erp-api/Warehouse/Delete/' + id);
 }
 
 export interface Warehouse {
@@ -65,5 +67,5 @@ export interface Warehouse {
 }
 
 export interface WarehouseQueryDto extends PageSearch {
-
+  name: string;
 }
