@@ -27,22 +27,22 @@ namespace Fancyx.Core
         /// <summary>
         /// 用于存储所有模块的集合（带顺序）
         /// </summary>
-        private static ConcurrentDictionary<Type, (ModuleBase instance, int sort)> modules = [];
+        private static ConcurrentDictionary<Type, (ModuleBase instance, int sort)> _modules = [];
 
         /// <summary>
         /// 已加载程序集
         /// </summary>
-        private static readonly List<Assembly> _loadAssemblies = [];
+        private static readonly List<Assembly> LoadAssemblies = [];
 
         /// <summary>
         /// 用于模块排序的计数器
         /// </summary>
-        private static int sort = 0;
+        private static int _sort;
 
         /// <summary>
         /// 是否调用过标识，-1初始状态，等于1表示已经调用过<see cref="AddApplication"/>，等于2表示已经调用过<see cref="InitializeApplication"/>，
         /// </summary>
-        private static int execution = -1;
+        private static int _execution = -1;
 
         /// <summary>
         /// 添加应用程序配置，在Program.cs中调用1次
@@ -52,7 +52,7 @@ namespace Fancyx.Core
         /// <exception cref="InvalidOperationException"></exception>
         public static void AddApplication<T>(this WebApplicationBuilder builder) where T : ModuleBase
         {
-            if (Interlocked.CompareExchange(ref execution, 1, -1) == 1)
+            if (Interlocked.CompareExchange(ref _execution, 1, -1) == 1)
             {
                 throw new InvalidOperationException("AddApplication方法在单个服务中只能调用1次");
             }
@@ -70,31 +70,25 @@ namespace Fancyx.Core
             }); //关闭默认参数验证
 
             services.AddJwt(configuration);
-            services.AddScoped<ICurrentUser>(sp =>
-            {
-                return CurrentUser.Parse(sp.GetRequiredService<IHttpContextAccessor>()?.HttpContext);
-            }); //当前用户
-            services.AddScoped<ICurrentTenant>(sp =>
-            {
-                return CurrentTenant.Parse(sp.GetRequiredService<IHttpContextAccessor>()?.HttpContext);
-            }); //当前租户
+            services.AddScoped<ICurrentUser>(sp => CurrentUser.Parse(sp.GetRequiredService<IHttpContextAccessor>().HttpContext)); //当前用户
+            services.AddScoped<ICurrentTenant>(sp => CurrentTenant.Parse(sp.GetRequiredService<IHttpContextAccessor>().HttpContext)); //当前租户
 
             //1. 扫描模块，调用ConfigureServices方法
-            ServiceConfigurationContext context = new ServiceConfigurationContext(builder.Services, builder.Configuration);
-            Type mainType = typeof(T);
-            ModuleBase? mainModule = (ModuleBase?)Activator.CreateInstance(mainType);
+            var context = new ServiceConfigurationContext(builder.Services, builder.Configuration);
+            var mainType = typeof(T);
+            var mainModule = (ModuleBase?)Activator.CreateInstance(mainType);
             if (mainModule == null) return;
             InjectModule(context, mainModule);
 
             //2. 获取加载程序集
-            foreach (var item in modules.Keys)
+            foreach (var item in _modules.Keys)
             {
-                _loadAssemblies.Add(item.Assembly);
+                LoadAssemblies.Add(item.Assembly);
             }
             //3. Autofac动态注册
             builder.Host.ConfigureContainer<ContainerBuilder>(ConfigureAutofacContainer);
             //4. 注册AutoMapper
-            services.AddAutoMapper(_loadAssemblies);
+            services.AddAutoMapper(LoadAssemblies);
         }
 
         /// <summary>
@@ -104,11 +98,11 @@ namespace Fancyx.Core
         /// <exception cref="InvalidOperationException"></exception>
         public static void InitializeApplication(this WebApplication app)
         {
-            if (execution == -1)
+            if (_execution == -1)
             {
                 throw new InvalidOperationException("请先调用AddApplication方法");
             }
-            if (Interlocked.CompareExchange(ref execution, 2, 1) == 2)
+            if (Interlocked.CompareExchange(ref _execution, 2, 1) == 2)
             {
                 throw new InvalidOperationException("InitializeApplication方法在单个服务中只能调用1次");
             }
@@ -127,12 +121,12 @@ namespace Fancyx.Core
             app.UseMiddleware<CurrentUserMiddleware>();
 
             var context = new ApplicationInitializationContext(app);
-            foreach (var module in modules.OrderBy(m => m.Value.sort))
+            foreach (var module in _modules.OrderBy(m => m.Value.sort))
             {
                 module.Value.instance.Configure(context);
             }
 
-            modules = null!;
+            _modules = null!;
         }
 
         /// <summary>
@@ -155,29 +149,29 @@ namespace Fancyx.Core
 
         private static void InjectModule(ServiceConfigurationContext context, ModuleBase module)
         {
-            Type curModuleType = module.GetType();
-            DependsOnAttribute? dependsOnAttribute = curModuleType.GetCustomAttribute<DependsOnAttribute>();
+            var curModuleType = module.GetType();
+            var dependsOnAttribute = curModuleType.GetCustomAttribute<DependsOnAttribute>();
             if (dependsOnAttribute != null)
             {
                 foreach (var moduleType in dependsOnAttribute.DependedModuleTypes)
                 {
-                    if (moduleType.Equals(curModuleType)) continue; //避免循环依赖
-                    ModuleBase? subModule = (ModuleBase?)Activator.CreateInstance(moduleType);
+                    if (moduleType == curModuleType) continue; //避免循环依赖
+                    var subModule = (ModuleBase?)Activator.CreateInstance(moduleType);
                     if (subModule == null) continue;
 
                     InjectModule(context, subModule);
                 }
             }
 
-            if (modules.ContainsKey(curModuleType)) return;
+            if (_modules.ContainsKey(curModuleType)) return;
             if (module.Order >= 0)
             {
-                modules.TryAdd(curModuleType, (module, module.Order));
+                _modules.TryAdd(curModuleType, (module, module.Order));
             }
             else
             {
-                Interlocked.Increment(ref sort);
-                modules.TryAdd(curModuleType, (module, sort));
+                Interlocked.Increment(ref _sort);
+                _modules.TryAdd(curModuleType, (module, _sort));
             }
             module.ConfigureServices(context);
         }
@@ -223,7 +217,7 @@ namespace Fancyx.Core
                 [DenpendencyType.Transient] = transientServiceType
             };
             var autowireType = typeof(AutowiredAttribute);
-            foreach (var assembly in _loadAssemblies)
+            foreach (var assembly in LoadAssemblies)
             {
                 //实现注册接口类注册
                 var curClassTypes = assembly.DefinedTypes.Where(x => !x.IsAbstract && x.IsClass && !x.IsSealed).ToList();
@@ -246,7 +240,7 @@ namespace Fancyx.Core
                 }
             }
 
-            void RegisterType(TypeInfo classType, DenpendencyType denpendencyType, bool asSelf = false, Type[]? interfaces = default)
+            void RegisterType(TypeInfo classType, DenpendencyType dependencyType, bool asSelf = false, Type[]? interfaces = null)
             {
                 IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> registrationBuilder;
                 var implementedInterfaces = interfaces != null && interfaces.Length > 0 ? interfaces : classType.ImplementedInterfaces.Where(x => x != singletonServiceType && x != scopedServiceType && x != transientServiceType).ToArray();
@@ -260,9 +254,9 @@ namespace Fancyx.Core
                 }
 
                 //标记AutowiredAttribute的属性注入
-                registrationBuilder.PropertiesAutowired((propInfo, instance) => propInfo.IsDefined(autowireType));
+                registrationBuilder.PropertiesAutowired((propInfo, _) => propInfo.IsDefined(autowireType));
 
-                switch (denpendencyType)
+                switch (dependencyType)
                 {
                     case DenpendencyType.Singleton:
                         registrationBuilder.SingleInstance();
