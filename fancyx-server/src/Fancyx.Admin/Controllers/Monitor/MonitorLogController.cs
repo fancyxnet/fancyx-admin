@@ -1,5 +1,5 @@
 ﻿using Fancyx.Admin.Application.IService.Monitor;
-using Fancyx.Admin.Application.IService.Monitor.Dtos;
+using Fancyx.Admin.Application.IService.Monitor.Models;
 using Fancyx.Shared.WebApi.Attributes;
 
 using Microsoft.AspNetCore.Authorization;
@@ -22,26 +22,26 @@ namespace Fancyx.Admin.Controllers.Monitor
         /// <summary>
         /// API访问日志列表
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpGet("ApiAccessLogList")]
         [HasPermission("Monitor.ApiAccessLogList")]
-        public async Task<AppResponse<PagedResult<ApiAccessLogItem>>> GetApiAccessLogListAsync([FromQuery] GetApiAccessLogListRequest dto)
+        public async Task<AppResponse<PagedResult<ApiAccessLogItem>>> GetApiAccessLogListAsync([FromQuery] GetApiAccessLogListRequest req)
         {
-            var data = await _monitorLogService.GetApiAccessLogListAsync(dto);
+            var data = await _monitorLogService.GetApiAccessLogListAsync(req);
             return Result.Data(data);
         }
 
         /// <summary>
         /// 异常日志列表
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpGet("ExceptionLogList")]
         [HasPermission("Monitor.ExceptionLogList")]
-        public async Task<AppResponse<PagedResult<ExceptionLogItem>>> GetExceptionLogListAsync([FromQuery] GetExceptionLogListRequest dto)
+        public async Task<AppResponse<PagedResult<ExceptionLogItem>>> GetExceptionLogListAsync([FromQuery] GetExceptionLogListRequest req)
         {
-            var data = await _monitorLogService.GetExceptionLogListAsync(dto);
+            var data = await _monitorLogService.GetExceptionLogListAsync(req);
             return Result.Data(data);
         }
 

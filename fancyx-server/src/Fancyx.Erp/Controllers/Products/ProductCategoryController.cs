@@ -1,5 +1,5 @@
 ﻿using Fancyx.Erp.Application.IService.Products;
-using Fancyx.Erp.Application.IService.Products.Dtos;
+using Fancyx.Erp.Application.IService.Products.Models;
 using Fancyx.Shared.Models;
 using Fancyx.Shared.WebApi.Attributes;
 using Microsoft.AspNetCore.Authorization;
@@ -21,25 +21,25 @@ namespace Fancyx.Erp.Controllers.Products
 
         [HttpPost("Add")]
         [HasPermission("Erp.ProductCategory.Add")]
-        public async Task<AppResponse<bool>> AddProductCategoryAsync([FromBody] ProductCategoryDto dto)
+        public async Task<AppResponse<bool>> AddProductCategoryAsync([FromBody] AddOrUpdateProductCategory req)
         {
-            await ProductCategoryService.AddProductCategoryAsync(dto);
+            await ProductCategoryService.AddProductCategoryAsync(req);
             return Result.Ok();
         }
 
         [HttpPost("List")]
         [HasPermission("Erp.ProductCategory.List")]
-        public async Task<AppResponse<PagedResult<ProductCategoryListDto>>> GetProductCategoryListAsync([FromQuery] ProductCategoryQueryDto dto)
+        public async Task<AppResponse<PagedResult<ProductCategoryItem>>> GetProductCategoryListAsync([FromQuery] GetProductCategoryListRequest req)
         {
-            var data = await ProductCategoryService.GetProductCategoryListAsync(dto);
+            var data = await ProductCategoryService.GetProductCategoryListAsync(req);
             return Result.Data(data);
         }
 
         [HttpPost("Update")]
         [HasPermission("Erp.ProductCategory.Update")]
-        public async Task<AppResponse<bool>> UpdateProductCategoryAsync([FromBody] ProductCategoryDto dto)
+        public async Task<AppResponse<bool>> UpdateProductCategoryAsync([FromBody] AddOrUpdateProductCategory req)
         {
-            await ProductCategoryService.UpdateProductCategoryAsync(dto);
+            await ProductCategoryService.UpdateProductCategoryAsync(req);
             return Result.Ok();
         }
 

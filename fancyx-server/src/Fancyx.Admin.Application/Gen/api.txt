@@ -3,23 +3,23 @@ import type { AppResponse, PagedResult, PageSearch } from '@/types/api';
 
 /**
  * 新增${function_name}
- * @param dto
+ * @param req
  */
-export function add${business_name}(dto: ${class_name}) {
-  return httpClient.post<${business_name}, AppResponse<boolean>>('/${module_name_api_prefix}-api/${business_name}/Add', dto);
+export function add${business_name}(req: ${class_name}) {
+  return httpClient.post<${business_name}, AppResponse<boolean>>('/${module_name_api_prefix}-api/${business_name}/Add', req);
 }
 
 /**
  * ${function_name}分页列表
- * @param dto
+ * @param req
  */
-export function get${business_name}List(dto: ${business_name}QueryDto) {
-  return httpClient.get<${business_name}QueryDto, AppResponse<PagedResult<${business_name}>>>('/${module_name_api_prefix}-api/${business_name}/List', { params: dto });
+export function get${business_name}List(req: ${business_name}QueryDto) {
+  return httpClient.get<${business_name}QueryDto, AppResponse<PagedResult<${business_name}>>>('/${module_name_api_prefix}-api/${business_name}/List', { params: req });
 }
 
 /**
  * ${function_name}查询
- * @param dto
+ * @param req
  */
 export function get${business_name}(id: string) {
   return httpClient.get<string, AppResponse<${class_name}>>('/${module_name_api_prefix}-api/${business_name}/Get${business_name}/' + id);
@@ -27,10 +27,10 @@ export function get${business_name}(id: string) {
 
 /**
  * 修改${function_name}
- * @param dto
+ * @param req
  */
-export function update${business_name}(dto: ${class_name}) {
-  return httpClient.put<${business_name}, AppResponse<boolean>>('/${module_name_api_prefix}-api/${business_name}/Update', dto);
+export function update${business_name}(req: ${class_name}) {
+  return httpClient.put<${business_name}, AppResponse<boolean>>('/${module_name_api_prefix}-api/${business_name}/Update', req);
 }
 
 /**

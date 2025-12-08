@@ -1,6 +1,6 @@
 using AutoMapper;
 using Fancyx.Admin.Application.IService.Organization;
-using Fancyx.Admin.Application.IService.Organization.Dtos;
+using Fancyx.Admin.Application.IService.Organization.Models;
 using Fancyx.Admin.Application.Service.Organization.Models;
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.Organization;
@@ -54,13 +54,13 @@ namespace Fancyx.Admin.Application.Service.Organization
             return list;
         }
 
-        public async Task<bool> AddPositionAsync(AddOrUpdatePositionRequest dto)
+        public async Task<bool> AddPositionAsync(AddOrUpdatePositionRequest req)
         {
-            if (await _positionRepository.AnyAsync(x => x.Code.ToLower() == dto.Code!.ToLower()))
+            if (await _positionRepository.AnyAsync(x => x.Code.ToLower() == req.Code!.ToLower()))
             {
                 throw new BusinessException("职位编号已存在");
             }
-            var entity = _mapper.Map<AddOrUpdatePositionRequest, Position>(dto);
+            var entity = _mapper.Map<AddOrUpdatePositionRequest, Position>(req);
             await _positionRepository.InsertAsync(entity);
             return true;
         }
@@ -73,16 +73,16 @@ namespace Fancyx.Admin.Application.Service.Organization
             return true;
         }
 
-        public async Task<PagedResult<PositionItem>> GetPositionListAsync(GetPositionListRequest dto)
+        public async Task<PagedResult<PositionItem>> GetPositionListAsync(GetPositionListRequest req)
         {
             var pagedResp = await _positionRepository.GetQueryable()
-                .WhereIf(!string.IsNullOrEmpty(dto.Keyword), x => x.Name.Contains(dto.Keyword!) || x.Code.Contains(dto.Keyword!))
-                .WhereIf(dto.Level > 0, x => x.Level == dto.Level)
-                .WhereIf(dto.Status > 0, x => x.Status == dto.Status)
-                .WhereIf(dto.GroupId.HasValue, x => x.GroupId == dto.GroupId)
+                .WhereIf(!string.IsNullOrEmpty(req.Keyword), x => x.Name.Contains(req.Keyword!) || x.Code.Contains(req.Keyword!))
+                .WhereIf(req.Level > 0, x => x.Level == req.Level)
+                .WhereIf(req.Status > 0, x => x.Status == req.Status)
+                .WhereIf(req.GroupId.HasValue, x => x.GroupId == req.GroupId)
                 .OrderBy(x => x.Level)
                 .OrderBy(x => x.CreationTime)
-                .PagedAsync(dto.Current, dto.PageSize);
+                .PagedAsync(req.Current, req.PageSize);
             var ids = pagedResp.Items.Select(x => x.Id).ToList();
             var list = _mapper.Map<List<Position>, List<PositionItem>>(pagedResp.Items);
             var names = await GetPosistionGroupNameAsync(ids);
@@ -94,22 +94,22 @@ namespace Fancyx.Admin.Application.Service.Organization
             return new PagedResult<PositionItem>(pagedResp.Total, list);
         }
 
-        public async Task<bool> UpdatePositionAsync(AddOrUpdatePositionRequest dto)
+        public async Task<bool> UpdatePositionAsync(AddOrUpdatePositionRequest req)
         {
-            if (!dto.Id.HasValue) throw new ArgumentNullException(nameof(dto.Id));
-            var entity = await _positionRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
-            string code = dto.Code!.ToLower();
+            if (!req.Id.HasValue) throw new ArgumentNullException(nameof(req.Id));
+            var entity = await _positionRepository.FindAsync(req.Id) ?? throw new EntityNotFoundException();
+            string code = req.Code!.ToLower();
             if (entity.Code.ToLower() != code && await _positionRepository.AnyAsync(x => x.Code.ToLower() == code))
             {
                 throw new BusinessException("职位编号已存在");
             }
 
-            entity.Name = dto.Name;
-            entity.Code = dto.Code;
-            entity.Level = dto.Level;
-            entity.Status = dto.Status;
-            entity.Description = dto.Description;
-            entity.GroupId = dto.GroupId;
+            entity.Name = req.Name;
+            entity.Code = req.Code;
+            entity.Level = req.Level;
+            entity.Status = req.Status;
+            entity.Description = req.Description;
+            entity.GroupId = req.GroupId;
             await _positionRepository.UpdateAsync(entity);
             return true;
         }

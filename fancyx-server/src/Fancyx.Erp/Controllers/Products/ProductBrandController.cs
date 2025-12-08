@@ -1,5 +1,5 @@
 ﻿using Fancyx.Erp.Application.IService.Products;
-using Fancyx.Erp.Application.IService.Products.Dtos;
+using Fancyx.Erp.Application.IService.Products.Models;
 using Fancyx.Shared.Models;
 using Fancyx.Shared.WebApi.Attributes;
 using Microsoft.AspNetCore.Authorization;
@@ -21,25 +21,25 @@ namespace Fancyx.Erp.Controllers.Products
 
         [HttpPost("Add")]
         [HasPermission("Erp.ProductBrand.Add")]
-        public async Task<AppResponse<bool>> AddProductBrandAsync([FromBody] ProductBrandDto dto)
+        public async Task<AppResponse<bool>> AddProductBrandAsync([FromBody] AddOrUpdateProductBrand req)
         {
-            await ProductBrandService.AddProductBrandAsync(dto);
+            await ProductBrandService.AddProductBrandAsync(req);
             return Result.Ok();
         }
 
         [HttpPost("List")]
         [HasPermission("Erp.ProductBrand.List")]
-        public async Task<AppResponse<PagedResult<ProductBrandListDto>>> GetProductBrandListAsync([FromQuery] ProductBrandQueryDto dto)
+        public async Task<AppResponse<PagedResult<ProductBrandItem>>> GetProductBrandListAsync([FromQuery] GetProductBrandListRequest req)
         {
-            var data = await ProductBrandService.GetProductBrandListAsync(dto);
+            var data = await ProductBrandService.GetProductBrandListAsync(req);
             return Result.Data(data);
         }
 
         [HttpPost("Update")]
         [HasPermission("Erp.ProductBrand.Update")]
-        public async Task<AppResponse<bool>> UpdateProductBrandAsync([FromBody] ProductBrandDto dto)
+        public async Task<AppResponse<bool>> UpdateProductBrandAsync([FromBody] AddOrUpdateProductBrand req)
         {
-            await ProductBrandService.UpdateProductBrandAsync(dto);
+            await ProductBrandService.UpdateProductBrandAsync(req);
             return Result.Ok();
         }
 

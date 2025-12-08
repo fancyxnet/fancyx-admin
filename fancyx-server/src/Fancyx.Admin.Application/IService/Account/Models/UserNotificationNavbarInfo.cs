@@ -1,0 +1,31 @@
+﻿namespace Fancyx.Admin.Application.IService.Account.Models
+{
+    public class UserNotificationNavbarInfo
+    {
+        public int NoReadedCount { get; set; }
+
+        public List<UserNotificationNavbarItem>? Items { get; set; }
+    }
+
+    public class UserNotificationNavbarItem
+    {
+        public long Id { get; set; }
+
+        /// <summary>
+        /// 通知标题
+        /// </summary>
+        public string? Title { get; set; }
+
+        /// <summary>
+        /// 通知内容
+        /// </summary>
+        public string? Content { get; set; }
+
+        /// <summary>
+        /// 是否已读(1已读0未读)
+        /// </summary>
+        public bool IsReaded { get; set; }
+
+        public DateTime CreationTime { get; set; }
+    }
+}

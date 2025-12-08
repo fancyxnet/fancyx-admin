@@ -19,7 +19,7 @@ public class ${business_name}Service : I${business_name}Service
         _mapper = mapper;
     }
 
-    public async Task Add${business_name}Async(${business_name} dto)
+    public async Task Add${business_name}Async(${business_name} req)
     {
         var entity = new ${business_name}() 
         {
@@ -33,20 +33,20 @@ ${addProperties}
         return _${business_name_inject}Repository.DeleteAsync(x => x.Id == id);
     }
 
-    public async Task<PagedResult<${business_name}>> Get${business_name}ListAsync(${business_name}QueryDto dto)
+    public async Task<PagedResult<${business_name}>> Get${business_name}ListAsync(${business_name}QueryDto req)
     {
         var resp = await _${business_name_inject}Repository.GetQueryable()
             ${queryConditions}
             .Select(x => new ${business_name}
             {
 ${listProperties}
-            }).PagedAsync(dto.Current, dto.PageSize);
-        return new PagedResult<${business_name}>(dto, resp.Total, resp.Items);
+            }).PagedAsync(req.Current, req.PageSize);
+        return new PagedResult<${business_name}>(req, resp.Total, resp.Items);
     }
 
-    public async Task Update${business_name}Async(${business_name} dto)
+    public async Task Update${business_name}Async(${business_name} req)
     {
-        var entity = await _${business_name_inject}Repository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
+        var entity = await _${business_name_inject}Repository.FindAsync(req.Id) ?? throw new EntityNotFoundException();
 ${updateProperties}
         await _${business_name_inject}Repository.UpdateAsync(entity);
     }

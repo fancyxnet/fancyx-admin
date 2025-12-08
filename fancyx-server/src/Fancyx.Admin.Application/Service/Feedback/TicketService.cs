@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Fancyx.Admin.Application.IService.Feedback;
-using Fancyx.Admin.Application.IService.Feedback.Dtos;
+using Fancyx.Admin.Application.IService.Feedback.Models;
 using Fancyx.Admin.EfCore.Entities.Feedback;
 using Fancyx.Admin.EfCore.Enums;
 using Fancyx.Admin.EfCore.Models;
@@ -37,20 +37,20 @@ namespace Fancyx.Admin.Application.Service.Feedback
                 .SetProperty(s => s.LastModifierId, _currentUser.Id));
         }
 
-        public Task CreateTicketAsync(TicketCreateRequest dto)
+        public Task CreateTicketAsync(TicketCreateRequest req)
         {
             var ticket = new Ticket()
             {
-                Title = dto.Title,
-                Content = dto.Content,
+                Title = req.Title,
+                Content = req.Content,
                 UserId = _currentUser.Id.GetValueOrDefault()
             };
             return _ticketRepository.InsertAsync(ticket);
         }
 
-        public async Task EvaluationTicketAsync(EvaluationTicketRequest dto)
+        public async Task EvaluationTicketAsync(EvaluationTicketRequest req)
         {
-            var ticket = await _ticketRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
+            var ticket = await _ticketRepository.FindAsync(req.Id) ?? throw new EntityNotFoundException();
             if (!_currentUser.Id.Equals(ticket.UserId))
             {
                 throw new BusinessException("不是工单发起人，不能评价");
@@ -63,8 +63,8 @@ namespace Fancyx.Admin.Application.Service.Feedback
             {
                 throw new BusinessException("工单关闭后才能评价");
             }
-            ticket.Rating = dto.Rating;
-            ticket.RatingComment = dto.RatingComment;
+            ticket.Rating = req.Rating;
+            ticket.RatingComment = req.RatingComment;
             await _ticketRepository.UpdateAsync(ticket);
         }
 
@@ -86,15 +86,15 @@ namespace Fancyx.Admin.Application.Service.Feedback
             return model;
         }
 
-        public async Task<PagedResult<TicketItem>> GetTicketListAsync(GetTicketListRequest dto)
+        public async Task<PagedResult<TicketItem>> GetTicketListAsync(GetTicketListRequest req)
         {
-            var data = await _ticketRepository.QueryListAsync(dto.Current, dto.PageSize);
+            var data = await _ticketRepository.QueryListAsync(req.Current, req.PageSize);
             return new PagedResult<TicketItem>(data.Total, _mapper.Map<List<TicketItem>>(data.Items));
         }
 
-        public async Task<PagedResult<UserTicketItem>> GetUserTicketListAsync(GetUserTicketListRequest dto)
+        public async Task<PagedResult<UserTicketItem>> GetUserTicketListAsync(GetUserTicketListRequest req)
         {
-            var query = _ticketRepository.GetQueryable().Where(x => x.UserId == _currentUser.Id).WhereIf(!string.IsNullOrEmpty(dto.Title), x => x.Title.StartsWith(dto.Title!));
+            var query = _ticketRepository.GetQueryable().Where(x => x.UserId == _currentUser.Id).WhereIf(!string.IsNullOrEmpty(req.Title), x => x.Title.StartsWith(req.Title!));
             var data = await query.GroupJoin(_ticketReplyRepository.GetQueryable(), t => t.Id, g => g.TicketId,
                 (t, g) => new UserTicketItem
                 {
@@ -105,13 +105,13 @@ namespace Fancyx.Admin.Application.Service.Feedback
                     RatingComment = t.RatingComment,
                     CreationTime = t.CreationTime,
                     ReplyCount = g.Where(gs => gs.SenderId != t.UserId).Count()
-                }).PagedAsync(dto.Current, dto.PageSize);
+                }).PagedAsync(req.Current, req.PageSize);
             return new PagedResult<UserTicketItem>(data.Total, data.Items);
         }
 
-        public async Task ReplyTicketAsync(ReplyTicketRequest dto)
+        public async Task ReplyTicketAsync(ReplyTicketRequest req)
         {
-            var ticket = await _ticketRepository.FindAsync(dto.TicketId) ?? throw new EntityNotFoundException();
+            var ticket = await _ticketRepository.FindAsync(req.TicketId) ?? throw new EntityNotFoundException();
             if (ticket.Status.Equals(TicketStatus.Closed))
             {
                 throw new BusinessException("工单已关闭，不能回复");
@@ -126,9 +126,9 @@ namespace Fancyx.Admin.Application.Service.Feedback
             }
             var ticketReply = new TicketReply
             {
-                TicketId = dto.TicketId,
+                TicketId = req.TicketId,
                 SenderId = _currentUser.Id.GetValueOrDefault(),
-                Content = dto.Content
+                Content = req.Content
             };
             await _ticketReplyRepository.InsertAsync(ticketReply, false);
             await _unitOfWorkManager.SaveChangeAsync();

@@ -1,4 +1,4 @@
-﻿using Fancyx.Admin.Application.IService.Monitor.Dtos;
+﻿using Fancyx.Admin.Application.IService.Monitor.Models;
 
 namespace Fancyx.Admin.Application.IService.Monitor
 {
@@ -7,16 +7,16 @@ namespace Fancyx.Admin.Application.IService.Monitor
         /// <summary>
         /// API访问日志列表
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        Task<PagedResult<ApiAccessLogItem>> GetApiAccessLogListAsync(GetApiAccessLogListRequest dto);
+        Task<PagedResult<ApiAccessLogItem>> GetApiAccessLogListAsync(GetApiAccessLogListRequest req);
 
         /// <summary>
         /// 异常日志列表
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        Task<PagedResult<ExceptionLogItem>> GetExceptionLogListAsync(GetExceptionLogListRequest dto);
+        Task<PagedResult<ExceptionLogItem>> GetExceptionLogListAsync(GetExceptionLogListRequest req);
 
         /// <summary>
         /// 标记异常已处理

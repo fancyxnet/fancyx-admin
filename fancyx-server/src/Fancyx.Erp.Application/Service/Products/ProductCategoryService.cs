@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Fancyx.EfCore;
 using Fancyx.Erp.Application.IService.Products;
-using Fancyx.Erp.Application.IService.Products.Dtos;
+using Fancyx.Erp.Application.IService.Products.Models;
 using Fancyx.Erp.EfCore.Entites;
 using Fancyx.Shared.Exceptions;
 using Fancyx.Shared.Models;
@@ -19,19 +19,19 @@ namespace Fancyx.Erp.Application.Service.Products
             _mapper = mapper;
         }
 
-        public async Task AddProductCategoryAsync(ProductCategoryDto dto)
+        public async Task AddProductCategoryAsync(AddOrUpdateProductCategory req)
         {
-            var codeIsExist = await _productCategoryRepository.AnyAsync(x => x.Code == dto.Code);
+            var codeIsExist = await _productCategoryRepository.AnyAsync(x => x.Code == req.Code);
             if (codeIsExist)
             {
                 throw new BusinessException("编码已存在");
             }
             var productCategory = new ProductCategory()
             {
-                Code = dto.Code,
-                Name = dto.Name,
-                Remark = dto.Remark,
-                IsEnabled = dto.IsEnabled
+                Code = req.Code,
+                Name = req.Name,
+                Remark = req.Remark,
+                IsEnabled = req.IsEnabled
             };
             await _productCategoryRepository.InsertAsync(productCategory);
         }
@@ -41,26 +41,26 @@ namespace Fancyx.Erp.Application.Service.Products
             await _productCategoryRepository.DeleteAsync(x => x.Id == id);
         }
 
-        public async Task<PagedResult<ProductCategoryListDto>> GetProductCategoryListAsync(ProductCategoryQueryDto dto)
+        public async Task<PagedResult<ProductCategoryItem>> GetProductCategoryListAsync(GetProductCategoryListRequest req)
         {
             var resp = await _productCategoryRepository.GetQueryable()
-                .WhereIf(!string.IsNullOrEmpty(dto.Name), x => x.Name.StartsWith(dto.Name!))
-                .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<ProductCategoryListDto>(resp.Total, _mapper.Map<List<ProductCategoryListDto>>(resp.Items));
+                .WhereIf(!string.IsNullOrEmpty(req.Name), x => x.Name.StartsWith(req.Name!))
+                .PagedAsync(req.Current, req.PageSize);
+            return new PagedResult<ProductCategoryItem>(resp.Total, _mapper.Map<List<ProductCategoryItem>>(resp.Items));
         }
 
-        public async Task UpdateProductCategoryAsync(ProductCategoryDto dto)
+        public async Task UpdateProductCategoryAsync(AddOrUpdateProductCategory req)
         {
-            var productCategory = await _productCategoryRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
-            var codeIsExist = productCategory.Code != dto.Code && await _productCategoryRepository.AnyAsync(x => x.Code == dto.Code);
+            var productCategory = await _productCategoryRepository.FindAsync(req.Id) ?? throw new EntityNotFoundException();
+            var codeIsExist = productCategory.Code != req.Code && await _productCategoryRepository.AnyAsync(x => x.Code == req.Code);
             if (codeIsExist)
             {
                 throw new BusinessException("编码已存在");
             }
-            productCategory.Code = dto.Code;
-            productCategory.Name = dto.Name;
-            productCategory.Remark = dto.Remark;
-            productCategory.IsEnabled = dto.IsEnabled;
+            productCategory.Code = req.Code;
+            productCategory.Name = req.Name;
+            productCategory.Remark = req.Remark;
+            productCategory.IsEnabled = req.IsEnabled;
             await _productCategoryRepository.UpdateAsync(productCategory);
         }
     }

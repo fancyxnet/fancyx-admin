@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Fancyx.EfCore;
 using Fancyx.Erp.Application.IService.Products;
-using Fancyx.Erp.Application.IService.Products.Dtos;
+using Fancyx.Erp.Application.IService.Products.Models;
 using Fancyx.Erp.EfCore.Entites;
 using Fancyx.Erp.EfCore.Repositories;
 using Fancyx.Shared.Exceptions;
@@ -27,25 +27,25 @@ namespace Fancyx.Erp.Application.Service.Products
             _productRepository = productRepository;
         }
 
-        public async Task AddProductAttrAsync(ProductAttrDto dto)
+        public async Task AddProductAttrAsync(AddOrUpdateProductAttrRequest req)
         {
-            var codeIsExist = await _productAttrRepository.AnyAsync(x => x.Code == dto.Code);
+            var codeIsExist = await _productAttrRepository.AnyAsync(x => x.Code == req.Code);
             if (codeIsExist)
             {
                 throw new BusinessException("编码已存在");
             }
-            var productAttr = _mapper.Map<ProductAttr>(dto);
+            var productAttr = _mapper.Map<ProductAttr>(req);
             await _productAttrRepository.InsertAsync(productAttr);
         }
 
-        public async Task AddProductAttrValueAsync(ProductAttrValueDto dto)
+        public async Task AddProductAttrValueAsync(AddOrUpdateProductAttrValueRequest req)
         {
-            var codeIsExist = await _productAttrValueRepository.AnyAsync(x => x.Code == dto.Code);
+            var codeIsExist = await _productAttrValueRepository.AnyAsync(x => x.Code == req.Code);
             if (codeIsExist)
             {
                 throw new BusinessException("编码已存在");
             }
-            var productAttrValue = _mapper.Map<ProductAttrValue>(dto);
+            var productAttrValue = _mapper.Map<ProductAttrValue>(req);
             await _productAttrValueRepository.InsertAsync(productAttrValue);
         }
 
@@ -73,41 +73,41 @@ namespace Fancyx.Erp.Application.Service.Products
             await _productBindAttrValueRepository.DeleteAsync(x => x.Id == id);
         }
 
-        public async Task<PagedResult<ProductAttrListDto>> GetProductAttrListAsync(ProductAttrQueryDto dto)
+        public async Task<PagedResult<ProductAttrItem>> GetProductAttrListAsync(GetProductAttrListRequest req)
         {
-            var data = await _productAttrRepository.GetQueryable().WhereIf(!string.IsNullOrEmpty(dto.Name), x => x.Name.StartsWith(dto.Name!))
-                .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<ProductAttrListDto>(data.Total, _mapper.Map<List<ProductAttrListDto>>(data.Items));
+            var data = await _productAttrRepository.GetQueryable().WhereIf(!string.IsNullOrEmpty(req.Name), x => x.Name.StartsWith(req.Name!))
+                .PagedAsync(req.Current, req.PageSize);
+            return new PagedResult<ProductAttrItem>(data.Total, _mapper.Map<List<ProductAttrItem>>(data.Items));
         }
 
-        public async Task<PagedResult<ProductAttrValueListDto>> GetProductAttrValueListAsync(ProductAttrValueQueryDto dto)
+        public async Task<PagedResult<ProductAttrValueItem>> GetProductAttrValueListAsync(GetProductAttrValueListRequest req)
         {
-            var data = await _productAttrRepository.GetQueryable().WhereIf(!string.IsNullOrEmpty(dto.Code), x => x.Name.StartsWith(dto.Code!))
-                .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<ProductAttrValueListDto>(data.Total, _mapper.Map<List<ProductAttrValueListDto>>(data.Items));
+            var data = await _productAttrRepository.GetQueryable().WhereIf(!string.IsNullOrEmpty(req.Code), x => x.Name.StartsWith(req.Code!))
+                .PagedAsync(req.Current, req.PageSize);
+            return new PagedResult<ProductAttrValueItem>(data.Total, _mapper.Map<List<ProductAttrValueItem>>(data.Items));
         }
 
-        public async Task UpdateProductAttrAsync(ProductAttrDto dto)
+        public async Task UpdateProductAttrAsync(AddOrUpdateProductAttrRequest req)
         {
-            var productAttr = await _productAttrRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
-            var codeIsExist = productAttr.Code != dto.Code && await _productAttrRepository.AnyAsync(x => x.Code == dto.Code);
+            var productAttr = await _productAttrRepository.FindAsync(req.Id) ?? throw new EntityNotFoundException();
+            var codeIsExist = productAttr.Code != req.Code && await _productAttrRepository.AnyAsync(x => x.Code == req.Code);
             if (codeIsExist)
             {
                 throw new BusinessException("编码已存在");
             }
-            _mapper.Map(dto, productAttr);
+            _mapper.Map(req, productAttr);
             await _productAttrRepository.UpdateAsync(productAttr);
         }
 
-        public async Task UpdateProductAttrValueAsync(ProductAttrValueDto dto)
+        public async Task UpdateProductAttrValueAsync(AddOrUpdateProductAttrValueRequest req)
         {
-            var productAttrValue = await _productAttrValueRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
-            var codeIsExist = productAttrValue.Code != dto.Code && await _productAttrValueRepository.AnyAsync(x => x.Code == dto.Code);
+            var productAttrValue = await _productAttrValueRepository.FindAsync(req.Id) ?? throw new EntityNotFoundException();
+            var codeIsExist = productAttrValue.Code != req.Code && await _productAttrValueRepository.AnyAsync(x => x.Code == req.Code);
             if (codeIsExist)
             {
                 throw new BusinessException("编码已存在");
             }
-            _mapper.Map(dto, productAttrValue);
+            _mapper.Map(req, productAttrValue);
             await _productAttrValueRepository.UpdateAsync(productAttrValue);
         }
     }

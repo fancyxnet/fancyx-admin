@@ -1,5 +1,5 @@
 using Fancyx.Admin.Application.IService.Account;
-using Fancyx.Admin.Application.IService.Account.Dtos;
+using Fancyx.Admin.Application.IService.Account.Models;
 using Fancyx.Shared.Consts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,28 +22,28 @@ namespace Fancyx.Admin.Controllers.Account
         /// <summary>
         /// 账号密码登录
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("login")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
-        public async Task<AppResponse<LoginRespone>> LoginAsync([FromBody] LoginRequest dto)
+        public async Task<AppResponse<LoginRespone>> LoginAsync([FromBody] LoginRequest req)
         {
-            var data = await _accountService.LoginAsync(dto);
+            var data = await _accountService.LoginAsync(req);
             return Result.Data(data);
         }
 
         /// <summary>
         /// 手机短信登录
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("SmsLogin")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
-        public async Task<AppResponse<LoginRespone>> SmsLoginAsync([FromBody] SmsLoginRequest dto)
+        public async Task<AppResponse<LoginRespone>> SmsLoginAsync([FromBody] SmsLoginRequest req)
         {
-            var data = await _accountService.SmsLoginAsync(dto);
+            var data = await _accountService.SmsLoginAsync(req);
             return Result.Data(data);
         }
 
@@ -62,24 +62,24 @@ namespace Fancyx.Admin.Controllers.Account
         /// <summary>
         /// 修改个人基本信息
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPut("UpdateInfo")]
-        public async Task<AppResponse<bool>> UpdateUserInfoAsync([FromBody] UpdateUserInfoRequest dto)
+        public async Task<AppResponse<bool>> UpdateUserInfoAsync([FromBody] UpdateUserInfoRequest req)
         {
-            await _accountService.UpdateUserInfoAsync(dto);
+            await _accountService.UpdateUserInfoAsync(req);
             return Result.Ok();
         }
 
         /// <summary>
         /// 修改个人密码
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPut("UpdatePwd")]
-        public async Task<AppResponse<bool>> UpdateUserPwdAsync([FromBody] UpdateUserPwdRequest dto)
+        public async Task<AppResponse<bool>> UpdateUserPwdAsync([FromBody] UpdateUserPwdRequest req)
         {
-            await _accountService.UpdateUserPwdAsync(dto);
+            await _accountService.UpdateUserPwdAsync(req);
             return Result.Ok();
         }
 

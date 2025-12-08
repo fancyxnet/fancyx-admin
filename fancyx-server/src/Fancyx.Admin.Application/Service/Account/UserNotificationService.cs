@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Fancyx.Admin.Application.IService.Account;
-using Fancyx.Admin.Application.IService.Account.Dtos;
+using Fancyx.Admin.Application.IService.Account.Models;
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Core.Interfaces;
@@ -22,18 +22,18 @@ namespace Fancyx.Admin.Application.Service.Account
             _mapper = mapper;
         }
 
-        public async Task<PagedResult<UserNotificationItem>> GetMyNotificationListAsync(GetMyNotificationListRequest dto)
+        public async Task<PagedResult<UserNotificationItem>> GetMyNotificationListAsync(GetMyNotificationListRequest req)
         {
             if (!_currentUser.Id.HasValue) return new PagedResult<UserNotificationItem>();
 
             var resp = await _repository
                 .Where(x => x.UserId == _currentUser.Id)
-                .WhereIf(!string.IsNullOrEmpty(dto.Title), x => x.Title!.Contains(x.Title))
-                .WhereIf(dto.IsReaded.HasValue, x => x.IsReaded == dto.IsReaded)
+                .WhereIf(!string.IsNullOrEmpty(req.Title), x => x.Title!.Contains(x.Title))
+                .WhereIf(req.IsReaded.HasValue, x => x.IsReaded == req.IsReaded)
                 .OrderBy(x => x.IsReaded)
                 .OrderByDescending(x => x.CreationTime)
-                .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<UserNotificationItem>(dto, resp.Total, _mapper.Map<List<Notification>, List<UserNotificationItem>>(resp.Items));
+                .PagedAsync(req.Current, req.PageSize);
+            return new PagedResult<UserNotificationItem>(req, resp.Total, _mapper.Map<List<Notification>, List<UserNotificationItem>>(resp.Items));
         }
 
         public async Task<UserNotificationNavbarInfo> GetMyNotificationNavbarInfoAsync()

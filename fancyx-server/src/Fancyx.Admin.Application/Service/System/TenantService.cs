@@ -1,5 +1,5 @@
 ﻿using Fancyx.Admin.Application.IService.System;
-using Fancyx.Admin.Application.IService.System.Dtos;
+using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Admin.Application.SharedService;
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.System;
@@ -43,24 +43,24 @@ namespace Fancyx.Admin.Application.Service.System
             _dbContext = dbContext;
         }
 
-        public async Task AddTenantAsync(AddOrUpdateTenantRequest dto)
+        public async Task AddTenantAsync(AddOrUpdateTenantRequest req)
         {
-            if (await _tenantRepository.AnyAsync(x => x.Id.ToLower() == dto.TenantId.ToLower()))
+            if (await _tenantRepository.AnyAsync(x => x.Id.ToLower() == req.TenantId.ToLower()))
             {
-                throw new BusinessException($"租户标识[{dto.TenantId}]已存在");
+                throw new BusinessException($"租户标识[{req.TenantId}]已存在");
             }
-            if (await _tenantRepository.AnyAsync(x => x.Domain.ToLower() == dto.Domain.ToLower()))
+            if (await _tenantRepository.AnyAsync(x => x.Domain.ToLower() == req.Domain.ToLower()))
             {
-                throw new BusinessException($"租户域名[{dto.TenantId}]已存在");
+                throw new BusinessException($"租户域名[{req.TenantId}]已存在");
             }
 
             var entity = new Tenant()
             {
-                Name = dto.Name,
-                Id = dto.TenantId,
-                Remark = dto.Remark,
-                Domain = dto.Domain.ToLowerInvariant(),
-                IsEnabled = dto.IsEnabled
+                Name = req.Name,
+                Id = req.TenantId,
+                Remark = req.Remark,
+                Domain = req.Domain.ToLowerInvariant(),
+                IsEnabled = req.IsEnabled
             };
             await _tenantRepository.InsertAsync(entity);
             await _redis.KeyDeleteAsync(SystemCacheKey.AllTenant);
@@ -76,64 +76,64 @@ namespace Fancyx.Admin.Application.Service.System
             await this.DisabledTenantSubUserAsync(tenantId);
         }
 
-        public async Task<PagedResult<TenantItem>> GetTenantListAsync(GetTenantListRequest dto)
+        public async Task<PagedResult<TenantItem>> GetTenantListAsync(GetTenantListRequest req)
         {
             var resp = await _tenantRepository.GetQueryable()
-                .WhereIf(!string.IsNullOrEmpty(dto.Keyword), x => x.Name.Contains(dto.Keyword!) || x.Id.Contains(dto.Keyword!))
+                .WhereIf(!string.IsNullOrEmpty(req.Keyword), x => x.Name.Contains(req.Keyword!) || x.Id.Contains(req.Keyword!))
                 .OrderByDescending(x => x.CreationTime)
                 .Select(x => new TenantItem { IsEnabled = x.IsEnabled, CreationTime = x.CreationTime, Domain = x.Domain, LastModificationTime = x.LastModificationTime, Name = x.Name, Remark = x.Remark, TenantId = x.Id })
-                .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<TenantItem>(dto)
+                .PagedAsync(req.Current, req.PageSize);
+            return new PagedResult<TenantItem>(req)
             {
                 TotalCount = resp.Total,
                 Items = resp.Items
             };
         }
 
-        public async Task UpdateTenantAsync(AddOrUpdateTenantRequest dto)
+        public async Task UpdateTenantAsync(AddOrUpdateTenantRequest req)
         {
-            var entity = await _tenantRepository.FindAsync(dto.TenantId) ?? throw new EntityNotFoundException();
+            var entity = await _tenantRepository.FindAsync(req.TenantId) ?? throw new EntityNotFoundException();
 
-            var domain = dto.Domain.ToLowerInvariant();
+            var domain = req.Domain.ToLowerInvariant();
             if (entity.Domain != domain && await _tenantRepository.AnyAsync(x => x.Domain.ToLower() == domain))
             {
-                throw new BusinessException($"租户域名[{dto.TenantId}]已存在");
+                throw new BusinessException($"租户域名[{req.TenantId}]已存在");
             }
 
-            entity.Name = dto.Name;
-            entity.Remark = dto.Remark;
+            entity.Name = req.Name;
+            entity.Remark = req.Remark;
             entity.Domain = domain;
-            entity.IsEnabled = dto.IsEnabled;
+            entity.IsEnabled = req.IsEnabled;
 
             await _tenantRepository.UpdateAsync(entity);
             await _redis.KeyDeleteAsync(SystemCacheKey.AllTenant);
             await _redis.KeyDeleteAsync(SystemCacheKey.TenantDomains);
 
-            if (!dto.IsEnabled)
+            if (!req.IsEnabled)
             {
-                await this.DisabledTenantSubUserAsync(dto.TenantId);
+                await this.DisabledTenantSubUserAsync(req.TenantId);
             }
         }
 
         [AsyncTransactional]
-        public async Task AssignTenantMenuAsync(AssignTenantMenuRequest dto)
+        public async Task AssignTenantMenuAsync(AssignTenantMenuRequest req)
         {
-            await _tenantMenuRepository.DeleteAsync(x => x.TenantId == dto.TenantId);
-            if (dto.MenuIds?.Length > 0)
+            await _tenantMenuRepository.DeleteAsync(x => x.TenantId == req.TenantId);
+            if (req.MenuIds?.Length > 0)
             {
                 // 找到本次移除的菜单ID，移除租户下所有角色已分配的对应菜单ID
-                var existMenuIds = await _roleMenuRepository.Where(x => x.TenantId == dto.TenantId).Select(x => x.MenuId).ToListAsync();
-                var removeMenuIds = existMenuIds.Where(x => !dto.MenuIds.Contains(x)).ToList();
+                var existMenuIds = await _roleMenuRepository.Where(x => x.TenantId == req.TenantId).Select(x => x.MenuId).ToListAsync();
+                var removeMenuIds = existMenuIds.Where(x => !req.MenuIds.Contains(x)).ToList();
                 await _roleMenuRepository.DeleteAsync(x => removeMenuIds.Contains(x.MenuId));
 
-                var tenantMenus = dto.MenuIds.Select(id => new TenantMenu
+                var tenantMenus = req.MenuIds.Select(id => new TenantMenu
                 {
-                    TenantId = dto.TenantId,
+                    TenantId = req.TenantId,
                     MenuId = id
                 }).ToList();
                 await _tenantMenuRepository.InsertManyAsync(tenantMenus);
             }
-            await _identitySharedService.DelUserPermissionCacheByTenantIdAsync(dto.TenantId);
+            await _identitySharedService.DelUserPermissionCacheByTenantIdAsync(req.TenantId);
         }
 
         public Task<List<long>> GetTenantMenuIdsAsync(string id)
@@ -142,9 +142,9 @@ namespace Fancyx.Admin.Application.Service.System
         }
 
         [AsyncTransactional]
-        public async Task<TenantAccountInfo> CreateTenantAccountAsync(CreateTenantAccountRequest dto)
+        public async Task<TenantAccountInfo> CreateTenantAccountAsync(CreateTenantAccountRequest req)
         {
-            if (dto.ErrCount > 3) throw new BusinessException("创建失败，请联系管理员");
+            if (req.ErrCount > 3) throw new BusinessException("创建失败，请联系管理员");
             var info = new TenantAccountInfo()
             {
                 RoleName = StringUtils.Generate(12).ToLowerInvariant(),
@@ -156,7 +156,7 @@ namespace Fancyx.Admin.Application.Service.System
                 var role = new Role()
                 {
                     Id = IdGenerater.Instance.NextId(),
-                    TenantId = dto.TenantId,
+                    TenantId = req.TenantId,
                     RoleName = info.RoleName,
                     Remark = "开通租户账号创建超级管理员（系统创建）",
                     IsEnabled = true
@@ -164,7 +164,7 @@ namespace Fancyx.Admin.Application.Service.System
                 var user = new User()
                 {
                     Id = IdGenerater.Instance.NextId(),
-                    TenantId = dto.TenantId,
+                    TenantId = req.TenantId,
                     UserName = info.UserName,
                     NickName = info.UserName,
                     PasswordSalt = EncryptionUtils.GetPasswordSalt(),
@@ -173,11 +173,11 @@ namespace Fancyx.Admin.Application.Service.System
                     IsEnabled = true
                 };
                 user.Password = EncryptionUtils.GenEncodingPassword(info.Password, user.PasswordSalt);
-                var menuIds = await _identitySharedService.GetTenantMenusAsync(dto.TenantId);
-                var roleMenu = menuIds.Select(x => new RoleMenu() { TenantId = dto.TenantId, MenuId = x, RoleId = role.Id }).ToList();
+                var menuIds = await _identitySharedService.GetTenantMenusAsync(req.TenantId);
+                var roleMenu = menuIds.Select(x => new RoleMenu() { TenantId = req.TenantId, MenuId = x, RoleId = role.Id }).ToList();
                 if (roleMenu.Count > 0) _dbContext.AddRange(roleMenu);
 
-                var userRole = new UserRole { RoleId = role.Id, UserId = user.Id, TenantId = dto.TenantId };
+                var userRole = new UserRole { RoleId = role.Id, UserId = user.Id, TenantId = req.TenantId };
 
                 _dbContext.Add(user);
                 _dbContext.Add(role);
@@ -186,8 +186,8 @@ namespace Fancyx.Admin.Application.Service.System
             }
             catch (Exception)
             {
-                dto.ErrCount += 3;
-                return await this.CreateTenantAccountAsync(dto);
+                req.ErrCount += 3;
+                return await this.CreateTenantAccountAsync(req);
             }
 
             return info;

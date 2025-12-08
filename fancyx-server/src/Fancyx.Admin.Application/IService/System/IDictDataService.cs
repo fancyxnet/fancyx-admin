@@ -1,4 +1,4 @@
-using Fancyx.Admin.Application.IService.System.Dtos;
+using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Core.Interfaces;
 
 namespace Fancyx.Admin.Application.IService.System
@@ -8,23 +8,23 @@ namespace Fancyx.Admin.Application.IService.System
         /// <summary>
         /// 新增字典
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        Task<bool> AddDictDataAsync(AddOrUpdateDictDataRequest dto);
+        Task<bool> AddDictDataAsync(AddOrUpdateDictDataRequest req);
 
         /// <summary>
         /// 字典分页列表
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        Task<PagedResult<DictDataItem>> GetDictDataListAsync(GetDictDataListRequest dto);
+        Task<PagedResult<DictDataItem>> GetDictDataListAsync(GetDictDataListRequest req);
 
         /// <summary>
         /// 修改字典
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        Task<bool> UpdateDictDataAsync(AddOrUpdateDictDataRequest dto);
+        Task<bool> UpdateDictDataAsync(AddOrUpdateDictDataRequest req);
 
         /// <summary>
         /// 删除字典

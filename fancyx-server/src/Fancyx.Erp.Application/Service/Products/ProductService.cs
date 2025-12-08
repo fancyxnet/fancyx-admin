@@ -2,8 +2,9 @@
 using Fancyx.EfCore;
 using Fancyx.EfCore.Aop;
 using Fancyx.Erp.Application.IService.Products;
-using Fancyx.Erp.Application.IService.Products.Dtos;
+using Fancyx.Erp.Application.IService.Products.Models;
 using Fancyx.Erp.EfCore.Entites;
+using Fancyx.Erp.EfCore.Models;
 using Fancyx.Erp.EfCore.Repositories;
 using Fancyx.Internal.Grpc.System;
 using Fancyx.Shared.Exceptions;
@@ -32,19 +33,19 @@ namespace Fancyx.Erp.Application.Service.Products
         }
 
         [AsyncTransactional]
-        public async Task AddProductAsync(ProductDto dto)
+        public async Task AddProductAsync(AddOrUpdateProductRequest req)
         {
-            var codeIsExist = await _productRepository.AnyAsync(x => x.Code == dto.Code);
+            var codeIsExist = await _productRepository.AnyAsync(x => x.Code == req.Code);
             if (codeIsExist)
             {
                 throw new BusinessException("编号已存在");
             }
-            var product = _mapper.Map<Product>(dto);
+            var product = _mapper.Map<Product>(req);
             product.Id = IdGenerater.Instance.NextId();
             await _productRepository.InsertAsync(product);
-            if (dto.Attrs?.Count > 0)
+            if (req.Attrs?.Count > 0)
             {
-                var productBindAttrValues = dto.Attrs.Select(x => new ProductBindAttrValue
+                var productBindAttrValues = req.Attrs.Select(x => new ProductBindAttrValue
                 {
                     ProductId = product.Id,
                     AttrId = x.AttrId,
@@ -67,36 +68,36 @@ namespace Fancyx.Erp.Application.Service.Products
             await _productRepository.DeleteAsync(x => x.Id == id);
         }
 
-        public async Task<PagedResult<ProductListDto>> GetProductListAsync(ProductQueryDto dto)
+        public async Task<PagedResult<ProductItem>> GetProductListAsync(GetProductListRequest req)
         {
-            var data = await _productRepository.QueryProductListAsync(dto.Current, dto.PageSize, dto.Name);
-            var res = new PagedResult<ProductListDto>(data.Total, _mapper.Map<List<ProductListDto>>(data.Items));
+            var data = await _productRepository.QueryProductListAsync(req.Current, req.PageSize, req.Name);
+            var res = new PagedResult<ProductItem>(data.Total, _mapper.Map<List<ProductItem>>(data.Items));
             if(res.Items?.Count > 0)
             {
                 var dictItems = (await _dictClient.GetDictItemsAsync(new GetDictItemsReq { DictType = ErpDictKey.ProductUnit })).Items;
                 foreach (var item in res.Items)
                 {
-                    item.UnitText = dictItems.FirstOrDefault(x => x.Value == item.Unit)?.Value;
+                    //item.UnitText = dictItems.FirstOrDefault(x => x.Value == item.Unit)?.Value;
                 }
             }
             return res;
         }
 
         [AsyncTransactional]
-        public async Task UpdateProductAsync(ProductUpdateDto dto)
+        public async Task UpdateProductAsync(UpdateProductRequest req)
         {
-            var product = await _productRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
-            var codeIsExist = product.Code != dto.Code && await _productRepository.AnyAsync(x => x.Code == dto.Code);
+            var product = await _productRepository.FindAsync(req.Id) ?? throw new EntityNotFoundException();
+            var codeIsExist = product.Code != req.Code && await _productRepository.AnyAsync(x => x.Code == req.Code);
             if (codeIsExist)
             {
                 throw new BusinessException("编号已存在");
             }
-            _mapper.Map(dto, product);
+            _mapper.Map(req, product);
             await _productRepository.UpdateAsync(product);
-            if (dto.Attrs?.Count > 0)
+            if (req.Attrs?.Count > 0)
             {
                 await _productBindAttrValueRepository.DeleteAsync(x => x.ProductId == product.Id);
-                var productBindAttrValues = dto.Attrs.Select(x => new ProductBindAttrValue
+                var productBindAttrValues = req.Attrs.Select(x => new ProductBindAttrValue
                 {
                     ProductId = product.Id,
                     AttrId = x.AttrId,

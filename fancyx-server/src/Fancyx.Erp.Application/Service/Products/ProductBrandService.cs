@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Fancyx.EfCore;
 using Fancyx.Erp.Application.IService.Products;
-using Fancyx.Erp.Application.IService.Products.Dtos;
+using Fancyx.Erp.Application.IService.Products.Models;
 using Fancyx.Erp.EfCore.Entites;
 using Fancyx.Erp.EfCore.Repositories;
 using Fancyx.Shared.Exceptions;
@@ -22,14 +22,14 @@ namespace Fancyx.Erp.Application.Service.Products
             _productRepository = productRepository;
         }
 
-        public async Task AddProductBrandAsync(ProductBrandDto dto)
+        public async Task AddProductBrandAsync(AddOrUpdateProductBrand req)
         {
-            var codeIsExist = await _productBrandRepository.AnyAsync(x => x.Code == dto.Code);
+            var codeIsExist = await _productBrandRepository.AnyAsync(x => x.Code == req.Code);
             if (codeIsExist)
             {
                 throw new BusinessException("编码已存在");
             }
-            var productBrand = _mapper.Map<ProductBrand>(dto);
+            var productBrand = _mapper.Map<ProductBrand>(req);
             await _productBrandRepository.InsertAsync(productBrand);
         }
 
@@ -43,22 +43,22 @@ namespace Fancyx.Erp.Application.Service.Products
             await _productBrandRepository.DeleteAsync(x => x.Id == id);
         }
 
-        public async Task<PagedResult<ProductBrandListDto>> GetProductBrandListAsync(ProductBrandQueryDto dto)
+        public async Task<PagedResult<ProductBrandItem>> GetProductBrandListAsync(GetProductBrandListRequest req)
         {
-            var data = await _productBrandRepository.GetQueryable().WhereIf(!string.IsNullOrEmpty(dto.Name), x => x.Name.StartsWith(dto.Name!))
-                .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<ProductBrandListDto>(data.Total, _mapper.Map<List<ProductBrandListDto>>(data.Items));
+            var data = await _productBrandRepository.GetQueryable().WhereIf(!string.IsNullOrEmpty(req.Name), x => x.Name.StartsWith(req.Name!))
+                .PagedAsync(req.Current, req.PageSize);
+            return new PagedResult<ProductBrandItem>(data.Total, _mapper.Map<List<ProductBrandItem>>(data.Items));
         }
 
-        public async Task UpdateProductBrandAsync(ProductBrandDto dto)
+        public async Task UpdateProductBrandAsync(AddOrUpdateProductBrand req)
         {
-            var productBrand = await _productBrandRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
-            var codeIsExist = productBrand.Code != dto.Code && await _productBrandRepository.AnyAsync(x => x.Code == dto.Code);
+            var productBrand = await _productBrandRepository.FindAsync(req.Id) ?? throw new EntityNotFoundException();
+            var codeIsExist = productBrand.Code != req.Code && await _productBrandRepository.AnyAsync(x => x.Code == req.Code);
             if (codeIsExist)
             {
                 throw new BusinessException("编码已存在");
             }
-            _mapper.Map(dto, productBrand);
+            _mapper.Map(req, productBrand);
             await _productBrandRepository.UpdateAsync(productBrand);
         }
     }

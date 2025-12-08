@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Fancyx.EfCore;
 using Fancyx.Erp.Application.IService.BaseInfo;
-using Fancyx.Erp.Application.IService.BaseInfo.Dtos;
+using Fancyx.Erp.Application.IService.BaseInfo.Models;
 using Fancyx.Erp.EfCore.Entites;
 using Fancyx.Shared.Exceptions;
 using Fancyx.Shared.Models;
@@ -19,14 +19,14 @@ namespace Fancyx.Erp.Application.Service.BaseInfo
             _mapper = mapper;
         }
 
-        public async Task AddCustomerAsync(CustomerDto dto)
+        public async Task AddCustomerAsync(AddOrUpdateCustomerRequest req)
         {
-            if (await _customerRepository.AnyAsync(x => x.Code == dto.Code))
+            if (await _customerRepository.AnyAsync(x => x.Code == req.Code))
             {
                 throw new BusinessException("客户编号已存在");
             }
 
-            var entity = _mapper.Map<Customer>(dto);
+            var entity = _mapper.Map<Customer>(req);
             await _customerRepository.InsertAsync(entity);
         }
 
@@ -35,11 +35,11 @@ namespace Fancyx.Erp.Application.Service.BaseInfo
             return _customerRepository.DeleteAsync(x => x.Id == id);
         }
 
-        public async Task<PagedResult<CustomerListDto>> GetCustomerListAsync(CustomerQueryDto dto)
+        public async Task<PagedResult<CustomerItem>> GetCustomerListAsync(GetCustomerListRequest req)
         {
             var resp = await _customerRepository.GetQueryable()
-                .WhereIf(!string.IsNullOrEmpty(dto.Code), x => x.Code.StartsWith(dto.Code!))
-                .Select(x => new CustomerListDto
+                .WhereIf(!string.IsNullOrEmpty(req.Code), x => x.Code.StartsWith(req.Code!))
+                .Select(x => new CustomerItem
                 {
                     Id = x.Id,
                     Code = x.Code,
@@ -47,24 +47,24 @@ namespace Fancyx.Erp.Application.Service.BaseInfo
                     CodeSlim = x.CodeSlim,
                     ContactName = x.ContactName,
                     ContactPhone = x.ContactPhone
-                }).PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<CustomerListDto>(dto, resp.Total, resp.Items);
+                }).PagedAsync(req.Current, req.PageSize);
+            return new PagedResult<CustomerItem>(req, resp.Total, resp.Items);
         }
 
-        public async Task UpdateCustomerAsync(CustomerDto dto)
+        public async Task UpdateCustomerAsync(AddOrUpdateCustomerRequest req)
         {
-            var entity = await _customerRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
-            var codeIsExist = await _customerRepository.AnyAsync(x => x.Code == dto.Code);
-            if (codeIsExist && entity.Code != dto.Code)
+            var entity = await _customerRepository.FindAsync(req.Id) ?? throw new EntityNotFoundException();
+            var codeIsExist = await _customerRepository.AnyAsync(x => x.Code == req.Code);
+            if (codeIsExist && entity.Code != req.Code)
             {
                 throw new BusinessException("客户编号已存在");
             }
-            entity.Code = dto.Code;
-            entity.Name = dto.Name;
-            entity.Remark = dto.Remark;
-            entity.CodeSlim = dto.CodeSlim;
-            entity.ContactName = dto.ContactName;
-            entity.ContactPhone = dto.ContactPhone;
+            entity.Code = req.Code;
+            entity.Name = req.Name;
+            entity.Remark = req.Remark;
+            entity.CodeSlim = req.CodeSlim;
+            entity.ContactName = req.ContactName;
+            entity.ContactPhone = req.ContactPhone;
             await _customerRepository.UpdateAsync(entity);
         }
     }

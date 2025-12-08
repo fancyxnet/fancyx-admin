@@ -1,4 +1,4 @@
-using Fancyx.Admin.Application.IService.System.Dtos;
+using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Core.Interfaces;
 
 namespace Fancyx.Admin.Application.IService.System
@@ -8,23 +8,23 @@ namespace Fancyx.Admin.Application.IService.System
         /// <summary>
         /// 新增菜单
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        Task<bool> AddMenuAsync(AddOrUpdateMenuRequest dto);
+        Task<bool> AddMenuAsync(AddOrUpdateMenuRequest req);
 
         /// <summary>
         /// 菜单树形列表
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        Task<List<MenuItem>> GetMenuListAsync(GetMenuListRequest dto);
+        Task<List<MenuItem>> GetMenuListAsync(GetMenuListRequest req);
 
         /// <summary>
         /// 修改菜单
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        Task<bool> UpdateMenuAsync(AddOrUpdateMenuRequest dto);
+        Task<bool> UpdateMenuAsync(AddOrUpdateMenuRequest req);
 
         /// <summary>
         /// 删除菜单

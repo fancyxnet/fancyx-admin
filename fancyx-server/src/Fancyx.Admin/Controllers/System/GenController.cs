@@ -1,5 +1,5 @@
 ﻿using Fancyx.Admin.Application.IService.System;
-using Fancyx.Admin.Application.IService.System.Dtos;
+using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Shared.WebApi.Attributes;
 using Fancyx.Swagger;
 using Microsoft.AspNetCore.Authorization;
@@ -38,9 +38,9 @@ namespace Fancyx.Admin.Controllers.System
 
         [HttpGet("GetTableList")]
         [HasPermission("Sys.Gen.GetTableList")]
-        public async Task<AppResponse<PagedResult<TableInfoItem>>> GetTableListAsync([FromQuery] GetTableListRequest dto)
+        public async Task<AppResponse<PagedResult<TableInfoItem>>> GetTableListAsync([FromQuery] GetTableListRequest req)
         {
-            var data = await _genService.GetTableListAsync(dto);
+            var data = await _genService.GetTableListAsync(req);
             return Result.Data(data);
         }
 
@@ -54,17 +54,17 @@ namespace Fancyx.Admin.Controllers.System
 
         [HttpGet("GetGenTableList")]
         [HasPermission("Sys.Gen.GetGenTableList")]
-        public async Task<AppResponse<PagedResult<GenTableItem>>> GetGenTableListAsync([FromQuery] GetGenTableListRequest dto)
+        public async Task<AppResponse<PagedResult<GenTableItem>>> GetGenTableListAsync([FromQuery] GetGenTableListRequest req)
         {
-            var data = await _genService.GetGenTableListAsync(dto);
+            var data = await _genService.GetGenTableListAsync(req);
             return Result.Data(data);
         }
 
         [HttpGet("GetGenTableColumnList")]
         [HasPermission("Sys.Gen.GetGenTableColumnList")]
-        public async Task<AppResponse<PagedResult<GenTableColumnItem>>> GetGenTableColumnListAsync([FromQuery] GenTableColumnRequest dto)
+        public async Task<AppResponse<PagedResult<GenTableColumnItem>>> GetGenTableColumnListAsync([FromQuery] GenTableColumnRequest req)
         {
-            var data = await _genService.GetGenTableColumnListAsync(dto);
+            var data = await _genService.GetGenTableColumnListAsync(req);
             return Result.Data(data);
         }
 
@@ -78,9 +78,9 @@ namespace Fancyx.Admin.Controllers.System
 
         [HttpPut("SaveGenTableInfo")]
         [HasPermission("Sys.Gen.SaveGenTableInfo")]
-        public async Task<AppResponse<bool>> SaveGenTableInfoAsync([FromBody] SaveGenTableInfoRequest dto)
+        public async Task<AppResponse<bool>> SaveGenTableInfoAsync([FromBody] SaveGenTableInfoRequest req)
         {
-            await _genService.SaveGenTableInfoAsync(dto);
+            await _genService.SaveGenTableInfoAsync(req);
             return Result.Ok();
         }
 

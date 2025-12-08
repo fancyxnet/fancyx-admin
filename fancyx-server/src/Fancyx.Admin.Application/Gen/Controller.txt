@@ -25,40 +25,40 @@ public class ${business_name}Controller : ControllerBase
     /// <summary>
     /// 新增${function_name}
     /// </summary>
-    /// <param name="dto"></param>
+    /// <param name="req"></param>
     /// <returns></returns>
     [HttpPost("Add")]
     [HasPermission("Sys.${business_name}.Add")]
     [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
-    public async Task<AppResponse<bool>> Add${business_name}Async([FromBody] ${class_name} dto)
+    public async Task<AppResponse<bool>> Add${business_name}Async([FromBody] ${class_name} req)
     {
-        await _${business_name_inject}Service.Add${business_name}Async(dto);
+        await _${business_name_inject}Service.Add${business_name}Async(req);
         return Result.Ok();
     }
 
     /// <summary>
     /// ${function_name}分页列表
     /// </summary>
-    /// <param name="dto"></param>
+    /// <param name="req"></param>
     /// <returns></returns>
     [HttpGet("List")]
     [HasPermission("Sys.${business_name}.List")]
-    public async Task<AppResponse<PagedResult<${class_name}>>> Get${business_name}ListAsync([FromQuery] ${class_name}QueryDto dto)
+    public async Task<AppResponse<PagedResult<${class_name}>>> Get${business_name}ListAsync([FromQuery] ${class_name}QueryDto req)
     {
-        var data = await _${business_name_inject}Service.Get${business_name}ListAsync(dto);
+        var data = await _${business_name_inject}Service.Get${business_name}ListAsync(req);
         return Result.Data(data);
     }
 
     /// <summary>
     /// 修改${function_name}
     /// </summary>
-    /// <param name="dto"></param>
+    /// <param name="req"></param>
     /// <returns></returns>
     [HttpPut("Update")]
     [HasPermission("Sys.${business_name}.Update")]
-    public async Task<AppResponse<bool>> Update${business_name}Async([FromBody] ${class_name} dto)
+    public async Task<AppResponse<bool>> Update${business_name}Async([FromBody] ${class_name} req)
     {
-        await _${business_name_inject}Service.Update${business_name}Async(dto);
+        await _${business_name_inject}Service.Update${business_name}Async(req);
         return Result.Ok();
     }
 

@@ -1,0 +1,23 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
+
+namespace Fancyx.Admin.Application.IService.System.Models;
+
+public class DictTypeItem
+{
+    public string? Name { get; set; }
+
+    [NotNull]
+    [Required]
+    public long Id { get; set; }
+
+    [NotNull]
+    [Required]
+    public bool IsEnabled { get; set; }
+
+    public string? DictType { get; set; }
+
+    public string? Remark { get; set; }
+
+    public DateTime CreationTime { get; set; }
+}

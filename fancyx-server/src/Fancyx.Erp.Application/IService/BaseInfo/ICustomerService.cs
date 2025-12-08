@@ -1,5 +1,5 @@
 ﻿using Fancyx.Core.Interfaces;
-using Fancyx.Erp.Application.IService.BaseInfo.Dtos;
+using Fancyx.Erp.Application.IService.BaseInfo.Models;
 using Fancyx.Shared.Models;
 
 namespace Fancyx.Erp.Application.IService.BaseInfo
@@ -9,18 +9,18 @@ namespace Fancyx.Erp.Application.IService.BaseInfo
         /// <summary>
         /// 添加客户
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        Task AddCustomerAsync(CustomerDto dto);
+        Task AddCustomerAsync(AddOrUpdateCustomerRequest req);
 
         /// <summary>
         /// 客户列表
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        Task<PagedResult<CustomerListDto>> GetCustomerListAsync(CustomerQueryDto dto);
+        Task<PagedResult<CustomerItem>> GetCustomerListAsync(GetCustomerListRequest req);
 
-        Task UpdateCustomerAsync(CustomerDto dto);
+        Task UpdateCustomerAsync(AddOrUpdateCustomerRequest req);
         Task DeleteCustomerAsync(long id);
     }
 }

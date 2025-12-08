@@ -5,9 +5,9 @@ using Fancyx.Shared.Consts;
 using Microsoft.EntityFrameworkCore;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore;
-using Fancyx.Admin.Application.IService.System.Dtos;
 using Fancyx.Admin.Application.IService.System;
 using Fancyx.Shared.Logger;
+using Fancyx.Admin.Application.IService.System.Models;
 
 namespace Fancyx.Admin.Application.Service.System;
 
@@ -25,19 +25,19 @@ public class DictTypeService : IDictTypeService
     }
 
     [AsyncLogRecord(LogRecordConsts.DictType, LogRecordConsts.DictAddSubType, "{{dict.Id}}", LogRecordConsts.DictAddContent)]
-    public async Task AddDictTypeAsync(AddOrUpdateDictTypeRequest dto)
+    public async Task AddDictTypeAsync(AddOrUpdateDictTypeRequest req)
     {
-        if (await _dictTypeRepository.AnyAsync(x => x.Type.ToLower() == dto.DictType.ToLower()))
+        if (await _dictTypeRepository.AnyAsync(x => x.Type.ToLower() == req.DictType.ToLower()))
         {
             throw new BusinessException(message: "字典类型已存在");
         }
 
         var entity = new DictType
         {
-            Name = dto.Name,
-            IsEnabled = dto.IsEnabled,
-            Type = dto.DictType,
-            Remark = dto.Remark
+            Name = req.Name,
+            IsEnabled = req.IsEnabled,
+            Type = req.DictType,
+            Remark = req.Remark
         };
 
         LogRecordContext.PutVariable("dict", entity);
@@ -56,11 +56,11 @@ public class DictTypeService : IDictTypeService
         LogRecordContext.PutVariable("dict", dict);
     }
 
-    public async Task<PagedResult<DictTypeItem>> GetDictTypeListAsync(GetDictTypeListRequest dto)
+    public async Task<PagedResult<DictTypeItem>> GetDictTypeListAsync(GetDictTypeListRequest req)
     {
         var resp = await _dictTypeRepository.GetQueryable()
-            .WhereIf(!string.IsNullOrEmpty(dto.Name), x => x.Name.Contains(dto.Name!))
-            .WhereIf(!string.IsNullOrEmpty(dto.DictType), x => x.Type.Contains(dto.DictType!))
+            .WhereIf(!string.IsNullOrEmpty(req.Name), x => x.Name.Contains(req.Name!))
+            .WhereIf(!string.IsNullOrEmpty(req.DictType), x => x.Type.Contains(req.DictType!))
             .OrderByDescending(x => x.CreationTime)
             .Select(x => new DictTypeItem
             {
@@ -71,8 +71,8 @@ public class DictTypeService : IDictTypeService
                 Remark = x.Remark,
                 CreationTime = x.CreationTime
             })
-            .PagedAsync(dto.Current, dto.PageSize);
-        return new PagedResult<DictTypeItem>(dto)
+            .PagedAsync(req.Current, req.PageSize);
+        return new PagedResult<DictTypeItem>(req)
         {
             TotalCount = resp.Total,
             Items = resp.Items
@@ -80,25 +80,25 @@ public class DictTypeService : IDictTypeService
     }
 
     [AsyncTransactional]
-    public async Task UpdateDictTypeAsync(AddOrUpdateDictTypeRequest dto)
+    public async Task UpdateDictTypeAsync(AddOrUpdateDictTypeRequest req)
     {
-        var entity = await _dictTypeRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
-        var isUpdateType = !entity.Type.Equals(dto.DictType, StringComparison.CurrentCultureIgnoreCase);
-        if (isUpdateType && await _dictTypeRepository.AnyAsync(x => x.Type.ToLower() == dto.DictType.ToLower()))
+        var entity = await _dictTypeRepository.FindAsync(req.Id) ?? throw new EntityNotFoundException();
+        var isUpdateType = !entity.Type.Equals(req.DictType, StringComparison.CurrentCultureIgnoreCase);
+        if (isUpdateType && await _dictTypeRepository.AnyAsync(x => x.Type.ToLower() == req.DictType.ToLower()))
         {
             throw new BusinessException(message: "字典类型已存在");
         }
 
-        entity.Name = dto.Name;
-        entity.IsEnabled = dto.IsEnabled;
-        entity.Type = dto.DictType;
-        entity.Remark = dto.Remark;
+        entity.Name = req.Name;
+        entity.IsEnabled = req.IsEnabled;
+        entity.Type = req.DictType;
+        entity.Remark = req.Remark;
 
         await _dictTypeRepository.UpdateAsync(entity);
         if (isUpdateType)
         {
             await _dictDataRepository.Where(x => x.DictType == entity.Type)
-                .ExecuteUpdateAsync(x => x.SetProperty(f => f.DictType, dto.DictType)
+                .ExecuteUpdateAsync(x => x.SetProperty(f => f.DictType, req.DictType)
                 .SetProperty(f => f.LastModifierId, _currentUser.Id)
                 .SetProperty(f => f.LastModificationTime, DateTime.Now));
         }

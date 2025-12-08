@@ -3,8 +3,8 @@ using Fancyx.Shared.Logger;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Fancyx.Admin.Application.IService.System.Dtos;
 using Fancyx.Admin.Application.IService.System;
+using Fancyx.Admin.Application.IService.System.Models;
 
 namespace Fancyx.Admin.Controllers.System;
 
@@ -23,39 +23,39 @@ public class DictTypeController : ControllerBase
     /// <summary>
     /// 新增字典类型
     /// </summary>
-    /// <param name="dto"></param>
+    /// <param name="req"></param>
     /// <returns></returns>
     [HttpPost]
     [HasPermission("Sys.DictType.Add")]
-    public async Task<AppResponse<bool>> AddDictTypeAsync([FromBody] AddOrUpdateDictTypeRequest dto)
+    public async Task<AppResponse<bool>> AddDictTypeAsync([FromBody] AddOrUpdateDictTypeRequest req)
     {
-        await _dictTypeService.AddDictTypeAsync(dto);
+        await _dictTypeService.AddDictTypeAsync(req);
         return Result.Ok();
     }
 
     /// <summary>
     /// 分页查询字典类型列表
     /// </summary>
-    /// <param name="dto"></param>
+    /// <param name="req"></param>
     /// <returns></returns>
     [HttpGet]
     [HasPermission("Sys.DictType.List")]
-    public async Task<AppResponse<PagedResult<DictTypeItem>>> GetDictTypeListAsync([FromQuery] GetDictTypeListRequest dto)
+    public async Task<AppResponse<PagedResult<DictTypeItem>>> GetDictTypeListAsync([FromQuery] GetDictTypeListRequest req)
     {
-        var data = await _dictTypeService.GetDictTypeListAsync(dto);
+        var data = await _dictTypeService.GetDictTypeListAsync(req);
         return Result.Data(data);
     }
 
     /// <summary>
     /// 修改字典类型
     /// </summary>
-    /// <param name="dto"></param>
+    /// <param name="req"></param>
     /// <returns></returns>
     [HttpPut]
     [HasPermission("Sys.DictType.Update")]
-    public async Task<AppResponse<bool>> UpdateDictTypeAsync([FromBody] AddOrUpdateDictTypeRequest dto)
+    public async Task<AppResponse<bool>> UpdateDictTypeAsync([FromBody] AddOrUpdateDictTypeRequest req)
     {
-        await _dictTypeService.UpdateDictTypeAsync(dto);
+        await _dictTypeService.UpdateDictTypeAsync(req);
         return Result.Ok();
     }
 

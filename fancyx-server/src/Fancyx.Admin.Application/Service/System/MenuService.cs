@@ -1,7 +1,7 @@
 using AutoMapper;
 
 using Fancyx.Admin.Application.IService.System;
-using Fancyx.Admin.Application.IService.System.Dtos;
+using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Admin.Application.SharedService;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
@@ -29,21 +29,21 @@ namespace Fancyx.Admin.Application.Service.System
             _currentTenant = currentTenant;
         }
 
-        public async Task<bool> AddMenuAsync(AddOrUpdateMenuRequest dto)
+        public async Task<bool> AddMenuAsync(AddOrUpdateMenuRequest req)
         {
-            if (dto.MenuType == (int)MenuType.Menu && string.IsNullOrWhiteSpace(dto.Path))
+            if (req.MenuType == (int)MenuType.Menu && string.IsNullOrWhiteSpace(req.Path))
             {
                 throw new BusinessException("菜单的路由不能为空");
             }
 
-            if (dto.IsExternal && !StringUtils.IsValidUrlStrict(dto.Path))
+            if (req.IsExternal && !StringUtils.IsValidUrlStrict(req.Path))
             {
                 throw new BusinessException("外链地址不合法");
             }
 
-            if (dto.ParentId.HasValue)
+            if (req.ParentId.HasValue)
             {
-                var parentMenu = await _menuRepository.FindAsync(dto.ParentId);
+                var parentMenu = await _menuRepository.FindAsync(req.ParentId);
                 if (parentMenu != null && parentMenu.MenuType == MenuType.Button)
                 {
                     throw new BusinessException(message: "菜单父级不能是按钮");
@@ -51,13 +51,13 @@ namespace Fancyx.Admin.Application.Service.System
             }
 
             var isExist = await _menuRepository.AnyAsync(x =>
-                x.Path != null && dto.Path != null && x.Path.ToLower() == dto.Path.ToLower());
+                x.Path != null && req.Path != null && x.Path.ToLower() == req.Path.ToLower());
             if (isExist)
             {
-                throw new BusinessException(message: $"已存在【{dto.Path}】菜单路由");
+                throw new BusinessException(message: $"已存在【{req.Path}】菜单路由");
             }
 
-            var entity = _mapper.Map<AddOrUpdateMenuRequest, Menu>(dto);
+            var entity = _mapper.Map<AddOrUpdateMenuRequest, Menu>(req);
             await _menuRepository.InsertAsync(entity);
             return true;
         }
@@ -75,15 +75,15 @@ namespace Fancyx.Admin.Application.Service.System
             return true;
         }
 
-        public async Task<List<MenuItem>> GetMenuListAsync(GetMenuListRequest dto)
+        public async Task<List<MenuItem>> GetMenuListAsync(GetMenuListRequest req)
         {
             //是否过滤
-            var isFilter = !string.IsNullOrEmpty(dto.Title) || !string.IsNullOrEmpty(dto.Path);
+            var isFilter = !string.IsNullOrEmpty(req.Title) || !string.IsNullOrEmpty(req.Path);
             var all = await _menuRepository.GetQueryable()
-                .WhereIf(!string.IsNullOrEmpty(dto.Title),
-                    x => !string.IsNullOrEmpty(x.Title) && x.Title.Contains(dto.Title!))
-                .WhereIf(!string.IsNullOrEmpty(dto.Path),
-                    x => !string.IsNullOrEmpty(x.Path) && x.Path.Contains(dto.Path!))
+                .WhereIf(!string.IsNullOrEmpty(req.Title),
+                    x => !string.IsNullOrEmpty(x.Title) && x.Title.Contains(req.Title!))
+                .WhereIf(!string.IsNullOrEmpty(req.Path),
+                    x => !string.IsNullOrEmpty(x.Path) && x.Path.Contains(req.Path!))
                 .ToListAsync();
             var top = all.Where(x => isFilter || !x.ParentId.HasValue).OrderBy(x => x.Sort)
                 .ToList();
@@ -168,21 +168,21 @@ namespace Fancyx.Admin.Application.Service.System
             return (keys, topMap);
         }
 
-        public async Task<bool> UpdateMenuAsync(AddOrUpdateMenuRequest dto)
+        public async Task<bool> UpdateMenuAsync(AddOrUpdateMenuRequest req)
         {
-            if (dto.MenuType == (int)MenuType.Menu && string.IsNullOrWhiteSpace(dto.Path))
+            if (req.MenuType == (int)MenuType.Menu && string.IsNullOrWhiteSpace(req.Path))
             {
                 throw new BusinessException("菜单的路由不能为空");
             }
 
-            if (dto.IsExternal && !StringUtils.IsValidUrlStrict(dto.Path))
+            if (req.IsExternal && !StringUtils.IsValidUrlStrict(req.Path))
             {
                 throw new BusinessException("外链地址不合法");
             }
 
-            if (dto.ParentId.HasValue)
+            if (req.ParentId.HasValue)
             {
-                var parentMenu = await _menuRepository.FindAsync(dto.ParentId);
+                var parentMenu = await _menuRepository.FindAsync(req.ParentId);
                 if (parentMenu != null && parentMenu.MenuType == MenuType.Button)
                 {
                     throw new BusinessException(message: "菜单父级不能是按钮");
@@ -190,32 +190,32 @@ namespace Fancyx.Admin.Application.Service.System
             }
 
             var isExist = await _menuRepository.AnyAsync(x =>
-                x.Path != null && dto.Path != null && x.Path.ToLower() == dto.Path.ToLower());
-            var entity = await _menuRepository.Where(x => x.Id == dto.Id).FirstAsync() ??
+                x.Path != null && req.Path != null && x.Path.ToLower() == req.Path.ToLower());
+            var entity = await _menuRepository.Where(x => x.Id == req.Id).FirstAsync() ??
                          throw new BusinessException("数据不存在");
-            if (isExist && entity.Path != null && dto.Path!.ToLower() != entity.Path.ToLower())
+            if (isExist && entity.Path != null && req.Path!.ToLower() != entity.Path.ToLower())
             {
-                throw new BusinessException(message: $"已存在【{dto.Path}】菜单路由");
+                throw new BusinessException(message: $"已存在【{req.Path}】菜单路由");
             }
 
-            if (dto.ParentId == entity.Id)
+            if (req.ParentId == entity.Id)
             {
                 throw new BusinessException(message: "不能选择自己为父级");
             }
 
-            bool updatePermission = dto.Permission != entity.Permission;
+            bool updatePermission = req.Permission != entity.Permission;
 
-            entity.Title = dto.Title;
-            entity.Icon = dto.Icon;
-            entity.Path = dto.Path;
-            entity.MenuType = (MenuType)dto.MenuType;
-            entity.Permission = dto.Permission;
-            entity.ParentId = dto.ParentId;
-            entity.Sort = dto.Sort;
-            entity.Display = dto.Display;
-            entity.Component = dto.Component;
-            entity.IsExternal = dto.IsExternal;
-            entity.KeepAlive = dto.KeepAlive;
+            entity.Title = req.Title;
+            entity.Icon = req.Icon;
+            entity.Path = req.Path;
+            entity.MenuType = (MenuType)req.MenuType;
+            entity.Permission = req.Permission;
+            entity.ParentId = req.ParentId;
+            entity.Sort = req.Sort;
+            entity.Display = req.Display;
+            entity.Component = req.Component;
+            entity.IsExternal = req.IsExternal;
+            entity.KeepAlive = req.KeepAlive;
             await _menuRepository.UpdateAsync(entity);
 
             return true;

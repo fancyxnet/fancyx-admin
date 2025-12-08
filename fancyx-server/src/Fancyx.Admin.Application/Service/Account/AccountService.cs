@@ -2,7 +2,7 @@ using AutoMapper;
 
 using DotNetCore.CAP;
 using Fancyx.Admin.Application.IService.Account;
-using Fancyx.Admin.Application.IService.Account.Dtos;
+using Fancyx.Admin.Application.IService.Account.Models;
 using Fancyx.Admin.Application.SharedService;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
@@ -141,12 +141,12 @@ namespace Fancyx.Admin.Application.Service.Account
             return result;
         }
 
-        public async Task<LoginRespone> LoginAsync(LoginRequest dto)
+        public async Task<LoginRespone> LoginAsync(LoginRequest req)
         {
-            return await InternalLoginAsync(dto.UserName, async () =>
+            return await InternalLoginAsync(req.UserName, async () =>
             {
-                var user = await _userRepository.GetAsync(x => x.UserName.ToLower() == dto.UserName.ToLower() && x.IsEnabled) ?? throw new BusinessException(message: "账号或密码不存在");
-                var isOk = user.Password == EncryptionUtils.GenEncodingPassword(dto.Password, user.PasswordSalt);
+                var user = await _userRepository.GetAsync(x => x.UserName.ToLower() == req.UserName.ToLower() && x.IsEnabled) ?? throw new BusinessException(message: "账号或密码不存在");
+                var isOk = user.Password == EncryptionUtils.GenEncodingPassword(req.Password, user.PasswordSalt);
                 if (!isOk) throw new BusinessException(message: "密码错误");
 
                 await this.CheckTenantIsEnabledAsync(user.TenantId);
@@ -155,15 +155,15 @@ namespace Fancyx.Admin.Application.Service.Account
             });
         }
 
-        public async Task<LoginRespone> SmsLoginAsync(SmsLoginRequest dto)
+        public async Task<LoginRespone> SmsLoginAsync(SmsLoginRequest req)
         {
-            return await InternalLoginAsync(dto.Phone, async () =>
+            return await InternalLoginAsync(req.Phone, async () =>
             {
-                var user = await _userRepository.GetAsync(x => x.Phone == dto.Phone && x.IsEnabled) ?? throw new BusinessException(message: "手机号不存在");
-                var codeKey = SystemCacheKey.LoginSmsCode(dto.Phone);
+                var user = await _userRepository.GetAsync(x => x.Phone == req.Phone && x.IsEnabled) ?? throw new BusinessException(message: "手机号不存在");
+                var codeKey = SystemCacheKey.LoginSmsCode(req.Phone);
                 var code = await _hybridCache.GetAsync<string>(codeKey);
                 if (string.IsNullOrEmpty(code)) throw new BusinessException("验证码已过期");
-                if (dto.Code != code) throw new BusinessException("验证码错误");
+                if (req.Code != code) throw new BusinessException("验证码错误");
 
                 await this.CheckTenantIsEnabledAsync(user.TenantId);
 
@@ -276,42 +276,42 @@ namespace Fancyx.Admin.Application.Service.Account
             return topMap;
         }
 
-        public async Task<bool> UpdateUserInfoAsync(UpdateUserInfoRequest dto)
+        public async Task<bool> UpdateUserInfoAsync(UpdateUserInfoRequest req)
         {
             var user = await _userRepository.Where(x => x.Id == _currentUser.Id).FirstAsync();
-            if (!string.IsNullOrEmpty(dto.NickName))
+            if (!string.IsNullOrEmpty(req.NickName))
             {
-                if (user.NickName.ToLower() != dto.NickName!.ToLower())
+                if (user.NickName.ToLower() != req.NickName!.ToLower())
                 {
-                    var exist = await _userRepository.Where(x => x.NickName.ToLower() == dto.NickName.ToLower()).AnyAsync();
+                    var exist = await _userRepository.Where(x => x.NickName.ToLower() == req.NickName.ToLower()).AnyAsync();
                     if (exist) throw new BusinessException(message: "昵称已占用");
                 }
-                user.NickName = dto.NickName;
+                user.NickName = req.NickName;
             }
-            if (!string.IsNullOrEmpty(dto.Avatar))
+            if (!string.IsNullOrEmpty(req.Avatar))
             {
-                user.Avatar = dto.Avatar;
+                user.Avatar = req.Avatar;
             }
-            if (dto.Sex > 0)
+            if (req.Sex > 0)
             {
-                user.Sex = dto.Sex;
+                user.Sex = req.Sex;
             }
-            if (!string.IsNullOrEmpty(dto.Phone))
+            if (!string.IsNullOrEmpty(req.Phone))
             {
-                user.Phone = dto.Phone;
+                user.Phone = req.Phone;
             }
             await _userRepository.UpdateAsync(user);
             return true;
         }
 
-        public async Task<bool> UpdateUserPwdAsync(UpdateUserPwdRequest dto)
+        public async Task<bool> UpdateUserPwdAsync(UpdateUserPwdRequest req)
         {
             var user = await _userRepository.Where(x => x.Id == _currentUser.Id).FirstAsync()
                 ?? throw new BusinessException(message: "用户不存在");
-            var isCorrect = user.Password == EncryptionUtils.GenEncodingPassword(dto.OldPwd, user.PasswordSalt);
+            var isCorrect = user.Password == EncryptionUtils.GenEncodingPassword(req.OldPwd, user.PasswordSalt);
             if (!isCorrect) throw new BusinessException(message: "旧密码错误");
             user.PasswordSalt = EncryptionUtils.GetPasswordSalt();
-            user.Password = EncryptionUtils.GenEncodingPassword(dto.NewPwd, user.PasswordSalt);
+            user.Password = EncryptionUtils.GenEncodingPassword(req.NewPwd, user.PasswordSalt);
             await _userRepository.UpdateAsync(user);
             return true;
         }

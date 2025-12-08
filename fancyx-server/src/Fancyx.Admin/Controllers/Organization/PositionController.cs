@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Fancyx.Admin.Application.IService.Organization;
-using Fancyx.Admin.Application.IService.Organization.Dtos;
+using Fancyx.Admin.Application.IService.Organization.Models;
 
 namespace Fancyx.Admin.Controllers.Organization
 {
@@ -25,40 +25,40 @@ namespace Fancyx.Admin.Controllers.Organization
         /// <summary>
         /// 新增职位
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost("Add")]
         [HasPermission("Org.Position.Add")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
-        public async Task<AppResponse<bool>> AddPositionAsync([FromBody] AddOrUpdatePositionRequest dto)
+        public async Task<AppResponse<bool>> AddPositionAsync([FromBody] AddOrUpdatePositionRequest req)
         {
-            await _positionService.AddPositionAsync(dto);
+            await _positionService.AddPositionAsync(req);
             return Result.Ok();
         }
 
         /// <summary>
         /// 职位分页列表
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpGet("List")]
         [HasPermission("Org.Position.List")]
-        public async Task<AppResponse<PagedResult<PositionItem>>> GetPositionListAsync([FromQuery] GetPositionListRequest dto)
+        public async Task<AppResponse<PagedResult<PositionItem>>> GetPositionListAsync([FromQuery] GetPositionListRequest req)
         {
-            var data = await _positionService.GetPositionListAsync(dto);
+            var data = await _positionService.GetPositionListAsync(req);
             return Result.Data(data);
         }
 
         /// <summary>
         /// 修改职位
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPut("Update")]
         [HasPermission("Org.Position.Update")]
-        public async Task<AppResponse<bool>> UpdatePositionAsync([FromBody] AddOrUpdatePositionRequest dto)
+        public async Task<AppResponse<bool>> UpdatePositionAsync([FromBody] AddOrUpdatePositionRequest req)
         {
-            await _positionService.UpdatePositionAsync(dto);
+            await _positionService.UpdatePositionAsync(req);
             return Result.Ok();
         }
 

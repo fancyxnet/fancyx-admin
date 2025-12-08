@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Fancyx.Admin.Application.SharedService;
-using Fancyx.Admin.Application.IService.System.Dtos;
 using Fancyx.Admin.Application.IService.System;
+using Fancyx.Admin.Application.IService.System.Models;
 
 namespace Fancyx.Admin.Controllers.System
 {
@@ -28,26 +28,26 @@ namespace Fancyx.Admin.Controllers.System
         [HttpPost("Add")]
         [HasPermission("Sys.Config.Add")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
-        public async Task<AppResponse<bool>> AddConfigAsync([FromBody] AddOrUpdateConfigRequest dto)
+        public async Task<AppResponse<bool>> AddConfigAsync([FromBody] AddOrUpdateConfigRequest req)
         {
-            await _configService.AddConfigAsync(dto);
+            await _configService.AddConfigAsync(req);
             return Result.Data(true);
         }
 
         [HttpGet("List")]
         [HasPermission("Sys.Config.List")]
-        public async Task<AppResponse<PagedResult<ConfigItem>>> GetConfigListAsync([FromQuery] GetConfigListRequest dto)
+        public async Task<AppResponse<PagedResult<ConfigItem>>> GetConfigListAsync([FromQuery] GetConfigListRequest req)
         {
-            var data = await _configService.GetConfigListAsync(dto);
+            var data = await _configService.GetConfigListAsync(req);
             return Result.Data(data);
         }
 
         [HttpPut("Update")]
         [HasPermission("Sys.Config.Update")]
         [ApiAccessLog(operateName: "修改配置", operateType: [OperateType.Update], reponseEnable: true)]
-        public async Task<AppResponse<bool>> UpdateConfigAsync(AddOrUpdateConfigRequest dto)
+        public async Task<AppResponse<bool>> UpdateConfigAsync(AddOrUpdateConfigRequest req)
         {
-            await _configService.UpdateConfigAsync(dto);
+            await _configService.UpdateConfigAsync(req);
             return Result.Data(true);
         }
 

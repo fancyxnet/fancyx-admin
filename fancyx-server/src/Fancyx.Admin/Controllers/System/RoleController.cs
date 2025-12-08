@@ -5,8 +5,8 @@ using Fancyx.Shared.Consts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using Fancyx.Admin.Application.IService.System.Dtos;
 using Fancyx.Admin.Application.IService.System;
+using Fancyx.Admin.Application.IService.System.Models;
 
 namespace Fancyx.Admin.Controllers.System
 {
@@ -25,41 +25,41 @@ namespace Fancyx.Admin.Controllers.System
         /// <summary>
         /// 新增角色
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost("Add")]
         [HasPermission("Sys.Role.Add")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
-        public async Task<AppResponse<bool>> AddRoleAsync([FromBody] AddOrUpdateRoleRequest dto)
+        public async Task<AppResponse<bool>> AddRoleAsync([FromBody] AddOrUpdateRoleRequest req)
         {
-            await _roleService.AddRoleAsync(dto);
+            await _roleService.AddRoleAsync(req);
             return Result.Ok();
         }
 
         /// <summary>
         /// 角色分页列表
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpGet("List")]
         [HasPermission("Sys.Role.List")]
-        public async Task<AppResponse<PagedResult<RoleItem>>> GetRoleListAsync([FromQuery] GetRoleListRequest dto)
+        public async Task<AppResponse<PagedResult<RoleItem>>> GetRoleListAsync([FromQuery] GetRoleListRequest req)
         {
-            var data = await _roleService.GetRoleListAsync(dto);
+            var data = await _roleService.GetRoleListAsync(req);
             return Result.Data(data);
         }
 
         /// <summary>
         /// 修改角色
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPut("Update")]
         [HasPermission("Sys.Role.Update")]
         [ApiAccessLog(operateName: "修改角色", operateType: [OperateType.Update], reponseEnable: true)]
-        public async Task<AppResponse<bool>> UpdateRoleAsync([FromBody] AddOrUpdateRoleRequest dto)
+        public async Task<AppResponse<bool>> UpdateRoleAsync([FromBody] AddOrUpdateRoleRequest req)
         {
-            await _roleService.UpdateRoleAsync(dto);
+            await _roleService.UpdateRoleAsync(req);
             return Result.Ok();
         }
 
@@ -80,14 +80,14 @@ namespace Fancyx.Admin.Controllers.System
         /// <summary>
         /// 分配菜单
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost("AssignMenu")]
         [HasPermission("Sys.Role.AssignMenu")]
         [ApiAccessLog(operateName: "分配菜单权限", operateType: [OperateType.Update], reponseEnable: true)]
-        public async Task<AppResponse<bool>> AssignMenuAsync([FromBody] AssignMenuRequest dto)
+        public async Task<AppResponse<bool>> AssignMenuAsync([FromBody] AssignMenuRequest req)
         {
-            await _roleService.AssignMenuAsync(dto);
+            await _roleService.AssignMenuAsync(req);
             return Result.Ok();
         }
 
@@ -129,13 +129,13 @@ namespace Fancyx.Admin.Controllers.System
         /// <summary>
         /// 分配角色数据权限
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost("AssignDataScope")]
         [HasPermission("Sys.Role.AssignDataScope")]
-        public async Task<AppResponse<bool>> AssignDataScopeAsync([FromBody] AssignDataScopeRequest dto)
+        public async Task<AppResponse<bool>> AssignDataScopeAsync([FromBody] AssignDataScopeRequest req)
         {
-            await _roleService.AssignDataScopeAsync(dto);
+            await _roleService.AssignDataScopeAsync(req);
             return Result.Ok();
         }
     }

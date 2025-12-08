@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Fancyx.Admin.Application.IService.Organization;
-using Fancyx.Admin.Application.IService.Organization.Dtos;
+using Fancyx.Admin.Application.IService.Organization.Models;
 
 namespace Fancyx.Admin.Controllers.Organization
 {
@@ -25,40 +25,40 @@ namespace Fancyx.Admin.Controllers.Organization
         /// <summary>
         /// 新增职位分组
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost("Add")]
         [HasPermission("Org.PositionGroup.Add")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
-        public async Task<AppResponse<bool>> AddPositionGroupAsync([FromBody] AddOrUpdatePositionGroupRequest dto)
+        public async Task<AppResponse<bool>> AddPositionGroupAsync([FromBody] AddOrUpdatePositionGroupRequest req)
         {
-            await _positionGroupService.AddPositionGroupAsync(dto);
+            await _positionGroupService.AddPositionGroupAsync(req);
             return Result.Ok();
         }
 
         /// <summary>
         /// 职位分组分页列表
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpGet("List")]
         [HasPermission("Org.PositionGroup.List")]
-        public async Task<AppResponse<List<PositionGroupItem>>> GetPositionGroupListAsync([FromQuery] GetPositionGroupListRequest dto)
+        public async Task<AppResponse<List<PositionGroupItem>>> GetPositionGroupListAsync([FromQuery] GetPositionGroupListRequest req)
         {
-            var data = await _positionGroupService.GetPositionGroupListAsync(dto);
+            var data = await _positionGroupService.GetPositionGroupListAsync(req);
             return Result.Data(data);
         }
 
         /// <summary>
         /// 修改职位分组
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPut("Update")]
         [HasPermission("Org.PositionGroup.Update")]
-        public async Task<AppResponse<bool>> UpdatePositionGroupAsync([FromBody] AddOrUpdatePositionGroupRequest dto)
+        public async Task<AppResponse<bool>> UpdatePositionGroupAsync([FromBody] AddOrUpdatePositionGroupRequest req)
         {
-            await _positionGroupService.UpdatePositionGroupAsync(dto);
+            await _positionGroupService.UpdatePositionGroupAsync(req);
             return Result.Ok();
         }
 

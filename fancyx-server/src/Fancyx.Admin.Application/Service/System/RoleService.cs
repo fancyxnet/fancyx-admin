@@ -1,5 +1,5 @@
 using Fancyx.Admin.Application.IService.System;
-using Fancyx.Admin.Application.IService.System.Dtos;
+using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Admin.Application.SharedService;
 using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.Admin.EfCore.Entities.System;
@@ -34,9 +34,9 @@ namespace Fancyx.Admin.Application.Service.System
             _currentTenant = currentTenant;
         }
 
-        public async Task<bool> AddRoleAsync(AddOrUpdateRoleRequest dto)
+        public async Task<bool> AddRoleAsync(AddOrUpdateRoleRequest req)
         {
-            var isExist = await _roleRepository.AnyAsync(x => x.RoleName.ToLower() == dto.RoleName.ToLower());
+            var isExist = await _roleRepository.AnyAsync(x => x.RoleName.ToLower() == req.RoleName.ToLower());
             if (isExist)
             {
                 throw new BusinessException("角色名已存在");
@@ -44,34 +44,34 @@ namespace Fancyx.Admin.Application.Service.System
 
             var entity = new Role
             {
-                RoleName = dto.RoleName,
-                Remark = dto.Remark
+                RoleName = req.RoleName,
+                Remark = req.Remark
             };
             await _roleRepository.InsertAsync(entity);
             return true;
         }
 
-        public async Task<bool> AssignMenuAsync(AssignMenuRequest dto)
+        public async Task<bool> AssignMenuAsync(AssignMenuRequest req)
         {
-            await _roleMenuRepository.DeleteAsync(x => x.RoleId == dto.RoleId);
-            if (dto.MenuIds != null)
+            await _roleMenuRepository.DeleteAsync(x => x.RoleId == req.RoleId);
+            if (req.MenuIds != null)
             {
                 //租户模式下，检查分配的菜单是否租户已有菜单
                 if (MultiTenancyConsts.IsEnabled)
                 {
                     var menuIds = await _identitySharedService.GetTenantMenusAsync(_currentTenant.TenantId ?? "");
-                    if (dto.MenuIds.Any(m => !menuIds.Contains(m)))
+                    if (req.MenuIds.Any(m => !menuIds.Contains(m)))
                     {
                         throw new BusinessException("不能分配租户无权限菜单");
                     }
                 }
 
                 var items = new List<RoleMenu>();
-                foreach (var item in dto.MenuIds)
+                foreach (var item in req.MenuIds)
                 {
                     items.Add(new RoleMenu
                     {
-                        RoleId = dto.RoleId,
+                        RoleId = req.RoleId,
                         MenuId = item
                     });
                 }
@@ -82,7 +82,7 @@ namespace Fancyx.Admin.Application.Service.System
                 }
             }
 
-            await _identitySharedService.DelUserPermissionCacheByRoleIdAsync(dto.RoleId);
+            await _identitySharedService.DelUserPermissionCacheByRoleIdAsync(req.RoleId);
             return true;
         }
 
@@ -97,13 +97,13 @@ namespace Fancyx.Admin.Application.Service.System
             return true;
         }
 
-        public async Task<PagedResult<RoleItem>> GetRoleListAsync(GetRoleListRequest dto)
+        public async Task<PagedResult<RoleItem>> GetRoleListAsync(GetRoleListRequest req)
         {
             var resp = await _roleRepository.GetQueryable()
-                .WhereIf(!string.IsNullOrEmpty(dto.RoleName), x => x.RoleName.Contains(dto.RoleName!))
+                .WhereIf(!string.IsNullOrEmpty(req.RoleName), x => x.RoleName.Contains(req.RoleName!))
                 .OrderByDescending(x => x.CreationTime)
                 .Select(x => new RoleItem() { Id = x.Id, IsEnabled = x.IsEnabled, Remark = x.Remark, CreationTime = x.CreationTime, RoleName = x.RoleName })
-                .PagedAsync(dto.Current, dto.PageSize);
+                .PagedAsync(req.Current, req.PageSize);
 
             return new PagedResult<RoleItem>(resp.Total, resp.Items);
         }
@@ -117,19 +117,19 @@ namespace Fancyx.Admin.Application.Service.System
             });
         }
 
-        public async Task<bool> UpdateRoleAsync(AddOrUpdateRoleRequest dto)
+        public async Task<bool> UpdateRoleAsync(AddOrUpdateRoleRequest req)
         {
-            ArgumentNullException.ThrowIfNull(dto.Id);
-            var entity = await _roleRepository.FindAsync(dto.Id) ?? throw new BusinessException("数据不存在");
-            var isExist = await _roleRepository.AnyAsync(x => x.RoleName.ToLower() == dto.RoleName.ToLower());
-            if (entity.RoleName.ToLower() != dto.RoleName.ToLower() && isExist)
+            ArgumentNullException.ThrowIfNull(req.Id);
+            var entity = await _roleRepository.FindAsync(req.Id) ?? throw new BusinessException("数据不存在");
+            var isExist = await _roleRepository.AnyAsync(x => x.RoleName.ToLower() == req.RoleName.ToLower());
+            if (entity.RoleName.ToLower() != req.RoleName.ToLower() && isExist)
             {
                 throw new BusinessException("角色名已存在");
             }
 
-            entity.RoleName = dto.RoleName;
-            entity.Remark = dto.Remark;
-            entity.IsEnabled = dto.IsEnabled;
+            entity.RoleName = req.RoleName;
+            entity.Remark = req.Remark;
+            entity.IsEnabled = req.IsEnabled;
             await _roleRepository.UpdateAsync(entity);
 
             if (!entity.IsEnabled)
@@ -197,20 +197,20 @@ namespace Fancyx.Admin.Application.Service.System
         }
 
         [AsyncTransactional]
-        public async Task AssignDataScopeAsync(AssignDataScopeRequest dto)
+        public async Task AssignDataScopeAsync(AssignDataScopeRequest req)
         {
-            var role = await _roleRepository.FindAsync(dto.RoleId);
+            var role = await _roleRepository.FindAsync(req.RoleId);
             if (role == null) throw new BusinessException("角色不存在");
 
-            await _roleDeptRepository.DeleteAsync(x => x.RoleId == dto.RoleId);
-            if (dto is { DeptPowerType: DeptPowerType.Specify, DeptIds.Length: > 0 })
+            await _roleDeptRepository.DeleteAsync(x => x.RoleId == req.RoleId);
+            if (req is { DeptPowerType: DeptPowerType.Specify, DeptIds.Length: > 0 })
             {
-                var roleDeptList = dto.DeptIds
-                    .Select(deptId => new RoleDept { DeptId = deptId, RoleId = dto.RoleId }).ToList();
+                var roleDeptList = req.DeptIds
+                    .Select(deptId => new RoleDept { DeptId = deptId, RoleId = req.RoleId }).ToList();
                 await _roleDeptRepository.InsertManyAsync(roleDeptList);
             }
 
-            role.DeptPowerType = dto.DeptPowerType;
+            role.DeptPowerType = req.DeptPowerType;
             await _roleRepository.UpdateAsync(role);
         }
     }

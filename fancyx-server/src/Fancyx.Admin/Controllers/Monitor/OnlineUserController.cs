@@ -4,7 +4,7 @@ using Fancyx.Shared.Logger;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Fancyx.Admin.Application.IService.Monitor;
-using Fancyx.Admin.Application.IService.Monitor.Dtos;
+using Fancyx.Admin.Application.IService.Monitor.Models;
 
 namespace Fancyx.Admin.Controllers.Monitor
 {
@@ -23,14 +23,14 @@ namespace Fancyx.Admin.Controllers.Monitor
         /// <summary>
         /// 在线用户列表
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpGet]
         [HasPermission("Monitor.OnlineUser")]
         [ApiAccessLog(operateName: "在线用户列表", operateType: [OperateType.Query])]
-        public async Task<AppResponse<List<OnlineUserItem>>> GetOnlineUserListAsync([FromQuery] GetOnlineUserListRequest dto)
+        public async Task<AppResponse<List<OnlineUserItem>>> GetOnlineUserListAsync([FromQuery] GetOnlineUserListRequest req)
         {
-            var data = await _onlineUserService.GetOnlineUserListAsync(dto);
+            var data = await _onlineUserService.GetOnlineUserListAsync(req);
             return Result.Data(data);
         }
 

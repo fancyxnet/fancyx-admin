@@ -1,6 +1,6 @@
 using AutoMapper;
 using Fancyx.Admin.Application.IService.Organization;
-using Fancyx.Admin.Application.IService.Organization.Dtos;
+using Fancyx.Admin.Application.IService.Organization.Models;
 using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Core.Interfaces;
@@ -26,17 +26,17 @@ namespace Fancyx.Admin.Application.Service.Organization
             _mapper = mapper;
         }
 
-        public async Task<bool> AddDeptAsync(AddOrUpdateDeptRequest dto)
+        public async Task<bool> AddDeptAsync(AddOrUpdateDeptRequest req)
         {
-            if (await _deptRepository.Where(x => x.Code.ToLower() == dto.Code!.ToLower()).AnyAsync())
+            if (await _deptRepository.Where(x => x.Code.ToLower() == req.Code!.ToLower()).AnyAsync())
             {
                 throw new BusinessException(message: "部门编号已存在");
             }
 
-            var entity = _mapper.Map<AddOrUpdateDeptRequest, Dept>(dto);
-            entity.ParentId = dto.ParentId;
-            entity.Code = dto.Code;
-            entity.SetTreeProperties(await _deptRepository.FindAsync(dto.ParentId));
+            var entity = _mapper.Map<AddOrUpdateDeptRequest, Dept>(req);
+            entity.ParentId = req.ParentId;
+            entity.Code = req.Code;
+            entity.SetTreeProperties(await _deptRepository.FindAsync(req.ParentId));
 
             await _deptRepository.InsertAsync(entity);
             return true;
@@ -56,15 +56,15 @@ namespace Fancyx.Admin.Application.Service.Organization
             return true;
         }
 
-        public async Task<List<DeptItem>> GetDeptListAsync(GetDeptListRequest dto)
+        public async Task<List<DeptItem>> GetDeptListAsync(GetDeptListRequest req)
         {
-            bool hasFilter = !string.IsNullOrEmpty(dto.Name) || !string.IsNullOrEmpty(dto.Code) || dto.Status > 0;
+            bool hasFilter = !string.IsNullOrEmpty(req.Name) || !string.IsNullOrEmpty(req.Code) || req.Status > 0;
             if (hasFilter)
             {
                 var filter = await _deptRepository.GetQueryable().PowerFilter(_currentUser)
-                    .WhereIf(!string.IsNullOrEmpty(dto.Name), x => x.Name.Contains(dto.Name!))
-                    .WhereIf(!string.IsNullOrEmpty(dto.Code), x => x.Code.Contains(dto.Code!)) // ==
-                    .WhereIf(dto.Status > 0, x => x.Status == dto.Status) // ==
+                    .WhereIf(!string.IsNullOrEmpty(req.Name), x => x.Name.Contains(req.Name!))
+                    .WhereIf(!string.IsNullOrEmpty(req.Code), x => x.Code.Contains(req.Code!)) // ==
+                    .WhereIf(req.Status > 0, x => x.Status == req.Status) // ==
                     .OrderBy(x => x.Sort).ToListAsync();
                 var result = _mapper.Map<List<Dept>, List<DeptItem>>(filter);
 
@@ -101,31 +101,31 @@ namespace Fancyx.Admin.Application.Service.Organization
             return tree.OrderBy(x => x.Sort).Concat(endDtos).ToList();
         }
 
-        public async Task<bool> UpdateDeptAsync(AddOrUpdateDeptRequest dto)
+        public async Task<bool> UpdateDeptAsync(AddOrUpdateDeptRequest req)
         {
-            if (!dto.Id.HasValue) throw new ArgumentNullException(nameof(dto.Id));
+            if (!req.Id.HasValue) throw new ArgumentNullException(nameof(req.Id));
 
-            var entity = await _deptRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
-            if (!entity.Code.Equals(dto.Code, StringComparison.CurrentCultureIgnoreCase) &&
-                await _deptRepository.AnyAsync(x => x.Code.ToLower() == dto.Code!.ToLower()))
+            var entity = await _deptRepository.FindAsync(req.Id) ?? throw new EntityNotFoundException();
+            if (!entity.Code.Equals(req.Code, StringComparison.CurrentCultureIgnoreCase) &&
+                await _deptRepository.AnyAsync(x => x.Code.ToLower() == req.Code!.ToLower()))
             {
                 throw new BusinessException(message: "部门编号已存在");
             }
 
-            if (dto.ParentId == entity.Id)
+            if (req.ParentId == entity.Id)
             {
                 throw new BusinessException(message: "不能选择自己为上级部门");
             }
 
-            entity.Name = dto.Name;
-            entity.Code = dto.Code;
-            entity.Sort = dto.Sort;
-            entity.Description = dto.Description;
-            entity.Status = dto.Status;
-            entity.CuratorId = dto.CuratorId;
-            entity.Email = dto.Email;
-            entity.Phone = dto.Phone;
-            entity.ParentId = dto.ParentId;
+            entity.Name = req.Name;
+            entity.Code = req.Code;
+            entity.Sort = req.Sort;
+            entity.Description = req.Description;
+            entity.Status = req.Status;
+            entity.CuratorId = req.CuratorId;
+            entity.Email = req.Email;
+            entity.Phone = req.Phone;
+            entity.ParentId = req.ParentId;
             if (entity.ParentId.HasValue)
             {
                 var parentIsSub = await _deptRepository.AnyAsync(x => x.Id == entity.ParentId && x.ParentId == entity.Id);

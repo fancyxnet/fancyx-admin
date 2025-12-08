@@ -1,4 +1,4 @@
-using Fancyx.Admin.Application.IService.Account.Dtos;
+using Fancyx.Admin.Application.IService.Account.Models;
 using Fancyx.Core.Interfaces;
 
 namespace Fancyx.Admin.Application.IService.Account
@@ -8,16 +8,16 @@ namespace Fancyx.Admin.Application.IService.Account
         /// <summary>
         /// 登录
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        Task<LoginRespone> LoginAsync(LoginRequest dto);
+        Task<LoginRespone> LoginAsync(LoginRequest req);
 
         /// <summary>
         /// 短信验证码登录
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        Task<LoginRespone> SmsLoginAsync(SmsLoginRequest dto);
+        Task<LoginRespone> SmsLoginAsync(SmsLoginRequest req);
 
         /// <summary>
         /// 刷新token
@@ -29,16 +29,16 @@ namespace Fancyx.Admin.Application.IService.Account
         /// <summary>
         /// 修改个人基本信息
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        Task<bool> UpdateUserInfoAsync(UpdateUserInfoRequest dto);
+        Task<bool> UpdateUserInfoAsync(UpdateUserInfoRequest req);
 
         /// <summary>
         /// 修改个人密码
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        Task<bool> UpdateUserPwdAsync(UpdateUserPwdRequest dto);
+        Task<bool> UpdateUserPwdAsync(UpdateUserPwdRequest req);
 
         /// <summary>
         /// 注销

@@ -1,4 +1,4 @@
-using Fancyx.Admin.Application.IService.System.LogManagement.Dtos;
+using Fancyx.Admin.Application.IService.System.LogManagement.Models;
 using Fancyx.Core.Interfaces;
 
 namespace Fancyx.Admin.Application.IService.System.LogManagement
@@ -8,8 +8,8 @@ namespace Fancyx.Admin.Application.IService.System.LogManagement
         /// <summary>
         /// 登录日志分页列表
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        Task<PagedResult<LoginLogItem>> GetLoginLogListAsync(GetLoginLogListRequest dto);
+        Task<PagedResult<LoginLogItem>> GetLoginLogListAsync(GetLoginLogListRequest req);
     }
 }

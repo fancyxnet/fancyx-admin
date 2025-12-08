@@ -1,5 +1,5 @@
 ﻿using Fancyx.Admin.Application.IService.System;
-using Fancyx.Admin.Application.IService.System.Dtos;
+using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Shared.WebApi.Attributes;
 
 using Microsoft.AspNetCore.Authorization;
@@ -21,25 +21,25 @@ namespace Fancyx.Admin.Controllers.System
 
         [HttpPost("Add")]
         [HasPermission("Sys.Notification.Add")]
-        public async Task<AppResponse<bool>> AddNotificationAsync([FromBody] AddOrUpdateNotificationRequest dto)
+        public async Task<AppResponse<bool>> AddNotificationAsync([FromBody] AddOrUpdateNotificationRequest req)
         {
-            await _notificationService.AddNotificationAsync(dto);
+            await _notificationService.AddNotificationAsync(req);
             return Result.Ok();
         }
 
         [HttpGet("List")]
         [HasPermission("Sys.Notification.List")]
-        public async Task<AppResponse<PagedResult<NotificationItem>>> GetNotificationListAsync([FromQuery] GetNotificationListRequest dto)
+        public async Task<AppResponse<PagedResult<NotificationItem>>> GetNotificationListAsync([FromQuery] GetNotificationListRequest req)
         {
-            var data = await _notificationService.GetNotificationListAsync(dto);
+            var data = await _notificationService.GetNotificationListAsync(req);
             return Result.Data(data);
         }
 
         [HttpPut("Update")]
         [HasPermission("Sys.Notification.Update")]
-        public async Task<AppResponse<bool>> UpdateNotificationAsync([FromBody] AddOrUpdateNotificationRequest dto)
+        public async Task<AppResponse<bool>> UpdateNotificationAsync([FromBody] AddOrUpdateNotificationRequest req)
         {
-            await _notificationService.UpdateNotificationAsync(dto);
+            await _notificationService.UpdateNotificationAsync(req);
             return Result.Ok();
         }
 

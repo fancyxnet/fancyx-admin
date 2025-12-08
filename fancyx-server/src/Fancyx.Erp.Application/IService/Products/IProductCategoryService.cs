@@ -1,16 +1,16 @@
 ﻿using Fancyx.Core.Interfaces;
-using Fancyx.Erp.Application.IService.Products.Dtos;
+using Fancyx.Erp.Application.IService.Products.Models;
 using Fancyx.Shared.Models;
 
 namespace Fancyx.Erp.Application.IService.Products
 {
     public interface IProductCategoryService : IScopedDependency
     {
-        Task AddProductCategoryAsync(ProductCategoryDto dto);
+        Task AddProductCategoryAsync(AddOrUpdateProductCategory req);
 
-        Task<PagedResult<ProductCategoryListDto>> GetProductCategoryListAsync(ProductCategoryQueryDto dto);
+        Task<PagedResult<ProductCategoryItem>> GetProductCategoryListAsync(GetProductCategoryListRequest req);
 
-        Task UpdateProductCategoryAsync(ProductCategoryDto dto);
+        Task UpdateProductCategoryAsync(AddOrUpdateProductCategory req);
 
         Task DeleteProductCategoryAsync(long id);
     }

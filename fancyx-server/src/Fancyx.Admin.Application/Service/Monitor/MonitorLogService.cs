@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 
 using Fancyx.Admin.Application.IService.Monitor;
-using Fancyx.Admin.Application.IService.Monitor.Dtos;
+using Fancyx.Admin.Application.IService.Monitor.Models;
 using Fancyx.Admin.EfCore;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
@@ -24,23 +24,23 @@ namespace Fancyx.Admin.Application.Service.Monitor
             _mapper = mapper;
         }
 
-        public async Task<PagedResult<ApiAccessLogItem>> GetApiAccessLogListAsync(GetApiAccessLogListRequest dto)
+        public async Task<PagedResult<ApiAccessLogItem>> GetApiAccessLogListAsync(GetApiAccessLogListRequest req)
         {
-            var resp = await _apiAccessRepository.GetQueryable().WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.UserName != null && x.UserName.Contains(dto.UserName!))
-                .WhereIf(!string.IsNullOrEmpty(dto.Path), x => x.Path.Contains(dto.Path!))
+            var resp = await _apiAccessRepository.GetQueryable().WhereIf(!string.IsNullOrEmpty(req.UserName), x => x.UserName != null && x.UserName.Contains(req.UserName!))
+                .WhereIf(!string.IsNullOrEmpty(req.Path), x => x.Path.Contains(req.Path!))
                 .OrderByDescending(x => x.CreationTime)
-                .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<ApiAccessLogItem>(dto, resp.Total, _mapper.Map<List<ApiAccessLog>, List<ApiAccessLogItem>>(resp.Items));
+                .PagedAsync(req.Current, req.PageSize);
+            return new PagedResult<ApiAccessLogItem>(req, resp.Total, _mapper.Map<List<ApiAccessLog>, List<ApiAccessLogItem>>(resp.Items));
         }
 
-        public async Task<PagedResult<ExceptionLogItem>> GetExceptionLogListAsync(GetExceptionLogListRequest dto)
+        public async Task<PagedResult<ExceptionLogItem>> GetExceptionLogListAsync(GetExceptionLogListRequest req)
         {
-            var resp = await _exceptionLogRepository.GetQueryable().WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.UserName != null && x.UserName.Contains(dto.UserName!))
-                .WhereIf(!string.IsNullOrEmpty(dto.Path), x => x.RequestPath != null && x.RequestPath.Contains(dto.Path!))
-                .WhereIf(dto.IsHandled.HasValue, x => x.IsHandled == dto.IsHandled!)
+            var resp = await _exceptionLogRepository.GetQueryable().WhereIf(!string.IsNullOrEmpty(req.UserName), x => x.UserName != null && x.UserName.Contains(req.UserName!))
+                .WhereIf(!string.IsNullOrEmpty(req.Path), x => x.RequestPath != null && x.RequestPath.Contains(req.Path!))
+                .WhereIf(req.IsHandled.HasValue, x => x.IsHandled == req.IsHandled!)
                 .OrderByDescending(x => x.CreationTime)
-                .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<ExceptionLogItem>(dto, resp.Total, _mapper.Map<List<ExceptionLog>, List<ExceptionLogItem>>(resp.Items));
+                .PagedAsync(req.Current, req.PageSize);
+            return new PagedResult<ExceptionLogItem>(req, resp.Total, _mapper.Map<List<ExceptionLog>, List<ExceptionLogItem>>(resp.Items));
         }
 
         public async Task HandleExceptionAsync(long exceptionId)

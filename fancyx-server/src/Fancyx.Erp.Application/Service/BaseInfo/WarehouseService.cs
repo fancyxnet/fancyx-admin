@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Fancyx.EfCore;
 using Fancyx.Erp.Application.IService.BaseInfo;
-using Fancyx.Erp.Application.IService.BaseInfo.Dtos;
+using Fancyx.Erp.Application.IService.BaseInfo.Models;
 using Fancyx.Erp.EfCore.Entites;
 using Fancyx.Shared.Exceptions;
 using Fancyx.Shared.Models;
@@ -19,19 +19,19 @@ namespace Fancyx.Erp.Application.Service.BaseInfo
             _mapper = mapper;
         }
 
-        public async Task AddWarehouseAsync(StoreHouseDto dto)
+        public async Task AddWarehouseAsync(AddOrUpdateWarehouseRequest req)
         {
-            var codeIsExist = await _warehouseRepository.AnyAsync(x => x.Code == dto.Code);
+            var codeIsExist = await _warehouseRepository.AnyAsync(x => x.Code == req.Code);
             if (codeIsExist)
             {
                 throw new BusinessException("编码已存在");
             }
             var storeHouse = new Warehouse()
             {
-                Code = dto.Code,
-                Name = dto.Name,
-                Remark = dto.Remark,
-                IsEnabled = dto.IsEnabled
+                Code = req.Code,
+                Name = req.Name,
+                Remark = req.Remark,
+                IsEnabled = req.IsEnabled
             };
             await _warehouseRepository.InsertAsync(storeHouse);
         }
@@ -41,26 +41,26 @@ namespace Fancyx.Erp.Application.Service.BaseInfo
             await _warehouseRepository.DeleteAsync(x => x.Id == id);
         }
 
-        public async Task<PagedResult<StoreHouseListDto>> GetWarehouseListAsync(StoreHouseQueryDto dto)
+        public async Task<PagedResult<WarehouseItem>> GetWarehouseListAsync(GetWarehouseListRequest req)
         {
             var resp = await _warehouseRepository.GetQueryable()
-                .WhereIf(!string.IsNullOrEmpty(dto.Name), x => x.Name.StartsWith(dto.Name!))
-                .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<StoreHouseListDto>(resp.Total, _mapper.Map<List<StoreHouseListDto>>(resp.Items));
+                .WhereIf(!string.IsNullOrEmpty(req.Name), x => x.Name.StartsWith(req.Name!))
+                .PagedAsync(req.Current, req.PageSize);
+            return new PagedResult<WarehouseItem>(resp.Total, _mapper.Map<List<WarehouseItem>>(resp.Items));
         }
 
-        public async Task UpdateWarehouseAsync(StoreHouseDto dto)
+        public async Task UpdateWarehouseAsync(AddOrUpdateWarehouseRequest req)
         {
-            var storeHouse = await _warehouseRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
-            var codeIsExist = storeHouse.Code != dto.Code && await _warehouseRepository.AnyAsync(x => x.Code == dto.Code);
+            var storeHouse = await _warehouseRepository.FindAsync(req.Id) ?? throw new EntityNotFoundException();
+            var codeIsExist = storeHouse.Code != req.Code && await _warehouseRepository.AnyAsync(x => x.Code == req.Code);
             if (codeIsExist)
             {
                 throw new BusinessException("编码已存在");
             }
-            storeHouse.Code = dto.Code;
-            storeHouse.Name = dto.Name;
-            storeHouse.Remark = dto.Remark;
-            storeHouse.IsEnabled = dto.IsEnabled;
+            storeHouse.Code = req.Code;
+            storeHouse.Name = req.Name;
+            storeHouse.Remark = req.Remark;
+            storeHouse.IsEnabled = req.IsEnabled;
             await _warehouseRepository.UpdateAsync(storeHouse);
         }
 

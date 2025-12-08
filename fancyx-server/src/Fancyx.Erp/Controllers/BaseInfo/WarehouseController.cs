@@ -1,5 +1,5 @@
 ﻿using Fancyx.Erp.Application.IService.BaseInfo;
-using Fancyx.Erp.Application.IService.BaseInfo.Dtos;
+using Fancyx.Erp.Application.IService.BaseInfo.Models;
 using Fancyx.Erp.EfCore.Entites;
 using Fancyx.Shared.Models;
 using Fancyx.Shared.WebApi.Attributes;
@@ -22,25 +22,25 @@ namespace Fancyx.Erp.Controllers.BaseInfo
 
         [HttpPost("Add")]
         [HasPermission("Erp.Warehouse.Add")]
-        public async Task<AppResponse<bool>> AddWarehouseAsync([FromBody] StoreHouseDto dto)
+        public async Task<AppResponse<bool>> AddWarehouseAsync([FromBody] AddOrUpdateWarehouseRequest req)
         {
-            await WarehouseService.AddWarehouseAsync(dto);
+            await WarehouseService.AddWarehouseAsync(req);
             return Result.Ok();
         }
 
         [HttpGet("List")]
         [HasPermission("Erp.Warehouse.List")]
-        public async Task<AppResponse<PagedResult<StoreHouseListDto>>> GetWarehouseListAsync([FromQuery] StoreHouseQueryDto dto)
+        public async Task<AppResponse<PagedResult<WarehouseItem>>> GetWarehouseListAsync([FromQuery] GetWarehouseListRequest req)
         {
-            var data = await WarehouseService.GetWarehouseListAsync(dto);
+            var data = await WarehouseService.GetWarehouseListAsync(req);
             return Result.Data(data);
         }
 
         [HttpPut("Update")]
         [HasPermission("Erp.Warehouse.Update")]
-        public async Task<AppResponse<bool>> UpdateWarehouseAsync([FromBody] StoreHouseDto dto)
+        public async Task<AppResponse<bool>> UpdateWarehouseAsync([FromBody] AddOrUpdateWarehouseRequest req)
         {
-            await WarehouseService.UpdateWarehouseAsync(dto);
+            await WarehouseService.UpdateWarehouseAsync(req);
             return Result.Ok();
         }
 

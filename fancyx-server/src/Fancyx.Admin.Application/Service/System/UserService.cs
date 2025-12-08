@@ -1,7 +1,7 @@
 using AutoMapper;
 
 using Fancyx.Admin.Application.IService.System;
-using Fancyx.Admin.Application.IService.System.Dtos;
+using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Admin.Application.SharedService;
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.System;
@@ -40,54 +40,54 @@ namespace Fancyx.Admin.Application.Service.System
             _mapper = mapper;
         }
 
-        public async Task<long> AddUserAsync(AddUserRequest dto)
+        public async Task<long> AddUserAsync(AddUserRequest req)
         {
-            var userNameIsExist = await _userRepository.AnyAsync(x => x.UserName.ToLower() == dto.UserName.ToLower());
+            var userNameIsExist = await _userRepository.AnyAsync(x => x.UserName.ToLower() == req.UserName.ToLower());
             if (userNameIsExist)
             {
                 throw new BusinessException("账号已存在");
             }
-            if (!string.IsNullOrEmpty(dto.Phone) && await _userRepository.AnyAsync(x => x.Phone == dto.Phone))
+            if (!string.IsNullOrEmpty(req.Phone) && await _userRepository.AnyAsync(x => x.Phone == req.Phone))
             {
                 throw new BusinessException("手机号已存在");
             }
-            if (!RegexCodeGen.Password().IsMatch(dto.Password))
+            if (!RegexCodeGen.Password().IsMatch(req.Password))
             {
                 throw new BusinessException("密码格式不正确");
             }
             var user = new User
             {
-                UserName = dto.UserName,
+                UserName = req.UserName,
                 PasswordSalt = EncryptionUtils.GetPasswordSalt(),
-                Avatar = dto.Avatar,
-                NickName = dto.NickName ?? dto.UserName,
-                Sex = dto.Sex,
-                Phone = dto.Phone,
+                Avatar = req.Avatar,
+                NickName = req.NickName ?? req.UserName,
+                Sex = req.Sex,
+                Phone = req.Phone,
                 IsEnabled = true,
-                DeptId = dto.DeptId,
-                PostId = dto.PostId
+                DeptId = req.DeptId,
+                PostId = req.PostId
             };
-            if (string.IsNullOrWhiteSpace(dto.Avatar))
+            if (string.IsNullOrWhiteSpace(req.Avatar))
             {
                 user.Avatar = user.Sex == SexType.Male ? AdminConsts.AvatarMale : AdminConsts.AvatarFemale;
             }
-            user.Password = EncryptionUtils.GenEncodingPassword(dto.Password, user.PasswordSalt);
+            user.Password = EncryptionUtils.GenEncodingPassword(req.Password, user.PasswordSalt);
             await _userRepository.InsertAsync(user);
             return user.Id;
         }
 
         [AsyncTransactional]
-        public async Task<bool> AssignRoleAsync(AssignRoleRequest dto)
+        public async Task<bool> AssignRoleAsync(AssignRoleRequest req)
         {
-            await _userRoleRepository.DeleteAsync(x => x.UserId == dto.UserId);
-            if (dto.RoleIds != null)
+            await _userRoleRepository.DeleteAsync(x => x.UserId == req.UserId);
+            if (req.RoleIds != null)
             {
                 var items = new List<UserRole>();
-                foreach (var item in dto.RoleIds)
+                foreach (var item in req.RoleIds)
                 {
                     items.Add(new UserRole
                     {
-                        UserId = dto.UserId,
+                        UserId = req.UserId,
                         RoleId = item
                     });
                 }
@@ -96,7 +96,7 @@ namespace Fancyx.Admin.Application.Service.System
                     await _userRoleRepository.InsertManyAsync(items);
                 }
             }
-            await _identityDomainService.DelUserPermissionCacheByUserIdAsync(dto.UserId);
+            await _identityDomainService.DelUserPermissionCacheByUserIdAsync(req.UserId);
             return true;
         }
 
@@ -111,13 +111,13 @@ namespace Fancyx.Admin.Application.Service.System
             return true;
         }
 
-        public async Task<PagedResult<UserItem>> GetUserListAsync(GetUserListRequest dto)
+        public async Task<PagedResult<UserItem>> GetUserListAsync(GetUserListRequest req)
         {
             var resp = await _context.User.PowerFilter(_currentUser).GroupJoin(_context.Dept, u => u.DeptId, d => d.Id, (u, d) => new { u, d })
                 .SelectMany(x => x.d.DefaultIfEmpty(), (x, d) => new { x.u, d })
                 .GroupJoin(_context.Position, m => m.u.PostId, p => p.Id, (m, p) => new { m, p })
-                .WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.m.u.UserName.Contains(dto.UserName!))
-                .WhereIf(dto.DeptId.HasValue, x => x.m.u.DeptId == dto.DeptId!.Value)
+                .WhereIf(!string.IsNullOrEmpty(req.UserName), x => x.m.u.UserName.Contains(req.UserName!))
+                .WhereIf(req.DeptId.HasValue, x => x.m.u.DeptId == req.DeptId!.Value)
                 .OrderByDescending(x => x.m.u.CreationTime)
                 .SelectMany(x => x.p.DefaultIfEmpty(), (x, p) => new UserItem
                 {
@@ -130,7 +130,7 @@ namespace Fancyx.Admin.Application.Service.System
                     Phone = x.m.u.Phone,
                     PostName = p != null ? p.Name : null,
                     DeptName = x.m.d != null ? x.m.d.Name : null
-                }).PagedAsync(dto.Current, dto.PageSize);
+                }).PagedAsync(req.Current, req.PageSize);
 
             return new PagedResult<UserItem>(resp.Total, resp.Items);
         }
@@ -155,16 +155,16 @@ namespace Fancyx.Admin.Application.Service.System
         }
 
         [AsyncLogRecord(LogRecordConsts.User, LogRecordConsts.UserResetPwdSubType, "{{id}}", LogRecordConsts.UserResetPwdContent)]
-        public async Task ResetUserPasswordAsync(ResetUserPwdRequest dto)
+        public async Task ResetUserPasswordAsync(ResetUserPwdRequest req)
         {
-            var user = await _userRepository.FindAsync(dto.UserId) ?? throw new EntityNotFoundException();
-            if (!RegexCodeGen.Password().IsMatch(dto.Password))
+            var user = await _userRepository.FindAsync(req.UserId) ?? throw new EntityNotFoundException();
+            if (!RegexCodeGen.Password().IsMatch(req.Password))
             {
                 throw new BusinessException("密码格式不正确");
             }
 
             user.PasswordSalt = EncryptionUtils.GetPasswordSalt();
-            user.Password = EncryptionUtils.GenEncodingPassword(dto.Password!, user.PasswordSalt);
+            user.Password = EncryptionUtils.GenEncodingPassword(req.Password!, user.PasswordSalt);
             await _userRepository.UpdateAsync(user);
 
             LogRecordContext.PutVariable("id", user.Id);
@@ -180,30 +180,30 @@ namespace Fancyx.Admin.Application.Service.System
                 .ToListAsync();
         }
 
-        public Task<List<UserItem>> ExportUserListAsync(GetUserListRequest dto)
+        public Task<List<UserItem>> ExportUserListAsync(GetUserListRequest req)
         {
             return _userRepository.GetQueryable()
-                .WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.UserName.Contains(dto.UserName!))
+                .WhereIf(!string.IsNullOrEmpty(req.UserName), x => x.UserName.Contains(req.UserName!))
                 .OrderByDescending(x => x.CreationTime)
                 .Select(x => new UserItem { Id = x.Id, UserName = x.UserName, Phone = x.Phone, Avatar = x.Avatar, IsEnabled = x.IsEnabled, NickName = x.NickName, Sex = x.Sex.GetHashCode() })
                 .ToListAsync();
         }
 
-        public async Task UpdateUserAsync(UpdateUserRequest dto)
+        public async Task UpdateUserAsync(UpdateUserRequest req)
         {
-            var user = await _userRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
-            if (!string.IsNullOrEmpty(dto.Phone) && user.Phone != dto.Phone)
+            var user = await _userRepository.FindAsync(req.Id) ?? throw new EntityNotFoundException();
+            if (!string.IsNullOrEmpty(req.Phone) && user.Phone != req.Phone)
             {
-                if (await _userRepository.AnyAsync(x => x.Phone == dto.Phone))
+                if (await _userRepository.AnyAsync(x => x.Phone == req.Phone))
                 {
                     throw new BusinessException("手机号已存在");
                 }
             }
-            user.NickName = dto.NickName;
-            user.Phone = dto.Phone;
-            user.Sex = dto.Sex;
-            user.DeptId = dto.DeptId;
-            user.PostId = dto.PostId;
+            user.NickName = req.NickName;
+            user.Phone = req.Phone;
+            user.Sex = req.Sex;
+            user.DeptId = req.DeptId;
+            user.PostId = req.PostId;
             await _userRepository.UpdateAsync(user);
         }
 

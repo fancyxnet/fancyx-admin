@@ -1,4 +1,4 @@
-using Fancyx.Admin.Application.IService.Organization.Dtos;
+using Fancyx.Admin.Application.IService.Organization.Models;
 using Fancyx.Core.Interfaces;
 
 namespace Fancyx.Admin.Application.IService.Organization
@@ -8,23 +8,23 @@ namespace Fancyx.Admin.Application.IService.Organization
         /// <summary>
         /// 新增部门
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        Task<bool> AddDeptAsync(AddOrUpdateDeptRequest dto);
+        Task<bool> AddDeptAsync(AddOrUpdateDeptRequest req);
 
         /// <summary>
         /// 部门树形列表
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        Task<List<DeptItem>> GetDeptListAsync(GetDeptListRequest dto);
+        Task<List<DeptItem>> GetDeptListAsync(GetDeptListRequest req);
 
         /// <summary>
         /// 修改部门
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        Task<bool> UpdateDeptAsync(AddOrUpdateDeptRequest dto);
+        Task<bool> UpdateDeptAsync(AddOrUpdateDeptRequest req);
 
         /// <summary>
         /// 删除部门

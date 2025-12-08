@@ -1,4 +1,4 @@
-﻿using Fancyx.Admin.Application.IService.System.Dtos;
+﻿using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Core.Interfaces;
 
 namespace Fancyx.Admin.Application.IService.System
@@ -9,17 +9,17 @@ namespace Fancyx.Admin.Application.IService.System
 
         Task ImportTableAsync(string table);
 
-        Task<PagedResult<TableInfoItem>> GetTableListAsync(GetTableListRequest dto);
+        Task<PagedResult<TableInfoItem>> GetTableListAsync(GetTableListRequest req);
 
         Task GenSyncFromDb(long tableId);
 
-        Task<PagedResult<GenTableItem>> GetGenTableListAsync(GetGenTableListRequest dto);
+        Task<PagedResult<GenTableItem>> GetGenTableListAsync(GetGenTableListRequest req);
 
-        Task<PagedResult<GenTableColumnItem>> GetGenTableColumnListAsync(GenTableColumnRequest dto);
+        Task<PagedResult<GenTableColumnItem>> GetGenTableColumnListAsync(GenTableColumnRequest req);
 
         Task DeleteGenTableAsync(long tableId);
 
-        Task SaveGenTableInfoAsync(SaveGenTableInfoRequest dto);
+        Task SaveGenTableInfoAsync(SaveGenTableInfoRequest req);
 
         Task SaveGenColumnInfoAsync(List<SaveGenColumnInfoItem> dtos);
 

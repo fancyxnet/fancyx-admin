@@ -3,8 +3,8 @@ using Fancyx.Shared.Logger;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Fancyx.Admin.Application.IService.System.Dtos;
 using Fancyx.Admin.Application.IService.System;
+using Fancyx.Admin.Application.IService.System.Models;
 
 namespace Fancyx.Admin.Controllers.System
 {
@@ -23,39 +23,39 @@ namespace Fancyx.Admin.Controllers.System
         /// <summary>
         /// 新增字典
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost("Add")]
         [HasPermission("Sys.DictData.Add")]
-        public async Task<AppResponse<bool>> AddDictDataAsync(AddOrUpdateDictDataRequest dto)
+        public async Task<AppResponse<bool>> AddDictDataAsync(AddOrUpdateDictDataRequest req)
         {
-            await _dictService.AddDictDataAsync(dto);
+            await _dictService.AddDictDataAsync(req);
             return Result.Ok();
         }
 
         /// <summary>
         /// 字典分页列表
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpGet("List")]
         [HasPermission("Sys.DictData.List")]
-        public async Task<AppResponse<PagedResult<DictDataItem>>> GetDictDataListAsync([FromQuery] GetDictDataListRequest dto)
+        public async Task<AppResponse<PagedResult<DictDataItem>>> GetDictDataListAsync([FromQuery] GetDictDataListRequest req)
         {
-            var data = await _dictService.GetDictDataListAsync(dto);
+            var data = await _dictService.GetDictDataListAsync(req);
             return Result.Data(data);
         }
 
         /// <summary>
         /// 修改字典
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPut("Update")]
         [HasPermission("Sys.DictData.Update")]
-        public async Task<AppResponse<bool>> UpdateDictDataAsync(AddOrUpdateDictDataRequest dto)
+        public async Task<AppResponse<bool>> UpdateDictDataAsync(AddOrUpdateDictDataRequest req)
         {
-            await _dictService.UpdateDictDataAsync(dto);
+            await _dictService.UpdateDictDataAsync(req);
             return Result.Ok();
         }
 

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Fancyx.Admin.Application.IService.Feedback.Dtos;
+using Fancyx.Admin.Application.IService.Feedback.Models;
 using Fancyx.Admin.EfCore.Models;
 
 namespace Fancyx.Admin.Application.Profiles

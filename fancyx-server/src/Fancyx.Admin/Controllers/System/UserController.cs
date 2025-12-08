@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
 using MiniExcelLibs;
-using Fancyx.Admin.Application.IService.System.Dtos;
 using Fancyx.Admin.Application.IService.System;
+using Fancyx.Admin.Application.IService.System.Models;
 
 namespace Fancyx.Admin.Controllers.System
 {
@@ -28,29 +28,29 @@ namespace Fancyx.Admin.Controllers.System
         /// <summary>
         /// 新增用户
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost("Add")]
         [HasPermission("Sys.User.Add")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
         [ApiAccessLog(operateName: "新增用户", operateType: [OperateType.Create], reponseEnable: true)]
-        public async Task<AppResponse<bool>> AddUserAsync([FromBody] AddUserRequest dto)
+        public async Task<AppResponse<bool>> AddUserAsync([FromBody] AddUserRequest req)
         {
-            await _userService.AddUserAsync(dto);
+            await _userService.AddUserAsync(req);
             return Result.Ok();
         }
 
         /// <summary>
         /// 用户分页列表
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpGet("List")]
         [HasPermission("Sys.User.List")]
         [ApiAccessLog(operateName: "用户分页列表")]
-        public async Task<AppResponse<PagedResult<UserItem>>> GetUserListAsync([FromQuery] GetUserListRequest dto)
+        public async Task<AppResponse<PagedResult<UserItem>>> GetUserListAsync([FromQuery] GetUserListRequest req)
         {
-            var data = await _userService.GetUserListAsync(dto);
+            var data = await _userService.GetUserListAsync(req);
             return Result.Data(data);
         }
 
@@ -70,14 +70,14 @@ namespace Fancyx.Admin.Controllers.System
         /// <summary>
         /// 分配角色
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost("AssignRole")]
         [HasPermission("Sys.User.AssignRole")]
         [ApiAccessLog(operateName: "分配角色", operateType: [OperateType.Update], reponseEnable: true)]
-        public async Task<AppResponse<bool>> AssignRoleAsync([FromBody] AssignRoleRequest dto)
+        public async Task<AppResponse<bool>> AssignRoleAsync([FromBody] AssignRoleRequest req)
         {
-            await _userService.AssignRoleAsync(dto);
+            await _userService.AssignRoleAsync(req);
             return Result.Ok();
         }
 
@@ -110,14 +110,14 @@ namespace Fancyx.Admin.Controllers.System
         /// <summary>
         /// 重置用户密码
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPut("ResetPwd")]
         [HasPermission("Sys.User.ResetPwd")]
         [ApiAccessLog(operateName: "重置用户密码", operateType: [OperateType.Update], reponseEnable: true)]
-        public async Task<AppResponse<bool>> ResetUserPasswordAsync([FromBody] ResetUserPwdRequest dto)
+        public async Task<AppResponse<bool>> ResetUserPasswordAsync([FromBody] ResetUserPwdRequest req)
         {
-            await _userService.ResetUserPasswordAsync(dto);
+            await _userService.ResetUserPasswordAsync(req);
             return Result.Ok();
         }
 
@@ -136,14 +136,14 @@ namespace Fancyx.Admin.Controllers.System
         /// <summary>
         /// 导出用户列表
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpGet("Export")]
         [HasPermission("Sys.User.Export")]
         [ApiAccessLog(operateName: "导出用户列表")]
-        public async Task<IActionResult> ExportUserListAsync([FromQuery] GetUserListRequest dto)
+        public async Task<IActionResult> ExportUserListAsync([FromQuery] GetUserListRequest req)
         {
-            var data = await _userService.ExportUserListAsync(dto);
+            var data = await _userService.ExportUserListAsync(req);
             var memoryStream = new MemoryStream();
             memoryStream.SaveAs(data);
             memoryStream.Seek(0, SeekOrigin.Begin);
@@ -153,14 +153,14 @@ namespace Fancyx.Admin.Controllers.System
         /// <summary>
         /// 修改用户
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPut("Update")]
         [HasPermission("Sys.User.Update")]
         [ApiAccessLog(operateName: "修改用户")]
-        public async Task<AppResponse<bool>> UpdateUserAsync([FromBody] UpdateUserRequest dto)
+        public async Task<AppResponse<bool>> UpdateUserAsync([FromBody] UpdateUserRequest req)
         {
-            await _userService.UpdateUserAsync(dto);
+            await _userService.UpdateUserAsync(req);
             return Result.Ok();
         }
 

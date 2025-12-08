@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Fancyx.Admin.Application.IService.Organization.Dtos;
+using Fancyx.Admin.Application.IService.Organization.Models;
 using Fancyx.Admin.EfCore.Entities.Organization;
 
 namespace Fancyx.Admin.Application.Profiles

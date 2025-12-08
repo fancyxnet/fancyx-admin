@@ -1,4 +1,4 @@
-using Fancyx.Admin.Application.IService.Organization.Dtos;
+using Fancyx.Admin.Application.IService.Organization.Models;
 using Fancyx.Core.Interfaces;
 
 namespace Fancyx.Admin.Application.IService.Organization
@@ -8,23 +8,23 @@ namespace Fancyx.Admin.Application.IService.Organization
         /// <summary>
         /// 新增职位
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        Task<bool> AddPositionAsync(AddOrUpdatePositionRequest dto);
+        Task<bool> AddPositionAsync(AddOrUpdatePositionRequest req);
 
         /// <summary>
         /// 职位分页列表
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        Task<PagedResult<PositionItem>> GetPositionListAsync(GetPositionListRequest dto);
+        Task<PagedResult<PositionItem>> GetPositionListAsync(GetPositionListRequest req);
 
         /// <summary>
         /// 修改职位
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        Task<bool> UpdatePositionAsync(AddOrUpdatePositionRequest dto);
+        Task<bool> UpdatePositionAsync(AddOrUpdatePositionRequest req);
 
         /// <summary>
         /// 删除职位

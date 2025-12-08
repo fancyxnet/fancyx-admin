@@ -1,5 +1,5 @@
 ﻿using Fancyx.Erp.Application.IService.Products;
-using Fancyx.Erp.Application.IService.Products.Dtos;
+using Fancyx.Erp.Application.IService.Products.Models;
 using Fancyx.Shared.Models;
 using Fancyx.Shared.WebApi.Attributes;
 using Microsoft.AspNetCore.Authorization;
@@ -21,25 +21,25 @@ namespace Fancyx.Erp.Controllers.Products
 
         [HttpPost("Add")]
         [HasPermission("Erp.ProductAttr.Add")]
-        public async Task<AppResponse<bool>> AddProductAttrAsync([FromBody] ProductAttrDto dto)
+        public async Task<AppResponse<bool>> AddProductAttrAsync([FromBody] AddOrUpdateProductAttrRequest req)
         {
-            await ProductAttrService.AddProductAttrAsync(dto);
+            await ProductAttrService.AddProductAttrAsync(req);
             return Result.Ok();
         }
 
         [HttpPost("List")]
         [HasPermission("Erp.ProductAttr.List")]
-        public async Task<AppResponse<PagedResult<ProductAttrListDto>>> GetProductAttrListAsync([FromQuery] ProductAttrQueryDto dto)
+        public async Task<AppResponse<PagedResult<ProductAttrItem>>> GetProductAttrListAsync([FromQuery] GetProductAttrListRequest req)
         {
-            var data = await ProductAttrService.GetProductAttrListAsync(dto);
+            var data = await ProductAttrService.GetProductAttrListAsync(req);
             return Result.Data(data);
         }
 
         [HttpPost("Update")]
         [HasPermission("Erp.ProductAttr.Update")]
-        public async Task<AppResponse<bool>> UpdateProductAttrAsync([FromBody] ProductAttrDto dto)
+        public async Task<AppResponse<bool>> UpdateProductAttrAsync([FromBody] AddOrUpdateProductAttrRequest req)
         {
-            await ProductAttrService.UpdateProductAttrAsync(dto);
+            await ProductAttrService.UpdateProductAttrAsync(req);
             return Result.Ok();
         }
 
@@ -53,25 +53,25 @@ namespace Fancyx.Erp.Controllers.Products
 
         [HttpPost("Value/List")]
         [HasPermission("Erp.ProductAttrValue.Add")]
-        public async Task<AppResponse<PagedResult<ProductAttrValueListDto>>> GetProductAttrValueListAsync([FromQuery] ProductAttrValueQueryDto dto)
+        public async Task<AppResponse<PagedResult<ProductAttrValueItem>>> GetProductAttrValueListAsync([FromQuery] GetProductAttrValueListRequest req)
         {
-            var data = await ProductAttrService.GetProductAttrValueListAsync(dto);
+            var data = await ProductAttrService.GetProductAttrValueListAsync(req);
             return Result.Data(data);
         }
 
         [HttpPost("Value/Add")]
         [HasPermission("Erp.ProductAttrValue.Add")]
-        public async Task<AppResponse<bool>> AddProductAttrValueAsync([FromBody] ProductAttrValueDto dto)
+        public async Task<AppResponse<bool>> AddProductAttrValueAsync([FromBody] AddOrUpdateProductAttrValueRequest req)
         {
-            await ProductAttrService.AddProductAttrValueAsync(dto);
+            await ProductAttrService.AddProductAttrValueAsync(req);
             return Result.Ok();
         }
 
         [HttpPost("Value/Update")]
         [HasPermission("Erp.ProductAttrValue.Update")]
-        public async Task<AppResponse<bool>> UpdateProductAttrValueAsync([FromBody] ProductAttrValueDto dto)
+        public async Task<AppResponse<bool>> UpdateProductAttrValueAsync([FromBody] AddOrUpdateProductAttrValueRequest req)
         {
-            await ProductAttrService.UpdateProductAttrValueAsync(dto);
+            await ProductAttrService.UpdateProductAttrValueAsync(req);
             return Result.Ok();
         }
 

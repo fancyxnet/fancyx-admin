@@ -1,4 +1,4 @@
-using Fancyx.Admin.Application.IService.System.Dtos;
+using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Core.Interfaces;
 
 namespace Fancyx.Admin.Application.IService.System;
@@ -8,16 +8,16 @@ public interface IUserService : IScopedDependency
     /// <summary>
     /// 新增用户
     /// </summary>
-    /// <param name="dto"></param>
+    /// <param name="req"></param>
     /// <returns></returns>
-    Task<long> AddUserAsync(AddUserRequest dto);
+    Task<long> AddUserAsync(AddUserRequest req);
 
     /// <summary>
     /// 用户分页列表
     /// </summary>
-    /// <param name="dto"></param>
+    /// <param name="req"></param>
     /// <returns></returns>
-    Task<PagedResult<UserItem>> GetUserListAsync(GetUserListRequest dto);
+    Task<PagedResult<UserItem>> GetUserListAsync(GetUserListRequest req);
 
     /// <summary>
     /// 删除用户
@@ -29,9 +29,9 @@ public interface IUserService : IScopedDependency
     /// <summary>
     /// 分配角色
     /// </summary>
-    /// <param name="dto"></param>
+    /// <param name="req"></param>
     /// <returns></returns>
-    Task<bool> AssignRoleAsync(AssignRoleRequest dto);
+    Task<bool> AssignRoleAsync(AssignRoleRequest req);
 
     /// <summary>
     /// 切换用户启用状态
@@ -50,9 +50,9 @@ public interface IUserService : IScopedDependency
     /// <summary>
     /// 重置用户密码
     /// </summary>
-    /// <param name="dto"></param>
+    /// <param name="req"></param>
     /// <returns></returns>
-    Task ResetUserPasswordAsync(ResetUserPwdRequest dto);
+    Task ResetUserPasswordAsync(ResetUserPwdRequest req);
 
     /// <summary>
     /// 用户简单信息查询
@@ -64,16 +64,16 @@ public interface IUserService : IScopedDependency
     /// <summary>
     /// 导出用户列表
     /// </summary>
-    /// <param name="dto"></param>
+    /// <param name="req"></param>
     /// <returns></returns>
-    Task<List<UserItem>> ExportUserListAsync(GetUserListRequest dto);
+    Task<List<UserItem>> ExportUserListAsync(GetUserListRequest req);
 
     /// <summary>
     /// 编辑用户信息
     /// </summary>
-    /// <param name="dto"></param>
+    /// <param name="req"></param>
     /// <returns></returns>
-    Task UpdateUserAsync(UpdateUserRequest dto);
+    Task UpdateUserAsync(UpdateUserRequest req);
 
     /// <summary>
     /// 获取用户编辑信息

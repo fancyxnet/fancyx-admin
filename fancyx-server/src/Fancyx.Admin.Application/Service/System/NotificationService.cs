@@ -1,5 +1,5 @@
 ﻿using Fancyx.Admin.Application.IService.System;
-using Fancyx.Admin.Application.IService.System.Dtos;
+using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.EfCore;
@@ -18,13 +18,13 @@ namespace Fancyx.Admin.Application.Service.System
             _userRepository = userRepository;
         }
 
-        public Task AddNotificationAsync(AddOrUpdateNotificationRequest dto)
+        public Task AddNotificationAsync(AddOrUpdateNotificationRequest req)
         {
             var entity = new Notification()
             {
-                Title = dto.Title,
-                Content = dto.Content,
-                UserId = dto.UserId,
+                Title = req.Title,
+                Content = req.Content,
+                UserId = req.UserId,
                 IsReaded = false
             };
             return _repository.InsertAsync(entity);
@@ -35,7 +35,7 @@ namespace Fancyx.Admin.Application.Service.System
             return _repository.DeleteAsync(x => ids.Contains(x.Id));
         }
 
-        public async Task<PagedResult<NotificationItem>> GetNotificationListAsync(GetNotificationListRequest dto)
+        public async Task<PagedResult<NotificationItem>> GetNotificationListAsync(GetNotificationListRequest req)
         {
             var resp = await _repository.GetQueryable().Join(_userRepository.GetQueryable().AsNoTracking(), n => n.UserId, u => u.Id, (n, u) =>
                 new NotificationItem
@@ -49,23 +49,23 @@ namespace Fancyx.Admin.Application.Service.System
                     ReadedTime = n.ReadedTime,
                     NickName = u.NickName
                 })
-                .WhereIf(!string.IsNullOrEmpty(dto.Title), u => u.Title!.Contains(u.Title))
-                .WhereIf(dto.IsReaded.HasValue, u => u.IsReaded == dto.IsReaded)
+                .WhereIf(!string.IsNullOrEmpty(req.Title), u => u.Title!.Contains(u.Title))
+                .WhereIf(req.IsReaded.HasValue, u => u.IsReaded == req.IsReaded)
                 .OrderByDescending(u => u.CreationTime)
-                .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<NotificationItem>(dto, resp.Total, resp.Items);
+                .PagedAsync(req.Current, req.PageSize);
+            return new PagedResult<NotificationItem>(req, resp.Total, resp.Items);
         }
 
-        public async Task UpdateNotificationAsync(AddOrUpdateNotificationRequest dto)
+        public async Task UpdateNotificationAsync(AddOrUpdateNotificationRequest req)
         {
-            var entity = await _repository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
+            var entity = await _repository.FindAsync(req.Id) ?? throw new EntityNotFoundException();
             if (entity.IsReaded)
             {
                 throw new BusinessException(message: "已读消息不能修改");
             }
-            entity.Title = dto.Title;
-            entity.Content = dto.Content;
-            entity.UserId = dto.UserId;
+            entity.Title = req.Title;
+            entity.Content = req.Content;
+            entity.UserId = req.UserId;
             await _repository.UpdateAsync(entity);
         }
     }

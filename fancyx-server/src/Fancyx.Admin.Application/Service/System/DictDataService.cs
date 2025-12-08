@@ -1,7 +1,7 @@
 using AutoMapper;
 
 using Fancyx.Admin.Application.IService.System;
-using Fancyx.Admin.Application.IService.System.Dtos;
+using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.EfCore;
@@ -21,14 +21,14 @@ namespace Fancyx.Admin.Application.Service.System
             _mapper = mapper;
         }
 
-        public async Task<bool> AddDictDataAsync(AddOrUpdateDictDataRequest dto)
+        public async Task<bool> AddDictDataAsync(AddOrUpdateDictDataRequest req)
         {
-            var isExist = await _dictRepository.AnyAsync(x => x.Value.ToLower() == dto.Value.ToLower());
+            var isExist = await _dictRepository.AnyAsync(x => x.Value.ToLower() == req.Value.ToLower());
             if (isExist)
             {
                 throw new BusinessException("字典值已存在");
             }
-            var entity = _mapper.Map<AddOrUpdateDictDataRequest, DictData>(dto);
+            var entity = _mapper.Map<AddOrUpdateDictDataRequest, DictData>(req);
             await _dictRepository.InsertAsync(entity);
 
             return true;
@@ -44,34 +44,34 @@ namespace Fancyx.Admin.Application.Service.System
             return true;
         }
 
-        public async Task<PagedResult<DictDataItem>> GetDictDataListAsync(GetDictDataListRequest dto)
+        public async Task<PagedResult<DictDataItem>> GetDictDataListAsync(GetDictDataListRequest req)
         {
             var resp = await _dictRepository.GetQueryable()
-                .WhereIf(!string.IsNullOrEmpty(dto.Label), x => x.Label != null && x.Label.Contains(dto.Label!))
-                .WhereIf(!string.IsNullOrEmpty(dto.DictType), x => x.DictType != null && x.DictType.Contains(dto.DictType!))
+                .WhereIf(!string.IsNullOrEmpty(req.Label), x => x.Label != null && x.Label.Contains(req.Label!))
+                .WhereIf(!string.IsNullOrEmpty(req.DictType), x => x.DictType != null && x.DictType.Contains(req.DictType!))
                 .OrderBy(x => x.Sort).OrderByDescending(x => x.CreationTime)
-                .PagedAsync(dto.Current, dto.PageSize);
+                .PagedAsync(req.Current, req.PageSize);
 
             return new PagedResult<DictDataItem>(resp.Total, _mapper.Map<List<DictData>, List<DictDataItem>>(resp.Items));
         }
 
         [AsyncLogRecord(LogRecordConsts.DictData, LogRecordConsts.DictDataUpdateSubType, "{{id}}", LogRecordConsts.DictDataUpdateContent)]
-        public async Task<bool> UpdateDictDataAsync(AddOrUpdateDictDataRequest dto)
+        public async Task<bool> UpdateDictDataAsync(AddOrUpdateDictDataRequest req)
         {
-            if (!dto.Id.HasValue) throw new ArgumentNullException(nameof(dto.Id));
-            var entity = await _dictRepository.FindAsync(dto.Id) ?? throw new BusinessException("数据不存在");
-            var isExist = await _dictRepository.AnyAsync(x => x.Value.ToLower() == dto.Value.ToLower());
-            if (entity.Value.ToLower() != dto.Value.ToLower() && isExist)
+            if (!req.Id.HasValue) throw new ArgumentNullException(nameof(req.Id));
+            var entity = await _dictRepository.FindAsync(req.Id) ?? throw new BusinessException("数据不存在");
+            var isExist = await _dictRepository.AnyAsync(x => x.Value.ToLower() == req.Value.ToLower());
+            if (entity.Value.ToLower() != req.Value.ToLower() && isExist)
             {
                 throw new BusinessException("字典值已存在");
             }
 
-            entity.Value = dto.Value;
-            entity.DictType = dto.DictType;
-            entity.Label = dto.Label;
-            entity.Sort = dto.Sort;
-            entity.Remark = dto.Remark;
-            entity.IsEnabled = dto.IsEnabled;
+            entity.Value = req.Value;
+            entity.DictType = req.DictType;
+            entity.Label = req.Label;
+            entity.Sort = req.Sort;
+            entity.Remark = req.Remark;
+            entity.IsEnabled = req.IsEnabled;
             await _dictRepository.UpdateAsync(entity);
 
             LogRecordContext.PutVariable("id", entity.Id);

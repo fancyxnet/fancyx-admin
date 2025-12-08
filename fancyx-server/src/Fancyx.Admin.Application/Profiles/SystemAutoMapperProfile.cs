@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Fancyx.Admin.Application.IService.Account.Dtos;
-using Fancyx.Admin.Application.IService.System.Dtos;
+using Fancyx.Admin.Application.IService.Account.Models;
+using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Admin.EfCore.Entities.Gen;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Models;

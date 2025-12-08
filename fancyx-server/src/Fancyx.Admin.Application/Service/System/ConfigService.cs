@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 
 using Fancyx.Admin.Application.IService.System;
-using Fancyx.Admin.Application.IService.System.Dtos;
+using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Admin.Application.SharedService;
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.System;
@@ -26,30 +26,30 @@ namespace Fancyx.Admin.Application.Service.System
             _mapper = mapper;
         }
 
-        public async Task AddConfigAsync(AddOrUpdateConfigRequest dto)
+        public async Task AddConfigAsync(AddOrUpdateConfigRequest req)
         {
-            if (await _configRepository.AnyAsync(x => x.Key.ToLower() == dto.Key.ToLower()))
+            if (await _configRepository.AnyAsync(x => x.Key.ToLower() == req.Key.ToLower()))
             {
-                throw new BusinessException($"配置【{dto.Key}】已存在");
+                throw new BusinessException($"配置【{req.Key}】已存在");
             }
 
             var entity = new Config()
             {
-                Name = dto.Name,
-                Key = dto.Key!,
-                Value = dto.Value!,
-                GroupKey = dto.GroupKey,
-                Remark = dto.Remark
+                Name = req.Name,
+                Key = req.Key!,
+                Value = req.Value!,
+                GroupKey = req.GroupKey,
+                Remark = req.Remark
             };
             await _configRepository.InsertAsync(entity);
         }
 
-        public async Task<PagedResult<ConfigItem>> GetConfigListAsync(GetConfigListRequest dto)
+        public async Task<PagedResult<ConfigItem>> GetConfigListAsync(GetConfigListRequest req)
         {
             var resp = await _configRepository.GetQueryable()
-                .WhereIf(!string.IsNullOrEmpty(dto.Name), x => x.Name.ToLower().Contains(dto.Name!.ToLower()))
-                .WhereIf(!string.IsNullOrEmpty(dto.Key), x => x.Key.ToLower().Contains(dto.Key!.ToLower()))
-                .PagedAsync(dto.Current, dto.PageSize);
+                .WhereIf(!string.IsNullOrEmpty(req.Name), x => x.Name.ToLower().Contains(req.Name!.ToLower()))
+                .WhereIf(!string.IsNullOrEmpty(req.Key), x => x.Key.ToLower().Contains(req.Key!.ToLower()))
+                .PagedAsync(req.Current, req.PageSize);
 
             return new PagedResult<ConfigItem>(resp.Total, _mapper.Map<List<Config>, List<ConfigItem>>(resp.Items));
         }
@@ -72,25 +72,25 @@ namespace Fancyx.Admin.Application.Service.System
         }
 
         [AsyncLogRecord(LogRecordConsts.Config, LogRecordConsts.ConfigUpdateSubType, "{{id}}", LogRecordConsts.ConfigUpdateContent)]
-        public async Task UpdateConfigAsync(AddOrUpdateConfigRequest dto)
+        public async Task UpdateConfigAsync(AddOrUpdateConfigRequest req)
         {
-            var entity = await _configRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
+            var entity = await _configRepository.FindAsync(req.Id) ?? throw new EntityNotFoundException();
 
-            var key = dto.Key.ToLower();
+            var key = req.Key.ToLower();
             if (await _configRepository.AnyAsync(x => x.Key.ToLower() == key) && entity.Key.ToLower() != key)
             {
-                throw new BusinessException($"配置【{dto.Key}】已存在");
+                throw new BusinessException($"配置【{req.Key}】已存在");
             }
 
-            entity.Key = dto.Key;
-            entity.Value = dto.Value;
-            entity.GroupKey = dto.GroupKey;
-            entity.Name = dto.Name;
-            entity.Remark = dto.Remark;
+            entity.Key = req.Key;
+            entity.Value = req.Value;
+            entity.GroupKey = req.GroupKey;
+            entity.Name = req.Name;
+            entity.Remark = req.Remark;
 
             await _configRepository.UpdateAsync(entity);
 
-            _configSharedService.ClearCache(dto.Key!);
+            _configSharedService.ClearCache(req.Key!);
             if (!string.IsNullOrEmpty(entity.GroupKey))
             {
                 _configSharedService.ClearGroupCache(entity.GroupKey);

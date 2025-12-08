@@ -1,5 +1,5 @@
 ﻿using Fancyx.Admin.Application.IService.Account;
-using Fancyx.Admin.Application.IService.Account.Dtos;
+using Fancyx.Admin.Application.IService.Account.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,9 +18,9 @@ namespace Fancyx.Admin.Controllers.Account
         }
 
         [HttpGet("MyNotificationList")]
-        public async Task<AppResponse<PagedResult<UserNotificationItem>>> GetMyNotificationListAsync([FromQuery] GetMyNotificationListRequest dto)
+        public async Task<AppResponse<PagedResult<UserNotificationItem>>> GetMyNotificationListAsync([FromQuery] GetMyNotificationListRequest req)
         {
-            var data = await _userNotificationService.GetMyNotificationListAsync(dto);
+            var data = await _userNotificationService.GetMyNotificationListAsync(req);
             return Result.Data(data);
         }
 

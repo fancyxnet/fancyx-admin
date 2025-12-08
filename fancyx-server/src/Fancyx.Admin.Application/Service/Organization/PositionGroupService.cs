@@ -1,6 +1,6 @@
 using AutoMapper;
 using Fancyx.Admin.Application.IService.Organization;
-using Fancyx.Admin.Application.IService.Organization.Dtos;
+using Fancyx.Admin.Application.IService.Organization.Models;
 using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.EfCore;
 using Microsoft.EntityFrameworkCore;
@@ -21,10 +21,10 @@ namespace Fancyx.Admin.Application.Service.Organization
             _mapper = mapper;
         }
 
-        public async Task<bool> AddPositionGroupAsync(AddOrUpdatePositionGroupRequest dto)
+        public async Task<bool> AddPositionGroupAsync(AddOrUpdatePositionGroupRequest req)
         {
-            var entity = _mapper.Map<AddOrUpdatePositionGroupRequest, PositionGroup>(dto);
-            entity.SetTreeProperties(await _positionGroupRepository.FindAsync(dto.ParentId));
+            var entity = _mapper.Map<AddOrUpdatePositionGroupRequest, PositionGroup>(req);
+            entity.SetTreeProperties(await _positionGroupRepository.FindAsync(req.ParentId));
 
             await _positionGroupRepository.InsertAsync(entity);
             return true;
@@ -48,10 +48,10 @@ namespace Fancyx.Admin.Application.Service.Organization
             return true;
         }
 
-        public async Task<List<PositionGroupItem>> GetPositionGroupListAsync(GetPositionGroupListRequest dto)
+        public async Task<List<PositionGroupItem>> GetPositionGroupListAsync(GetPositionGroupListRequest req)
         {
             var allNodes = await _positionGroupRepository.GetQueryable()
-                .WhereIf(!string.IsNullOrEmpty(dto.GroupName), x => x.GroupName.Contains(dto.GroupName!))
+                .WhereIf(!string.IsNullOrEmpty(req.GroupName), x => x.GroupName.Contains(req.GroupName!))
                 .OrderBy(x => x.Sort)
                 .ToDictionaryAsync(k => k.Id);
 
@@ -84,20 +84,20 @@ namespace Fancyx.Admin.Application.Service.Organization
             return tree.OrderBy(x => x.Sort).Concat(endDtos).ToList();
         }
 
-        public async Task<bool> UpdatePositionGroupAsync(AddOrUpdatePositionGroupRequest dto)
+        public async Task<bool> UpdatePositionGroupAsync(AddOrUpdatePositionGroupRequest req)
         {
-            if (!dto.Id.HasValue) throw new ArgumentNullException(nameof(dto.Id));
-            var entity = await _positionGroupRepository.FindAsync(dto.Id) ?? throw new EntityNotFoundException();
-            if (dto.ParentId == entity.Id)
+            if (!req.Id.HasValue) throw new ArgumentNullException(nameof(req.Id));
+            var entity = await _positionGroupRepository.FindAsync(req.Id) ?? throw new EntityNotFoundException();
+            if (req.ParentId == entity.Id)
             {
                 throw new BusinessException(message: "不能选择自己为父级");
             }
 
-            entity.GroupName = dto.GroupName;
-            entity.Remark = dto.Remark;
-            entity.ParentId = dto.ParentId;
-            entity.Sort = dto.Sort;
-            entity.SetTreeProperties(await _positionGroupRepository.FindAsync(dto.ParentId));
+            entity.GroupName = req.GroupName;
+            entity.Remark = req.Remark;
+            entity.ParentId = req.ParentId;
+            entity.Sort = req.Sort;
+            entity.SetTreeProperties(await _positionGroupRepository.FindAsync(req.ParentId));
 
             await _positionGroupRepository.UpdateAsync(entity);
             return true;

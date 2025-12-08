@@ -1,5 +1,5 @@
 ﻿using Fancyx.Admin.Application.IService.Monitor;
-using Fancyx.Admin.Application.IService.Monitor.Dtos;
+using Fancyx.Admin.Application.IService.Monitor.Models;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
@@ -26,12 +26,12 @@ namespace Fancyx.Admin.Application.Service.Monitor
             _currentUser = currentUser;
         }
 
-        public async Task<List<OnlineUserItem>> GetOnlineUserListAsync(GetOnlineUserListRequest dto)
+        public async Task<List<OnlineUserItem>> GetOnlineUserListAsync(GetOnlineUserListRequest req)
         {
             var pattern = SystemCacheKey.AccessToken("*:*");
-            if (!string.IsNullOrEmpty(dto.UserName))
+            if (!string.IsNullOrEmpty(req.UserName))
             {
-                long? queryUserId = await _userRepository.Where(x => x.UserName == dto.UserName).ToOneAsync(x => x.Id);
+                long? queryUserId = await _userRepository.Where(x => x.UserName == req.UserName).ToOneAsync(x => x.Id);
                 if (queryUserId.HasValue)
                 {
                     pattern = SystemCacheKey.AccessToken($"{queryUserId}:*");

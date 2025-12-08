@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 
 using Fancyx.Admin.Application.IService.System.LogManagement;
-using Fancyx.Admin.Application.IService.System.LogManagement.Dtos;
+using Fancyx.Admin.Application.IService.System.LogManagement.Models;
 using Fancyx.Admin.EfCore;
 using Fancyx.EfCore;
 using Fancyx.Shared.Logger.Entities;
@@ -21,16 +21,16 @@ namespace Fancyx.Admin.Application.Service.System.LogManagement
             _mapper = mapper;
         }
 
-        public async Task<PagedResult<BusinessLogItem>> GetBusinessLogListAsync(GetBusinessLogListRequest dto)
+        public async Task<PagedResult<BusinessLogItem>> GetBusinessLogListAsync(GetBusinessLogListRequest req)
         {
             var resp = await _logRecordRepository.GetQueryable()
-                .WhereIf(!string.IsNullOrEmpty(dto.Type), x => x.Type == dto.Type)
-                .WhereIf(!string.IsNullOrEmpty(dto.SubType), x => x.SubType != null && x.SubType.Contains(dto.SubType!))
-                .WhereIf(!string.IsNullOrEmpty(dto.Content), x => x.Content != null && x.Content.Contains(dto.Content!))
-                .WhereIf(!string.IsNullOrEmpty(dto.UserName), x => x.UserName != null && x.UserName.Contains(dto.UserName!))
+                .WhereIf(!string.IsNullOrEmpty(req.Type), x => x.Type == req.Type)
+                .WhereIf(!string.IsNullOrEmpty(req.SubType), x => x.SubType != null && x.SubType.Contains(req.SubType!))
+                .WhereIf(!string.IsNullOrEmpty(req.Content), x => x.Content != null && x.Content.Contains(req.Content!))
+                .WhereIf(!string.IsNullOrEmpty(req.UserName), x => x.UserName != null && x.UserName.Contains(req.UserName!))
                 .OrderByDescending(x => x.CreationTime)
-                .PagedAsync(dto.Current, dto.PageSize);
-            return new PagedResult<BusinessLogItem>(dto, resp.Total, _mapper.Map<List<LogRecord>, List<BusinessLogItem>>(resp.Items));
+                .PagedAsync(req.Current, req.PageSize);
+            return new PagedResult<BusinessLogItem>(req, resp.Total, _mapper.Map<List<LogRecord>, List<BusinessLogItem>>(resp.Items));
         }
 
         public Task<List<AppOption>> GetBusinessTypeOptionsAsync(string? type)

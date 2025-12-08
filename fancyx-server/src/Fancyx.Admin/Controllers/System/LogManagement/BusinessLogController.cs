@@ -1,5 +1,5 @@
 using Fancyx.Admin.Application.IService.System.LogManagement;
-using Fancyx.Admin.Application.IService.System.LogManagement.Dtos;
+using Fancyx.Admin.Application.IService.System.LogManagement.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,12 +20,12 @@ namespace Fancyx.Admin.Controllers.System.LogManagement
         /// <summary>
         /// 业务日志分页列表
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpGet("List")]
-        public async Task<AppResponse<PagedResult<BusinessLogItem>>> GetBusinessLogListAsync([FromQuery] GetBusinessLogListRequest dto)
+        public async Task<AppResponse<PagedResult<BusinessLogItem>>> GetBusinessLogListAsync([FromQuery] GetBusinessLogListRequest req)
         {
-            var data = await _businessLogService.GetBusinessLogListAsync(dto);
+            var data = await _businessLogService.GetBusinessLogListAsync(req);
             return Result.Data(data);
         }
 

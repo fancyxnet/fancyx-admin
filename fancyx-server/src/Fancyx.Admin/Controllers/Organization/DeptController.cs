@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Fancyx.Admin.Application.IService.Organization;
-using Fancyx.Admin.Application.IService.Organization.Dtos;
+using Fancyx.Admin.Application.IService.Organization.Models;
 
 namespace Fancyx.Admin.Controllers.Organization
 {
@@ -25,40 +25,40 @@ namespace Fancyx.Admin.Controllers.Organization
         /// <summary>
         /// 新增部门
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost("Add")]
         [HasPermission("Org.Dept.Add")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
-        public async Task<AppResponse<bool>> AddDeptAsync([FromBody] AddOrUpdateDeptRequest dto)
+        public async Task<AppResponse<bool>> AddDeptAsync([FromBody] AddOrUpdateDeptRequest req)
         {
-            await _deptService.AddDeptAsync(dto);
+            await _deptService.AddDeptAsync(req);
             return Result.Ok();
         }
 
         /// <summary>
         /// 部门树形列表
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpGet("List")]
         [HasPermission("Org.Dept.List")]
-        public async Task<AppResponse<List<DeptItem>>> GetDeptListAsync([FromQuery] GetDeptListRequest dto)
+        public async Task<AppResponse<List<DeptItem>>> GetDeptListAsync([FromQuery] GetDeptListRequest req)
         {
-            var data = await _deptService.GetDeptListAsync(dto);
+            var data = await _deptService.GetDeptListAsync(req);
             return Result.Data(data);
         }
 
         /// <summary>
         /// 修改部门
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPut("Update")]
         [HasPermission("Org.Dept.Update")]
-        public async Task<AppResponse<bool>> UpdateDeptAsync([FromBody] AddOrUpdateDeptRequest dto)
+        public async Task<AppResponse<bool>> UpdateDeptAsync([FromBody] AddOrUpdateDeptRequest req)
         {
-            await _deptService.UpdateDeptAsync(dto);
+            await _deptService.UpdateDeptAsync(req);
             return Result.Ok();
         }
 

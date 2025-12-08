@@ -1,5 +1,5 @@
 ﻿using Fancyx.Erp.Application.IService.BaseInfo;
-using Fancyx.Erp.Application.IService.BaseInfo.Dtos;
+using Fancyx.Erp.Application.IService.BaseInfo.Models;
 using Fancyx.Shared.Models;
 using Fancyx.Shared.WebApi.Attributes;
 using Microsoft.AspNetCore.Authorization;
@@ -21,25 +21,25 @@ namespace Fancyx.Erp.Controllers.BaseInfo
 
         [HttpPost("Add")]
         [HasPermission("Erp.Supplier.Add")]
-        public async Task<AppResponse<bool>> AddSupplierAsync([FromBody] SupplierDto dto)
+        public async Task<AppResponse<bool>> AddSupplierAsync([FromBody] AddOrUpdateSupplierRequest req)
         {
-            await SupplierService.AddSupplierAsync(dto);
+            await SupplierService.AddSupplierAsync(req);
             return Result.Ok();
         }
 
         [HttpGet("List")]
         [HasPermission("Erp.Supplier.List")]
-        public async Task<AppResponse<PagedResult<SupplierListDto>>> GetSupplierListAsync([FromQuery] SupplierQueryDto dto)
+        public async Task<AppResponse<PagedResult<SupplierItem>>> GetSupplierListAsync([FromQuery] GetSupplierListRequest req)
         {
-            var data = await SupplierService.GetSupplierListAsync(dto);
+            var data = await SupplierService.GetSupplierListAsync(req);
             return Result.Data(data);
         }
 
         [HttpPut("Update")]
         [HasPermission("Erp.Supplier.Update")]
-        public async Task<AppResponse<bool>> UpdateSupplierAsync([FromBody] SupplierDto dto)
+        public async Task<AppResponse<bool>> UpdateSupplierAsync([FromBody] AddOrUpdateSupplierRequest req)
         {
-            await SupplierService.UpdateSupplierAsync(dto);
+            await SupplierService.UpdateSupplierAsync(req);
             return Result.Ok();
         }
 

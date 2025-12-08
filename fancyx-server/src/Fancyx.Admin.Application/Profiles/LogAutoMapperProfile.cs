@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-
-using Fancyx.Admin.Application.IService.Monitor.Dtos;
-using Fancyx.Admin.Application.IService.System.LogManagement.Dtos;
+using Fancyx.Admin.Application.IService.Monitor.Models;
+using Fancyx.Admin.Application.IService.System.LogManagement.Models;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Shared.Logger.Entities;
 

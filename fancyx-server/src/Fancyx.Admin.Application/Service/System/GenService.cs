@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 
 using Fancyx.Admin.Application.IService.System;
-using Fancyx.Admin.Application.IService.System.Dtos;
+using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Admin.EfCore.Entities.Gen;
 using Fancyx.Admin.EfCore.Repositories;
 using Fancyx.Core.Interfaces;
@@ -93,10 +93,10 @@ namespace Fancyx.Admin.Application.Service.System
                     this.AddTsProperties(tsFieldQueryStrBuilder, item, true, item.QueryType == "BETWEEN");
                     if (item.CsharpType == "string")
                     {
-                        queryConditionPropStrBuilder.Append($".WhereIf(!string.IsNullOrEmpty(dto.{item.CsharpField}), x => ");
+                        queryConditionPropStrBuilder.Append($".WhereIf(!string.IsNullOrEmpty(req.{item.CsharpField}), x => ");
                         if (item.QueryType == "LIKE")
                         {
-                            queryConditionPropStrBuilder.Append($"x.StartWith(dto.{item.CsharpField})");
+                            queryConditionPropStrBuilder.Append($"x.StartWith(req.{item.CsharpField})");
                         }
                     }
                     else
@@ -105,19 +105,19 @@ namespace Fancyx.Admin.Application.Service.System
                         if (item.QueryType == ">" || item.QueryType == ">=" || item.QueryType == "<"
                             || item.QueryType == "<=")
                         {
-                            queryConditionPropStrBuilder.Append($"x.{item.CsharpField} {item.QueryType} dto.{item.CsharpField}");
+                            queryConditionPropStrBuilder.Append($"x.{item.CsharpField} {item.QueryType} req.{item.CsharpField}");
                         }
                     }
                     switch (item.QueryType)
                     {
                         case "=":
-                            queryConditionPropStrBuilder.Append($"x.{item.CsharpField} == dto.{item.CsharpField}");
+                            queryConditionPropStrBuilder.Append($"x.{item.CsharpField} == req.{item.CsharpField}");
                             break;
                         case "!=":
-                            queryConditionPropStrBuilder.Append($"x.{item.CsharpField} != dto.{item.CsharpField}");
+                            queryConditionPropStrBuilder.Append($"x.{item.CsharpField} != req.{item.CsharpField}");
                             break;
                         case "BETWEEN":
-                            queryConditionPropStrBuilder.Append($"x.{item.CsharpField} between dto.{item.CsharpField}[0] and dto.{item.CsharpField}[1]");
+                            queryConditionPropStrBuilder.Append($"x.{item.CsharpField} between req.{item.CsharpField}[0] and req.{item.CsharpField}[1]");
                             break;
                     }
                     queryConditionPropStrBuilder.Append(')');
@@ -135,12 +135,12 @@ namespace Fancyx.Admin.Application.Service.System
                 }
                 if (item.IsInsert)
                 {
-                    addAssignPropStrBuilder.AppendLine($"\t{item.CsharpField} = dto.{item.CsharpField},");
+                    addAssignPropStrBuilder.AppendLine($"\t{item.CsharpField} = req.{item.CsharpField},");
                     if (!isInsertAndUpdate) pageInsertFormItems.Append(formItem);
                 }
                 if (item.IsEdit)
                 {
-                    updateAssignPropStrBuilder.AppendLine($"\tentity.{item.CsharpField} = dto.{item.CsharpField};");
+                    updateAssignPropStrBuilder.AppendLine($"\tentity.{item.CsharpField} = req.{item.CsharpField};");
                     if (!isInsertAndUpdate) pageUpdateFormItems.Append(formItem);
                 }
             }
@@ -215,23 +215,23 @@ namespace Fancyx.Admin.Application.Service.System
             await this.InsertGenTableColumnsFromDb(genTable.TableId, tableInfo.TableName);
         }
 
-        public async Task<PagedResult<TableInfoItem>> GetTableListAsync(GetTableListRequest dto)
+        public async Task<PagedResult<TableInfoItem>> GetTableListAsync(GetTableListRequest req)
         {
-            var resp = await _genRepository.QueryTablesAsync(dto.Current, dto.PageSize, dto.TableName);
+            var resp = await _genRepository.QueryTablesAsync(req.Current, req.PageSize, req.TableName);
             return new PagedResult<TableInfoItem>(resp.Total, _mapper.Map<List<TableInfoItem>>(resp.Items));
         }
 
-        public async Task<PagedResult<GenTableItem>> GetGenTableListAsync(GetGenTableListRequest dto)
+        public async Task<PagedResult<GenTableItem>> GetGenTableListAsync(GetGenTableListRequest req)
         {
-            var resp = await _genTableRepository.GetQueryable().WhereIf(!string.IsNullOrEmpty(dto.TableName), x => x.TableName != null && x.TableName.StartsWith(dto.TableName!))
-                .PagedAsync(dto.Current, dto.PageSize);
+            var resp = await _genTableRepository.GetQueryable().WhereIf(!string.IsNullOrEmpty(req.TableName), x => x.TableName != null && x.TableName.StartsWith(req.TableName!))
+                .PagedAsync(req.Current, req.PageSize);
             return new PagedResult<GenTableItem>(resp.Total, _mapper.Map<List<GenTableItem>>(resp.Items));
         }
 
-        public async Task<PagedResult<GenTableColumnItem>> GetGenTableColumnListAsync(GenTableColumnRequest dto)
+        public async Task<PagedResult<GenTableColumnItem>> GetGenTableColumnListAsync(GenTableColumnRequest req)
         {
-            var resp = await _genTableColumnRepository.Where(x => x.TableId == dto.TableId)
-                .PagedAsync(dto.Current, dto.PageSize);
+            var resp = await _genTableColumnRepository.Where(x => x.TableId == req.TableId)
+                .PagedAsync(req.Current, req.PageSize);
             return new PagedResult<GenTableColumnItem>(resp.Total, _mapper.Map<List<GenTableColumnItem>>(resp.Items));
         }
 
@@ -255,20 +255,20 @@ namespace Fancyx.Admin.Application.Service.System
             await _genTableRepository.DeleteAsync(x => x.TableId == tableId);
         }
 
-        public async Task SaveGenTableInfoAsync(SaveGenTableInfoRequest dto)
+        public async Task SaveGenTableInfoAsync(SaveGenTableInfoRequest req)
         {
-            var genTable = await _genTableRepository.FindAsync(dto.TableId) ?? throw new EntityNotFoundException();
-            genTable.TableId = dto.TableId;
-            genTable.TableComment = dto.TableComment;
-            genTable.ClassName = dto.ClassName;
-            genTable.TplCategory = dto.TplCategory;
-            genTable.NamespaceName = dto.NamespaceName;
-            genTable.ModuleName = dto.ModuleName;
-            genTable.BusinessName = dto.BusinessName;
-            genTable.FunctionName = dto.FunctionName;
-            genTable.GenPath = dto.GenPath;
-            genTable.Options = dto.Options;
-            genTable.Remark = dto.Remark;
+            var genTable = await _genTableRepository.FindAsync(req.TableId) ?? throw new EntityNotFoundException();
+            genTable.TableId = req.TableId;
+            genTable.TableComment = req.TableComment;
+            genTable.ClassName = req.ClassName;
+            genTable.TplCategory = req.TplCategory;
+            genTable.NamespaceName = req.NamespaceName;
+            genTable.ModuleName = req.ModuleName;
+            genTable.BusinessName = req.BusinessName;
+            genTable.FunctionName = req.FunctionName;
+            genTable.GenPath = req.GenPath;
+            genTable.Options = req.Options;
+            genTable.Remark = req.Remark;
             await _genTableRepository.UpdateAsync(genTable);
         }
 
@@ -277,27 +277,27 @@ namespace Fancyx.Admin.Application.Service.System
         {
             var columnIds = dtos.Select(x => x.ColumnId).ToList();
             var genTableColumns = await _genTableColumnRepository.AsNoTracking().Where(x => columnIds.Contains(x.ColumnId)).ToListAsync();
-            foreach (var dto in dtos)
+            foreach (var req in dtos)
             {
-                var entity = genTableColumns.Find(x => x.ColumnId == dto.ColumnId);
+                var entity = genTableColumns.Find(x => x.ColumnId == req.ColumnId);
                 if (entity == null) continue;
-                entity.ColumnName = dto.ColumnName;
-                entity.ColumnComment = dto.ColumnComment;
-                entity.ColumnType = dto.ColumnType;
-                entity.CsharpType = dto.CsharpType;
-                entity.TsType = dto.TsType;
-                entity.CsharpField = dto.CsharpField;
-                entity.IsPk = dto.IsPk;
-                entity.IsIncrement = dto.IsIncrement;
-                entity.IsRequired = dto.IsRequired;
-                entity.IsInsert = dto.IsInsert;
-                entity.IsEdit = dto.IsEdit;
-                entity.IsList = dto.IsList;
-                entity.IsQuery = dto.IsQuery;
-                entity.QueryType = dto.QueryType;
-                entity.HtmlType = dto.HtmlType;
-                entity.DictType = dto.DictType;
-                entity.Sort = dto.Sort;
+                entity.ColumnName = req.ColumnName;
+                entity.ColumnComment = req.ColumnComment;
+                entity.ColumnType = req.ColumnType;
+                entity.CsharpType = req.CsharpType;
+                entity.TsType = req.TsType;
+                entity.CsharpField = req.CsharpField;
+                entity.IsPk = req.IsPk;
+                entity.IsIncrement = req.IsIncrement;
+                entity.IsRequired = req.IsRequired;
+                entity.IsInsert = req.IsInsert;
+                entity.IsEdit = req.IsEdit;
+                entity.IsList = req.IsList;
+                entity.IsQuery = req.IsQuery;
+                entity.QueryType = req.QueryType;
+                entity.HtmlType = req.HtmlType;
+                entity.DictType = req.DictType;
+                entity.Sort = req.Sort;
             }
             await _genTableColumnRepository.UpdateManyAsync(genTableColumns);
         }

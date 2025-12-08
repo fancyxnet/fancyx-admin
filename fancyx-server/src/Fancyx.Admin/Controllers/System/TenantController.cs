@@ -1,7 +1,7 @@
 ﻿using DotNetCore.CAP;
 
 using Fancyx.Admin.Application.IService.System;
-using Fancyx.Admin.Application.IService.System.Dtos;
+using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Logger;
 using Fancyx.Shared.WebApi.Attributes;
@@ -33,36 +33,36 @@ namespace Fancyx.Admin.Controllers.System
         [HasPermission("Sys.Tenant.Add")]
         [EnableRateLimiting(RateLimiterConsts.DebouncePolicy)]
         [ApiAccessLog(operateName: "添加租户", operateType: [OperateType.Create], reponseEnable: true)]
-        public async Task<AppResponse<bool>> AddTenantAsync([FromBody] AddOrUpdateTenantRequest dto)
+        public async Task<AppResponse<bool>> AddTenantAsync([FromBody] AddOrUpdateTenantRequest req)
         {
-            await _tenantService.AddTenantAsync(dto);
+            await _tenantService.AddTenantAsync(req);
             return Result.Ok();
         }
 
         /// <summary>
         /// 分页列表
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpGet("List")]
         [HasPermission("Sys.Tenant.List")]
-        public async Task<AppResponse<PagedResult<TenantItem>>> GetTenantListAsync([FromQuery] GetTenantListRequest dto)
+        public async Task<AppResponse<PagedResult<TenantItem>>> GetTenantListAsync([FromQuery] GetTenantListRequest req)
         {
-            var data = await _tenantService.GetTenantListAsync(dto);
+            var data = await _tenantService.GetTenantListAsync(req);
             return Result.Data(data);
         }
 
         /// <summary>
         /// 修改
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPut("Update")]
         [HasPermission("Sys.Tenant.Update")]
         [ApiAccessLog(operateName: "修改租户", operateType: [OperateType.Update], reponseEnable: true)]
-        public async Task<AppResponse<bool>> UpdateTenantAsync([FromBody] AddOrUpdateTenantRequest dto)
+        public async Task<AppResponse<bool>> UpdateTenantAsync([FromBody] AddOrUpdateTenantRequest req)
         {
-            await _tenantService.UpdateTenantAsync(dto);
+            await _tenantService.UpdateTenantAsync(req);
             return Result.Ok();
         }
 
@@ -82,9 +82,9 @@ namespace Fancyx.Admin.Controllers.System
 
         [HttpPost("AssignTenantMenu")]
         [HasPermission("Sys.Tenant.AssignTenantMenu")]
-        public async Task<AppResponse<bool>> AssignTenantMenuAsync([FromBody] AssignTenantMenuRequest dto)
+        public async Task<AppResponse<bool>> AssignTenantMenuAsync([FromBody] AssignTenantMenuRequest req)
         {
-            await _tenantService.AssignTenantMenuAsync(dto);
+            await _tenantService.AssignTenantMenuAsync(req);
             return Result.Ok();
         }
 
@@ -110,9 +110,9 @@ namespace Fancyx.Admin.Controllers.System
 
         [HttpPost("CreateTenantAccount")]
         [HasPermission("Sys.Tenant.CreateTenantAccount")]
-        public async Task<AppResponse<TenantAccountInfo>> CreateTenantAccount([FromBody] CreateTenantAccountRequest dto)
+        public async Task<AppResponse<TenantAccountInfo>> CreateTenantAccount([FromBody] CreateTenantAccountRequest req)
         {
-            var data = await _tenantService.CreateTenantAccountAsync(dto);
+            var data = await _tenantService.CreateTenantAccountAsync(req);
             return Result.Data(data);
         }
     }
