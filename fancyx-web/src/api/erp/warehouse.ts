@@ -3,25 +3,25 @@ import type { AppResponse, PagedResult, PageSearch } from '@/types/api';
 
 /**
  * 新增仓库
- * @param dto
+ * @param req
  */
-export function addWarehouse(dto: Warehouse) {
-  return httpClient.post<Warehouse, AppResponse<boolean>>('/erp-api/Warehouse/Add', dto);
+export function addWarehouse(req: Warehouse) {
+  return httpClient.post<Warehouse, AppResponse<boolean>>('/erp-api/Warehouse/Add', req);
 }
 
 /**
  * 仓库分页列表
- * @param dto
+ * @param req
  */
-export function getWarehouseList(dto: WarehouseQueryDto) {
+export function getWarehouseList(req: WarehouseQueryDto) {
   return httpClient.get<WarehouseQueryDto, AppResponse<PagedResult<Warehouse>>>('/erp-api/Warehouse/List', {
-    params: dto,
+    params: req,
   });
 }
 
 /**
  * 仓库查询
- * @param dto
+ * @param req
  */
 export function getWarehouse(id: string) {
   return httpClient.get<string, AppResponse<Warehouse>>('/erp-api/Warehouse/GetWarehouse/' + id);
@@ -29,10 +29,10 @@ export function getWarehouse(id: string) {
 
 /**
  * 修改仓库
- * @param dto
+ * @param req
  */
-export function updateWarehouse(dto: Warehouse) {
-  return httpClient.put<Warehouse, AppResponse<boolean>>('/erp-api/Warehouse/Update', dto);
+export function updateWarehouse(req: Warehouse) {
+  return httpClient.put<Warehouse, AppResponse<boolean>>('/erp-api/Warehouse/Update', req);
 }
 
 /**

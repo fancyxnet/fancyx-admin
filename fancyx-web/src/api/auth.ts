@@ -3,18 +3,18 @@ import type { AppResponse } from '@/types/api';
 
 /**
  * 登录
- * @param dto
+ * @param req
  */
-export function login(dto: LoginRequest) {
-  return httpClient.post<LoginRequest, AppResponse<LoginRespone>>('/admin-api/Account/Login', dto);
+export function login(req: LoginRequest) {
+  return httpClient.post<LoginRequest, AppResponse<LoginRespone>>('/admin-api/Account/Login', req);
 }
 
 /**
  * 短信登录
- * @param dto
+ * @param req
  */
-export function smsLogin(dto: SmsLoginRequest) {
-  return httpClient.post<SmsLoginRequest, AppResponse<LoginRespone>>('/admin-api/Account/SmsLogin', dto);
+export function smsLogin(req: SmsLoginRequest) {
+  return httpClient.post<SmsLoginRequest, AppResponse<LoginRespone>>('/admin-api/Account/SmsLogin', req);
 }
 
 /**
@@ -44,10 +44,10 @@ export function updateInfo(info: UpdateUserInfoRequest) {
 
 /**
  * 修改个人密码
- * @param dto
+ * @param req
  */
-export function updatePwd(dto: UpdateUserPwdRequest) {
-  return httpClient.put<UpdateUserPwdRequest, AppResponse<boolean>>('/admin-api/Account/UpdatePwd', dto);
+export function updatePwd(req: UpdateUserPwdRequest) {
+  return httpClient.put<UpdateUserPwdRequest, AppResponse<boolean>>('/admin-api/Account/UpdatePwd', req);
 }
 
 /**

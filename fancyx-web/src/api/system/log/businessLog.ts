@@ -3,11 +3,11 @@ import type { AppResponse, PageSearch, PagedResult, AppOption } from '@/types/ap
 
 /**
  * 业务日志分页列表
- * @param dto
+ * @param req
  */
-export function getBusinessLogList(dto: GetBusinessLogListRequest) {
+export function getBusinessLogList(req: GetBusinessLogListRequest) {
   return httpClient.get<GetBusinessLogListRequest, AppResponse<PagedResult<BusinessLogItem>>>('/admin-api/BusinessLog/List', {
-    params: dto,
+    params: req,
   });
 }
 

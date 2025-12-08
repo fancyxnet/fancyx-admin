@@ -3,28 +3,28 @@ import type { AppResponse, PageSearch, AppOption, PagedResult } from '@/types/ap
 
 /**
  * 新增字典类型
- * @param dto
+ * @param req
  */
-export function addDictType(dto: AddOrUpdateDictTypeRequest) {
-  return httpClient.post<AddOrUpdateDictTypeRequest, AppResponse<boolean>>('/admin-api/DictType/AddDictType', dto);
+export function addDictType(req: AddOrUpdateDictTypeRequest) {
+  return httpClient.post<AddOrUpdateDictTypeRequest, AppResponse<boolean>>('/admin-api/DictType/AddDictType', req);
 }
 
 /**
  * 分页查询字典类型列表
  */
-export function getDictTypeList(dto: GetDictTypeListRequest) {
+export function getDictTypeList(req: GetDictTypeListRequest) {
   return httpClient.get<GetDictTypeListRequest, AppResponse<PagedResult<DictTypeItem>>>(
     '/admin-api/dictType/getDictTypeList',
-    { params: dto },
+    { params: req },
   );
 }
 
 /**
  * 修改字典类型
- * @param dto
+ * @param req
  */
-export function updateDictType(dto: AddOrUpdateDictTypeRequest) {
-  return httpClient.put<AddOrUpdateDictTypeRequest, AppResponse<boolean>>('/admin-api/DictType/UpdateDictType', dto);
+export function updateDictType(req: AddOrUpdateDictTypeRequest) {
+  return httpClient.put<AddOrUpdateDictTypeRequest, AppResponse<boolean>>('/admin-api/DictType/UpdateDictType', req);
 }
 
 /**

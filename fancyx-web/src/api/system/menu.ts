@@ -3,26 +3,26 @@ import type { AppResponse } from '@/types/api';
 
 /**
  * 新增菜单
- * @param dto
+ * @param req
  */
-export function addMenu(dto: AddOrUpdateMenuRequest) {
-  return httpClient.post<AddOrUpdateMenuRequest, AppResponse<boolean>>('/admin-api/Menu/Add', dto);
+export function addMenu(req: AddOrUpdateMenuRequest) {
+  return httpClient.post<AddOrUpdateMenuRequest, AppResponse<boolean>>('/admin-api/Menu/Add', req);
 }
 
 /**
  * 菜单树形列表
- * @param dto
+ * @param req
  */
-export function getMenuList(dto: GetMenuListRequest) {
-  return httpClient.get<GetMenuListRequest, AppResponse<MenuItem[]>>('/admin-api/Menu/List', { params: dto });
+export function getMenuList(req: GetMenuListRequest) {
+  return httpClient.get<GetMenuListRequest, AppResponse<MenuItem[]>>('/admin-api/Menu/List', { params: req });
 }
 
 /**
  * 修改菜单
- * @param dto
+ * @param req
  */
-export function updateMenu(dto: AddOrUpdateMenuRequest) {
-  return httpClient.put<AddOrUpdateMenuRequest, AppResponse<boolean>>('/admin-api/Menu/Update', dto);
+export function updateMenu(req: AddOrUpdateMenuRequest) {
+  return httpClient.put<AddOrUpdateMenuRequest, AppResponse<boolean>>('/admin-api/Menu/Update', req);
 }
 
 /**

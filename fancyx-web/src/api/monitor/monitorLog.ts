@@ -3,26 +3,26 @@ import type { AppResponse, PagedResult, PageSearch } from '@/types/api';
 
 /**
  * API访问日志列表
- * @param dto
+ * @param req
  */
-export function getApiAccessLogList(dto: GetApiAccessLogListRequest) {
+export function getApiAccessLogList(req: GetApiAccessLogListRequest) {
   return httpClient.get<GetApiAccessLogListRequest, AppResponse<PagedResult<ApiAccessLogItem[]>>>(
     '/admin-api/MonitorLog/ApiAccessLogList',
     {
-      params: dto,
+      params: req,
     },
   );
 }
 
 /**
  * 异常日志列表
- * @param dto
+ * @param req
  */
-export function getExceptionLogList(dto: GetExceptionLogListRequest) {
+export function getExceptionLogList(req: GetExceptionLogListRequest) {
   return httpClient.get<GetExceptionLogListRequest, AppResponse<PagedResult<ExceptionLogItem[]>>>(
     '/admin-api/MonitorLog/ExceptionLogList',
     {
-      params: dto,
+      params: req,
     },
   );
 }

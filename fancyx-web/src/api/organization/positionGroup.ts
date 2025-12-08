@@ -3,28 +3,28 @@ import type { AppResponse } from '@/types/api';
 
 /**
  * 新增职位分组
- * @param dto
+ * @param req
  */
-export function addPositionGroup(dto: AddOrUpdatePositionGroupRequest) {
-  return httpClient.post<AddOrUpdatePositionGroupRequest, AppResponse<boolean>>('/admin-api/PositionGroup/Add', dto);
+export function addPositionGroup(req: AddOrUpdatePositionGroupRequest) {
+  return httpClient.post<AddOrUpdatePositionGroupRequest, AppResponse<boolean>>('/admin-api/PositionGroup/Add', req);
 }
 
 /**
  * 职位分组分页列表
- * @param dto
+ * @param req
  */
-export function getPositionGroupList(dto?: GetPositionGroupListRequest) {
+export function getPositionGroupList(req?: GetPositionGroupListRequest) {
   return httpClient.get<GetPositionGroupListRequest, AppResponse<PositionGroupItem[]>>('/admin-api/PositionGroup/List', {
-    params: dto,
+    params: req,
   });
 }
 
 /**
  * 修改职位分组
- * @param dto
+ * @param req
  */
-export function updatePositionGroup(dto: AddOrUpdatePositionGroupRequest) {
-  return httpClient.put<AddOrUpdatePositionGroupRequest, AppResponse<boolean>>('/admin-api/PositionGroup/Update', dto);
+export function updatePositionGroup(req: AddOrUpdatePositionGroupRequest) {
+  return httpClient.put<AddOrUpdatePositionGroupRequest, AppResponse<boolean>>('/admin-api/PositionGroup/Update', req);
 }
 
 /**

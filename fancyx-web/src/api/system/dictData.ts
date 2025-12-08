@@ -4,26 +4,26 @@ import type { AppResponse, PageSearch, PagedResult } from '@/types/api';
 /**
  * 新增字典数据
  */
-export function addDictData(dto: AddOrUpdateDictDataRequest) {
-  return httpClient.post<AddOrUpdateDictDataRequest, AppResponse<boolean>>('/admin-api/DictData/Add', dto);
+export function addDictData(req: AddOrUpdateDictDataRequest) {
+  return httpClient.post<AddOrUpdateDictDataRequest, AppResponse<boolean>>('/admin-api/DictData/Add', req);
 }
 
 /**
  * 字典数据分页列表
- * @param dto
+ * @param req
  * @returns
  */
-export function getDictDataList(dto: GetDictDataListRequest) {
+export function getDictDataList(req: GetDictDataListRequest) {
   return httpClient.get<GetDictDataListRequest, AppResponse<PagedResult<DictDataItem>>>('/admin-api/DictData/list', {
-    params: dto,
+    params: req,
   });
 }
 
 /**
  * 修改字典数据
  */
-export function updateDictData(dto: AddOrUpdateDictDataRequest) {
-  return httpClient.put<AddOrUpdateDictDataRequest, AppResponse<boolean>>('/admin-api/DictData/Update', dto);
+export function updateDictData(req: AddOrUpdateDictDataRequest) {
+  return httpClient.put<AddOrUpdateDictDataRequest, AppResponse<boolean>>('/admin-api/DictData/Update', req);
 }
 
 /**

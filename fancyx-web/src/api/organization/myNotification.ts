@@ -3,7 +3,7 @@ import type { AppResponse, PagedResult } from '@/types/api';
 
 /**
  * 标记已读
- * @param dto
+ * @param req
  */
 export function readed(ids: string[]) {
   return httpClient.put<string[], AppResponse<boolean>>('/admin-api/UserNotification/Readed', ids);
@@ -11,20 +11,20 @@ export function readed(ids: string[]) {
 
 /**
  * 我的通知分页列表
- * @param dto
+ * @param req
  */
-export function getMyNotificationList(dto: GetMyNotificationListRequest) {
+export function getMyNotificationList(req: GetMyNotificationListRequest) {
   return httpClient.get<GetMyNotificationListRequest, AppResponse<PagedResult<UserNotificationItem>>>(
     '/admin-api/UserNotification/MyNotificationList',
     {
-      params: dto,
+      params: req,
     },
   );
 }
 
 /**
  * 我的通知顶部导航信息
- * @param dto
+ * @param req
  */
 export function getMyNotificationNavbarInfo() {
   return httpClient.get<unknown, AppResponse<UserNotificationNavbarInfo>>(

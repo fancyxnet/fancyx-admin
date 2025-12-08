@@ -3,7 +3,7 @@ import type { AppResponse, PagedResult, PageSearch, AppOption } from '@/types/ap
 
 /**
  * 预览生成的代码
- * @param dto
+ * @param req
  */
 export function genCode(tableId: string) {
     return httpClient.post<string, AppResponse<GenCodeResponse>>('/admin-api/Gen/GenCode?tableId=' + tableId);
@@ -11,7 +11,7 @@ export function genCode(tableId: string) {
 
 /**
  * 从数据库导入表
- * @param dto
+ * @param req
  */
 export function importTable(table: string) {
     return httpClient.post<string, AppResponse<GenCodeResponse>>('/admin-api/Gen/ImportTable?table=' + table);
@@ -19,15 +19,15 @@ export function importTable(table: string) {
 
 /**
  * 获取未生成过的表
- * @param dto
+ * @param req
  */
-export function getTableList(dto: GetTableListRequest) {
-    return httpClient.get<GetTableListRequest, AppResponse<PagedResult<TableInfoDto>>>('/admin-api/Gen/GetTableList', { params: dto });
+export function getTableList(req: GetTableListRequest) {
+    return httpClient.get<GetTableListRequest, AppResponse<PagedResult<TableInfoDto>>>('/admin-api/Gen/GetTableList', { params: req });
 }
 
 /**
  * 同步
- * @param dto
+ * @param req
  */
 export function genSyncFromDb(tableId: string) {
     return httpClient.post<string, AppResponse<boolean>>('/admin-api/Gen/GenSyncFromDb?tableId=' + tableId);
@@ -35,18 +35,18 @@ export function genSyncFromDb(tableId: string) {
 
 /**
  * 获取已经生成过的表
- * @param dto
+ * @param req
  */
-export function getGenTableList(dto: GetGenTableListRequest) {
-    return httpClient.get<GetGenTableListRequest, AppResponse<PagedResult<GenTableListDto>>>('/admin-api/Gen/GetGenTableList', { params: dto });
+export function getGenTableList(req: GetGenTableListRequest) {
+    return httpClient.get<GetGenTableListRequest, AppResponse<PagedResult<GenTableListDto>>>('/admin-api/Gen/GetGenTableList', { params: req });
 }
 
 /**
  * 获取已经生成过的表列信息
- * @param dto
+ * @param req
  */
-export function getGenTableColumnList(dto: GenTableColumnRequest) {
-    return httpClient.get<GenTableColumnRequest, AppResponse<PagedResult<GenTableColumnItem>>>('/admin-api/Gen/GetGenTableColumnList', { params: dto });
+export function getGenTableColumnList(req: GenTableColumnRequest) {
+    return httpClient.get<GenTableColumnRequest, AppResponse<PagedResult<GenTableColumnItem>>>('/admin-api/Gen/GetGenTableColumnList', { params: req });
 }
 
 /**
@@ -59,15 +59,15 @@ export function deleteGenTable(tableId: string) {
 
 /**
  * 保存生成表配置
- * @param dto
+ * @param req
  */
-export function saveGenTableInfo(dto: SaveGenTableInfoRequest) {
-    return httpClient.put<SaveGenTableInfoRequest, AppResponse<boolean>>('/admin-api/Gen/SaveGenTableInfo', dto);
+export function saveGenTableInfo(req: SaveGenTableInfoRequest) {
+    return httpClient.put<SaveGenTableInfoRequest, AppResponse<boolean>>('/admin-api/Gen/SaveGenTableInfo', req);
 }
 
 /**
  * 保存生成表列配置
- * @param dto
+ * @param req
  */
 export function saveGenColumnInfo(dtos: SaveGenColumnInfoItem[]) {
     return httpClient.put<SaveGenColumnInfoItem[], AppResponse<boolean>>('/admin-api/Gen/SaveGenColumnInfo', dtos);
@@ -75,7 +75,7 @@ export function saveGenColumnInfo(dtos: SaveGenColumnInfoItem[]) {
 
 /**
  * 获取详细信息
- * @param dto
+ * @param req
  */
 export function getGenDetailsInfo(tableId: string) {
     return httpClient.get<string, AppResponse<GenDetails>>('/admin-api/Gen/GetGenDetailsInfo?tableId=' + tableId);

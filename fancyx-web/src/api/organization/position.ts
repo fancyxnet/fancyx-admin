@@ -3,28 +3,28 @@ import type { AppResponse, PagedResult, PageSearch, AppOptionTree } from '@/type
 
 /**
  * 新增职位
- * @param dto
+ * @param req
  */
-export function addPosition(dto: AddOrUpdatePositionRequest) {
-  return httpClient.post<AddOrUpdatePositionRequest, AppResponse<boolean>>('/admin-api/Position/Add', dto);
+export function addPosition(req: AddOrUpdatePositionRequest) {
+  return httpClient.post<AddOrUpdatePositionRequest, AppResponse<boolean>>('/admin-api/Position/Add', req);
 }
 
 /**
  * 职位分页列表
- * @param dto
+ * @param req
  */
-export function getPositionList(dto: GetPositionListRequest) {
+export function getPositionList(req: GetPositionListRequest) {
   return httpClient.get<GetPositionListRequest, AppResponse<PagedResult<PositionItem>>>('/admin-api/Position/List', {
-    params: dto,
+    params: req,
   });
 }
 
 /**
  * 编辑职位
- * @param dto
+ * @param req
  */
-export function updatePosition(dto: AddOrUpdatePositionRequest) {
-  return httpClient.put<AddOrUpdatePositionRequest, AppResponse<boolean>>('/admin-api/Position/Update', dto);
+export function updatePosition(req: AddOrUpdatePositionRequest) {
+  return httpClient.put<AddOrUpdatePositionRequest, AppResponse<boolean>>('/admin-api/Position/Update', req);
 }
 
 /**

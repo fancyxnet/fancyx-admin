@@ -3,18 +3,18 @@ import type { AppResponse, PagedResult, PageSearch } from '@/types/api';
 
 /**
  * 新增用户
- * @param dto
+ * @param req
  */
-export function addUser(dto: AddUserRequest) {
-  return httpClient.post<AddUserRequest, AppResponse<boolean>>('/admin-api/User/Add', dto);
+export function addUser(req: AddUserRequest) {
+  return httpClient.post<AddUserRequest, AppResponse<boolean>>('/admin-api/User/Add', req);
 }
 
 /**
  * 用户分页列表
- * @param dto
+ * @param req
  */
-export function getUserList(dto: GetUserListRequest) {
-  return httpClient.get<GetUserListRequest, AppResponse<PagedResult<UserItem>>>('/admin-api/User/List', { params: dto });
+export function getUserList(req: GetUserListRequest) {
+  return httpClient.get<GetUserListRequest, AppResponse<PagedResult<UserItem>>>('/admin-api/User/List', { params: req });
 }
 
 /**
@@ -27,10 +27,10 @@ export function deleteUser(id: string) {
 
 /**
  * 分配角色
- * @param dto
+ * @param req
  */
-export function assignRole(dto: AssignRoleRequest) {
-  return httpClient.post<AssignRoleRequest, AppResponse<boolean>>('/admin-api/User/AssignRole', dto);
+export function assignRole(req: AssignRoleRequest) {
+  return httpClient.post<AssignRoleRequest, AppResponse<boolean>>('/admin-api/User/AssignRole', req);
 }
 
 /**
@@ -51,10 +51,10 @@ export function getUserRoleIds(uid: string) {
 
 /**
  * 重置用户密码
- * @param dto
+ * @param req
  */
-export function resetUserPwd(dto: ResetUserPwdRequest) {
-  return httpClient.put<string, AppResponse<boolean>>('/admin-api/User/ResetPwd', dto);
+export function resetUserPwd(req: ResetUserPwdRequest) {
+  return httpClient.put<string, AppResponse<boolean>>('/admin-api/User/ResetPwd', req);
 }
 
 /**
@@ -80,11 +80,11 @@ export function getUserEditInfo(id: string) {
 
 /**
  * 修改用户
- * @param dto
+ * @param req
  * @returns
  */
-export function updateUser(dto: UpdateUserRequest) {
-  return httpClient.put<UpdateUserRequest, AppResponse<boolean>>('/admin-api/User/Update', dto);
+export function updateUser(req: UpdateUserRequest) {
+  return httpClient.put<UpdateUserRequest, AppResponse<boolean>>('/admin-api/User/Update', req);
 }
 
 export interface UserDetails {

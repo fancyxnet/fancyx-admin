@@ -3,28 +3,28 @@ import type { AppResponse, PagedResult, PageSearch } from '@/types/api';
 
 /**
  * 新增通知
- * @param dto
+ * @param req
  */
-export function addNotification(dto: AddOrUpdateNotificationRequest) {
-  return httpClient.post<AddOrUpdateNotificationRequest, AppResponse<boolean>>('/admin-api/Notification/add', dto);
+export function addNotification(req: AddOrUpdateNotificationRequest) {
+  return httpClient.post<AddOrUpdateNotificationRequest, AppResponse<boolean>>('/admin-api/Notification/add', req);
 }
 
 /**
  * 通知分页列表
- * @param dto
+ * @param req
  */
-export function getNotificationList(dto: GetNotificationListRequest) {
+export function getNotificationList(req: GetNotificationListRequest) {
   return httpClient.get<GetNotificationListRequest, AppResponse<PagedResult<NotificationItem>>>('/admin-api/Notification/list', {
-    params: dto,
+    params: req,
   });
 }
 
 /**
  * 修改通知
- * @param dto
+ * @param req
  */
-export function updateNotification(dto: AddOrUpdateNotificationRequest) {
-  return httpClient.put<AddOrUpdateNotificationRequest, AppResponse<boolean>>('/admin-api/Notification/update', dto);
+export function updateNotification(req: AddOrUpdateNotificationRequest) {
+  return httpClient.put<AddOrUpdateNotificationRequest, AppResponse<boolean>>('/admin-api/Notification/update', req);
 }
 
 /**

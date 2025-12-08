@@ -3,26 +3,26 @@ import type { AppResponse } from '@/types/api';
 
 /**
  * 新增部门
- * @param dto
+ * @param req
  */
-export function addDept(dto: AddOrUpdateDeptRequest) {
-  return httpClient.post<AddOrUpdateDeptRequest, AppResponse<boolean>>('/admin-api/Dept/Add', dto);
+export function addDept(req: AddOrUpdateDeptRequest) {
+  return httpClient.post<AddOrUpdateDeptRequest, AppResponse<boolean>>('/admin-api/Dept/Add', req);
 }
 
 /**
  * 部门树形列表
- * @param dto
+ * @param req
  */
-export function getDeptList(dto: GetDeptListRequest) {
-  return httpClient.get<GetDeptListRequest, AppResponse<DeptItem[]>>('/admin-api/Dept/List', { params: dto });
+export function getDeptList(req: GetDeptListRequest) {
+  return httpClient.get<GetDeptListRequest, AppResponse<DeptItem[]>>('/admin-api/Dept/List', { params: req });
 }
 
 /**
  * 修改部门
- * @param dto
+ * @param req
  */
-export function updateDept(dto: AddOrUpdateDeptRequest) {
-  return httpClient.put<AddOrUpdateDeptRequest, AppResponse<boolean>>('/admin-api/Dept/Update', dto);
+export function updateDept(req: AddOrUpdateDeptRequest) {
+  return httpClient.put<AddOrUpdateDeptRequest, AppResponse<boolean>>('/admin-api/Dept/Update', req);
 }
 
 /**

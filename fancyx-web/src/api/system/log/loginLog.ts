@@ -3,11 +3,11 @@ import type { AppResponse, PageSearch, PagedResult } from '@/types/api';
 
 /**
  * 登录日志分页列表
- * @param dto
+ * @param req
  */
-export function getLoginLogList(dto: GetLoginLogListRequest) {
+export function getLoginLogList(req: GetLoginLogListRequest) {
   return httpClient.get<GetLoginLogListRequest, AppResponse<PagedResult<LoginLogItem>>>('/admin-api/LoginLog/GetLoginLogList', {
-    params: dto,
+    params: req,
   });
 }
 

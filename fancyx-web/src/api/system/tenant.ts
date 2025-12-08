@@ -4,28 +4,28 @@ import type { GetMenuOptionsResponse } from './menu';
 
 /**
  * 新增租户
- * @param dto
+ * @param req
  */
-export function addTenant(dto: AddOrUpdateTenantRequest) {
-  return httpClient.post<AddOrUpdateTenantRequest, AppResponse<boolean>>('/admin-api/Tenant/Add', dto);
+export function addTenant(req: AddOrUpdateTenantRequest) {
+  return httpClient.post<AddOrUpdateTenantRequest, AppResponse<boolean>>('/admin-api/Tenant/Add', req);
 }
 
 /**
  * 租户分页列表
- * @param dto
+ * @param req
  */
-export function getTenantList(dto: GetTenantListRequest) {
+export function getTenantList(req: GetTenantListRequest) {
   return httpClient.get<GetTenantListRequest, AppResponse<PagedResult<TenantItem>>>('/admin-api/Tenant/List', {
-    params: dto,
+    params: req,
   });
 }
 
 /**
  * 修改租户
- * @param dto
+ * @param req
  */
-export function updateTenant(dto: AddOrUpdateTenantRequest) {
-  return httpClient.put<AddOrUpdateTenantRequest, AppResponse<boolean>>('/admin-api/Tenant/Update', dto);
+export function updateTenant(req: AddOrUpdateTenantRequest) {
+  return httpClient.put<AddOrUpdateTenantRequest, AppResponse<boolean>>('/admin-api/Tenant/Update', req);
 }
 
 /**
@@ -38,15 +38,15 @@ export function deleteTenant(id: string) {
 
 /**
  * 分配租户菜单
- * @param dto
+ * @param req
  */
-export function assignTenantMenu(dto: AssignTenantMenuRequest) {
-  return httpClient.post<AssignTenantMenuRequest, AppResponse<boolean>>('/admin-api/Tenant/AssignTenantMenu', dto);
+export function assignTenantMenu(req: AssignTenantMenuRequest) {
+  return httpClient.post<AssignTenantMenuRequest, AppResponse<boolean>>('/admin-api/Tenant/AssignTenantMenu', req);
 }
 
 /**
  * 租户已有菜单ID列表
- * @param dto
+ * @param req
  */
 export function getTenantMenuIds(id: string) {
   return httpClient.get<string, AppResponse<string[]>>('/admin-api/Tenant/GetTenantMenuIds/' + id);
@@ -54,11 +54,11 @@ export function getTenantMenuIds(id: string) {
 
 /**
  * 初始管理员账号
- * @param dto
+ * @param req
  * @returns
  */
-export function createTenantAccount(dto: CreateTenantAccountRequest) {
-  return httpClient.post<CreateTenantAccountRequest, AppResponse<TenantAccountInfo>>('/admin-api/Tenant/CreateTenantAccount', dto);
+export function createTenantAccount(req: CreateTenantAccountRequest) {
+  return httpClient.post<CreateTenantAccountRequest, AppResponse<TenantAccountInfo>>('/admin-api/Tenant/CreateTenantAccount', req);
 }
 
 /**

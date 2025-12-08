@@ -3,13 +3,13 @@ import type { AppResponse, PageSearch } from '@/types/api';
 
 /**
  * 在线用户列表
- * @param dto
+ * @param req
  */
-export function getOnlineUsers(dto: GetOnlineUserListRequest) {
+export function getOnlineUsers(req: GetOnlineUserListRequest) {
   return httpClient.get<GetOnlineUserListRequest, AppResponse<OnlineUserItem[]>>(
     '/admin-api/OnlineUser/GetOnlineUserList',
     {
-      params: dto,
+      params: req,
     },
   );
 }

@@ -3,26 +3,26 @@ import type { AppResponse, PagedResult, PageSearch, AppOption } from '@/types/ap
 
 /**
  * 新增角色
- * @param dto
+ * @param req
  */
-export function addRole(dto: AddOrUpdateRoleRequest) {
-  return httpClient.post<AddOrUpdateRoleRequest, AppResponse<boolean>>('/admin-api/Role/Add', dto);
+export function addRole(req: AddOrUpdateRoleRequest) {
+  return httpClient.post<AddOrUpdateRoleRequest, AppResponse<boolean>>('/admin-api/Role/Add', req);
 }
 
 /**
  * 角色分页列表
- * @param dto
+ * @param req
  */
-export function getRoleList(dto: GetRoleListRequest) {
-  return httpClient.get<GetRoleListRequest, AppResponse<PagedResult<RoleItem>>>('/admin-api/Role/List', { params: dto });
+export function getRoleList(req: GetRoleListRequest) {
+  return httpClient.get<GetRoleListRequest, AppResponse<PagedResult<RoleItem>>>('/admin-api/Role/List', { params: req });
 }
 
 /**
  * 修改角色
- * @param dto
+ * @param req
  */
-export function updateRole(dto: AddOrUpdateRoleRequest) {
-  return httpClient.put<AddOrUpdateRoleRequest, AppResponse<boolean>>('/admin-api/Role/Update', dto);
+export function updateRole(req: AddOrUpdateRoleRequest) {
+  return httpClient.put<AddOrUpdateRoleRequest, AppResponse<boolean>>('/admin-api/Role/Update', req);
 }
 
 /**
@@ -35,10 +35,10 @@ export function deleteRole(id: string) {
 
 /**
  * 分配菜单
- * @param dto
+ * @param req
  */
-export function assignMenu(dto: AssignMenuRequest) {
-  return httpClient.post<AssignMenuRequest, AppResponse<boolean>>('/admin-api/Role/AssignMenu', dto);
+export function assignMenu(req: AssignMenuRequest) {
+  return httpClient.post<AssignMenuRequest, AppResponse<boolean>>('/admin-api/Role/AssignMenu', req);
 }
 
 /**
@@ -58,10 +58,10 @@ export function getRoleMenuIds(id: string) {
 
 /**
  * 分配数据
- * @param dto
+ * @param req
  */
-export function assignData(dto: AssignDataScopeRequest) {
-  return httpClient.post<AssignDataScopeRequest, AppResponse<boolean>>('/admin-api/Role/AssignData', dto);
+export function assignData(req: AssignDataScopeRequest) {
+  return httpClient.post<AssignDataScopeRequest, AppResponse<boolean>>('/admin-api/Role/AssignData', req);
 }
 
 /**
@@ -75,11 +75,11 @@ export function getRoleDeptPowerInfo(roleId: string) {
 
 /**
  * 分配角色数据权限
- * @param dto
+ * @param req
  * @returns
  */
-export function assignDataScope(dto: AssignDataScopeDto) {
-  return httpClient.post<AssignDataScopeDto, AppResponse<boolean>>('/admin-api/Role/AssignDataScope', dto);
+export function assignDataScope(req: AssignDataScopeDto) {
+  return httpClient.post<AssignDataScopeDto, AppResponse<boolean>>('/admin-api/Role/AssignDataScope', req);
 }
 
 export interface AddOrUpdateRoleRequest {
