@@ -8,6 +8,7 @@ using Fancyx.Admin.EfCore;
 using Fancyx.Admin.Application.IService.System;
 using Fancyx.Shared.Logger;
 using Fancyx.Admin.Application.IService.System.Models;
+using AutoMapper;
 
 namespace Fancyx.Admin.Application.Service.System;
 
@@ -16,12 +17,14 @@ public class DictTypeService : IDictTypeService
     private readonly IRepository<DictType> _dictTypeRepository;
     private readonly IRepository<DictData> _dictDataRepository;
     private readonly ICurrentUser _currentUser;
+    private readonly IMapper _mapper;
 
-    public DictTypeService(IRepository<DictType> dictTypeRepository, IRepository<DictData> dictDataRepository, ICurrentUser currentUser)
+    public DictTypeService(IRepository<DictType> dictTypeRepository, IRepository<DictData> dictDataRepository, ICurrentUser currentUser, IMapper mapper)
     {
         _dictTypeRepository = dictTypeRepository;
         _dictDataRepository = dictDataRepository;
         _currentUser = currentUser;
+        _mapper = mapper;
     }
 
     [AsyncLogRecord(LogRecordConsts.DictType, LogRecordConsts.DictAddSubType, "{{dict.Id}}", LogRecordConsts.DictAddContent)]
@@ -49,7 +52,7 @@ public class DictTypeService : IDictTypeService
     [AsyncLogRecord(LogRecordConsts.DictType, LogRecordConsts.DictDeleteSubType, "{{dict.Id}}", LogRecordConsts.DictDeleteContent)]
     public async Task DeleteDictTypeAsync(string dictType)
     {
-        var dict = await _dictDataRepository.GetAsync(x => x.DictType.ToLower() == dictType.ToLower()) ?? throw new EntityNotFoundException();
+        var dict = await _dictTypeRepository.GetAsync(x => x.Type.ToLower() == dictType.ToLower()) ?? throw new EntityNotFoundException();
         await _dictDataRepository.DeleteAsync(x => x.DictType == dictType);
         await _dictTypeRepository.DeleteAsync(x => x.Type == dictType);
 
@@ -121,5 +124,11 @@ public class DictTypeService : IDictTypeService
         await _dictTypeRepository.DeleteAsync(x => ids.Contains(x.Id));
 
         LogRecordContext.PutVariable("ids", string.Join(',', ids));
+    }
+
+    public async Task<DictTypeItem> GetDictTypeAsync(long id)
+    {
+        var data = await _dictTypeRepository.GetAsync(x => x.Id == id) ?? throw new EntityNotFoundException();
+        return _mapper.Map<DictTypeItem>(data);
     }
 }

@@ -28,7 +28,8 @@ namespace Fancyx.Shared.Logger
 
             lock (_lockObj)
             {
-                KeyValues[TraceId].AddOrUpdate(name, value, (key, oldValue) => value);
+                if (!KeyValues.TryGetValue(TraceId, out ConcurrentDictionary<string, object>? value1)) return;
+                value1.AddOrUpdate(name, value, (key, oldValue) => value);
             }
         }
 

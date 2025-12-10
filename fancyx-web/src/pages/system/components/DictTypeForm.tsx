@@ -1,98 +1,65 @@
-import { Form, Input, Modal, Switch } from 'antd';
-import { forwardRef, useImperativeHandle, useState } from 'react';
-import type { AppResponse } from '@/types/api';
-import { addDictType, type AddOrUpdateDictTypeRequest, updateDictType } from '@/api/system/dictType.ts';
+import { Form } from 'antd';
+import { addDictType, type AddOrUpdateDictTypeRequest, getDictType, updateDictType } from '@/api/system/dictType.ts';
 import useApp from 'antd/es/app/useApp';
+import { ModalForm, ProFormSwitch, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
 
-interface ModalProps {
-  refresh?: () => void;
-}
-
-export interface ModalRef {
-  openModal: (row?: AddOrUpdateDictTypeRequest) => void;
-}
-
-const DictTypeForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
-  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
-  const [form] = Form.useForm();
-  const [row, setRow] = useState<AddOrUpdateDictTypeRequest | null>();
+const DictTypeModal: React.FC<{
+  id: string | null;
+  modalVisit: boolean;
+  onOpenChange: (show: boolean) => void;
+  callback: () => void;
+}> = ({ id, modalVisit, onOpenChange, callback }) => {
+  const isUpdate = id && id.length > 0;
+  const [form] = Form.useForm<AddOrUpdateDictTypeRequest>();
   const { message } = useApp();
-
-  useImperativeHandle(ref, () => ({
-    openModal,
-  }));
-
-  const openModal = (row?: AddOrUpdateDictTypeRequest) => {
-    setIsOpenModal(true);
-    if (row) {
-      setRow(row);
-      form.setFieldsValue(row);
-    } else {
-      setRow(null);
-      form.resetFields();
-      form.setFieldValue('isEnabled', true);
-    }
-  };
-
-  const onCancel = () => {
-    form.resetFields();
-    setIsOpenModal(false);
-  };
-
-  const onOk = () => {
-    form.submit();
-  };
-
-  const execute = (
-    values: AddOrUpdateDictTypeRequest,
-    apiAction: (params: AddOrUpdateDictTypeRequest) => Promise<AppResponse<boolean>>,
-    successMsg: string,
-  ) => {
-    apiAction({ ...values, id: row?.id }).then(() => {
-      message.success(successMsg);
-      setIsOpenModal(false);
-      form.resetFields();
-      props?.refresh?.();
-    });
-  };
-  const onFinish = (values: AddOrUpdateDictTypeRequest) => {
-    const isEdit = !!row?.id;
-
-    execute(values, isEdit ? updateDictType : addDictType, isEdit ? '编辑成功' : '新增成功');
-  };
-
   return (
-    <Modal
-      title={row?.id ? '编辑字典' : '新增字典'}
-      open={isOpenModal}
-      onCancel={onCancel}
-      onOk={onOk}
-      maskClosable={false}
+    <ModalForm<AddOrUpdateDictTypeRequest>
+      layout="horizontal"
+      labelCol={{ flex: '90px' }}
+      labelWrap
+      wrapperCol={{ flex: 1 }}
+      title={`${isUpdate ? '编辑' : '新增'}字典`}
+      open={modalVisit}
+      form={form}
+      onOpenChange={(show: boolean) => {
+        if (show) {
+          if (isUpdate) {
+            getDictType(id).then((res) => {
+              form.setFieldsValue(res.data as AddOrUpdateDictTypeRequest);
+            });
+          }
+        } else {
+          form.resetFields();
+        }
+        onOpenChange(show);
+      }}
+      onFinish={async (values: AddOrUpdateDictTypeRequest) => {
+        if (isUpdate) {
+          values.id = id;
+        }
+        const apiFunc = isUpdate ? updateDictType : addDictType;
+        await apiFunc(values);
+        message.success('操作成功');
+        onOpenChange(false);
+        callback();
+      }}
     >
-      <Form<AddOrUpdateDictTypeRequest>
-        name="wrap"
-        labelCol={{ flex: '90px' }}
-        labelWrap
-        form={form}
-        wrapperCol={{ flex: 1 }}
-        colon={false}
-        onFinish={onFinish}
-      >
-        <Form.Item label="字典名称" name="name" rules={[{ required: true }, { max: 128 }]}>
-          <Input placeholder="请输入字典名称" />
-        </Form.Item>
-        <Form.Item label="字典类型" name="dictType" rules={[{ required: true }, { max: 128 }]}>
-          <Input placeholder="请输入字典类型" />
-        </Form.Item>
-        <Form.Item label="状态" name="isEnabled" valuePropName="checked">
-          <Switch />
-        </Form.Item>
-        <Form.Item label="备注" name="remark" rules={[{ max: 512 }]}>
-          <Input placeholder="请输入备注" />
-        </Form.Item>
-      </Form>
-    </Modal>
+      <ProFormText
+        label="字典名称"
+        name="name"
+        placeholder="请输入字典名称"
+        rules={[{ required: true }, { max: 128 }]}
+      />
+      <ProFormText
+        label="字典类型"
+        name="dictType"
+        placeholder="请输入字典类型"
+        rules={[{ required: true }, { max: 128 }]}
+      />
+      <ProFormSwitch label="状态" name="isEnabled" rules={[{ required: true }]} />
+      <ProFormTextArea label="备注" name="remark" placeholder="请输入备注" rules={[{ max: 64 }]} />
+    </ModalForm>
   );
-});
+};
 
-export default DictTypeForm;
+export default DictTypeModal;

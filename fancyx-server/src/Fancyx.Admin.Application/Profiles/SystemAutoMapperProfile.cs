@@ -19,6 +19,7 @@ namespace Fancyx.Admin.Application.Profiles
             CreateMap<Notification, UserNotificationItem>();
             CreateMap<Config, ConfigItem>();
             CreateMap<DictData, DictDataItem>();
+            CreateMap<DictType, DictTypeItem>().ForMember(d => d.DictType, s => s.MapFrom(s => s.Type));
             CreateMap<User, UserDetails>(MemberList.None);
             CreateMap<TableInfo, TableInfoItem>(MemberList.None);
             CreateMap<GenTable, GenTableItem>(MemberList.None);

@@ -6,7 +6,7 @@ import type { AppResponse, PageSearch, AppOption, PagedResult } from '@/types/ap
  * @param req
  */
 export function addDictType(req: AddOrUpdateDictTypeRequest) {
-  return httpClient.post<AddOrUpdateDictTypeRequest, AppResponse<boolean>>('/admin-api/DictType/AddDictType', req);
+  return httpClient.post<AddOrUpdateDictTypeRequest, AppResponse<boolean>>('/admin-api/DictType/Add', req);
 }
 
 /**
@@ -14,7 +14,7 @@ export function addDictType(req: AddOrUpdateDictTypeRequest) {
  */
 export function getDictTypeList(req: GetDictTypeListRequest) {
   return httpClient.get<GetDictTypeListRequest, AppResponse<PagedResult<DictTypeItem>>>(
-    '/admin-api/dictType/getDictTypeList',
+    '/admin-api/DictType/List',
     { params: req },
   );
 }
@@ -24,7 +24,7 @@ export function getDictTypeList(req: GetDictTypeListRequest) {
  * @param req
  */
 export function updateDictType(req: AddOrUpdateDictTypeRequest) {
-  return httpClient.put<AddOrUpdateDictTypeRequest, AppResponse<boolean>>('/admin-api/DictType/UpdateDictType', req);
+  return httpClient.put<AddOrUpdateDictTypeRequest, AppResponse<boolean>>('/admin-api/DictType/Update', req);
 }
 
 /**
@@ -32,7 +32,7 @@ export function updateDictType(req: AddOrUpdateDictTypeRequest) {
  * @param dictType
  */
 export function deleteDictType(dictType: string) {
-  return httpClient.delete<string, AppResponse<boolean>>('/admin-api/DictType/DeleteDictType/' + dictType);
+  return httpClient.delete<string, AppResponse<boolean>>('/admin-api/DictType/Delete/' + dictType);
 }
 
 /**
@@ -40,9 +40,18 @@ export function deleteDictType(dictType: string) {
  * @param ids
  */
 export function deleteDictTypes(ids: string[]) {
-  return httpClient.delete<string[], AppResponse<boolean>>('/admin-api/DictType/DeleteDictTypes', {
+  return httpClient.delete<string[], AppResponse<boolean>>('/admin-api/DictType/DeleteMany', {
     data: ids,
   });
+}
+
+/**
+ * 字典类型详情
+ * @param id 
+ * @returns 
+ */
+export function getDictType(id: string) {
+  return httpClient.get<string, AppResponse<DictTypeItem>>(`/admin-api/DictType/${id}`);
 }
 
 /**
@@ -51,7 +60,7 @@ export function deleteDictTypes(ids: string[]) {
  * @returns
  */
 export function getDictDataOptions(type: string) {
-  return httpClient.get<string, AppResponse<AppOption[]>>('/admin-api/dictType/getDictDataOptions?type=' + type);
+  return httpClient.get<string, AppResponse<AppOption[]>>('/admin-api/DictType/Options?type=' + type);
 }
 
 export interface AddOrUpdateDictTypeRequest {

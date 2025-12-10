@@ -10,7 +10,7 @@ namespace Fancyx.Admin.Controllers.System;
 
 [Authorize]
 [ApiController]
-[Route("api/[controller]/[action]")]
+[Route("api/[controller]")]
 public class DictTypeController : ControllerBase
 {
     private readonly IDictTypeService _dictTypeService;
@@ -25,7 +25,7 @@ public class DictTypeController : ControllerBase
     /// </summary>
     /// <param name="req"></param>
     /// <returns></returns>
-    [HttpPost]
+    [HttpPost("Add")]
     [HasPermission("Sys.DictType.Add")]
     public async Task<AppResponse<bool>> AddDictTypeAsync([FromBody] AddOrUpdateDictTypeRequest req)
     {
@@ -38,7 +38,7 @@ public class DictTypeController : ControllerBase
     /// </summary>
     /// <param name="req"></param>
     /// <returns></returns>
-    [HttpGet]
+    [HttpGet("List")]
     [HasPermission("Sys.DictType.List")]
     public async Task<AppResponse<PagedResult<DictTypeItem>>> GetDictTypeListAsync([FromQuery] GetDictTypeListRequest req)
     {
@@ -51,7 +51,7 @@ public class DictTypeController : ControllerBase
     /// </summary>
     /// <param name="req"></param>
     /// <returns></returns>
-    [HttpPut]
+    [HttpPut("Update")]
     [HasPermission("Sys.DictType.Update")]
     public async Task<AppResponse<bool>> UpdateDictTypeAsync([FromBody] AddOrUpdateDictTypeRequest req)
     {
@@ -64,7 +64,7 @@ public class DictTypeController : ControllerBase
     /// </summary>
     /// <param name="dictType"></param>
     /// <returns></returns>
-    [HttpDelete("{dictType}")]
+    [HttpDelete("Delete/{dictType}")]
     [HasPermission("Sys.DictType.Delete")]
     [ApiAccessLog(operateName: "删除字典类型", operateType: [OperateType.Delete], reponseEnable: true)]
     public async Task<AppResponse<bool>> DeleteDictTypeAsync(string dictType)
@@ -78,7 +78,7 @@ public class DictTypeController : ControllerBase
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    [HttpGet]
+    [HttpGet("Options")]
     public async Task<AppResponse<List<AppOption>>> GetDictDataOptionsAsync(string type)
     {
         var data = await _dictTypeService.GetDictDataOptionsAsync(type);
@@ -90,12 +90,19 @@ public class DictTypeController : ControllerBase
     /// </summary>
     /// <param name="ids"></param>
     /// <returns></returns>
-    [HttpDelete]
+    [HttpDelete("DeleteMany")]
     [HasPermission("Sys.DictType.Delete")]
     [ApiAccessLog(operateName: "批量删除字典类型", operateType: [OperateType.Delete], reponseEnable: true)]
     public async Task<AppResponse<bool>> DeleteDictTypesAsync([FromBody] long[] ids)
     {
         await _dictTypeService.DeleteDictTypesAsync(ids);
         return Result.Ok();
+    }
+
+    [HttpGet("{id}")]
+    public async Task<AppResponse<DictTypeItem>> GetDictTypeAsync([FromRoute] long id)
+    {
+        var data = await _dictTypeService.GetDictTypeAsync(id);
+        return Result.Data(data);
     }
 }
