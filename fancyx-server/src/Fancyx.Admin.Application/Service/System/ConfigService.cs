@@ -99,5 +99,11 @@ namespace Fancyx.Admin.Application.Service.System
             LogRecordContext.PutVariable("id", entity.Id);
             LogRecordContext.PutVariable("after", entity);
         }
+
+        public async Task<ConfigItem> GetConfigAsync(long id)
+        {
+            var config = await _configRepository.GetAsync(x => x.Id == id) ?? throw new EntityNotFoundException();
+            return _mapper.Map<ConfigItem>(config);
+        }
     }
 }

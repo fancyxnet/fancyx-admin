@@ -1,101 +1,63 @@
-import { Form, Input, Modal } from 'antd';
-import { forwardRef, useImperativeHandle, useState } from 'react';
-import type { AppResponse } from '@/types/api';
-import { addConfig, type AddOrUpdateConfigRequest, updateConfig } from '@/api/system/config.ts';
+import { Form } from 'antd';
+import { addConfig, type AddOrUpdateConfigRequest, updateConfig, getConfig } from '@/api/system/config.ts';
 import useApp from 'antd/es/app/useApp';
-import TextArea from 'antd/es/input/TextArea';
+import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
 
-interface ModalProps {
-  refresh?: () => void;
-}
-
-export interface ModalRef {
-  openModal: (row?: AddOrUpdateConfigRequest) => void;
-}
-
-const ConfigForm = forwardRef<ModalRef, ModalProps>((props, ref) => {
-  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
-  const [form] = Form.useForm();
-  const [row, setRow] = useState<AddOrUpdateConfigRequest | null>();
+const ConfigModal: React.FC<{
+  id: string | null;
+  modalVisit: boolean;
+  onOpenChange: (show: boolean) => void;
+  callback: () => void;
+}> = ({ id, modalVisit, onOpenChange, callback }) => {
+  const isUpdate = id && id.length > 0;
+  const [form] = Form.useForm<AddOrUpdateConfigRequest>();
   const { message } = useApp();
-
-  useImperativeHandle(ref, () => ({
-    openModal,
-  }));
-
-  const openModal = (row?: AddOrUpdateConfigRequest) => {
-    setIsOpenModal(true);
-    if (row) {
-      setRow(row);
-      form.setFieldsValue(row);
-    } else {
-      setRow(null);
-      form.resetFields();
-    }
-  };
-
-  const onCancel = () => {
-    form.resetFields();
-    setIsOpenModal(false);
-  };
-
-  const onOk = () => {
-    form.submit();
-  };
-
-  const execute = (
-    values: AddOrUpdateConfigRequest,
-    apiAction: (params: AddOrUpdateConfigRequest) => Promise<AppResponse<boolean>>,
-    successMsg: string,
-  ) => {
-    apiAction({ ...values, id: row?.id }).then(() => {
-      message.success(successMsg);
-      setIsOpenModal(false);
-      form.resetFields();
-      props?.refresh?.();
-    });
-  };
-  const onFinish = (values: AddOrUpdateConfigRequest) => {
-    const isEdit = !!row?.id;
-
-    execute(values, isEdit ? updateConfig : addConfig, isEdit ? '编辑成功' : '新增成功');
-  };
-
   return (
-    <Modal
-      title={row?.id ? '编辑配置' : '新增配置'}
-      open={isOpenModal}
-      onCancel={onCancel}
-      onOk={onOk}
-      maskClosable={false}
+    <ModalForm<AddOrUpdateConfigRequest>
+      layout="horizontal"
+      labelCol={{ flex: '90px' }}
+      labelWrap
+      wrapperCol={{ flex: 1 }}
+      title={`${isUpdate ? '编辑' : '新增'}配置`}
+      open={modalVisit}
+      form={form}
+      onOpenChange={(show: boolean) => {
+        if (show) {
+          if (isUpdate) {
+            getConfig(id).then((res) => {
+              form.setFieldsValue(res.data as AddOrUpdateConfigRequest);
+            });
+          }
+        } else {
+          form.resetFields();
+        }
+        onOpenChange(show);
+      }}
+      onFinish={async (values: AddOrUpdateConfigRequest) => {
+        const apiFunc = isUpdate ? updateConfig : addConfig;
+        await apiFunc(values);
+        message.success('操作成功');
+        onOpenChange(false);
+        callback();
+      }}
     >
-      <Form<AddOrUpdateConfigRequest>
-        name="wrap"
-        labelCol={{ flex: '90px' }}
-        labelWrap
-        form={form}
-        wrapperCol={{ flex: 1 }}
-        colon={false}
-        onFinish={onFinish}
-      >
-        <Form.Item label="组别" name="groupKey">
-          <Input placeholder="组别" />
-        </Form.Item>
-        <Form.Item label="配置名称" name="name" rules={[{ required: true }, { max: 256 }]}>
-          <Input placeholder="请输入配置名称" />
-        </Form.Item>
-        <Form.Item label="配置键名" name="key" rules={[{ required: true }, { max: 128 }]}>
-          <Input placeholder="请输入配置键名" />
-        </Form.Item>
-        <Form.Item label="配置值" name="value" rules={[{ required: true }, { max: 1024 }]}>
-          <Input placeholder="请输入配置值" />
-        </Form.Item>
-        <Form.Item label="备注" name="remark" rules={[{ max: 64 }]}>
-          <TextArea placeholder="请输入备注" />
-        </Form.Item>
-      </Form>
-    </Modal>
+      <ProFormText label="组别" name="groupKey" placeholder="请输入组别" />
+      <ProFormText
+        label="配置名称"
+        name="name"
+        placeholder="请输入配置名称"
+        rules={[{ required: true }, { max: 256 }]}
+      />
+      <ProFormText
+        label="配置键名"
+        name="key"
+        placeholder="请输入配置键名"
+        rules={[{ required: true }, { max: 128 }]}
+      />
+      <ProFormText label="配置值" name="value" placeholder="请输入配置值" rules={[{ required: true }, { max: 1024 }]} />
+      <ProFormTextArea label="备注" name="remark" placeholder="请输入备注" rules={[{ max: 64 }]} />
+    </ModalForm>
   );
-});
+};
 
-export default ConfigForm;
+export default ConfigModal;

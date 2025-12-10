@@ -73,5 +73,12 @@ namespace Fancyx.Admin.Controllers.System
             Dictionary<string, string> dictionary = await _configSharedService.GetGroupAsync(group);
             return Result.Data(dictionary);
         }
+
+        [HttpGet("{id}")]
+        public async Task<AppResponse<ConfigItem>> GetConfigAsync([FromRoute] long id)
+        {
+            var data = await _configService.GetConfigAsync(id);
+            return Result.Data(data);
+        }
     }
 }

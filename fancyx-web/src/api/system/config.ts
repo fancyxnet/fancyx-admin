@@ -14,7 +14,9 @@ export function addConfig(req: AddOrUpdateConfigRequest) {
  * @param req
  */
 export function getConfigList(req: GetConfigListRequest) {
-  return httpClient.get<GetConfigListRequest, AppResponse<PagedResult<ConfigItem>>>('/admin-api/Config/List', { params: req });
+  return httpClient.get<GetConfigListRequest, AppResponse<PagedResult<ConfigItem>>>('/admin-api/Config/List', {
+    params: req,
+  });
 }
 
 /**
@@ -31,6 +33,14 @@ export function updateConfig(req: AddOrUpdateConfigRequest) {
  */
 export function deleteConfig(id: string) {
   return httpClient.delete<string, AppResponse<boolean>>(`/admin-api/Config/Delete/${id}`);
+}
+
+/**
+ * 配置详情
+ * @param id
+ */
+export function getConfig(id: string) {
+  return httpClient.get<string, AppResponse<ConfigItem>>(`/admin-api/Config/${id}`);
 }
 
 export interface AddOrUpdateConfigRequest {

@@ -1,17 +1,18 @@
 ﻿import Permission from '@/components/Permission';
-import { deleteConfig, getConfigList, type AddOrUpdateConfigRequest, type ConfigItem } from '@/api/system/config.ts';
+import { deleteConfig, getConfigList, type ConfigItem } from '@/api/system/config.ts';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Popconfirm, Space } from 'antd';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import type { SmartTableRef, SmartTableColumnType } from '@/components/SmartTable/type.ts';
 import SmartTable from '@/components/SmartTable';
-import ConfigForm, { type ModalRef } from '@/pages/system/components/ConfigForm.tsx';
+import ConfigForm from '@/pages/system/components/ConfigForm.tsx';
 import useApp from 'antd/es/app/useApp';
 
 const ConfigList: React.FC = () => {
   const tableRef = useRef<SmartTableRef>(null);
-  const modalRef = useRef<ModalRef>(null);
   const { message } = useApp();
+  const [rowId, setRowId] = useState<string | null>(null);
+  const [modalVisit, setModalVisit] = useState<boolean>(false);
   const columns: SmartTableColumnType[] = [
     {
       title: '配置名称',
@@ -54,7 +55,8 @@ const ConfigList: React.FC = () => {
               icon={<EditOutlined />}
               key="edit"
               onClick={() => {
-                modalRef?.current?.openModal(record as AddOrUpdateConfigRequest);
+                setRowId(record.id);
+                setModalVisit(true);
               }}
             >
               编辑
@@ -107,7 +109,8 @@ const ConfigList: React.FC = () => {
                 type="primary"
                 key="primary"
                 onClick={() => {
-                  modalRef?.current?.openModal();
+                  setRowId(null);
+                  setModalVisit(true);
                 }}
               >
                 <PlusOutlined /> 新增
@@ -117,7 +120,7 @@ const ConfigList: React.FC = () => {
         }
       />
       {/** 新增/编辑配置弹窗 */}
-      <ConfigForm ref={modalRef} refresh={() => tableRef?.current?.reload()} />
+      <ConfigForm modalVisit={modalVisit} id={rowId} callback={() => tableRef?.current?.reload()} onOpenChange={setModalVisit}/>
     </>
   );
 };

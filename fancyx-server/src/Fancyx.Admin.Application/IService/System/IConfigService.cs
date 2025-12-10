@@ -32,5 +32,12 @@ namespace Fancyx.Admin.Application.IService.System
         /// <param name="id"></param>
         /// <returns></returns>
         Task DeleteConfigAsync(long id);
+
+        /// <summary>
+        /// 配置详情
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<ConfigItem> GetConfigAsync(long id);
     }
 }
