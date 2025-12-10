@@ -34,6 +34,9 @@ const ConfigModal: React.FC<{
         onOpenChange(show);
       }}
       onFinish={async (values: AddOrUpdateConfigRequest) => {
+        if (isUpdate) {
+          values.id = id;
+        }
         const apiFunc = isUpdate ? updateConfig : addConfig;
         await apiFunc(values);
         message.success('操作成功');

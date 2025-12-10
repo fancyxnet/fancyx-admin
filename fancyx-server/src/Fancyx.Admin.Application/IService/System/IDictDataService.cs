@@ -32,5 +32,12 @@ namespace Fancyx.Admin.Application.IService.System
         /// <param name="ids"></param>
         /// <returns></returns>
         Task<bool> DeleteDictDataAsync(long[] ids);
+
+        /// <summary>
+        /// 字典详情
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<DictDataItem> GetDictDataAsync(long id);
     }
 }

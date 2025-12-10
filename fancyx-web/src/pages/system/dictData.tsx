@@ -1,18 +1,20 @@
 ﻿import Permission from '@/components/Permission';
-import { deleteDictData, getDictDataList, type AddOrUpdateDictDataRequest, type DictDataItem } from '@/api/system/dictData';
+import { deleteDictData, getDictDataList, type DictDataItem } from '@/api/system/dictData';
 import { CopyOutlined, DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Popconfirm, Space, Switch } from 'antd';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import type { SmartTableRef, SmartTableColumnType } from '@/components/SmartTable/type.ts';
-import DictDataForm, { type ModalRef } from '@/pages/system/components/DictDataForm.tsx';
+import DictDataForm from '@/pages/system/components/DictDataForm.tsx';
 import SmartTable from '@/components/SmartTable';
 import useApp from 'antd/es/app/useApp';
 
 const DictDataList: React.FC = () => {
   const tableRef = useRef<SmartTableRef>(null);
-  const modalRef = useRef<ModalRef>(null);
   const { message } = useApp();
+  const [rowId, setRowId] = useState<string | null>(null);
+  const [modalVisit, setModalVisit] = useState<boolean>(false);
+  const [isCopy, setIsCopy] = useState<boolean>(false);
   const columns: SmartTableColumnType[] = [
     {
       title: '字典标签',
@@ -56,7 +58,9 @@ const DictDataList: React.FC = () => {
               icon={<EditOutlined />}
               key="edit"
               onClick={() => {
-                modalRef?.current?.openModal(record);
+                setIsCopy(false);
+                setRowId(record.id);
+                setModalVisit(true);
               }}
             >
               编辑
@@ -68,9 +72,9 @@ const DictDataList: React.FC = () => {
               type="link"
               icon={<CopyOutlined />}
               onClick={() => {
-                const row = record as AddOrUpdateDictDataRequest;
-                row.id = undefined;
-                modalRef?.current?.openModal(record);
+                setIsCopy(true);
+                setRowId(record.id);
+                setModalVisit(true);
               }}
             >
               复制
@@ -120,7 +124,9 @@ const DictDataList: React.FC = () => {
               type="primary"
               key="primary"
               onClick={() => {
-                modalRef?.current?.openModal();
+                setIsCopy(false);
+                setRowId(null);
+                setModalVisit(true);
               }}
             >
               <PlusOutlined /> 新增
@@ -129,7 +135,13 @@ const DictDataList: React.FC = () => {
         }
       />
       {/* 新增/编辑字典数据弹窗 */}
-      <DictDataForm ref={modalRef} refresh={() => tableRef?.current?.reload()} />
+      <DictDataForm
+        id={rowId}
+        isCopy={isCopy}
+        modalVisit={modalVisit}
+        onOpenChange={setModalVisit}
+        callback={() => tableRef?.current?.reload()}
+      />
     </>
   );
 };

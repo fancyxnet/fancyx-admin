@@ -72,5 +72,12 @@ namespace Fancyx.Admin.Controllers.System
             await _dictService.DeleteDictDataAsync(ids);
             return Result.Ok();
         }
+
+        [HttpGet("{id}")]
+        public async Task<AppResponse<DictDataItem>> GetDictDataAsync([FromRoute] long id)
+        {
+            var data = await _dictService.GetDictDataAsync(id);
+            return Result.Data(data);
+        }
     }
 }

@@ -37,6 +37,15 @@ export function deleteDictData(ids: string[]) {
   });
 }
 
+/**
+ * 字典数据详情
+ * @param req
+ * @returns
+ */
+export function getDictData(id: string) {
+  return httpClient.get<string, AppResponse<DictDataItem>>(`/admin-api/DictData/${id}`);
+}
+
 export interface AddOrUpdateDictDataRequest {
   id?: string | null;
   values: string;
@@ -48,7 +57,7 @@ export interface AddOrUpdateDictDataRequest {
 }
 
 export interface DictDataItem {
-  id?: string;
+  id: string | null;
   values: string;
   label: string;
   dictType: string;

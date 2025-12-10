@@ -12,24 +12,24 @@ namespace Fancyx.Admin.Application.Service.System
 {
     public class DictDataService : IDictDataService
     {
-        private readonly IRepository<DictData> _dictRepository;
+        private readonly IRepository<DictData> _dictDataRepository;
         private readonly IMapper _mapper;
 
         public DictDataService(IRepository<DictData> dictRepository, IMapper mapper)
         {
-            _dictRepository = dictRepository;
+            _dictDataRepository = dictRepository;
             _mapper = mapper;
         }
 
         public async Task<bool> AddDictDataAsync(AddOrUpdateDictDataRequest req)
         {
-            var isExist = await _dictRepository.AnyAsync(x => x.Value.ToLower() == req.Value.ToLower());
+            var isExist = await _dictDataRepository.AnyAsync(x => x.Value.ToLower() == req.Value.ToLower());
             if (isExist)
             {
                 throw new BusinessException("字典值已存在");
             }
             var entity = _mapper.Map<AddOrUpdateDictDataRequest, DictData>(req);
-            await _dictRepository.InsertAsync(entity);
+            await _dictDataRepository.InsertAsync(entity);
 
             return true;
         }
@@ -37,7 +37,7 @@ namespace Fancyx.Admin.Application.Service.System
         [AsyncLogRecord(LogRecordConsts.DictData, LogRecordConsts.DictDataDeleteSubType, "{{ids}}", LogRecordConsts.DictDataDeleteContent)]
         public async Task<bool> DeleteDictDataAsync(long[] ids)
         {
-            await _dictRepository.DeleteAsync(x => ids.Contains(x.Id));
+            await _dictDataRepository.DeleteAsync(x => ids.Contains(x.Id));
 
             LogRecordContext.PutVariable("ids", string.Join(',', ids));
 
@@ -46,7 +46,7 @@ namespace Fancyx.Admin.Application.Service.System
 
         public async Task<PagedResult<DictDataItem>> GetDictDataListAsync(GetDictDataListRequest req)
         {
-            var resp = await _dictRepository.GetQueryable()
+            var resp = await _dictDataRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(req.Label), x => x.Label != null && x.Label.Contains(req.Label!))
                 .WhereIf(!string.IsNullOrEmpty(req.DictType), x => x.DictType != null && x.DictType.Contains(req.DictType!))
                 .OrderBy(x => x.Sort).OrderByDescending(x => x.CreationTime)
@@ -59,8 +59,8 @@ namespace Fancyx.Admin.Application.Service.System
         public async Task<bool> UpdateDictDataAsync(AddOrUpdateDictDataRequest req)
         {
             if (!req.Id.HasValue) throw new ArgumentNullException(nameof(req.Id));
-            var entity = await _dictRepository.FindAsync(req.Id) ?? throw new BusinessException("数据不存在");
-            var isExist = await _dictRepository.AnyAsync(x => x.Value.ToLower() == req.Value.ToLower());
+            var entity = await _dictDataRepository.FindAsync(req.Id) ?? throw new BusinessException("数据不存在");
+            var isExist = await _dictDataRepository.AnyAsync(x => x.Value.ToLower() == req.Value.ToLower());
             if (entity.Value.ToLower() != req.Value.ToLower() && isExist)
             {
                 throw new BusinessException("字典值已存在");
@@ -72,11 +72,17 @@ namespace Fancyx.Admin.Application.Service.System
             entity.Sort = req.Sort;
             entity.Remark = req.Remark;
             entity.IsEnabled = req.IsEnabled;
-            await _dictRepository.UpdateAsync(entity);
+            await _dictDataRepository.UpdateAsync(entity);
 
             LogRecordContext.PutVariable("id", entity.Id);
             LogRecordContext.PutVariable("after", entity);
             return true;
+        }
+
+        public async Task<DictDataItem> GetDictDataAsync(long id)
+        {
+            var dictData = await _dictDataRepository.GetAsync(x => x.Id == id) ?? throw new EntityNotFoundException();
+            return _mapper.Map<DictDataItem>(dictData);
         }
     }
 }

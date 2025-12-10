@@ -44,7 +44,7 @@ export function getConfig(id: string) {
 }
 
 export interface AddOrUpdateConfigRequest {
-  id?: string;
+  id: string | null;
   name: string;
   key: string;
   value: string;
