@@ -6,57 +6,76 @@ import {
   type AddOrUpdateTenantRequest,
   type TenantItem,
   type TenantAccountInfo,
+  type GetTenantListRequest,
 } from '@/api/system/tenant.ts';
 import { DeleteOutlined, EditOutlined, HddOutlined, PlusOutlined, UserAddOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Modal, Popconfirm, Space } from 'antd';
+import { Button, Modal, Popconfirm, Space } from 'antd';
 import React, { useRef, useState } from 'react';
-import type { SmartTableRef, SmartTableColumnType } from '@/components/SmartTable/type.ts';
-import SmartTable from '@/components/SmartTable';
 import TenantForm, { type ModalRef } from '@/pages/system/components/TenantForm.tsx';
 import useApp from 'antd/es/app/useApp';
 import AssignTenantForm, { type AssignTenantMenuFormModalRef } from './components/AssignTenantMenuForm';
+import { ProTable, type ActionType, type ProColumnType } from '@ant-design/pro-components';
 
-const TenantList: React.FC = () => {
-  const tableRef = useRef<SmartTableRef>(null);
+const Tenant: React.FC = () => {
   const modalRef = useRef<ModalRef>(null);
   const { message } = useApp();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [account, setAccount] = useState<TenantAccountInfo>();
-  const columns: SmartTableColumnType[] = [
+  const actionRef = useRef<ActionType>();
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([])
+  const columns: ProColumnType<TenantItem>[] = [
+    {
+      title: '关键词',
+      key: 'keyword',
+      hideInTable: true,
+      hideInForm: false,
+      valueType: 'text',
+      fieldProps: {
+        placeholder: '请输入租户名称/标识',
+      },
+    },
     {
       title: '租户名称',
       dataIndex: 'name',
+      search: false,
     },
     {
       title: '租户标识',
       dataIndex: 'tenantId',
+      search: false,
     },
     {
       title: '绑定域名',
       dataIndex: 'domain',
+      search: false,
     },
     {
       title: '状态',
       dataIndex: 'isEnabled',
+      search: false,
       render: (_: any, record: TenantItem) => (record.isEnabled ? '启用' : '禁用'),
     },
     {
       title: '备注',
       dataIndex: 'Remark',
+      search: false,
     },
     {
       title: '创建时间',
       dataIndex: 'creationTime',
+      search: false,
     },
     {
       title: '上次修改时间',
       dataIndex: 'lastModificationTime',
+      search: false,
     },
     {
       title: '操作',
       dataIndex: 'option',
       width: 210,
       fixed: 'right',
+      search: false,
       render: (_: any, record: TenantItem) => (
         <Space>
           <Permission permissions={'Sys.Tenant.Update'}>
@@ -91,7 +110,7 @@ const TenantList: React.FC = () => {
               onConfirm={() => {
                 deleteTenant(record.tenantId!).then(() => {
                   message.success('删除成功');
-                  tableRef.current?.reload();
+                  actionRef.current?.reload();
                 });
               }}
             >
@@ -106,24 +125,29 @@ const TenantList: React.FC = () => {
   ];
   const assignTenantFormRef = useRef<AssignTenantMenuFormModalRef>(null);
 
-  return (
-    <>
-      <SmartTable
-        columns={columns}
-        ref={tableRef}
-        rowKey="tenantId"
-        selection={true}
-        selectionType="radio"
-        request={async (params) => {
-          const { data } = await getTenantList(params);
-          return data;
-        }}
-        searchItems={[
-          <Form.Item label="关键词" name="keyword">
-            <Input placeholder="请输入租户名称/标识" />
-          </Form.Item>,
-        ]}
-        toolbar={
+
+  return (<div className='fancyx-table-wrapper'>
+    <ProTable<TenantItem, GetTenantListRequest>
+      actionRef={actionRef}
+      rowKey="id"
+      columns={columns}
+      request={async (
+        params: GetTenantListRequest
+      ) => {
+        const res = await getTenantList(params);
+        return {
+          data: res.data.items,
+          success: true,
+          total: res.data.totalCount
+        };
+      }}
+      rowSelection={{
+        onChange: (selectedRowKeys) => {
+          setSelectedKeys(selectedRowKeys as string[]);
+        },
+      }}
+      toolBarRender={
+        () => [
           <Space size="middle">
             <Permission permissions={'Sys.Tenant.Add'}>
               <Button
@@ -141,7 +165,7 @@ const TenantList: React.FC = () => {
                 key="createTenantAccount"
                 variant="outlined"
                 onClick={() => {
-                  const keys = tableRef?.current?.getSelectedKeys() as string[] | undefined;
+                  const keys = selectedKeys;
                   if (!keys || keys?.length === 0) {
                     message.warning('请先选择租户');
                     return;
@@ -157,27 +181,27 @@ const TenantList: React.FC = () => {
               </Button>
             </Permission>
           </Space>
-        }
-      />
-      {/** 新增/编辑租户弹窗 */}
-      <TenantForm ref={modalRef} refresh={() => tableRef?.current?.reload()} />
-      {/* 分配功能权限 */}
-      <AssignTenantForm ref={assignTenantFormRef} />
-      <Modal
-        title="租户管理员账号"
-        open={isModalOpen}
-        footer={null}
-        onCancel={() => {
-          setIsModalOpen(false);
-        }}
-      >
-        <p>密码只展示一次，请截图保存。</p>
-        <p className='mt-1'>角色：{account?.roleName}</p>
-        <p>账号：{account?.userName}</p>
-        <p>密码：{account?.password}</p>
-      </Modal>
-    </>
-  );
-};
+        ]
+      }
+    />
+    {/** 新增/编辑租户弹窗 */}
+    <TenantForm ref={modalRef} refresh={() => actionRef?.current?.reload()} />
+    {/* 分配功能权限 */}
+    <AssignTenantForm ref={assignTenantFormRef} />
+    <Modal
+      title="租户管理员账号"
+      open={isModalOpen}
+      footer={null}
+      onCancel={() => {
+        setIsModalOpen(false);
+      }}
+    >
+      <p>密码只展示一次，请截图保存。</p>
+      <p className='mt-1'>角色：{account?.roleName}</p>
+      <p>账号：{account?.userName}</p>
+      <p>密码：{account?.password}</p>
+    </Modal>
+  </div>)
+}
 
-export default TenantList;
+export default Tenant;
