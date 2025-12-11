@@ -220,5 +220,11 @@ namespace Fancyx.Admin.Application.Service.System
 
             return true;
         }
+
+        public async Task<MenuItem> GetMenuAsync(long id)
+        {
+            var data = await _menuRepository.FindAsync(id) ?? throw new EntityNotFoundException();
+            return _mapper.Map<MenuItem>(data);
+        }
     }
 }

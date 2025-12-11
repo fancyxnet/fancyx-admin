@@ -213,5 +213,23 @@ namespace Fancyx.Admin.Application.Service.System
             role.DeptPowerType = req.DeptPowerType;
             await _roleRepository.UpdateAsync(role);
         }
+
+        public async Task<RoleDetails> GetRoleAsync(long id)
+        {
+            var role = await _roleRepository.FindAsync(id) ?? throw new EntityNotFoundException();
+            var details = new RoleDetails
+            {
+                Id = role.Id,
+                RoleName = role.RoleName,
+                Remark = role.Remark,
+                DeptPowerType = role.DeptPowerType,
+                MenuIds = [.. await _roleMenuRepository.Where(x => x.RoleId == id).SelectToListAsync(x => x.MenuId)]
+            };
+            if (role.DeptPowerType == DeptPowerType.Specify)
+            {
+                details.DeptIds = await _roleDeptRepository.Where(x => x.RoleId == id).SelectToListAsync(x => x.DeptId);
+            }
+            return details;
+        }
     }
 }

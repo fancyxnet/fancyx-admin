@@ -53,5 +53,12 @@ namespace Fancyx.Admin.Application.IService.System
         /// <param name="req"></param>
         /// <returns></returns>
         Task<TenantAccountInfo> CreateTenantAccountAsync(CreateTenantAccountRequest req);
+
+        /// <summary>
+        /// 租户详情
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<TenantDetails> GetTenantAsync(string id);
     }
 }

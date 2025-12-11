@@ -66,5 +66,12 @@ namespace Fancyx.Admin.Application.IService.System
         /// <param name="req"></param>
         /// <returns></returns>
         Task AssignDataScopeAsync(AssignDataScopeRequest req);
+
+        /// <summary>
+        /// 角色详情
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<RoleDetails> GetRoleAsync(long id);
     }
 }

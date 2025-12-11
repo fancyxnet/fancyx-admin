@@ -207,7 +207,7 @@ namespace Fancyx.Admin.Application.Service.System
             await _userRepository.UpdateAsync(user);
         }
 
-        public async Task<UserDetails> GetUserEditInfoAsync(long id)
+        public async Task<UserDetails> GetUserAsync(long id)
         {
             var user = await _userRepository.FindAsync(id) ?? throw new EntityNotFoundException();
             return _mapper.Map<User, UserDetails>(user);

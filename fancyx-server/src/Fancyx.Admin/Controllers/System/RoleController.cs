@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Fancyx.Admin.Application.IService.System;
 using Fancyx.Admin.Application.IService.System.Models;
+using Amazon.S3.Model.Internal.MarshallTransformations;
 
 namespace Fancyx.Admin.Controllers.System
 {
@@ -137,6 +138,14 @@ namespace Fancyx.Admin.Controllers.System
         {
             await _roleService.AssignDataScopeAsync(req);
             return Result.Ok();
+        }
+
+        [HttpGet("{id}")]
+        [HasPermission("Sys.Role.Details")]
+        public async Task<AppResponse<RoleDetails>> GetRoleAsync(long id)
+        {
+            var data = await _roleService.GetRoleAsync(id);
+            return Result.Data(data);
         }
     }
 }

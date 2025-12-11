@@ -169,5 +169,11 @@ namespace Fancyx.Admin.Application.Service.Organization
             }
             return list;
         }
+
+        public async Task<PositionItem> GetPositionAsync(long id)
+        {
+            var data = await _positionRepository.FindAsync(id) ?? throw new EntityNotFoundException();
+            return _mapper.Map<PositionItem>(data);
+        }
     }
 }

@@ -157,5 +157,11 @@ namespace Fancyx.Admin.Application.Service.Organization
             });
             return list;
         }
+
+        public async Task<DeptItem> GetDeptAsync(long id)
+        {
+            var data = await _deptRepository.FindAsync(id) ?? throw new EntityNotFoundException();
+            return _mapper.Map<DeptItem>(data);
+        }
     }
 }

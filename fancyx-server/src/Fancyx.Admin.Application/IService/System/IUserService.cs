@@ -80,5 +80,5 @@ public interface IUserService : IScopedDependency
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    Task<UserDetails> GetUserEditInfoAsync(long id); 
+    Task<UserDetails> GetUserAsync(long id); 
 }

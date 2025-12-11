@@ -169,10 +169,10 @@ namespace Fancyx.Admin.Controllers.System
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("EditInfo")]
-        public async Task<AppResponse<UserDetails>> GetUserEditInfoAsync(long id)
+        [HttpGet("{id}")]
+        public async Task<AppResponse<UserDetails>> GetUserAsync(long id)
         {
-            var data = await _userService.GetUserEditInfoAsync(id);
+            var data = await _userService.GetUserAsync(id);
             return Result.Data(data);
         }
     }

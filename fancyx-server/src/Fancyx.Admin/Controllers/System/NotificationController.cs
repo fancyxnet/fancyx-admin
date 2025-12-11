@@ -50,5 +50,13 @@ namespace Fancyx.Admin.Controllers.System
             await _notificationService.DeleteNotificationAsync(ids);
             return Result.Ok();
         }
+
+        [HttpGet("{id}")]
+        [HasPermission("Sys.Notification.List")]
+        public async Task<AppResponse<NotificationItem>> GetNotificationAsync([FromRoute] long id)
+        {
+            var data = await _notificationService.GetNotificationAsync(id);
+            return Result.Data(data);
+        }
     }
 }

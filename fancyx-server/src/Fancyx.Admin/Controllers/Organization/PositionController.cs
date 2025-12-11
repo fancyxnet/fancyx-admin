@@ -86,5 +86,13 @@ namespace Fancyx.Admin.Controllers.Organization
             var data = await _positionService.GetPositionTreeOptionAsync();
             return Result.Data(data);
         }
+
+        [HttpGet("{id}")]
+        [HasPermission("Org.Position.List")]
+        public async Task<AppResponse<PositionItem>> GetPositionAsync(long id)
+        {
+            var data = await _positionService.GetPositionAsync(id);
+            return Result.Data(data);
+        }
     }
 }

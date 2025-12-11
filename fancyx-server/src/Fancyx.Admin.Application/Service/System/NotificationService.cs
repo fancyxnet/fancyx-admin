@@ -68,5 +68,20 @@ namespace Fancyx.Admin.Application.Service.System
             entity.UserId = req.UserId;
             await _repository.UpdateAsync(entity);
         }
+
+        public async Task<NotificationItem> GetNotificationAsync(long id)
+        {
+            var data = await _repository.FindAsync(id) ?? throw new EntityNotFoundException();
+            return new NotificationItem
+            {
+                Id = data.Id,
+                Title = data.Title,
+                Content = data.Content,
+                UserId = data.UserId,
+                IsReaded = data.IsReaded,
+                CreationTime = data.CreationTime,
+                ReadedTime = data.ReadedTime,
+            };
+        }
     }
 }

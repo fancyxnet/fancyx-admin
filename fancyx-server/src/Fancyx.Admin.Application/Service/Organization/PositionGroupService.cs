@@ -102,5 +102,11 @@ namespace Fancyx.Admin.Application.Service.Organization
             await _positionGroupRepository.UpdateAsync(entity);
             return true;
         }
+
+        public async Task<PositionGroupItem> GetPositionAsync(long id)
+        {
+            var data = await _positionGroupRepository.FindAsync(id) ?? throw new EntityNotFoundException();
+            return _mapper.Map<PositionGroupItem>(data);
+        }
     }
 }

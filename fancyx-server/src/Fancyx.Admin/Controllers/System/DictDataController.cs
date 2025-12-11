@@ -74,6 +74,7 @@ namespace Fancyx.Admin.Controllers.System
         }
 
         [HttpGet("{id}")]
+        [HasPermission("Sys.DictData.List")]
         public async Task<AppResponse<DictDataItem>> GetDictDataAsync([FromRoute] long id)
         {
             var data = await _dictService.GetDictDataAsync(id);

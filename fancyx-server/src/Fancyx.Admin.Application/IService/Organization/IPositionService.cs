@@ -38,5 +38,12 @@ namespace Fancyx.Admin.Application.IService.Organization
         /// </summary>
         /// <returns></returns>
         Task<List<AppOptionTree>> GetPositionTreeOptionAsync();
+
+        /// <summary>
+        /// 职位详情
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<PositionItem> GetPositionAsync(long id);
     }
 }

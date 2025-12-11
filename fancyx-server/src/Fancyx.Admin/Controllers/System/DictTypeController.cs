@@ -100,6 +100,7 @@ public class DictTypeController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [HasPermission("Sys.DictType.List")]
     public async Task<AppResponse<DictTypeItem>> GetDictTypeAsync([FromRoute] long id)
     {
         var data = await _dictTypeService.GetDictTypeAsync(id);

@@ -75,6 +75,7 @@ namespace Fancyx.Admin.Controllers.System
         }
 
         [HttpGet("{id}")]
+        [HasPermission("Sys.Config.List")]
         public async Task<AppResponse<ConfigItem>> GetConfigAsync([FromRoute] long id)
         {
             var data = await _configService.GetConfigAsync(id);

@@ -88,5 +88,13 @@ namespace Fancyx.Admin.Controllers.System
             var (keys, tree) = await _menuService.GetMenuOptionsAsync(onlyMenu, keyword);
             return Result.Data(new Dictionary<string, object> { ["keys"] = keys, ["tree"] = tree });
         }
+
+        [HttpGet("{id}")]
+        [HasPermission("Sys.Menu.List")]
+        public async Task<AppResponse<MenuItem>> GetMenuAsync([FromRoute] long id)
+        {
+            var data = await _menuService.GetMenuAsync(id);
+            return Result.Data(data);
+        }
     }
 }

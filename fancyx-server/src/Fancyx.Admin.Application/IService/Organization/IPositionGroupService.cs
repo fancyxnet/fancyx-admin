@@ -32,5 +32,12 @@ namespace Fancyx.Admin.Application.IService.Organization
         /// <param name="id"></param>
         /// <returns></returns>
         Task<bool> DeletePositionGroupAsync(long id);
+
+        /// <summary>
+        /// 职位分组详情
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<PositionGroupItem> GetPositionAsync(long id);
     }
 }

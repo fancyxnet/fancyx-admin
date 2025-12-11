@@ -75,5 +75,13 @@ namespace Fancyx.Admin.Controllers.Organization
             await _positionGroupService.DeletePositionGroupAsync(id);
             return Result.Ok();
         }
+
+        [HttpGet("{id}")]
+        [HasPermission("Org.PositionGroup.List")]
+        public async Task<AppResponse<PositionGroupItem>> GetPositionAsync(long id) 
+        { 
+            var data = await _positionGroupService.GetPositionAsync(id);
+            return Result.Data(data);
+        }
     }
 }

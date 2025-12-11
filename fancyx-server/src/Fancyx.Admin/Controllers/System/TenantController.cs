@@ -115,5 +115,13 @@ namespace Fancyx.Admin.Controllers.System
             var data = await _tenantService.CreateTenantAccountAsync(req);
             return Result.Data(data);
         }
+
+        [HttpGet("{id}")]
+        [HasPermission("Sys.Tenant.Details")]
+        public async Task<AppResponse<TenantDetails>> GetTenantAsync([FromRoute] string id)
+        {
+            var data = await _tenantService.GetTenantAsync(id);
+            return Result.Data(data);
+        }
     }
 }

@@ -40,5 +40,12 @@ namespace Fancyx.Admin.Application.IService.System
         /// <param name="keyword">关键字筛选</param>
         /// <returns></returns>
         Task<(string[] keys, List<MenuOptionTree> tree)> GetMenuOptionsAsync(bool onlyMenu, string? keyword, bool noTenantMenuFilter = false);
+
+        /// <summary>
+        /// 菜单详情
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<MenuItem> GetMenuAsync(long id);
     }
 }

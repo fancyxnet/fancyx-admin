@@ -83,5 +83,13 @@ namespace Fancyx.Admin.Controllers.Organization
             var data = await _deptService.GetDeptSimpleInfosAsync(keyword);
             return Result.Data(data);
         }
+
+        [HttpGet("{id}")]
+        [HasPermission("Org.Dept.List")]
+        public async Task<AppResponse<DeptItem>> GetDeptAsync(long id)
+        {
+            var data = await _deptService.GetDeptAsync(id);
+            return Result.Data(data);
+        }
     }
 }

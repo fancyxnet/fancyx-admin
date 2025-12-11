@@ -39,5 +39,12 @@ namespace Fancyx.Admin.Application.IService.Organization
         /// <param name="keyword"></param>
         /// <returns></returns>
         Task<List<DeptSimpleInfo>> GetDeptSimpleInfosAsync(string? keyword);
+
+        /// <summary>
+        /// 部门详情
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<DeptItem> GetDeptAsync(long id);
     }
 }

@@ -202,5 +202,19 @@ namespace Fancyx.Admin.Application.Service.System
                 .SetProperty(e => e.LastModificationTime, DateTime.Now)
                 .SetProperty(e => e.LastModifierId, _currentUser.Id));
         }
+
+        public async Task<TenantDetails> GetTenantAsync(string id)
+        {
+            var data = await _tenantRepository.FindAsync(id) ?? throw new EntityNotFoundException();
+            return new TenantDetails
+            {
+                TenantId = id,
+                Name = data.Name,
+                Remark = data.Remark,
+                Domain = data.Domain,
+                IsEnabled = data.IsEnabled,
+                MenuIds = await _tenantMenuRepository.Where(x => x.TenantId == id).SelectToListAsync(x => x.MenuId)
+            };
+        }
     }
 }
