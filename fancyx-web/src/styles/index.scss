@@ -29,15 +29,15 @@ body {
 
 /** ================================ 固定Table表头背景色 ================================ */
 /* 固定antd表格表头背景色为通用灰色，不随主题切换而改变 */
-.ant-table-wrapper .ant-table-thead>tr>th,
-.ant-table-wrapper .ant-table-thead>tr>td {
+.ant-table-wrapper .ant-table-thead > tr > th,
+.ant-table-wrapper .ant-table-thead > tr > td {
   background-color: #fafafa !important;
 }
 
 /* 确保表头在不同状态下也保持固定的背景色 */
-.ant-table-wrapper .ant-table-thead>tr>th.ant-table-column-sort,
-.ant-table-wrapper .ant-table-thead>tr>th.ant-table-cell-row-hover,
-.ant-table-wrapper .ant-table-thead>tr>th:hover {
+.ant-table-wrapper .ant-table-thead > tr > th.ant-table-column-sort,
+.ant-table-wrapper .ant-table-thead > tr > th.ant-table-cell-row-hover,
+.ant-table-wrapper .ant-table-thead > tr > th:hover {
   background-color: #fafafa !important;
 }
 
@@ -118,6 +118,10 @@ body {
 }
 
 .fancyx-table-wrapper {
+  .ant-pro-table > .ant-pro-card {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  }
+
   .ant-table-cell .ant-btn-link {
     padding-left: 0 !important;
     padding-right: 0 !important;
@@ -339,7 +343,7 @@ body {
 
   /* 确保所有可能的悬浮状态都有轻微透明浅色背景且文字更亮 */
   .dark-sidebar .ant-menu-item:hover,
-  .dark-sidebar .ant-menu-submenu:hover>.ant-menu-submenu-title,
+  .dark-sidebar .ant-menu-submenu:hover > .ant-menu-submenu-title,
   .dark-sidebar .ant-menu-submenu-title:hover {
     color: #ffffff !important;
     background-color: rgba(255, 255, 255, 0.08) !important;
@@ -364,7 +368,7 @@ body {
   }
 
   /* 展开的子菜单标题颜色 */
-  .dark-sidebar .ant-menu-submenu-open>.ant-menu-submenu-title {
+  .dark-sidebar .ant-menu-submenu-open > .ant-menu-submenu-title {
     color: #ffffff !important;
   }
 
@@ -400,7 +404,7 @@ body {
   }
 
   /* 调整内部布局容器为flex列布局 */
-  .ant-layout>.ant-layout {
+  .ant-layout > .ant-layout {
     display: flex;
     flex-direction: column;
     height: 100%;
