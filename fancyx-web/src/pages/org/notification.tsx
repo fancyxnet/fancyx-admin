@@ -3,21 +3,21 @@ import {
   deleteNotifications,
   getNotificationList,
   type AddOrUpdateNotificationRequest,
+  type GetNotificationListRequest,
   type NotificationItem,
 } from '@/api/organization/notification.ts';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Popconfirm, Select, Space, Tag } from 'antd';
+import { Button, Popconfirm, Space, Tag } from 'antd';
 import React, { useRef } from 'react';
-import type { SmartTableRef, SmartTableColumnType } from '@/components/SmartTable/type.ts';
-import SmartTable from '@/components/SmartTable';
 import NotificationForm, { type ModalRef } from './components/NotificationForm.tsx';
 import useApp from 'antd/es/app/useApp';
+import { ProTable, type ActionType, type ProColumnType } from '@ant-design/pro-components';
 
-const NotificationList: React.FC = () => {
-  const tableRef = useRef<SmartTableRef>(null);
-  const modalRef = useRef<ModalRef>(null);
+const Notification: React.FC = () => {
   const { message } = useApp();
-  const columns: SmartTableColumnType[] = [
+  const modalRef = useRef<ModalRef>(null);
+  const actionRef = useRef<ActionType>();
+  const columns: ProColumnType<NotificationItem>[] = [
     {
       title: '通知标题',
       dataIndex: 'title',
@@ -25,27 +25,38 @@ const NotificationList: React.FC = () => {
     {
       title: '通知用户',
       dataIndex: 'nickName',
+      search: false
     },
     {
       title: '通知内容',
       dataIndex: 'content',
+      search: false
     },
     {
       title: '状态',
       dataIndex: 'isReaded',
-      render: (isReaded: boolean) => {
-        return isReaded ? <Tag color="green">已读</Tag> : <Tag color="red">未读</Tag>;
+      render: (_: any, record: NotificationItem) => {
+        return record.isReaded ? <Tag color="green">已读</Tag> : <Tag color="red">未读</Tag>;
+      },
+      valueEnum: {
+        false: { text: '待处理' },
+        true: { text: '已处理' },
+      },
+      fieldProps: {
+        placeholder: '请选择处理状态',
       },
     },
     {
       title: '创建时间',
       dataIndex: 'creationTime',
+      search: false
     },
     {
       title: '操作',
       dataIndex: 'option',
       width: 210,
       fixed: 'right',
+      search: false,
       render: (_: any, record: NotificationItem) => (
         <Space>
           <Permission permissions={'Sys.Notification.Update'}>
@@ -68,7 +79,7 @@ const NotificationList: React.FC = () => {
               onConfirm={() => {
                 deleteNotifications([record.id!]).then(() => {
                   message.success('删除成功');
-                  tableRef.current?.reload();
+                  actionRef.current?.reload();
                 });
               }}
             >
@@ -82,51 +93,40 @@ const NotificationList: React.FC = () => {
     },
   ];
 
-  return (
-    <>
-      <SmartTable
-        columns={columns}
-        ref={tableRef}
-        rowKey="id"
-        request={async (params) => {
-          const { data } = await getNotificationList(params);
-          return data;
-        }}
-        searchItems={[
-          <Form.Item label="通知标题" name="title">
-            <Input placeholder="请输入通知标题" />
-          </Form.Item>,
-          <Form.Item label="通知状态" name="isReaded">
-            <Select
-              allowClear
-              placeholder="请选择通知状态"
-              options={[
-                { label: '已读', value: true },
-                { label: '未读', value: false },
-              ]}
-            />
-          </Form.Item>,
-        ]}
-        toolbar={
-          <Space size="middle">
-            <Permission permissions={'Sys.Notification.Add'}>
-              <Button
-                type="primary"
-                key="primary"
-                onClick={() => {
-                  modalRef?.current?.openModal();
-                }}
-              >
-                <PlusOutlined /> 新增
-              </Button>
-            </Permission>
-          </Space>
-        }
-      />
-      {/** 新增/编辑通知弹窗 */}
-      <NotificationForm ref={modalRef} refresh={() => tableRef?.current?.reload()} />
-    </>
-  );
-};
+  return <div className='fancyx-table-wrapper'>
+    <ProTable<NotificationItem, GetNotificationListRequest>
+      actionRef={actionRef}
+      rowKey="id"
+      columns={columns}
+      request={async (
+        params: GetNotificationListRequest
+      ) => {
+        const res = await getNotificationList(params);
+        return {
+          data: res.data.items,
+          success: true,
+          total: res.data.totalCount
+        };
+      }}
+      toolBarRender={
+        () => [
+          <Permission permissions={'Sys.Notification.Add'}>
+            <Button
+              type="primary"
+              key="primary"
+              onClick={() => {
+                modalRef?.current?.openModal();
+              }}
+            >
+              <PlusOutlined /> 新增
+            </Button>
+          </Permission>
+        ]
+      }
+    />
+    {/** 新增/编辑通知弹窗 */}
+    <NotificationForm ref={modalRef} refresh={() => actionRef?.current?.reload()} />
+  </div>
+}
 
-export default NotificationList;
+export default Notification;
