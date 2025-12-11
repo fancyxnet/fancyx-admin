@@ -1,35 +1,37 @@
 ﻿import Permission from '@/components/Permission';
-import { deletePositionGroup, getPositionGroupList, type PositionGroupItem } from '@/api/organization/positionGroup';
+import { deletePositionGroup, getPositionGroupList, type GetPositionGroupListRequest, type PositionGroupItem } from '@/api/organization/positionGroup';
 import { DeleteOutlined, EditOutlined, ExclamationCircleFilled, PlusOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Popconfirm, Space } from 'antd';
+import { Button, Popconfirm, Space } from 'antd';
 import React, { useRef } from 'react';
 import PositionGroupForm, { type ModalRef } from '@/pages/org/components/PositionGroupForm.tsx';
-import SmartTable from '@/components/SmartTable';
-import type { SmartTableRef, SmartTableColumnType } from '@/components/SmartTable/type.ts';
 import useApp from 'antd/es/app/useApp';
+import { ProTable, type ActionType, type ProColumnType } from '@ant-design/pro-components';
 
-const PositionGroupList: React.FC = () => {
-  const modalRef = useRef<ModalRef>(null);
-  const tableRef = useRef<SmartTableRef>(null);
+const PositionGroup: React.FC = () => {
   const { message, modal } = useApp();
-  const columns: SmartTableColumnType[] = [
+  const modalRef = useRef<ModalRef>(null);
+  const actionRef = useRef<ActionType>();
+  const columns: ProColumnType<PositionGroupItem>[] = [
     {
-      title: '职位分组名称',
+      title: '分组名称',
       dataIndex: 'groupName',
     },
     {
       title: '备注',
       dataIndex: 'remark',
+      search: false
     },
     {
       title: '排序值',
       dataIndex: 'sort',
+      search: false
     },
     {
       title: '操作',
       dataIndex: 'option',
       width: 140,
       fixed: 'right',
+      search: false,
       render: (_: any, record: PositionGroupItem) => (
         <Space>
           <Permission permissions={'Org.PositionGroup.Update'}>
@@ -73,7 +75,7 @@ const PositionGroupList: React.FC = () => {
       onOk() {
         deletePositionGroup(id).then(() => {
           message.success('删除成功');
-          tableRef?.current?.reload();
+          actionRef?.current?.reload();
         });
       },
     });
@@ -82,36 +84,33 @@ const PositionGroupList: React.FC = () => {
     modalRef.current?.openModal(record);
   };
 
-  return (
-    <>
-      <SmartTable
-        ref={tableRef}
-        columns={columns}
-        rowKey="id"
-        request={async (params) => {
-          const { data } = await getPositionGroupList(params);
-          return {
-            items: data,
-            totalCount: data.length,
-          };
-        }}
-        searchItems={
-          <Form.Item label="职位分组名称" name="groupName">
-            <Input placeholder="请输入职位分组名称" />
-          </Form.Item>
-        }
-        toolbar={
+  return <div className='fancyx-table-wrapper'>
+    <ProTable<PositionGroupItem, GetPositionGroupListRequest>
+      actionRef={actionRef}
+      rowKey="id"
+      columns={columns}
+      request={async (
+        params: GetPositionGroupListRequest
+      ) => {
+        const res = await getPositionGroupList(params);
+        return {
+          data: res.data,
+          success: true,
+        };
+      }}
+      toolBarRender={
+        () => [
           <Permission permissions={'Org.PositionGroup.Add'}>
             <Button color="primary" variant="solid" icon={<PlusOutlined />} onClick={() => handleOpenModal()}>
               新增
             </Button>
           </Permission>
-        }
-      />
-      {/* 职位分组新增/编辑弹窗 */}
-      <PositionGroupForm ref={modalRef} refresh={() => tableRef?.current?.reload()} />
-    </>
-  );
-};
+        ]
+      }
+    />
+    {/* 职位分组新增/编辑弹窗 */}
+    <PositionGroupForm ref={modalRef} refresh={() => actionRef?.current?.reload()} />
+  </div>
+}
 
-export default PositionGroupList;
+export default PositionGroup;
