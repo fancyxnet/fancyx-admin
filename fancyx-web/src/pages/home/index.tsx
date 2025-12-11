@@ -195,7 +195,7 @@ const HomePage = () => {
                 </div>
                 <Paragraph type="secondary" style={{ marginTop: 16 }}>
                   前端基于React和Ant Design在Vite下构建，后端使用.NETCore
-                  WebAPI，数据库默认使用PostgreSQL（支持MySQL,SQLServer,Oracle等多种数据库）；
+                  WebAPI，数据库默认使用MySQL（理论上支持PostgreSQL,SQLServer,Oracle等多种数据库）；
                   后端实现了服务自动注册、服务属性注入、模块化动态加载、Aop拦截特性特色功能，并且系统记录了API访问日志、异常日志、业务日志、登录日志。
                 </Paragraph>
               </Card>
