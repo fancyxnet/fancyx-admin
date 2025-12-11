@@ -40,6 +40,7 @@ const ConfigModal: React.FC<{
         const apiFunc = isUpdate ? updateConfig : addConfig;
         await apiFunc(values);
         message.success('操作成功');
+        form.resetFields();
         onOpenChange(false);
         callback();
       }}
