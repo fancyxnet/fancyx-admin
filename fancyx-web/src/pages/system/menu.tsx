@@ -1,19 +1,19 @@
-import { Space, Form, Input, Button, Switch, Tag } from 'antd';
-import { useRef } from 'react';
+import { Space, Button, Switch, Tag } from 'antd';
+import { useRef, useState } from 'react';
 import { PlusOutlined, ExclamationCircleFilled, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import MenuForm, { type ModalRef } from '@/pages/system/components/MenuForm.tsx';
-import { deleteMenu, getMenuList, type MenuItem } from '@/api/system/menu.ts';
-import type { SmartTableRef, SmartTableColumnType } from '@/components/SmartTable/type';
-import SmartTable from '@/components/SmartTable';
+import { deleteMenu, getMenuList, type GetMenuListRequest, type MenuItem } from '@/api/system/menu.ts';
 import { MenuType } from '@/utils/globalValue.ts';
 import useApp from 'antd/es/app/useApp';
 import Permission from '@/components/Permission';
+import { ProTable, type ActionType, type ProColumnType } from '@ant-design/pro-components';
 
-const MenuTable = () => {
-  const modalRef = useRef<ModalRef>(null);
-  const tableRef = useRef<SmartTableRef>(null);
+const Menu: React.FC = () => {
   const { message, modal } = useApp();
-  const columns: SmartTableColumnType[] = [
+  const modalRef = useRef<ModalRef>(null);
+  const actionRef = useRef<ActionType>();
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([])
+  const columns: ProColumnType<MenuItem>[] = [
     {
       title: '菜单名称',
       dataIndex: 'title',
@@ -28,17 +28,21 @@ const MenuTable = () => {
       title: '组件地址',
       dataIndex: 'component',
       key: 'component',
+      search: false,
     },
     {
       title: '权限标识',
       dataIndex: 'permission',
       key: 'permission',
+      search: false,
     },
     {
       title: '菜单类型',
       dataIndex: 'menuType',
       key: 'menuType',
-      render: (text: number) => {
+      search: false,
+      render: (_: any, record: MenuItem) => {
+        const text = record.menuType
         if (text === MenuType.Folder) return <Tag>目录</Tag>;
         else if (text === MenuType.Menu) return <Tag color="magenta">菜单</Tag>;
         return <Tag color="blue">按钮</Tag>;
@@ -48,8 +52,9 @@ const MenuTable = () => {
       title: '显示状态',
       dataIndex: 'display',
       key: 'display',
-      render: (text: boolean) => {
-        return <Switch checked={text} />;
+      search: false,
+      render: (_: any, record: MenuItem) => {
+        return <Switch checked={record.display} />;
       },
     },
     {
@@ -57,6 +62,7 @@ const MenuTable = () => {
       key: 'action',
       width: 140,
       fixed: 'right',
+      search: false,
       render: (_: any, record: MenuItem) => (
         <Space>
           {(record.menuType === MenuType.Folder || record.menuType === MenuType.Menu) && (
@@ -93,7 +99,7 @@ const MenuTable = () => {
       onOk() {
         deleteMenu(ids).then(() => {
           message.success('删除成功');
-          tableRef?.current?.reload();
+          actionRef?.current?.reload();
         });
       },
     });
@@ -106,7 +112,7 @@ const MenuTable = () => {
   };
 
   const batchDelete = () => {
-    const ids = tableRef?.current?.getSelectedKeys();
+    const ids = selectedKeys;
     if (!ids || !ids.length) {
       message.warning('请选择一条数据进行操作');
       return;
@@ -117,35 +123,33 @@ const MenuTable = () => {
       onOk() {
         deleteMenu(ids as string[]).then(() => {
           message.success('删除成功');
-          tableRef?.current?.reload();
+          actionRef?.current?.reload();
         });
       },
     });
   };
 
-  return (
-    <>
-      <SmartTable
-        columns={columns}
-        ref={tableRef}
-        rowKey="id"
-        selection
-        request={async (params) => {
-          const { data } = await getMenuList(params);
-          return {
-            items: data,
-            totalCount: data.length,
-          };
-        }}
-        searchItems={[
-          <Form.Item label="菜单名称" name="title">
-            <Input placeholder="请输入菜单名称" />
-          </Form.Item>,
-          <Form.Item label="菜单路由" name="path">
-            <Input placeholder="请输入菜单路由" />
-          </Form.Item>,
-        ]}
-        toolbar={
+  return (<div className='fancyx-table-wrapper'>
+    <ProTable<MenuItem, GetMenuListRequest>
+      actionRef={actionRef}
+      rowKey="id"
+      columns={columns}
+      request={async (
+        params: GetMenuListRequest
+      ) => {
+        const res = await getMenuList(params);
+        return {
+          data: res.data,
+          success: true,
+        };
+      }}
+      rowSelection={{
+        onChange: (selectedRowKeys) => {
+          setSelectedKeys(selectedRowKeys as string[]);
+        },
+      }}
+      toolBarRender={
+        () => [
           <Space size="middle">
             <Permission permissions={'Sys.Menu.Add'}>
               <Button color="primary" variant="solid" icon={<PlusOutlined />} onClick={() => handleOpenModal()}>
@@ -158,11 +162,12 @@ const MenuTable = () => {
               </Button>
             </Permission>
           </Space>
-        }
-      />
-      {/* 菜单新增/编辑弹窗 */}
-      <MenuForm ref={modalRef} refresh={() => tableRef?.current?.reload()} />
-    </>
-  );
-};
-export default MenuTable;
+        ]
+      }
+    />
+    {/* 菜单新增/编辑弹窗 */}
+    <MenuForm ref={modalRef} refresh={() => actionRef?.current?.reload()} />
+  </div>)
+}
+
+export default Menu;

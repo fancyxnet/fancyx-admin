@@ -88,7 +88,6 @@ const MyNotification: React.FC = () => {
         };
       }}
       rowSelection={{
-        // 选中项发生变化时的回调
         onChange: (selectedRowKeys) => {
           setSelectedKeys(selectedRowKeys as string[]);
         },

@@ -126,7 +126,7 @@ const Position: React.FC = () => {
     modalRef.current?.openModal(record);
   };
 
-  return <div className='fancyx-table-wrapper'>
+  return (<div className='fancyx-table-wrapper'>
     <ProTable<PositionItem, GetPositionListRequest>
       actionRef={actionRef}
       rowKey="id"
@@ -152,7 +152,8 @@ const Position: React.FC = () => {
       }
     />
     {/* 职位新增/编辑弹窗 */}
-    <PositionForm ref={modalRef} refresh={() => actionRef?.current?.reload()} />  </div>
+    <PositionForm ref={modalRef} refresh={() => actionRef?.current?.reload()} />
+  </div>)
 }
 
 export default Position;
