@@ -70,12 +70,12 @@ export function getUserSimpleInfos(keyword?: string) {
 }
 
 /**
- * 获取用户编辑信息
+ * 用户详情
  * @param id 用户ID
  * @returns
  */
-export function getUserEditInfo(id: string) {
-  return httpClient.get<string, AppResponse<UserDetails[]>>('/admin-api/User/EditInfo?id=' + id);
+export function getUser(id: string) {
+  return httpClient.get<string, AppResponse<UserDetails[]>>(`/admin-api/User/${id}`);
 }
 
 /**

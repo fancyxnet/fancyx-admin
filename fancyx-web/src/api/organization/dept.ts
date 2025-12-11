@@ -42,6 +42,15 @@ export function getDeptSimpleInfos(keyword?: string) {
   return httpClient.get<string, AppResponse<DeptSimpleInfo[]>>('/admin-api/Dept/GetDeptSimpleInfos', { params: { keyword } });
 }
 
+/**
+ * 部门详情
+ * @param id 
+ * @returns 
+ */
+export function getDept(id: string) {
+  return httpClient.get<string, AppResponse<DeptItem>>(`/admin-api/Dept/${id}`)
+}
+
 export interface AddOrUpdateDeptRequest {
   id?: string | null;
   name: string;

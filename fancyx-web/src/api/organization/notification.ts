@@ -37,6 +37,15 @@ export function deleteNotifications(ids: string[]) {
   });
 }
 
+/**
+ * 通知详情
+ * @param id 
+ * @returns 
+ */
+export function getNotification(id: string) {
+  return httpClient.get<string, AppResponse<NotificationItem>>(`/admin-api/Notification/${id}`)
+}
+
 export interface AddOrUpdateNotificationRequest {
   id?: string;
   title: string;

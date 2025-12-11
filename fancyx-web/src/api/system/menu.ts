@@ -36,6 +36,15 @@ export function deleteMenu(ids: string[]) {
 }
 
 /**
+ * 菜单详情
+ * @param id 
+ * @returns 
+ */
+export function getMenu(id: string) {
+  return httpClient.get<string, AppResponse<MenuItem>>(`/admin-api/Menu/${id}`)
+}
+
+/**
  * 获取菜单组成的选项树
  * @param onlyMenu
  * @param keyword

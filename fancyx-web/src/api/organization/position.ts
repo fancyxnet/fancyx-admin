@@ -42,6 +42,15 @@ export function getPositionOptions() {
   return httpClient.get<unknown, AppResponse<AppOptionTree[]>>('/admin-api/Position/Options');
 }
 
+/**
+ * 职位详情
+ * @param id 
+ * @returns 
+ */
+export function getPosition(id: string) {
+  return httpClient.get<string, AppResponse<PositionItem>>(`/admin-api/Position/${id}`)
+}
+
 export interface AddOrUpdatePositionRequest {
   id?: string | null;
   name: string;

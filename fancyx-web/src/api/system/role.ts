@@ -82,6 +82,15 @@ export function assignDataScope(req: AssignDataScopeDto) {
   return httpClient.post<AssignDataScopeDto, AppResponse<boolean>>('/admin-api/Role/AssignDataScope', req);
 }
 
+/**
+ * 角色详情
+ * @param id 
+ * @returns 
+ */
+export function getRole(id: string) {
+  return httpClient.get<string, AppResponse<RoleDetails>>(`/admin-api/Role/${id}`)
+}
+
 export interface AddOrUpdateRoleRequest {
   id?: string | null;
   roleName: string;
@@ -130,6 +139,12 @@ export interface RoleDeptPowerInfo {
 
 export interface AssignDataScopeDto {
   roleId: string;
+  deptPowerType: number;
+  deptIds: string[] | null;
+}
+
+export interface RoleDetails extends RoleItem {
+  menuIds: string[] | null;
   deptPowerType: number;
   deptIds: string[] | null;
 }

@@ -53,6 +53,15 @@ export function getTenantMenuIds(id: string) {
 }
 
 /**
+ * 租户详情
+ * @param id 
+ * @returns 
+ */
+export function getTenant(id: string) {
+  return httpClient.get<string, AppResponse<TenantDetails>>(`/admin-api/Tenant/${id}`)
+}
+
+/**
  * 初始管理员账号
  * @param req
  * @returns
@@ -109,4 +118,8 @@ export interface TenantItem {
 
 export interface GetTenantListRequest extends PageSearch {
   keyword?: string;
+}
+
+export interface TenantDetails extends TenantItem {
+  menuIds: string[] | null
 }

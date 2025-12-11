@@ -1,6 +1,6 @@
 import { Form, Input, Modal, Radio, TreeSelect } from 'antd';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
-import { addUser, getUserEditInfo, updateUser, type AddUserRequest, type UpdateUserRequest } from '@/api/system/user.ts';
+import { addUser, getUser, updateUser, type AddUserRequest, type UpdateUserRequest } from '@/api/system/user.ts';
 import { Patterns } from '@/utils/globalValue.ts';
 import useApp from 'antd/es/app/useApp';
 import { type DeptItem, getDeptList } from '@/api/organization/dept.ts';
@@ -46,7 +46,7 @@ const UserModal = forwardRef<ModalRef, ModalProps>((props, ref) => {
 
   const openModal = (id?: string) => {
     if (id && id.length > 0) {
-      getUserEditInfo(id).then((res) => {
+      getUser(id).then((res) => {
         form.setFieldsValue(res.data);
       });
     }

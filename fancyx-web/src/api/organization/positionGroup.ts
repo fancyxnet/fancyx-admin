@@ -35,6 +35,15 @@ export function deletePositionGroup(id: string) {
   return httpClient.delete<AppResponse<boolean>>(`/admin-api/PositionGroup/Delete/${id}`);
 }
 
+/**
+ * 职位分组详情
+ * @param id 
+ * @returns 
+ */
+export function getPosition(id: string) {
+  return httpClient.get<string, AppResponse<PositionGroupItem>>(`/admin-api/PositionGroup/${id}`)
+}
+
 export interface AddOrUpdatePositionGroupRequest {
   id?: string | null;
   parentId?: string | null;
