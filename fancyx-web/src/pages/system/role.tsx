@@ -1,4 +1,4 @@
-import { Space, Form, Input, Button, Tag, Dropdown } from 'antd';
+import { Space, Button, Tag, Dropdown } from 'antd';
 import { useRef } from 'react';
 import {
   PlusOutlined,
@@ -9,24 +9,23 @@ import {
   DoubleRightOutlined,
   PieChartOutlined,
 } from '@ant-design/icons';
-import { deleteRole, getRoleList, type RoleItem } from '@/api/system/role';
+import { deleteRole, getRoleList, type GetRoleListRequest, type RoleItem } from '@/api/system/role';
 import RoleForm, { type ModalRef } from '@/pages/system/components/RoleForm.tsx';
 import AssignMenuForm, { type AssignMenuModalRef } from '@/pages/system/components/AssignMenuForm.tsx';
-import SmartTable from '@/components/SmartTable';
-import type { SmartTableColumnType, SmartTableRef } from '@/components/SmartTable/type.ts';
 import useApp from 'antd/es/app/useApp';
 import Permission from '@/components/Permission';
 import { useAuthProvider } from '@/components/AuthProvider';
 import AssignDataScopeForm, { type AssignDataScopeModalRef } from './components/AssignDataScopeForm';
+import { ProTable, type ActionType, type ProColumnType } from '@ant-design/pro-components';
 
-const Role = () => {
+const Role: React.FC = () => {
   const modalRef = useRef<ModalRef>(null);
   const assignMenuForRef = useRef<AssignMenuModalRef>(null);
   const assignDataScopeForRef = useRef<AssignDataScopeModalRef>(null);
-  const tableRef = useRef<SmartTableRef>(null);
+  const actionRef = useRef<ActionType>();
   const { message, modal } = useApp();
   const { hasPermission } = useAuthProvider();
-  const columns: SmartTableColumnType[] = [
+  const columns: ProColumnType<RoleItem>[] = [
     {
       title: '角色名',
       dataIndex: 'roleName',
@@ -35,8 +34,9 @@ const Role = () => {
     {
       title: '状态',
       dataIndex: 'isEnabled',
-      render: (isEnabled: boolean) => {
-        if (isEnabled) {
+      search: false,
+      render: (_: any, record: RoleItem) => {
+        if (record.isEnabled) {
           return <Tag color="success">启用</Tag>;
         }
         return <Tag>禁用</Tag>;
@@ -46,16 +46,19 @@ const Role = () => {
       title: '备注',
       dataIndex: 'remark',
       key: 'remark',
+      search: false,
     },
     {
       title: '创建时间',
       dataIndex: 'creationTime',
+      search: false,
     },
     {
       title: '操作',
       key: 'action',
       width: 210,
       fixed: 'right',
+      search: false,
       render: (_: any, record: RoleItem) => {
         const curDropdownItems = [];
         if (hasPermission!('Sys.Role.AssignMenu')) {
@@ -67,7 +70,7 @@ const Role = () => {
                 功能权限
               </a>
             ),
-            onClick: () => {},
+            onClick: () => { },
           });
         }
         if (hasPermission!('Sys.Role.AssignDataScope')) {
@@ -79,7 +82,7 @@ const Role = () => {
                 数据权限
               </a>
             ),
-            onClick: () => {},
+            onClick: () => { },
           });
         }
         return (
@@ -132,7 +135,7 @@ const Role = () => {
       onOk() {
         deleteRole(id).then(() => {
           message.success('删除成功');
-          tableRef?.current?.reload();
+          actionRef?.current?.reload();
         });
       },
     });
@@ -141,36 +144,38 @@ const Role = () => {
     modalRef.current?.openModal(record);
   };
 
-  return (
-    <>
-      <SmartTable
-        ref={tableRef}
-        rowKey="id"
-        columns={columns}
-        request={async (params) => {
-          const { data } = await getRoleList(params);
-          return data;
-        }}
-        searchItems={
-          <Form.Item label="角色" name="roleName">
-            <Input placeholder="请输入角色名" />
-          </Form.Item>
-        }
-        toolbar={
+  return (<div className='fancyx-table-wrapper'>
+    <ProTable<RoleItem, GetRoleListRequest>
+      actionRef={actionRef}
+      rowKey="id"
+      columns={columns}
+      request={async (
+        params: GetRoleListRequest
+      ) => {
+        const res = await getRoleList(params);
+        return {
+          data: res.data.items,
+          success: true,
+          total: res.data.totalCount
+        };
+      }}
+      toolBarRender={
+        () => [
           <Permission permissions={'Sys.Role.Add'}>
             <Button color="primary" variant="solid" icon={<PlusOutlined />} onClick={() => handleOpenModal()}>
               新增
             </Button>
           </Permission>
-        }
-      />
-      {/* 角色新增/编辑弹窗 */}
-      <RoleForm ref={modalRef} refresh={() => tableRef?.current?.reload()} />
-      {/* 分配功能权限 */}
-      <AssignMenuForm ref={assignMenuForRef} />
-      {/* 分配数据权限 */}
-      <AssignDataScopeForm ref={assignDataScopeForRef} />
-    </>
-  );
-};
+        ]
+      }
+    />
+    {/* 角色新增/编辑弹窗 */}
+    <RoleForm ref={modalRef} refresh={() => actionRef?.current?.reload()} />
+    {/* 分配功能权限 */}
+    <AssignMenuForm ref={assignMenuForRef} />
+    {/* 分配数据权限 */}
+    <AssignDataScopeForm ref={assignDataScopeForRef} />
+  </div>)
+}
+
 export default Role;
