@@ -72,20 +72,22 @@ namespace Fancyx.Admin.Application.Service.Organization
                 return result;
             }
 
-            var allNodes = await _deptRepository.GetQueryable().PowerFilter(_currentUser).ToListAsync();
-            return CollectionUtils.BuildTree(allNodes, g => new DeptItem
-            {
-                Id = g.Id,
-                Code = g.Code,
-                Name = g.Name,
-                Sort = g.Sort,
-                Description = g.Description,
-                Status = g.Status,
-                CuratorId = g.CuratorId,
-                //TODO:
-                //CuratorName = g.CuratorName,
-                Email = g.Email,
-            }, g => g.Id, g => g.ParentId, (node, children) => node.Children = children, node => node.Sort);
+            var allNodes = await (from d in _deptRepository.GetQueryable().PowerFilter(_currentUser)
+                           join u in _userRepository.GetQueryable().PowerFilter(_currentUser) on d.CuratorId equals u.Id into u2
+                           from u3 in u2.DefaultIfEmpty()
+                           select new DeptItem
+                           {
+                               Id = d.Id,
+                               Code = d.Code,
+                               Name = d.Name,
+                               Sort = d.Sort,
+                               Description = d.Description,
+                               Status = d.Status,
+                               CuratorId = d.CuratorId,
+                               Email = d.Email,
+                               CuratorName = u3 != null ? u3.NickName : ""
+                           }).ToListAsync();
+            return CollectionUtils.BuildTree(allNodes, g => g, g => g.Id, g => g.ParentId, (node, children) => node.Children = children, node => node.Sort);
         }
 
         public async Task<bool> UpdateDeptAsync(AddOrUpdateDeptRequest req)
