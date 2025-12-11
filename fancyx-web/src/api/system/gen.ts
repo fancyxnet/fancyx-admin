@@ -38,7 +38,7 @@ export function genSyncFromDb(tableId: string) {
  * @param req
  */
 export function getGenTableList(req: GetGenTableListRequest) {
-    return httpClient.get<GetGenTableListRequest, AppResponse<PagedResult<GenTableListDto>>>('/admin-api/Gen/GetGenTableList', { params: req });
+    return httpClient.get<GetGenTableListRequest, AppResponse<PagedResult<GenTableItem>>>('/admin-api/Gen/GetGenTableList', { params: req });
 }
 
 /**
@@ -102,7 +102,7 @@ export interface GenCodeResponse {
 export interface GetGenTableListRequest extends PageSearch {
     tableName?: string
 }
-export interface GenTableListDto {
+export interface GenTableItem {
     tableId: string;
     tableName?: string;
     tableComment?: string;

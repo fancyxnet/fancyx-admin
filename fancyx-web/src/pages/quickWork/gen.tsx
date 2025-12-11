@@ -6,31 +6,33 @@ import {
     deleteGenTable,
     getTableList,
     genSyncFromDb,
-    type GenTableListDto,
     type GenCodeResponse,
+    type GenTableItem,
+    type GetGenTableListRequest,
 } from '@/api/system/gen.ts';
 import { DeleteOutlined, EditOutlined, EyeOutlined, ImportOutlined } from '@ant-design/icons';
 import { Button, Form, Input, message, Modal, Popconfirm, Space, Tabs, type TabsProps } from 'antd';
 import React, { useRef, useState } from 'react';
-import type { SmartTableRef, SmartTableColumnType } from '@/components/SmartTable/type.ts';
+import type { SmartTableRef } from '@/components/SmartTable/type.ts';
 import SmartTable from '@/components/SmartTable';
 import useApp from 'antd/es/app/useApp';
 import { useNavigate } from 'react-router-dom';
 import { open } from '@/store/tabStore.ts';
 import { useDispatch } from 'react-redux';
 import ProIcon from '@/components/ProIcon';
+import { ProTable, type ActionType, type ProColumnType } from '@ant-design/pro-components';
 
 const { TextArea } = Input;
 
-const GenList: React.FC = () => {
-    const tableRef = useRef<SmartTableRef>(null);
+const Gen: React.FC = () => {
     const { message } = useApp();
     const [importModalVisible, setImportModalVisible] = useState<boolean>(false);
     const [perviewModalVisible, setPreviewModalVisible] = useState<boolean>(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [code, setCode] = useState<GenCodeResponse>();
-    const columns: SmartTableColumnType[] = [
+    const actionRef = useRef<ActionType>();
+    const columns: ProColumnType<GenTableItem>[] = [
         {
             title: '表名',
             dataIndex: 'tableName',
@@ -38,29 +40,35 @@ const GenList: React.FC = () => {
         {
             title: '表描述',
             dataIndex: 'tableComment',
+            search: false,
         },
         {
             title: '类名',
             dataIndex: 'className',
+            search: false,
         },
         {
             title: '命名空间',
             dataIndex: 'namespaceName',
+            search: false,
         },
         {
             title: '模块',
             dataIndex: 'moduleName',
+            search: false,
         },
         {
             title: '业务名',
             dataIndex: 'businessName',
+            search: false,
         },
         {
             title: '操作',
             dataIndex: 'option',
             width: 210,
             fixed: 'right',
-            render: (_: any, record: GenTableListDto) => (
+            search: false,
+            render: (_: any, record: GenTableItem) => (
                 <Space>
                     <Permission mode="some" permissions={['Sys.Gen.SaveGenTableInfo', 'Sys.Gen.SaveGenColumnInfo']}>
                         <Button
@@ -98,7 +106,7 @@ const GenList: React.FC = () => {
                             onConfirm={() => {
                                 genSyncFromDb(record.tableId).then(() => {
                                     message.success('同步成功');
-                                    tableRef.current?.reload();
+                                    actionRef.current?.reload();
                                 });
                             }}
                         >
@@ -115,7 +123,7 @@ const GenList: React.FC = () => {
                             onConfirm={() => {
                                 deleteGenTable(record.tableId).then(() => {
                                     message.success('删除成功');
-                                    tableRef.current?.reload();
+                                    actionRef.current?.reload();
                                 });
                             }}
                         >
@@ -129,62 +137,61 @@ const GenList: React.FC = () => {
         },
     ];
 
-    return (
-        <>
-            <SmartTable
-                columns={columns}
-                ref={tableRef}
-                rowKey="id"
-                request={async (params) => {
-                    const { data } = await getGenTableList(params);
-                    return data;
-                }}
-                searchItems={[
-                    <Form.Item label="表名" name="tableName" key="tableName">
-                        <Input placeholder="请输入表名" />
-                    </Form.Item>,
-                ]}
-                toolbar={
-                    <Space size="middle">
-                        <Permission permissions={'Sys.Gen.ImportTable'}>
-                            <Button
-                                type="primary"
-                                key="primary"
-                                onClick={() => {
-                                    setImportModalVisible(true);
-                                }}
-                            >
-                                <ImportOutlined /> 导入
-                            </Button>
-                        </Permission>
-                    </Space>
-                }
-            />
-            {/** 导入弹窗 */}
-            <ImportModal
-                show={importModalVisible}
-                onOk={() => {
-                    tableRef?.current?.reload();
-                    setImportModalVisible(false);
-                }}
-                onCancel={() => {
-                    setImportModalVisible(false);
-                }}
-            />
-            {/** 预览弹窗 */}
-            <PerviewModal
-                code={code}
-                show={perviewModalVisible}
-                onOk={() => {
-                    setPreviewModalVisible(false);
-                }}
-                onCancel={() => {
-                    setPreviewModalVisible(false);
-                }}
-            />
-        </>
-    );
-};
+    return (<div className='fancyx-table-wrapper'>
+        <ProTable<GenTableItem, GetGenTableListRequest>
+            actionRef={actionRef}
+            rowKey="id"
+            columns={columns}
+            request={async (
+                params: GetGenTableListRequest
+            ) => {
+                const res = await getGenTableList(params);
+                return {
+                    data: res.data.items,
+                    success: true,
+                    total: res.data.totalCount
+                };
+            }}
+            toolBarRender={
+                () => [
+                    <Permission permissions={'Sys.Gen.ImportTable'}>
+                        <Button
+                            type="primary"
+                            key="primary"
+                            onClick={() => {
+                                setImportModalVisible(true);
+                            }}
+                        >
+                            <ImportOutlined /> 导入
+                        </Button>
+                    </Permission>
+                ]
+            }
+        />
+        {/** 导入弹窗 */}
+        <ImportModal
+            show={importModalVisible}
+            onOk={() => {
+                actionRef?.current?.reload();
+                setImportModalVisible(false);
+            }}
+            onCancel={() => {
+                setImportModalVisible(false);
+            }}
+        />
+        {/** 预览弹窗 */}
+        <PerviewModal
+            code={code}
+            show={perviewModalVisible}
+            onOk={() => {
+                setPreviewModalVisible(false);
+            }}
+            onCancel={() => {
+                setPreviewModalVisible(false);
+            }}
+        />
+    </div>)
+}
 
 const ImportModal: React.FC<{
     show: boolean;
@@ -326,4 +333,4 @@ const PerviewModal: React.FC<{
     );
 };
 
-export default GenList;
+export default Gen;
