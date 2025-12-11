@@ -1,18 +1,23 @@
-﻿import { getBusinessLogList, getBusinessTypeOptions } from '@/api/system/log/businessLog';
-import { Form, Input, Select, Tag, Tooltip } from 'antd';
-import React, { useEffect, useState } from 'react';
-import type { SmartTableColumnType } from '@/components/SmartTable/type.ts';
-import SmartTable from '@/components/SmartTable';
-import type { AppOption } from '@/types/api';
+﻿import { getBusinessLogList, getBusinessTypeOptions, type BusinessLogItem, type GetBusinessLogListRequest } from '@/api/system/log/businessLog';
+import { Tag } from 'antd';
+import React from 'react';
+import { ProTable, type ProColumnType } from '@ant-design/pro-components';
 
-const BusinessLogList: React.FC = () => {
-  const [typeOptions, setTypeOptions] = useState<AppOption[]>();
-  const columns: SmartTableColumnType[] = [
+const BusinessLog: React.FC = () => {
+  const columns: ProColumnType<BusinessLogItem>[] = [
     {
       title: '业务类型',
       dataIndex: 'type',
-      render: (text: string) => {
-        return <Tag color="purple">{text}</Tag>;
+      render: (_: any, record: BusinessLogItem) => {
+        return <Tag color="purple">{record.type}</Tag>;
+      },
+      request: async () => {
+        const res = await getBusinessTypeOptions();
+        return res.data
+      },
+      fieldProps: {
+        placeholder: '请选择业务类型',
+        allowClear: true,
       },
     },
     {
@@ -23,54 +28,31 @@ const BusinessLogList: React.FC = () => {
       title: '操作内容',
       dataIndex: 'content',
       minWidth: 180,
-      ellipsis: {
-        showTitle: false,
-      },
-      render: (content: string) => (
-        <Tooltip placement="topLeft" title={content}>
-          {content}
-        </Tooltip>
-      ),
+      ellipsis: true,
+      search: false,
     },
     {
       title: '业务编号',
       dataIndex: 'bizNo',
-      ellipsis: {
-        showTitle: false,
-      },
-      render: (bizNo: string) => (
-        <Tooltip placement="topLeft" title={bizNo}>
-          {bizNo}
-        </Tooltip>
-      ),
+      ellipsis: true,
+      search: false,
     },
     {
       title: '浏览器',
       dataIndex: 'browser',
-      ellipsis: {
-        showTitle: false,
-      },
-      render: (browser: string) => (
-        <Tooltip placement="topLeft" title={browser}>
-          {browser}
-        </Tooltip>
-      ),
+      search: false,
+      ellipsis: true
     },
     {
       title: '跟踪ID',
       dataIndex: 'traceId',
-      ellipsis: {
-        showTitle: false,
-      },
-      render: (traceId: string) => (
-        <Tooltip placement="topLeft" title={traceId}>
-          {traceId}
-        </Tooltip>
-      ),
+      ellipsis: true,
+      search: false,
     },
     {
       title: '操作时间',
       dataIndex: 'creationTime',
+      search: false,
     },
     {
       title: '操作用户',
@@ -78,39 +60,22 @@ const BusinessLogList: React.FC = () => {
     },
   ];
 
-  const fetchTypeOptions = (type?: string | null) => {
-    getBusinessTypeOptions(type).then((res) => {
-      setTypeOptions(res.data);
-    });
-  };
-
-  useEffect(() => {
-    fetchTypeOptions(null);
-  }, []);
-
-  return (
-    <SmartTable
-      columns={columns}
+  return <div className='fancyx-table-wrapper'>
+    <ProTable<BusinessLogItem, GetBusinessLogListRequest>
       rowKey="id"
-      request={async (params) => {
-        const { data } = await getBusinessLogList(params);
-        return data;
+      columns={columns}
+      request={async (
+        params: GetBusinessLogListRequest
+      ) => {
+        const res = await getBusinessLogList(params);
+        return {
+          data: res.data.items,
+          success: true,
+          total: res.data.totalCount
+        };
       }}
-      searchItems={
-        <>
-          <Form.Item label="业务类型" name="type">
-            <Select placeholder="请选择业务类型" options={typeOptions} allowClear />
-          </Form.Item>
-          <Form.Item label="业务子类型" name="subType">
-            <Input placeholder="请输入业务子类型" />
-          </Form.Item>
-          <Form.Item label="操作用户" name="userName">
-            <Input placeholder="请输入操作账号" />
-          </Form.Item>
-        </>
-      }
     />
-  );
-};
+  </div>
+}
 
-export default BusinessLogList;
+export default BusinessLog;
