@@ -50,6 +50,7 @@ const DictDataModal: React.FC<{
         const apiFunc = isUpdate ? updateDictData : addDictData;
         await apiFunc(values);
         message.success('操作成功');
+        form.resetFields();
         onOpenChange(false);
         callback();
       }}

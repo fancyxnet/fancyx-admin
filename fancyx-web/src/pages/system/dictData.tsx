@@ -1,21 +1,20 @@
 ﻿import Permission from '@/components/Permission';
-import { deleteDictData, getDictDataList, type DictDataItem } from '@/api/system/dictData';
+import { deleteDictData, getDictDataList, type DictDataItem, type GetDictDataListRequest } from '@/api/system/dictData';
 import { CopyOutlined, DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Popconfirm, Space, Switch } from 'antd';
+import { Button, Popconfirm, Space, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import type { SmartTableRef, SmartTableColumnType } from '@/components/SmartTable/type.ts';
 import DictDataForm from '@/pages/system/components/DictDataForm.tsx';
-import SmartTable from '@/components/SmartTable';
 import useApp from 'antd/es/app/useApp';
+import { ProTable, type ActionType, type ProColumnType } from '@ant-design/pro-components';
 
-const DictDataList: React.FC = () => {
-  const tableRef = useRef<SmartTableRef>(null);
+const DictData: React.FC = () => {
   const { message } = useApp();
   const [rowId, setRowId] = useState<string | null>(null);
   const [modalVisit, setModalVisit] = useState<boolean>(false);
   const [isCopy, setIsCopy] = useState<boolean>(false);
-  const columns: SmartTableColumnType[] = [
+  const actionRef = useRef<ActionType>();
+  const columns: ProColumnType<DictDataItem>[] = [
     {
       title: '字典标签',
       dataIndex: 'label',
@@ -28,28 +27,32 @@ const DictDataList: React.FC = () => {
     {
       title: '显示排序',
       dataIndex: 'sort',
+      search: false,
     },
     {
       title: '备注',
       dataIndex: 'remark',
+      search: false,
     },
     {
       title: '状态',
       dataIndex: 'isEnabled',
       search: false,
-      render: (text: boolean) => {
-        return <Switch checked={text} />;
+      render: (_: any, record: DictDataItem) => {
+        return <Switch checked={record.isEnabled} />;
       },
     },
     {
       title: '创建时间',
       dataIndex: 'creationTime',
+      search: false,
     },
     {
       title: '操作',
       width: 210,
       fixed: 'right',
       dataIndex: 'option',
+      search: false,
       render: (_: any, record: DictDataItem) => (
         <Space>
           <Permission permissions={'Sys.DictData.Update'}>
@@ -88,7 +91,7 @@ const DictDataList: React.FC = () => {
               onConfirm={() => {
                 deleteDictData([record.id!]).then(() => {
                   message.success('删除成功');
-                  tableRef.current?.reload();
+                  actionRef.current?.reload();
                 });
               }}
             >
@@ -103,22 +106,23 @@ const DictDataList: React.FC = () => {
   ];
   const urlParams = useParams();
 
-  return (
-    <>
-      <SmartTable
-        columns={columns}
-        rowKey="id"
-        ref={tableRef}
-        request={async (params) => {
-          const { data } = await getDictDataList({ ...params, dictType: urlParams?.dictType });
-          return data;
-        }}
-        searchItems={[
-          <Form.Item label="字典标签" name="label">
-            <Input placeholder="请输入字典标签" />
-          </Form.Item>,
-        ]}
-        toolbar={
+  return <div className='fancyx-table-wrapper'>
+    <ProTable<DictDataItem, GetDictDataListRequest>
+      actionRef={actionRef}
+      rowKey="id"
+      columns={columns}
+      request={async (
+        params: GetDictDataListRequest
+      ) => {
+        const res = await getDictDataList({ ...params, dictType: urlParams?.dictType });
+        return {
+          data: res.data.items,
+          success: true,
+          total: res.data.totalCount
+        };
+      }}
+      toolBarRender={
+        () => [
           <Permission permissions={'Sys.DictData.Add'}>
             <Button
               type="primary"
@@ -132,18 +136,18 @@ const DictDataList: React.FC = () => {
               <PlusOutlined /> 新增
             </Button>
           </Permission>
-        }
-      />
-      {/* 新增/编辑字典数据弹窗 */}
-      <DictDataForm
-        id={rowId}
-        isCopy={isCopy}
-        modalVisit={modalVisit}
-        onOpenChange={setModalVisit}
-        callback={() => tableRef?.current?.reload()}
-      />
-    </>
-  );
-};
+        ]
+      }
+    />
+    {/* 新增/编辑字典数据弹窗 */}
+    <DictDataForm
+      id={rowId}
+      isCopy={isCopy}
+      modalVisit={modalVisit}
+      onOpenChange={setModalVisit}
+      callback={() => actionRef?.current?.reload()}
+    />
+  </div>
+}
 
-export default DictDataList;
+export default DictData;

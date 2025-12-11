@@ -4,27 +4,28 @@ import {
   getDictTypeList,
   type DictTypeItem,
   deleteDictTypes,
+  type GetDictTypeListRequest,
 } from '@/api/system/dictType';
 import { DeleteOutlined, EditOutlined, ExclamationCircleFilled, PlusOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Popconfirm, Space, Switch } from 'antd';
+import { Button, Popconfirm, Space, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { SmartTableRef, SmartTableColumnType } from '@/components/SmartTable/type.ts';
-import SmartTable from '@/components/SmartTable';
 import DictTypeForm from '@/pages/system/components/DictTypeForm.tsx';
 import ProIcon from '@/components/ProIcon';
 import useApp from 'antd/es/app/useApp';
 import { useDispatch } from 'react-redux';
 import { open } from '@/store/tabStore.ts';
+import { ProTable, type ActionType, type ProColumnType } from '@ant-design/pro-components';
 
-const DictList: React.FC = () => {
-  const tableRef = useRef<SmartTableRef>(null);
+const DictType: React.FC = () => {
+  const actionRef = useRef<ActionType>();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { message, modal } = useApp();
   const [rowId, setRowId] = useState<string | null>(null);
   const [modalVisit, setModalVisit] = useState<boolean>(false);
-  const columns: SmartTableColumnType[] = [
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([])
+  const columns: ProColumnType<DictTypeItem>[] = [
     {
       title: '字典名称',
       dataIndex: 'name',
@@ -36,23 +37,27 @@ const DictList: React.FC = () => {
     {
       title: '备注',
       dataIndex: 'remark',
+      search: false,
     },
     {
       title: '状态',
       dataIndex: 'isEnabled',
-      render: (text: boolean) => {
-        return <Switch checked={text} />;
+      render: (_: any, record: DictTypeItem) => {
+        return <Switch checked={record.isEnabled} />;
       },
+      search: false,
     },
     {
       title: '创建时间',
       dataIndex: 'creationTime',
+      search: false,
     },
     {
       title: '操作',
       dataIndex: 'option',
       width: 210,
       fixed: 'right',
+      search: false,
       render: (_: any, record: DictTypeItem) => (
         <Space>
           <Permission permissions={'Sys.DictType.Update'}>
@@ -90,7 +95,7 @@ const DictList: React.FC = () => {
               onConfirm={() => {
                 deleteDictType(record.dictType!).then(() => {
                   message.success('删除成功');
-                  tableRef.current?.reload();
+                  actionRef.current?.reload();
                 });
               }}
             >
@@ -105,7 +110,7 @@ const DictList: React.FC = () => {
   ];
 
   const batchDelete = () => {
-    const ids = tableRef?.current?.getSelectedKeys();
+    const ids = selectedKeys;
     if (!ids || !ids.length) {
       message.warning('请选择一条数据进行操作');
       return;
@@ -116,32 +121,34 @@ const DictList: React.FC = () => {
       onOk() {
         deleteDictTypes(ids as string[]).then(() => {
           message.success('删除成功');
-          tableRef?.current?.reload();
+          actionRef?.current?.reload();
         });
       },
     });
   };
 
-  return (
-    <>
-      <SmartTable
-        columns={columns}
-        ref={tableRef}
-        rowKey="id"
-        selection
-        request={async (params) => {
-          const { data } = await getDictTypeList(params);
-          return data;
-        }}
-        searchItems={[
-          <Form.Item label="字典名称" name="name">
-            <Input placeholder="请输入字典名称" />
-          </Form.Item>,
-          <Form.Item label="字典类型" name="dictType">
-            <Input placeholder="请输入字典类型" />
-          </Form.Item>,
-        ]}
-        toolbar={
+  return <div className='fancyx-table-wrapper'>
+    <ProTable<DictTypeItem, GetDictTypeListRequest>
+      actionRef={actionRef}
+      rowKey="id"
+      columns={columns}
+      request={async (
+        params: GetDictTypeListRequest
+      ) => {
+        const res = await getDictTypeList(params);
+        return {
+          data: res.data.items,
+          success: true,
+          total: res.data.totalCount
+        };
+      }}
+      rowSelection={{
+        onChange: (selectedRowKeys) => {
+          setSelectedKeys(selectedRowKeys as string[]);
+        },
+      }}
+      toolBarRender={
+        () => [
           <Space size="middle">
             <Permission permissions={'Sys.DictType.Add'}>
               <Button
@@ -161,17 +168,17 @@ const DictList: React.FC = () => {
               </Button>
             </Permission>
           </Space>
-        }
-      />
-      {/** 新增/编辑字典类型弹窗 */}
-      <DictTypeForm
-        id={rowId}
-        modalVisit={modalVisit}
-        onOpenChange={setModalVisit}
-        callback={() => tableRef?.current?.reload()}
-      />
-    </>
-  );
-};
+        ]
+      }
+    />
+    {/** 新增/编辑字典类型弹窗 */}
+    <DictTypeForm
+      id={rowId}
+      modalVisit={modalVisit}
+      onOpenChange={setModalVisit}
+      callback={() => actionRef?.current?.reload()}
+    />
+  </div>
+}
 
-export default DictList;
+export default DictType;
