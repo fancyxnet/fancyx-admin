@@ -6,7 +6,7 @@ import type { AppResponse, PagedResult, PageSearch } from '@/types/api';
  * @param req
  */
 export function getApiAccessLogList(req: GetApiAccessLogListRequest) {
-  return httpClient.get<GetApiAccessLogListRequest, AppResponse<PagedResult<ApiAccessLogItem[]>>>(
+  return httpClient.get<GetApiAccessLogListRequest, AppResponse<PagedResult<ApiAccessLogItem>>>(
     '/admin-api/MonitorLog/ApiAccessLogList',
     {
       params: req,
@@ -19,7 +19,7 @@ export function getApiAccessLogList(req: GetApiAccessLogListRequest) {
  * @param req
  */
 export function getExceptionLogList(req: GetExceptionLogListRequest) {
-  return httpClient.get<GetExceptionLogListRequest, AppResponse<PagedResult<ExceptionLogItem[]>>>(
+  return httpClient.get<GetExceptionLogListRequest, AppResponse<PagedResult<ExceptionLogItem>>>(
     '/admin-api/MonitorLog/ExceptionLogList',
     {
       params: req,

@@ -1,19 +1,20 @@
-﻿import { type ApiAccessLogItem, getApiAccessLogList } from '@/api/monitor/monitorLog.ts';
-import { Button, Descriptions, Form, Input, Modal, Tag, Tooltip } from 'antd';
-import React, { useMemo } from 'react';
-import type { SmartTableColumnType } from '@/components/SmartTable/type.ts';
-import SmartTable from '@/components/SmartTable';
+﻿import { type ApiAccessLogItem, getApiAccessLogList, type GetApiAccessLogListRequest } from '@/api/monitor/monitorLog.ts';
+import { Button, Descriptions, Modal, Tag } from 'antd';
+import React, { useMemo, useRef } from 'react';
 import { OperateType } from '@/utils/globalValue.ts';
 import { FileTextOutlined } from '@ant-design/icons';
+import { ProTable, type ActionType, type ProColumnType } from '@ant-design/pro-components';
 
-const BusinessLogList: React.FC = () => {
+const ApiAccessLog: React.FC = () => {
   const [isOpenModal, setIsOpenModal] = React.useState(false);
   const [details, setDetails] = React.useState<ApiAccessLogItem | null>();
-  const columns: SmartTableColumnType[] = [
+  const actionRef = useRef<ActionType>();
+  const columns: ProColumnType<ApiAccessLogItem>[] = [
     {
       title: '请求时间',
       dataIndex: 'requestTime',
       width: 180,
+      search: false,
     },
     {
       title: '请求地址',
@@ -23,6 +24,7 @@ const BusinessLogList: React.FC = () => {
       title: '请求方法',
       dataIndex: 'method',
       width: 120,
+      search: false,
     },
     {
       title: '操作用户',
@@ -31,8 +33,9 @@ const BusinessLogList: React.FC = () => {
     {
       title: '操作类型',
       dataIndex: 'operateType',
-      render: (operateType: number[] | null) => {
-        return operateType?.map((x) => {
+      search: false,
+      render: (_: any, record: ApiAccessLogItem) => {
+        return record.operateType?.map((x) => {
           return (
             <Tag bordered={false} color="magenta" key={x}>
               {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
@@ -46,24 +49,20 @@ const BusinessLogList: React.FC = () => {
     {
       title: 'IP',
       dataIndex: 'ip',
+      search: false,
     },
     {
       title: '浏览器',
       dataIndex: 'browser',
-      ellipsis: {
-        showTitle: false,
-      },
-      render: (browser: string) => (
-        <Tooltip placement="topLeft" title={browser}>
-          {browser}
-        </Tooltip>
-      ),
+      ellipsis: true,
+      search: false
     },
     {
       title: '操作',
       dataIndex: 'operate',
       width: 70,
       fixed: 'right',
+      search: false,
       render: (_: any, record: ApiAccessLogItem) => {
         return (
           <Button
@@ -166,42 +165,36 @@ const BusinessLogList: React.FC = () => {
       },
     ];
   }, [details]);
-  return (
-    <>
-      <SmartTable
-        columns={columns}
-        rowKey="id"
-        request={async (params) => {
-          const { data } = await getApiAccessLogList(params);
-          return data;
-        }}
-        searchItems={
-          <>
-            <Form.Item label="API" name="path">
-              <Input placeholder="请输入API地址" />
-            </Form.Item>
-            <Form.Item label="访问用户" name="userName">
-              <Input placeholder="请输入访问账号" />
-            </Form.Item>
-          </>
-        }
-        toolbar={<h5>注意：API访问日志只记录操作成功的，发生异常的请查看异常日志</h5>}
-      />
 
-      <Modal
-        title="访问日志详情"
-        open={isOpenModal}
-        footer={null}
-        width="60%"
-        onCancel={() => {
-          setIsOpenModal(false);
-          setDetails(null);
-        }}
-      >
-        <Descriptions items={items} column={2} size="small" />
-      </Modal>
-    </>
-  );
-};
+  return <div className='fancyx-table-wrapper'>
+    <ProTable<ApiAccessLogItem, GetApiAccessLogListRequest>
+      actionRef={actionRef}
+      rowKey="id"
+      columns={columns}
+      request={async (
+        params: GetApiAccessLogListRequest
+      ) => {
+        const res = await getApiAccessLogList(params);
+        return {
+          data: res.data.items,
+          success: true,
+          total: res.data.totalCount
+        };
+      }}
+    />
+    <Modal
+      title="访问日志详情"
+      open={isOpenModal}
+      footer={null}
+      width="60%"
+      onCancel={() => {
+        setIsOpenModal(false);
+        setDetails(null);
+      }}
+    >
+      <Descriptions items={items} column={2} size="small" />
+    </Modal>
+  </div>
+}
 
-export default BusinessLogList;
+export default ApiAccessLog;

@@ -1,20 +1,21 @@
-﻿import { type ExceptionLogItem, getExceptionLogList, handleException } from '@/api/monitor/monitorLog.ts';
-import { Button, Collapse, Descriptions, Form, Input, Modal, Select, Space, Tag } from 'antd';
+﻿import { type ExceptionLogItem, getExceptionLogList, type GetExceptionLogListRequest, handleException } from '@/api/monitor/monitorLog.ts';
+import { Button, Collapse, Descriptions, Modal, Space, Tag } from 'antd';
 import React, { useMemo, useRef, useState } from 'react';
-import type { SmartTableColumnType, SmartTableRef } from '@/components/SmartTable/type.ts';
-import SmartTable from '@/components/SmartTable';
 import { CheckCircleOutlined, ExclamationCircleFilled, FileTextOutlined } from '@ant-design/icons';
 import useApp from 'antd/es/app/useApp';
+import { ProTable, type ActionType, type ProColumnType } from '@ant-design/pro-components';
 
-const BusinessLogList: React.FC = () => {
+const ExceptionLog: React.FC = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const [details, setDetails] = useState<ExceptionLogItem | null>();
   const { message, modal } = useApp();
-  const tableRef = useRef<SmartTableRef>(null);
-  const columns: SmartTableColumnType[] = [
+  const actionRef = useRef<ActionType>();
+  const [details, setDetails] = useState<ExceptionLogItem | null>();
+  const columns: ProColumnType<ExceptionLogItem>[] = [
     {
       title: '发生时间',
       dataIndex: 'creationTime',
+      search: false,
+      minWidth: 154
     },
     {
       title: '请求地址',
@@ -23,23 +24,35 @@ const BusinessLogList: React.FC = () => {
     {
       title: '请求方法',
       dataIndex: 'requestMethod',
+      search: false,
+      width: 104
     },
     {
       title: '异常信息',
       dataIndex: 'message',
+      search: false,
+      ellipsis: true
     },
     {
       title: '异常名',
       dataIndex: 'exceptionType',
+      search: false,
     },
     {
       title: '状态',
       dataIndex: 'isHandled',
-      render: (isHandled: boolean) => {
-        if (isHandled) {
+      render: (_: any, record: ExceptionLogItem) => {
+        if (record.isHandled) {
           return <Tag color="success">已处理</Tag>;
         }
         return <Tag color="red">待处理</Tag>;
+      },
+      valueEnum: {
+        false: { text: '待处理' },
+        true: { text: '已处理' },
+      },
+      fieldProps: {
+        placeholder: '请选择处理状态',
       },
     },
     {
@@ -47,6 +60,7 @@ const BusinessLogList: React.FC = () => {
       dataIndex: 'operate',
       width: 140,
       fixed: 'right',
+      search: false,
       render: (_: any, record: ExceptionLogItem) => {
         return (
           <Space>
@@ -70,7 +84,7 @@ const BusinessLogList: React.FC = () => {
                   onOk() {
                     handleException(record.id).then(() => {
                       message.success('处理成功');
-                      tableRef?.current?.reload();
+                      actionRef?.current?.reload();
                     });
                   },
                 });
@@ -148,63 +162,47 @@ const BusinessLogList: React.FC = () => {
       },
     ];
   }, [details]);
-  return (
-    <>
-      <SmartTable
-        columns={columns}
-        rowKey="id"
-        ref={tableRef}
-        request={async (params) => {
-          const { data } = await getExceptionLogList(params);
-          return data;
-        }}
-        searchItems={
-          <>
-            <Form.Item label="API" name="path">
-              <Input placeholder="请输入API地址" />
-            </Form.Item>
-            <Form.Item label="操作用户" name="userName">
-              <Input placeholder="请输入操作账号" />
-            </Form.Item>
-            <Form.Item label="是否处理" name="isHandled">
-              <Select
-                placeholder="请选择处理状态"
-                options={[
-                  { label: '待处理', value: false },
-                  { label: '已处理', value: true },
-                ]}
-                allowClear
-              />
-            </Form.Item>
-          </>
-        }
+  return <div className='fancyx-table-wrapper'>
+    <ProTable<ExceptionLogItem, GetExceptionLogListRequest>
+      actionRef={actionRef}
+      rowKey="id"
+      columns={columns}
+      request={async (
+        params: GetExceptionLogListRequest
+      ) => {
+        const res = await getExceptionLogList(params);
+        return {
+          data: res.data.items,
+          success: true,
+          total: res.data.totalCount
+        };
+      }}
+    />
+    <Modal
+      title="异常日志详情"
+      open={isOpenModal}
+      footer={null}
+      width="60%"
+      onCancel={() => {
+        setIsOpenModal(false);
+        setDetails(null);
+      }}
+    >
+      <div style={{ padding: '16px' }}>
+        <Descriptions items={items} column={2} size="small" />
+      </div>
+      <Collapse
+        ghost
+        items={[
+          {
+            key: '1',
+            label: '异常堆栈信息',
+            children: <p>{details?.stackTrace}</p>,
+          },
+        ]}
       />
-      <Modal
-        title="异常日志详情"
-        open={isOpenModal}
-        footer={null}
-        width="60%"
-        onCancel={() => {
-          setIsOpenModal(false);
-          setDetails(null);
-        }}
-      >
-        <div style={{ padding: '16px' }}>
-          <Descriptions items={items} column={2} size="small" />
-        </div>
-        <Collapse
-          ghost
-          items={[
-            {
-              key: '1',
-              label: '异常堆栈信息',
-              children: <p>{details?.stackTrace}</p>,
-            },
-          ]}
-        />
-      </Modal>
-    </>
-  );
-};
+    </Modal>
+  </div>
+}
 
-export default BusinessLogList;
+export default ExceptionLog;

@@ -38,7 +38,8 @@ namespace Fancyx.Admin.Application.Service.Monitor
             var resp = await _exceptionLogRepository.GetQueryable().WhereIf(!string.IsNullOrEmpty(req.UserName), x => x.UserName != null && x.UserName.Contains(req.UserName!))
                 .WhereIf(!string.IsNullOrEmpty(req.Path), x => x.RequestPath != null && x.RequestPath.Contains(req.Path!))
                 .WhereIf(req.IsHandled.HasValue, x => x.IsHandled == req.IsHandled!)
-                .OrderByDescending(x => x.CreationTime)
+                .OrderBy(x => x.IsHandled)
+                .ThenByDescending(x => x.CreationTime)
                 .PagedAsync(req.Current, req.PageSize);
             return new PagedResult<ExceptionLogItem>(req, resp.Total, _mapper.Map<List<ExceptionLog>, List<ExceptionLogItem>>(resp.Items));
         }
