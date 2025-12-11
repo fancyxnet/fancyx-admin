@@ -39,8 +39,8 @@ const Notification: React.FC = () => {
         return record.isReaded ? <Tag color="green">已读</Tag> : <Tag color="red">未读</Tag>;
       },
       valueEnum: {
-        false: { text: '待处理' },
-        true: { text: '已处理' },
+        false: { text: '未读' },
+        true: { text: '已读' },
       },
       fieldProps: {
         placeholder: '请选择处理状态',

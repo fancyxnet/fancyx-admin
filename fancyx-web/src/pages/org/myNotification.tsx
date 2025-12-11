@@ -1,16 +1,16 @@
-﻿import { readed, getMyNotificationList, type UserNotificationItem } from '@/api/organization/myNotification.ts';
+﻿import { readed, getMyNotificationList, type UserNotificationItem, type GetMyNotificationListRequest } from '@/api/organization/myNotification.ts';
 import { CheckOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Select, Tag } from 'antd';
-import React, { useRef } from 'react';
-import type { SmartTableRef, SmartTableColumnType } from '@/components/SmartTable/type.ts';
-import SmartTable from '@/components/SmartTable';
+import { Button, Tag } from 'antd';
+import React, { useRef, useState } from 'react';
 import useApp from 'antd/es/app/useApp';
 import { ErrorCode } from '@/utils/globalValue';
+import { ProTable, type ActionType, type ProColumnType } from '@ant-design/pro-components';
 
-const NotificationList: React.FC = () => {
-  const tableRef = useRef<SmartTableRef>(null);
+const MyNotification: React.FC = () => {
   const { message } = useApp();
-  const columns: SmartTableColumnType[] = [
+  const actionRef = useRef<ActionType>();
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([])
+  const columns: ProColumnType<UserNotificationItem>[] = [
     {
       title: '通知标题',
       dataIndex: 'title',
@@ -18,23 +18,33 @@ const NotificationList: React.FC = () => {
     {
       title: '通知内容',
       dataIndex: 'content',
+      search: false,
     },
     {
       title: '状态',
       dataIndex: 'isReaded',
-      render: (isReaded: boolean) => {
-        return isReaded ? <Tag color="green">已读</Tag> : <Tag color="red">未读</Tag>;
+      render: (_: any, record: UserNotificationItem) => {
+        return record.isReaded ? <Tag color="green">已读</Tag> : <Tag color="red">未读</Tag>;
+      },
+      valueEnum: {
+        false: { text: '未读' },
+        true: { text: '已读' },
+      },
+      fieldProps: {
+        placeholder: '请选择处理状态',
       },
     },
     {
       title: '创建时间',
       dataIndex: 'creationTime',
+      search: false,
     },
     {
       title: '操作',
       dataIndex: 'option',
       width: 70,
       fixed: 'right',
+      search: false,
       render: (_: any, record: UserNotificationItem) => {
         if (!record.isReaded) {
           return (
@@ -57,56 +67,51 @@ const NotificationList: React.FC = () => {
     readed(ids).then((res) => {
       if (res.code === ErrorCode.Success) {
         message.success('已读成功');
-        tableRef?.current?.reload();
+        actionRef?.current?.reload();
       }
     });
   };
 
-  return (
-    <>
-      <SmartTable
-        columns={columns}
-        ref={tableRef}
-        selection
-        rowKey="id"
-        request={async (params) => {
-          const { data } = await getMyNotificationList(params);
-          return data;
-        }}
-        searchItems={[
-          <Form.Item label="通知标题" name="title">
-            <Input placeholder="请输入通知标题" />
-          </Form.Item>,
-          <Form.Item label="通知状态" name="isReaded">
-            <Select
-              allowClear
-              placeholder="请选择通知状态"
-              options={[
-                { label: '已读', value: true },
-                { label: '未读', value: false },
-              ]}
-            />
-          </Form.Item>,
-        ]}
-        toolbar={
+  return (<div className='fancyx-table-wrapper'>
+    <ProTable<UserNotificationItem, GetMyNotificationListRequest>
+      actionRef={actionRef}
+      rowKey="id"
+      columns={columns}
+      request={async (
+        params: GetMyNotificationListRequest
+      ) => {
+        const res = await getMyNotificationList(params);
+        return {
+          data: res.data.items,
+          success: true,
+          total: res.data.totalCount
+        };
+      }}
+      rowSelection={{
+        // 选中项发生变化时的回调
+        onChange: (selectedRowKeys) => {
+          setSelectedKeys(selectedRowKeys as string[]);
+        },
+      }}
+      toolBarRender={
+        () => [
           <Button
             type="primary"
             icon={<CheckOutlined />}
             onClick={() => {
-              const ids = tableRef?.current?.getSelectedKeys() as string[];
-              if (ids.length <= 0) {
+              if (selectedKeys.length <= 0) {
                 message.warning('请选择一条记录进行操作');
                 return;
               }
-              batchReaded(ids);
+              batchReaded(selectedKeys);
             }}
           >
             批量已读
           </Button>
-        }
-      />
-    </>
-  );
-};
+        ]
+      }
+    />
+  </div>)
+}
 
-export default NotificationList;
+export default MyNotification;
