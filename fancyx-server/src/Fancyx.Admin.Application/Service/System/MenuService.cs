@@ -77,37 +77,28 @@ namespace Fancyx.Admin.Application.Service.System
 
         public async Task<List<MenuItem>> GetMenuListAsync(GetMenuListRequest req)
         {
-            //是否过滤
             var isFilter = !string.IsNullOrEmpty(req.Title) || !string.IsNullOrEmpty(req.Path);
             var all = await _menuRepository.GetQueryable()
-                .WhereIf(!string.IsNullOrEmpty(req.Title),
-                    x => !string.IsNullOrEmpty(x.Title) && x.Title.Contains(req.Title!))
-                .WhereIf(!string.IsNullOrEmpty(req.Path),
-                    x => !string.IsNullOrEmpty(x.Path) && x.Path.Contains(req.Path!))
+                .WhereIf(!string.IsNullOrEmpty(req.Title),x => !string.IsNullOrEmpty(x.Title) && x.Title.Contains(req.Title!))
+                .WhereIf(!string.IsNullOrEmpty(req.Path), x => !string.IsNullOrEmpty(x.Path) && x.Path.Contains(req.Path!))
                 .ToListAsync();
-            var top = all.Where(x => isFilter || !x.ParentId.HasValue).OrderBy(x => x.Sort)
-                .ToList();
-            var topMap = _mapper.Map<List<Menu>, List<MenuItem>>(top);
-            if (isFilter) return topMap;
-            foreach (var item in topMap)
+            if (isFilter) return _mapper.Map<List<Menu>, List<MenuItem>>(all);
+
+            return CollectionUtils.BuildTree(all, g => new MenuItem
             {
-                item.Children = getChildren(item.Id);
-            }
-
-            List<MenuItem>? getChildren(long currentId)
-            {
-                var children = all.Where(x => x.ParentId == currentId).OrderBy(x => x.Sort).ToList();
-                if (children.Count == 0) return null;
-                var childrenMap = _mapper.Map<List<Menu>, List<MenuItem>>(children);
-                foreach (var item in childrenMap)
-                {
-                    item.Children = getChildren(item.Id);
-                }
-
-                return childrenMap;
-            }
-
-            return topMap;
+                Id = g.Id,
+                Title = g.Title,
+                Icon = g.Icon,
+                Path = g.Path,
+                MenuType = (int)g.MenuType,
+                Permission = g.Permission,
+                ParentId = g.ParentId,
+                Sort = g.Sort,
+                Display = g.Display,
+                Component = g.Component,
+                IsExternal = g.IsExternal,
+                KeepAlive = g.KeepAlive,
+            }, g => g.Id, g => g.ParentId, (node, children) => node.Children = children, node => node.Sort);
         }
 
         public async Task<(string[] keys, List<MenuOptionTree> tree)> GetMenuOptionsAsync(bool onlyMenu,

@@ -3,6 +3,7 @@ using AutoMapper;
 using DotNetCore.CAP;
 using Fancyx.Admin.Application.IService.Account;
 using Fancyx.Admin.Application.IService.Account.Models;
+using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Admin.Application.SharedService;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
@@ -248,32 +249,56 @@ namespace Fancyx.Admin.Application.Service.Account
 
             var all = await _menuRepository
                 .Where(x => permission.MenuIds.Contains(x.Id) && (x.MenuType == MenuType.Menu || x.MenuType == MenuType.Folder)).ToListAsync();
-            var top = all.Where(x => !x.ParentId.HasValue).OrderBy(x => x.Sort).ToList();
-            var topMap = new List<FrontendMenu>();
-            foreach (var item in top)
+            var roots = CollectionUtils.BuildTree(all, g => new FrontendMenu
             {
-                var mapItem = _mapper.Map<Menu, FrontendMenu>(item);
-                mapItem.LayerName = item.Title;
-                mapItem.Children = getChildren(mapItem);
-                topMap.Add(mapItem);
-            }
+                Id = g.Id,
+                Title = g.Title,
+                Icon = g.Icon,
+                Path = g.Path,
+                MenuType = (int)g.MenuType,
+                Display = g.Display,
+                Component = g.Component,
+                IsExternal = g.IsExternal,
+                KeepAlive = g.KeepAlive,
+                Sort = g.Sort
+            }, g => g.Id, g => g.ParentId, (node, children) => node.Children = children, node => node.Sort);
 
-            List<FrontendMenu>? getChildren(FrontendMenu current)
-            {
-                var children = all.Where(x => x.ParentId == current.Id).OrderBy(x => x.Sort).ToList();
-                if (children.Count <= 0) return null;
+            CollectionUtils.SetLayerNames(
+                roots: roots,
+                getTitle: n => n.Title ?? "",
+                setLayerName: (n, p) => n.LayerName = p,
+                getChildren: n => n.Children,
+                separator: "/"
+            );
 
-                var childrenMap = new List<FrontendMenu>();
-                foreach (var item in children)
-                {
-                    var mapItem = _mapper.Map<Menu, FrontendMenu>(item);
-                    mapItem.LayerName = current.LayerName + "/" + item.Title;
-                    mapItem.Children = getChildren(mapItem);
-                    childrenMap.Add(mapItem);
-                }
-                return childrenMap;
-            }
-            return topMap;
+            return roots;
+
+            //var top = all.Where(x => !x.ParentId.HasValue).OrderBy(x => x.Sort).ToList();
+            //var topMap = new List<FrontendMenu>();
+            //foreach (var item in top)
+            //{
+            //    var mapItem = _mapper.Map<Menu, FrontendMenu>(item);
+            //    mapItem.LayerName = item.Title;
+            //    mapItem.Children = getChildren(mapItem);
+            //    topMap.Add(mapItem);
+            //}
+
+            //List<FrontendMenu>? getChildren(FrontendMenu current)
+            //{
+            //    var children = all.Where(x => x.ParentId == current.Id).OrderBy(x => x.Sort).ToList();
+            //    if (children.Count <= 0) return null;
+
+            //    var childrenMap = new List<FrontendMenu>();
+            //    foreach (var item in children)
+            //    {
+            //        var mapItem = _mapper.Map<Menu, FrontendMenu>(item);
+            //        mapItem.LayerName = current.LayerName + "/" + item.Title;
+            //        mapItem.Children = getChildren(mapItem);
+            //        childrenMap.Add(mapItem);
+            //    }
+            //    return childrenMap;
+            //}
+            //return topMap;
         }
 
         public async Task<bool> UpdateUserInfoAsync(UpdateUserInfoRequest req)

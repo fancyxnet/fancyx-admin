@@ -3,6 +3,7 @@ using Fancyx.Admin.Application.IService.Organization;
 using Fancyx.Admin.Application.IService.Organization.Models;
 using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.EfCore;
+using Fancyx.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.Application.Service.Organization
@@ -50,38 +51,30 @@ namespace Fancyx.Admin.Application.Service.Organization
 
         public async Task<List<PositionGroupItem>> GetPositionGroupListAsync(GetPositionGroupListRequest req)
         {
-            var allNodes = await _positionGroupRepository.GetQueryable()
-                .WhereIf(!string.IsNullOrEmpty(req.GroupName), x => x.GroupName.Contains(req.GroupName!))
-                .OrderBy(x => x.Sort)
-                .ToDictionaryAsync(k => k.Id);
-
-            var tree = new List<PositionGroupItem>();
-            var nodeDtos = new Dictionary<long, PositionGroupItem>();
-            var endDtos = new List<PositionGroupItem>();
-
-            foreach (var node in allNodes.Values)
+            if (!string.IsNullOrEmpty(req.GroupName))
             {
-                var tmp = _mapper.Map<PositionGroup, PositionGroupItem>(node);
-                nodeDtos[tmp.Id] = tmp;
-                if (node.ParentId.HasValue)
+                return await _positionGroupRepository.GetQueryable()
+                .Where(x => x.GroupName.Contains(req.GroupName!))
+                .Select(x => new PositionGroupItem
                 {
-                    if (nodeDtos.TryGetValue(node.ParentId.Value, out var parent))
-                    {
-                        parent.Children ??= [];
-                        parent.Children.Add(tmp);
-                        parent.Children = parent.Children.OrderBy(s => s.Sort).ToList();
-                    }
-                    else
-                    {
-                        endDtos.Add(tmp);
-                    }
-                }
-                else
-                {
-                    tree.Add(tmp);
-                }
+                    Id = x.Id,
+                    GroupName = x.GroupName,
+                    Remark = x.Remark,
+                    ParentId = x.ParentId,
+                    Sort = x.Sort,
+                }).OrderBy(x => x.Sort).ToListAsync();
             }
-            return tree.OrderBy(x => x.Sort).Concat(endDtos).ToList();
+
+            var all = await _positionGroupRepository.GetQueryable().ToListAsync();
+
+            return CollectionUtils.BuildTree(all, g => new PositionGroupItem
+            {
+                Id = g.Id,
+                GroupName = g.GroupName,
+                Remark = g.Remark,
+                ParentId = g.ParentId,
+                Sort = g.Sort,
+            }, g => g.Id, g => g.ParentId, (node, children) => node.Children = children, node => node.Sort);
         }
 
         public async Task<bool> UpdatePositionGroupAsync(AddOrUpdatePositionGroupRequest req)

@@ -23,7 +23,7 @@ const SearchModal = forwardRef<SearchModalRef, any>((_, ref) => {
   useEffect(() => {
     if (searchText) {
       const filterData = UserStore.menuList
-        .filter((x) => x.menuType === MenuType.Menu && (x.title.includes(searchText) || x.path.includes(searchText)))
+        .filter((x) => x.menuType === MenuType.Menu && (x.title?.includes(searchText) || x.path?.includes(searchText)))
         .map((menu) => {
           return {
             key: menu.id,

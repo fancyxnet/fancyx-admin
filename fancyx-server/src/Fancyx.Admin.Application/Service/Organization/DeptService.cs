@@ -1,4 +1,5 @@
 using AutoMapper;
+using Consul;
 using Fancyx.Admin.Application.IService.Organization;
 using Fancyx.Admin.Application.IService.Organization.Models;
 using Fancyx.Admin.EfCore.Entities.Organization;
@@ -6,7 +7,7 @@ using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
 using Fancyx.Shared.EfCore;
-
+using Fancyx.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.Application.Service.Organization
@@ -63,42 +64,28 @@ namespace Fancyx.Admin.Application.Service.Organization
             {
                 var filter = await _deptRepository.GetQueryable().PowerFilter(_currentUser)
                     .WhereIf(!string.IsNullOrEmpty(req.Name), x => x.Name.Contains(req.Name!))
-                    .WhereIf(!string.IsNullOrEmpty(req.Code), x => x.Code.Contains(req.Code!)) // ==
-                    .WhereIf(req.Status > 0, x => x.Status == req.Status) // ==
+                    .WhereIf(!string.IsNullOrEmpty(req.Code), x => x.Code.Contains(req.Code!))
+                    .WhereIf(req.Status > 0, x => x.Status == req.Status)
                     .OrderBy(x => x.Sort).ToListAsync();
                 var result = _mapper.Map<List<Dept>, List<DeptItem>>(filter);
 
                 return result;
             }
 
-            var allNodes = await _deptRepository.GetQueryable().PowerFilter(_currentUser).OrderBy(x => x.TreePath).ToDictionaryAsync(k => k.Id);
-            var tree = new List<DeptItem>();
-            var nodeDtos = new Dictionary<long, DeptItem>();
-            var endDtos = new List<DeptItem>();
-
-            foreach (var node in allNodes.Values)
+            var allNodes = await _deptRepository.GetQueryable().PowerFilter(_currentUser).ToListAsync();
+            return CollectionUtils.BuildTree(allNodes, g => new DeptItem
             {
-                var tmp = _mapper.Map<Dept, DeptItem>(node);
-                nodeDtos[tmp.Id] = tmp;
-                if (node.ParentId.HasValue)
-                {
-                    if (nodeDtos.TryGetValue(node.ParentId.Value, out var parent))
-                    {
-                        parent.Children ??= [];
-                        parent.Children.Add(tmp);
-                        parent.Children = parent.Children.OrderBy(s => s.Sort).ToList();
-                    }
-                    else
-                    {
-                        endDtos.Add(tmp);
-                    }
-                }
-                else
-                {
-                    tree.Add(tmp);
-                }
-            }
-            return tree.OrderBy(x => x.Sort).Concat(endDtos).ToList();
+                Id = g.Id,
+                Code = g.Code,
+                Name = g.Name,
+                Sort = g.Sort,
+                Description = g.Description,
+                Status = g.Status,
+                CuratorId = g.CuratorId,
+                //TODO:
+                //CuratorName = g.CuratorName,
+                Email = g.Email,
+            }, g => g.Id, g => g.ParentId, (node, children) => node.Children = children, node => node.Sort);
         }
 
         public async Task<bool> UpdateDeptAsync(AddOrUpdateDeptRequest req)

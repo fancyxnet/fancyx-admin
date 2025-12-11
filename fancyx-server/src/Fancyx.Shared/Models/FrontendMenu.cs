@@ -56,5 +56,10 @@ namespace Fancyx.Shared.Models
         /// 是否保活
         /// </summary>
         public bool KeepAlive { get; set; }
+
+        /// <summary>
+        /// 排序
+        /// </summary>
+        public int Sort { get; set; }
     }
 }
