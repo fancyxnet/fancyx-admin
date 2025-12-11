@@ -143,7 +143,7 @@ const Position: React.FC = () => {
       }}
       toolBarRender={
         () => [
-          <Permission permissions={'Org.PositionGroup.Add'}>
+          <Permission permissions={'Org.Position.Add'}>
             <Button color="primary" variant="solid" icon={<PlusOutlined />} onClick={() => handleOpenModal()}>
               新增
             </Button>
