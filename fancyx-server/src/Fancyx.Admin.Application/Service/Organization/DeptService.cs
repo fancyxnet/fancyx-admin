@@ -62,7 +62,7 @@ namespace Fancyx.Admin.Application.Service.Organization
             bool hasFilter = !string.IsNullOrEmpty(req.Name) || !string.IsNullOrEmpty(req.Code) || req.Status > 0;
             if (hasFilter)
             {
-                var filter = await _deptRepository.GetQueryable().PowerFilter(_currentUser)
+                var filter = await _deptRepository.GetQueryable()
                     .WhereIf(!string.IsNullOrEmpty(req.Name), x => x.Name.Contains(req.Name!))
                     .WhereIf(!string.IsNullOrEmpty(req.Code), x => x.Code.Contains(req.Code!))
                     .WhereIf(req.Status > 0, x => x.Status == req.Status)
@@ -72,8 +72,8 @@ namespace Fancyx.Admin.Application.Service.Organization
                 return result;
             }
 
-            var allNodes = await (from d in _deptRepository.GetQueryable().PowerFilter(_currentUser)
-                           join u in _userRepository.GetQueryable().PowerFilter(_currentUser) on d.CuratorId equals u.Id into u2
+            var allNodes = await (from d in _deptRepository.GetQueryable()
+                           join u in _userRepository.GetQueryable() on d.CuratorId equals u.Id into u2
                            from u3 in u2.DefaultIfEmpty()
                            select new DeptItem
                            {
@@ -131,7 +131,7 @@ namespace Fancyx.Admin.Application.Service.Organization
 
         public async Task<List<DeptSimpleInfo>> GetDeptSimpleInfosAsync(string? keyword)
         {
-            var depts = await _deptRepository.GetQueryable().PowerFilter(_currentUser).WhereIf(!string.IsNullOrEmpty(keyword),
+            var depts = await _deptRepository.GetQueryable().WhereIf(!string.IsNullOrEmpty(keyword),
                     x => x.Name.StartsWith(keyword!) || x.Code.StartsWith(keyword!))
                 .SelectToListAsync(x => new { x.Id, x.Name, x.Code, x.ParentId, x.Sort, x.CreationTime, x.TreeLevel });
             var list = new List<DeptSimpleInfo>();

@@ -10,7 +10,6 @@ using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
 using Fancyx.EfCore.Aop;
 using Fancyx.Shared.Consts;
-using Fancyx.Shared.EfCore;
 using Fancyx.Shared.Generated;
 using Fancyx.Shared.Logger;
 using Fancyx.Utils;
@@ -113,7 +112,7 @@ namespace Fancyx.Admin.Application.Service.System
 
         public async Task<PagedResult<UserItem>> GetUserListAsync(GetUserListRequest req)
         {
-            var resp = await _context.User.PowerFilter(_currentUser).GroupJoin(_context.Dept, u => u.DeptId, d => d.Id, (u, d) => new { u, d })
+            var resp = await _context.User.GroupJoin(_context.Dept, u => u.DeptId, d => d.Id, (u, d) => new { u, d })
                 .SelectMany(x => x.d.DefaultIfEmpty(), (x, d) => new { x.u, d })
                 .GroupJoin(_context.Position, m => m.u.PostId, p => p.Id, (m, p) => new { m, p })
                 .WhereIf(!string.IsNullOrEmpty(req.UserName), x => x.m.u.UserName.Contains(req.UserName!))

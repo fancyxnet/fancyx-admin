@@ -3,7 +3,6 @@ using AutoMapper;
 using DotNetCore.CAP;
 using Fancyx.Admin.Application.IService.Account;
 using Fancyx.Admin.Application.IService.Account.Models;
-using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Admin.Application.SharedService;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
@@ -200,20 +199,6 @@ namespace Fancyx.Admin.Application.Service.Account
                 // 组织信息
                 if (user.DeptId.HasValue) claims.Add(new Claim(DataPower.DeptId, user.DeptId.Value.ToString()));
                 if (user.PostId.HasValue) claims.Add(new Claim(AdminConsts.PostId, user.PostId.Value.ToString()));
-
-                // 权限：可查看部门和用户
-                var powerData = await _identitySharedService.GetUserDeptPowerAsync(user.Id, user.DeptId);
-                if (powerData != null)
-                {
-                    if (powerData.DeptIds?.Count > 0)
-                    {
-                        claims.Add(new Claim(DataPower.DeptIdType, string.Join(',', powerData.DeptIds)));
-                    }
-                    if (powerData.UserIds?.Count > 0)
-                    {
-                        claims.Add(new Claim(DataPower.UserIdType, string.Join(',', powerData.UserIds)));
-                    }
-                }
 
                 var permission = await _identitySharedService.GetUserPermissionAsync(user.Id);
                 if (permission.Roles?.Length > 0) claims.Add(new Claim(ClaimTypes.Role, string.Join(',', permission.Roles)));

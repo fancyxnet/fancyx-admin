@@ -10,8 +10,11 @@ namespace Fancyx.Shared.EfCore
     {
         private static readonly MethodInfo containsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) })!;
 
+        [Obsolete("已无效，考虑使用更通用的数据过滤")]
         public static IQueryable<TEntity> PowerFilter<TEntity>(this IQueryable<TEntity> query, ICurrentUser currentUser)
         {
+            return query;
+
             var curDeptId = currentUser.FindClaim(DataPower.DeptId)?.Value;
             var ignoreFilter = string.IsNullOrEmpty(curDeptId);
             if (ignoreFilter) return query;
