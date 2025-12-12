@@ -10,10 +10,12 @@ namespace Fancyx.Admin.Controllers.Oss
     public class OssController : ControllerBase
     {
         private readonly IObjectStorageFactory _objectStorageFactory;
+        private readonly IConfiguration _configuration;
 
-        public OssController(IObjectStorageFactory objectStorageFactory)
+        public OssController(IObjectStorageFactory objectStorageFactory, IConfiguration configuration)
         {
             _objectStorageFactory = objectStorageFactory;
+            _configuration = configuration;
         }
 
         [HttpPost]
@@ -36,7 +38,7 @@ namespace Fancyx.Admin.Controllers.Oss
                 url = $"File/{url}";
             }
 
-            return Result.Data(url);
+            return Result.Data(new Uri(new Uri(_configuration["Oss:Domain"]!), url).ToString());
         }
 
         [HttpGet]

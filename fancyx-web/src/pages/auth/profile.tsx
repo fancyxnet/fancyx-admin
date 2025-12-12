@@ -22,7 +22,6 @@ const Profile = observer(() => {
   const [avatar, setAvatar] = useState(userInfo?.avatar);
   const [activeKey, setActiveKey] = useState<string>('baseInfo');
   const [loading, setLoading] = useState<boolean>(false);
-  const { ossDomain } = useApplication();
   const { message } = useApp();
 
   useDeepCompareEffect(() => {
@@ -88,7 +87,7 @@ const Profile = observer(() => {
           <Card className="profile-card">
             <div className="avatar-section">
               <div className="avatar-upload">
-                <Avatar size={128} src={ossDomain + avatar} icon={<UserOutlined />} />
+                <Avatar size={128} src={avatar} icon={<UserOutlined />} />
                 <Upload
                   name="avatar"
                   showUploadList={false}

@@ -37,7 +37,6 @@ const Navbar = observer(() => {
       icon: <LogoutOutlined />,
     },
   ];
-  const { ossDomain } = useApplication();
 
   const location = useLocation();
   const setCollapsed = () => {
@@ -93,7 +92,7 @@ const Navbar = observer(() => {
             >
               <Button type="text" className="navbar-btn">
                 {UserStore.userInfo?.avatar ? (
-                  <Avatar size={28} src={ossDomain + UserStore.userInfo?.avatar} alt="头像" />
+                  <Avatar size={28} src={UserStore.userInfo?.avatar} alt="头像" />
                 ) : (
                   <Avatar size={28} icon={<UserOutlined />} />
                 )}

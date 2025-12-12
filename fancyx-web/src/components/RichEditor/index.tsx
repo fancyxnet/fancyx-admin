@@ -17,7 +17,6 @@ type TinyMCEInstance = any;
 
 export default function RichEditor({ onChange, initialValue = '' }: RichEditorProps) {
   const editorRef = useRef<TinyMCEInstance>(null);
-  const { ossDomain } = useApplication();
 
   // 处理编辑器内容变化的函数
   const handleEditorChange = (content: string) => {
@@ -29,7 +28,7 @@ export default function RichEditor({ onChange, initialValue = '' }: RichEditorPr
 
   const ImagesUploadHandler = async (blobInfo: any) => {
     const { data } = await uploadFile(blobInfo.blob());
-    return ossDomain + data;
+    return data;
   };
 
   return (

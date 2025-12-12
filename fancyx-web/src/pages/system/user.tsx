@@ -20,7 +20,6 @@ import UserEditForm, { type ModalRef } from '@/pages/system/components/UserForm.
 import AssignRoleForm, { type AssignRoleFormRef } from '@/pages/system/components/AssignRoleForm.tsx';
 import ResetUserPwdForm, { type ResetUserPwdFormRef } from '@/pages/system/components/ResetUserPwdForm.tsx';
 import ProIcon from '@/components/ProIcon';
-import { useApplication } from '@/components/Application';
 import Permission from '@/components/Permission';
 import { getDeptSimpleInfos, type DeptSimpleInfo } from '@/api/organization/dept';
 import Search from 'antd/es/input/Search';
@@ -34,7 +33,6 @@ const User: React.FC = () => {
   const userEditModalRef = useRef<ModalRef>(null);
   const assignRoleRef = useRef<AssignRoleFormRef>(null);
   const resetUserPwdFormRef = useRef<ResetUserPwdFormRef>(null);
-  const { ossDomain } = useApplication();
   const { hasPermission } = useAuthProvider();
   const columns: ProColumnType<UserItem>[] = [
     {
@@ -46,7 +44,7 @@ const User: React.FC = () => {
       title: '头像',
       dataIndex: 'avatar',
       render: (_: any, record: UserItem) => {
-        return <Avatar size={50} src={ossDomain + record.avatar} />;
+        return <Avatar size={50} src={record.avatar} />;
       },
       search: false,
     },

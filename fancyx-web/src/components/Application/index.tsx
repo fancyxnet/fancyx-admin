@@ -3,12 +3,10 @@ import React, { createContext, useContext, useEffect } from 'react';
 import UserStore from '@/store/userStore';
 
 export interface ApplicationContextType {
-  ossDomain: string;
 }
 
-const ApplicationContext = createContext<ApplicationContextType>({ ossDomain: '' });
+const ApplicationContext = createContext<ApplicationContextType>({ });
 const Application = ({ children }: { children: React.ReactNode }) => {
-  const ossDomain = import.meta.env.VITE_OSS_DOMAIN;
 
   useEffect(() => {
     if (UserStore.isAuthenticated()) {
@@ -21,7 +19,7 @@ const Application = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <ApplicationContext.Provider value={{ ossDomain }}>
+    <ApplicationContext.Provider value={{  }}>
       <App>{children}</App>
     </ApplicationContext.Provider>
   );
