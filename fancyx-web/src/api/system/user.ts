@@ -121,6 +121,7 @@ export interface AddUserRequest {
 
 export interface GetUserListRequest extends PageSearch {
   userName?: string | null;
+  deptId?: string | null;
 }
 
 export interface UserItem {

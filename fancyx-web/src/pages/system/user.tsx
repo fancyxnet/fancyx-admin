@@ -255,7 +255,7 @@ const User: React.FC = () => {
           request={async (
             params: GetUserListRequest
           ) => {
-            const res = await getUserList(params);
+            const res = await getUserList({...params, deptId: curDept?.id});
             return {
               data: res.data.items,
               success: true,
