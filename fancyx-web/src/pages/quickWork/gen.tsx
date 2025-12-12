@@ -140,7 +140,7 @@ const Gen: React.FC = () => {
     return (<div className='fancyx-table-wrapper'>
         <ProTable<GenTableItem, GetGenTableListRequest>
             actionRef={actionRef}
-            rowKey="id"
+            rowKey="tableId"
             columns={columns}
             request={async (
                 params: GetGenTableListRequest
