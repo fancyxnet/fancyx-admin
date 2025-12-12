@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<PackageReference Include="Yarp.ReverseProxy" Version="2.3.0" />
+    <ProjectReference Include="..\..\libs\Fancyx.Consul\Fancyx.Consul.csproj" />
+  </ItemGroup>
+
+</Project>

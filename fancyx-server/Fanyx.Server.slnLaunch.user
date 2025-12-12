@@ -3,11 +3,11 @@
     "Name": "新建配置文件",
     "Projects": [
       {
-        "Path": "src\\Fancyx.Admin\\Fancyx.Admin.csproj",
+        "Path": "src\\Fancyx.Gateway.Yarp\\Fancyx.Gateway.Yarp.csproj",
         "Action": "Start"
       },
       {
-        "Path": "src\\Fancyx.Gateway.Ocelot\\Fancyx.Gateway.Ocelot.csproj",
+        "Path": "src\\Fancyx.Admin\\Fancyx.Admin.csproj",
         "Action": "Start"
       },
       {
