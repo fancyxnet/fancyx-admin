@@ -3,7 +3,6 @@ using AutoMapper;
 using DotNetCore.CAP;
 using Fancyx.Admin.Application.IService.Account;
 using Fancyx.Admin.Application.IService.Account.Models;
-using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Admin.Application.SharedService;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
@@ -272,33 +271,6 @@ namespace Fancyx.Admin.Application.Service.Account
             );
 
             return roots;
-
-            //var top = all.Where(x => !x.ParentId.HasValue).OrderBy(x => x.Sort).ToList();
-            //var topMap = new List<FrontendMenu>();
-            //foreach (var item in top)
-            //{
-            //    var mapItem = _mapper.Map<Menu, FrontendMenu>(item);
-            //    mapItem.LayerName = item.Title;
-            //    mapItem.Children = getChildren(mapItem);
-            //    topMap.Add(mapItem);
-            //}
-
-            //List<FrontendMenu>? getChildren(FrontendMenu current)
-            //{
-            //    var children = all.Where(x => x.ParentId == current.Id).OrderBy(x => x.Sort).ToList();
-            //    if (children.Count <= 0) return null;
-
-            //    var childrenMap = new List<FrontendMenu>();
-            //    foreach (var item in children)
-            //    {
-            //        var mapItem = _mapper.Map<Menu, FrontendMenu>(item);
-            //        mapItem.LayerName = current.LayerName + "/" + item.Title;
-            //        mapItem.Children = getChildren(mapItem);
-            //        childrenMap.Add(mapItem);
-            //    }
-            //    return childrenMap;
-            //}
-            //return topMap;
         }
 
         public async Task<bool> UpdateUserInfoAsync(UpdateUserInfoRequest req)
