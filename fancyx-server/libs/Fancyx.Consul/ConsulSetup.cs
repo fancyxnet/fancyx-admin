@@ -14,25 +14,31 @@ namespace Fancyx.Consul
         public static void AddConsulSetup(this IServiceCollection services, IConfiguration configuration)
         {
             var configurationManager = (ConfigurationManager)configuration;
-            configurationManager.AddConsul($"{configuration["Consul:NodeName"]}/appsettings.json", options =>
+            configurationManager.AddConsulConfiguration($"{configuration["Consul:NodeName"]}/appsettings.json");
+            services.AddMemoryCache();
+            services.AddSingleton<IConsulClient>(sp => new ConsulClient((cco) =>
             {
-                options.ConsulConfigurationOptions = ConfigureConsul;
+                cco.Address = new Uri(configuration["Consul:Host"]!);
+                cco.Token = configuration["Consul:Token"];
+            }));
+            services.AddSingleton<ConsulHelper>();
+            services.AddSingleton<ConsulDiscoverHttpHandler>();
+            return;
+        }
+
+        public static void AddConsulConfiguration(this ConfigurationManager configuration, string key)
+        {
+            configuration.AddConsul(key, options =>
+            {
+                options.ConsulConfigurationOptions = (cco) =>
+                {
+                    cco.Address = new Uri(configuration["Consul:Host"]!);
+                    cco.Token = configuration["Consul:Token"];
+                };
                 options.Optional = true;
                 options.ReloadOnChange = true;
                 options.OnLoadException = exceptionContext => { exceptionContext.Ignore = true; };
             });
-            services.AddMemoryCache();
-            services.AddSingleton<IConsulClient>(sp => new ConsulClient(ConfigureConsul));
-            services.AddSingleton<ConsulHelper>();
-            services.AddSingleton<ConsulDiscoverHttpHandler>();
-            services.AddHealthChecks().AddCheck<ServiceHealthCheck>("service_health");
-            return;
-
-            void ConfigureConsul(ConsulClientConfiguration cco)
-            {
-                cco.Address = new Uri(configuration["Consul:Host"]!);
-                cco.Token = configuration["Consul:Token"];
-            }
         }
     }
 }

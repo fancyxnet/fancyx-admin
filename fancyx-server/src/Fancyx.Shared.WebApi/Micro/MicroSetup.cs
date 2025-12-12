@@ -6,6 +6,7 @@ using Fancyx.Shared.Consts;
 using Fancyx.Shared.Models;
 using Fancyx.Shared.WebApi.Filters;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,7 +47,11 @@ namespace Fancyx.Shared.WebApi.Micro
             if (EnabledConsul)
             {
                 ConsulRegistration.Register(app.Services);
-                app.MapHealthChecks(ConsulConstant.ConsulHealthUrl);
+                app.Map(ConsulConstant.ConsulHealthUrl, () =>
+                {
+                    // TODO:
+                    return Results.Ok("ok");
+                });
             }
             if (app.Environment.IsDevelopment())
             {
