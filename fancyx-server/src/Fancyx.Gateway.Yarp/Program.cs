@@ -1,4 +1,6 @@
 using Fancyx.Consul;
+using Yarp.ReverseProxy.Configuration;
+using Yarp.ReverseProxy.Configuration.ConfigProvider;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,10 +8,13 @@ var isUseConsul = builder.Configuration["ServiceMode"] == "Consul";
 if (isUseConsul)
 {
     builder.Services.AddConsulSetup(builder.Configuration);
+    builder.Services.AddSingleton<IProxyConfigProvider, ConsulConfigurationConfigProvider>();
+    builder.Services.AddReverseProxy();
 }
-
-builder.Services.AddReverseProxy()
-    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+else
+{
+    builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+}
 
 builder.Services.AddCors(options =>
 {

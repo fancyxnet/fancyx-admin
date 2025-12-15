@@ -1,0 +1,459 @@
+﻿using Consul;
+using Fancyx.Gateway.Yarp;
+using Microsoft.Extensions.Primitives;
+using System.Diagnostics.CodeAnalysis;
+using System.Security.Authentication;
+using Yarp.ReverseProxy.Forwarder;
+
+namespace Yarp.ReverseProxy.Configuration.ConfigProvider;
+
+/// <summary>
+/// Reacts to configuration changes and applies configurations to the Reverse Proxy core.
+/// When configs are loaded from appsettings.json, this takes care of hot updates
+/// when appsettings.json is modified on disk.
+/// </summary>
+internal sealed class ConsulConfigurationConfigProvider : IProxyConfigProvider, IDisposable
+{
+    private readonly System.Threading.Lock _lockObject = new();
+    private readonly ILogger<ConsulConfigurationConfigProvider> _logger;
+    private readonly IConfiguration _proxyConfiguration;
+    private DynamicProxyConfig? _snapshot;
+    private CancellationTokenSource? _changeToken;
+    private bool _disposed;
+    private IDisposable? _subscription;
+    private readonly IConsulClient _consulClient;
+    private ulong _lastIndex = 0;
+    private readonly TimeSpan _waitTime = TimeSpan.FromMinutes(5);
+    private int _onConfigReload = 0;
+
+    public ConsulConfigurationConfigProvider(
+        ILogger<ConsulConfigurationConfigProvider> logger,
+        IConfiguration configuration,
+        IConsulClient consulClient)
+    {
+        var config2 = configuration.GetSection("ReverseProxy");
+        ArgumentNullException.ThrowIfNull(logger);
+        ArgumentNullException.ThrowIfNull(config2);
+        _logger = logger;
+        _consulClient = consulClient;
+        _proxyConfiguration = config2;
+    }
+
+    private async Task WatchConsulChangesAsync(ClusterConfig cluster)
+    {
+        while (!_changeToken!.Token.IsCancellationRequested)
+        {
+            if (_snapshot == null) continue;
+
+            QueryResult<ServiceEntry[]> result;
+            var queryOptions = new QueryOptions
+            {
+                WaitTime = _waitTime,
+                WaitIndex = _lastIndex
+            };
+
+            if (Interlocked.Exchange(ref _onConfigReload, 0) == 1)
+            {
+                result = await _consulClient.Health.Service(cluster.ClusterId, null, true);
+            }
+            else
+            {
+                result = await _consulClient.Health.Service(cluster.ClusterId, null, true, queryOptions);
+            }
+            _lastIndex = result.LastIndex;
+
+            var destinations = result.Response.Select((entry, i) => new KeyValuePair<string, DestinationConfig>($"destination{i + 1}", new DestinationConfig { Address = $"http://{entry.Service.Address}:{entry.Service.Port}" }))
+                .ToDictionary(k => k.Key, v => v.Value);
+            var cluster2 = new ClusterConfig
+            {
+                ClusterId = cluster.ClusterId,
+                LoadBalancingPolicy = cluster.LoadBalancingPolicy,
+                SessionAffinity = cluster.SessionAffinity,
+                HealthCheck = cluster.HealthCheck,
+                HttpClient = cluster.HttpClient,
+                HttpRequest = cluster.HttpRequest,
+                Metadata = cluster.Metadata,
+                Destinations = destinations,
+            };
+            var newSnapshot = new DynamicProxyConfig() { Clusters = _snapshot.Clusters, Routes = _snapshot.Routes };
+            newSnapshot.UpdateClusterConfig(cluster2);
+
+            var oldToken = _changeToken;
+            _changeToken = new CancellationTokenSource();
+            newSnapshot.ChangeToken = new CancellationChangeToken(_changeToken.Token);
+            _snapshot = newSnapshot;
+
+            try
+            {
+                oldToken?.Cancel(throwOnFirstException: false);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An exception was thrown from the change notification.");
+            }
+        }
+    }
+
+    public void Dispose()
+    {
+        if (!_disposed)
+        {
+            _subscription?.Dispose();
+            _changeToken?.Dispose();
+            _disposed = true;
+        }
+    }
+
+    public IProxyConfig GetConfig()
+    {
+        // First time load
+        if (_snapshot is null)
+        {
+            _subscription = ChangeToken.OnChange(_proxyConfiguration.GetReloadToken, () =>
+            {
+                Interlocked.Exchange(ref _onConfigReload, 1);
+                UpdateSnapshot();
+            });
+            UpdateSnapshot();
+        }
+
+        return _snapshot;
+    }
+
+    [MemberNotNull(nameof(_snapshot))]
+    private void UpdateSnapshot()
+    {
+        // Prevent overlapping updates, especially on startup.
+        lock (_lockObject)
+        {
+            _logger.LogInformation("Loading proxy data from config.");
+            DynamicProxyConfig newSnapshot;
+            try
+            {
+                newSnapshot = new DynamicProxyConfig();
+
+                foreach (var section in _proxyConfiguration.GetSection("Clusters").GetChildren())
+                {
+                    newSnapshot.Clusters.Add(CreateCluster(section));
+                }
+
+                foreach (var section in _proxyConfiguration.GetSection("Routes").GetChildren())
+                {
+                    newSnapshot.Routes.Add(CreateRoute(section));
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Configuration data conversion failed.");
+
+                // Re-throw on the first time load to prevent app from starting.
+                if (_snapshot is null)
+                {
+                    throw;
+                }
+
+                return;
+            }
+
+            var oldToken = _changeToken;
+            _changeToken = new CancellationTokenSource();
+            newSnapshot.ChangeToken = new CancellationChangeToken(_changeToken.Token);
+            _snapshot = newSnapshot;
+
+            try
+            {
+                foreach (var cluster in _snapshot.Clusters)
+                {
+                    _ = WatchConsulChangesAsync(cluster);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Consul Watch Failure.");
+            }
+
+            try
+            {
+                oldToken?.Cancel(throwOnFirstException: false);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An exception was thrown from the change notification.");
+            }
+        }
+    }
+
+    private static ClusterConfig CreateCluster(IConfigurationSection section)
+    {
+        //var destinations = new Dictionary<string, DestinationConfig>(StringComparer.OrdinalIgnoreCase);
+        //foreach (var destination in section.GetSection(nameof(ClusterConfig.Destinations)).GetChildren())
+        //{
+        //    destinations.Add(destination.Key, CreateDestination(destination));
+        //}
+
+        var cluster = new ClusterConfig
+        {
+            ClusterId = section.Key,
+            LoadBalancingPolicy = section[nameof(ClusterConfig.LoadBalancingPolicy)],
+            SessionAffinity = CreateSessionAffinityConfig(section.GetSection(nameof(ClusterConfig.SessionAffinity))),
+            HealthCheck = CreateHealthCheckConfig(section.GetSection(nameof(ClusterConfig.HealthCheck))),
+            HttpClient = CreateHttpClientConfig(section.GetSection(nameof(ClusterConfig.HttpClient))),
+            HttpRequest = CreateProxyRequestConfig(section.GetSection(nameof(ClusterConfig.HttpRequest))),
+            Metadata = section.GetSection(nameof(ClusterConfig.Metadata)).ReadStringDictionary(),
+        };
+
+        return cluster;
+    }
+
+    private static RouteConfig CreateRoute(IConfigurationSection section)
+    {
+        if (!string.IsNullOrEmpty(section["RouteId"]))
+        {
+            throw new Exception("The route config format has changed, routes are now objects instead of an array. The route id must be set as the object name, not with the 'RouteId' field.");
+        }
+
+        return new RouteConfig
+        {
+            RouteId = section.Key,
+            Order = section.ReadInt32(nameof(RouteConfig.Order)),
+            MaxRequestBodySize = section.ReadInt64(nameof(RouteConfig.MaxRequestBodySize)),
+            ClusterId = section[nameof(RouteConfig.ClusterId)],
+            AuthorizationPolicy = section[nameof(RouteConfig.AuthorizationPolicy)],
+            RateLimiterPolicy = section[nameof(RouteConfig.RateLimiterPolicy)],
+            OutputCachePolicy = section[nameof(RouteConfig.OutputCachePolicy)],
+            TimeoutPolicy = section[nameof(RouteConfig.TimeoutPolicy)],
+            Timeout = section.ReadTimeSpan(nameof(RouteConfig.Timeout)),
+            CorsPolicy = section[nameof(RouteConfig.CorsPolicy)],
+            Metadata = section.GetSection(nameof(RouteConfig.Metadata)).ReadStringDictionary(),
+            Transforms = CreateTransforms(section.GetSection(nameof(RouteConfig.Transforms))),
+            Match = CreateRouteMatch(section.GetSection(nameof(RouteConfig.Match))),
+        };
+    }
+
+    private static Dictionary<string, string>[]? CreateTransforms(IConfigurationSection section)
+    {
+        if (section.GetChildren() is var children && !children.Any())
+        {
+            return null;
+        }
+
+        return children
+            .Select(subSection => subSection.GetChildren().ToDictionary(d => d.Key, d => d.Value!, StringComparer.OrdinalIgnoreCase))
+            .ToArray();
+    }
+
+    private static RouteMatch CreateRouteMatch(IConfigurationSection section)
+    {
+        if (!section.Exists())
+        {
+            return new RouteMatch();
+        }
+
+        return new RouteMatch()
+        {
+            Methods = section.GetSection(nameof(RouteMatch.Methods)).ReadStringArray(),
+            Hosts = section.GetSection(nameof(RouteMatch.Hosts)).ReadStringArray(),
+            Path = section[nameof(RouteMatch.Path)],
+            Headers = CreateRouteHeaders(section.GetSection(nameof(RouteMatch.Headers))),
+            QueryParameters = CreateRouteQueryParameters(section.GetSection(nameof(RouteMatch.QueryParameters)))
+        };
+    }
+
+    private static RouteHeader[]? CreateRouteHeaders(IConfigurationSection section)
+    {
+        if (!section.Exists())
+        {
+            return null;
+        }
+
+        return section.GetChildren().Select(CreateRouteHeader).ToArray();
+    }
+
+    private static RouteHeader CreateRouteHeader(IConfigurationSection section)
+    {
+        return new RouteHeader()
+        {
+            Name = section[nameof(RouteHeader.Name)]!,
+            Values = section.GetSection(nameof(RouteHeader.Values)).ReadStringArray(),
+            Mode = section.ReadEnum<HeaderMatchMode>(nameof(RouteHeader.Mode)) ?? HeaderMatchMode.ExactHeader,
+            IsCaseSensitive = section.ReadBool(nameof(RouteHeader.IsCaseSensitive)) ?? false,
+        };
+    }
+
+    private static RouteQueryParameter[]? CreateRouteQueryParameters(IConfigurationSection section)
+    {
+        if (!section.Exists())
+        {
+            return null;
+        }
+
+        return section.GetChildren().Select(CreateRouteQueryParameter).ToArray();
+    }
+
+    private static RouteQueryParameter CreateRouteQueryParameter(IConfigurationSection section)
+    {
+        return new RouteQueryParameter()
+        {
+            Name = section[nameof(RouteQueryParameter.Name)]!,
+            Values = section.GetSection(nameof(RouteQueryParameter.Values)).ReadStringArray(),
+            Mode = section.ReadEnum<QueryParameterMatchMode>(nameof(RouteQueryParameter.Mode)) ?? QueryParameterMatchMode.Exact,
+            IsCaseSensitive = section.ReadBool(nameof(RouteQueryParameter.IsCaseSensitive)) ?? false,
+        };
+    }
+
+    private static SessionAffinityConfig? CreateSessionAffinityConfig(IConfigurationSection section)
+    {
+        if (!section.Exists())
+        {
+            return null;
+        }
+
+        return new SessionAffinityConfig
+        {
+            Enabled = section.ReadBool(nameof(SessionAffinityConfig.Enabled)),
+            Policy = section[nameof(SessionAffinityConfig.Policy)],
+            FailurePolicy = section[nameof(SessionAffinityConfig.FailurePolicy)],
+            AffinityKeyName = section[nameof(SessionAffinityConfig.AffinityKeyName)]!,
+            Cookie = CreateSessionAffinityCookieConfig(section.GetSection(nameof(SessionAffinityConfig.Cookie)))
+        };
+    }
+
+    private static SessionAffinityCookieConfig? CreateSessionAffinityCookieConfig(IConfigurationSection section)
+    {
+        if (!section.Exists())
+        {
+            return null;
+        }
+
+        return new SessionAffinityCookieConfig
+        {
+            Path = section[nameof(SessionAffinityCookieConfig.Path)],
+            SameSite = section.ReadEnum<SameSiteMode>(nameof(SessionAffinityCookieConfig.SameSite)),
+            HttpOnly = section.ReadBool(nameof(SessionAffinityCookieConfig.HttpOnly)),
+            MaxAge = section.ReadTimeSpan(nameof(SessionAffinityCookieConfig.MaxAge)),
+            Domain = section[nameof(SessionAffinityCookieConfig.Domain)],
+            IsEssential = section.ReadBool(nameof(SessionAffinityCookieConfig.IsEssential)),
+            SecurePolicy = section.ReadEnum<CookieSecurePolicy>(nameof(SessionAffinityCookieConfig.SecurePolicy)),
+            Expiration = section.ReadTimeSpan(nameof(SessionAffinityCookieConfig.Expiration))
+        };
+    }
+
+    private static HealthCheckConfig? CreateHealthCheckConfig(IConfigurationSection section)
+    {
+        if (!section.Exists())
+        {
+            return null;
+        }
+
+        return new HealthCheckConfig
+        {
+            Passive = CreatePassiveHealthCheckConfig(section.GetSection(nameof(HealthCheckConfig.Passive))),
+            Active = CreateActiveHealthCheckConfig(section.GetSection(nameof(HealthCheckConfig.Active))),
+            AvailableDestinationsPolicy = section[nameof(HealthCheckConfig.AvailableDestinationsPolicy)]
+        };
+    }
+
+    private static PassiveHealthCheckConfig? CreatePassiveHealthCheckConfig(IConfigurationSection section)
+    {
+        if (!section.Exists())
+        {
+            return null;
+        }
+
+        return new PassiveHealthCheckConfig
+        {
+            Enabled = section.ReadBool(nameof(PassiveHealthCheckConfig.Enabled)),
+            Policy = section[nameof(PassiveHealthCheckConfig.Policy)],
+            ReactivationPeriod = section.ReadTimeSpan(nameof(PassiveHealthCheckConfig.ReactivationPeriod))
+        };
+    }
+
+    private static ActiveHealthCheckConfig? CreateActiveHealthCheckConfig(IConfigurationSection section)
+    {
+        if (!section.Exists())
+        {
+            return null;
+        }
+
+        return new ActiveHealthCheckConfig
+        {
+            Enabled = section.ReadBool(nameof(ActiveHealthCheckConfig.Enabled)),
+            Interval = section.ReadTimeSpan(nameof(ActiveHealthCheckConfig.Interval)),
+            Timeout = section.ReadTimeSpan(nameof(ActiveHealthCheckConfig.Timeout)),
+            Policy = section[nameof(ActiveHealthCheckConfig.Policy)],
+            Path = section[nameof(ActiveHealthCheckConfig.Path)],
+            Query = section[nameof(ActiveHealthCheckConfig.Query)]
+        };
+    }
+
+    private static HttpClientConfig? CreateHttpClientConfig(IConfigurationSection section)
+    {
+        if (!section.Exists())
+        {
+            return null;
+        }
+
+        SslProtocols? sslProtocols = null;
+        if (section.GetSection(nameof(HttpClientConfig.SslProtocols)) is IConfigurationSection sslProtocolsSection)
+        {
+            foreach (var protocolConfig in sslProtocolsSection.GetChildren().Select(s => Enum.Parse<SslProtocols>(s.Value!, ignoreCase: true)))
+            {
+                sslProtocols = sslProtocols is null ? protocolConfig : sslProtocols | protocolConfig;
+            }
+        }
+
+        WebProxyConfig? webProxy;
+        var webProxySection = section.GetSection(nameof(HttpClientConfig.WebProxy));
+        if (webProxySection.Exists())
+        {
+            webProxy = new WebProxyConfig()
+            {
+                Address = webProxySection.ReadUri(nameof(WebProxyConfig.Address)),
+                BypassOnLocal = webProxySection.ReadBool(nameof(WebProxyConfig.BypassOnLocal)),
+                UseDefaultCredentials = webProxySection.ReadBool(nameof(WebProxyConfig.UseDefaultCredentials))
+            };
+        }
+        else
+        {
+            webProxy = null;
+        }
+
+        return new HttpClientConfig
+        {
+            SslProtocols = sslProtocols,
+            DangerousAcceptAnyServerCertificate = section.ReadBool(nameof(HttpClientConfig.DangerousAcceptAnyServerCertificate)),
+            MaxConnectionsPerServer = section.ReadInt32(nameof(HttpClientConfig.MaxConnectionsPerServer)),
+            EnableMultipleHttp2Connections = section.ReadBool(nameof(HttpClientConfig.EnableMultipleHttp2Connections)),
+            RequestHeaderEncoding = section[nameof(HttpClientConfig.RequestHeaderEncoding)],
+            ResponseHeaderEncoding = section[nameof(HttpClientConfig.ResponseHeaderEncoding)],
+            WebProxy = webProxy
+        };
+    }
+
+    private static ForwarderRequestConfig? CreateProxyRequestConfig(IConfigurationSection section)
+    {
+        if (!section.Exists())
+        {
+            return null;
+        }
+
+        return new ForwarderRequestConfig
+        {
+            ActivityTimeout = section.ReadTimeSpan(nameof(ForwarderRequestConfig.ActivityTimeout)),
+            Version = section.ReadVersion(nameof(ForwarderRequestConfig.Version)),
+            VersionPolicy = section.ReadEnum<HttpVersionPolicy>(nameof(ForwarderRequestConfig.VersionPolicy)),
+            AllowResponseBuffering = section.ReadBool(nameof(ForwarderRequestConfig.AllowResponseBuffering))
+        };
+    }
+
+    private static DestinationConfig CreateDestination(IConfigurationSection section)
+    {
+        return new DestinationConfig
+        {
+            Address = section[nameof(DestinationConfig.Address)]!,
+            Health = section[nameof(DestinationConfig.Health)],
+            Metadata = section.GetSection(nameof(DestinationConfig.Metadata)).ReadStringDictionary(),
+            Host = section[nameof(DestinationConfig.Host)]
+        };
+    }
+}
