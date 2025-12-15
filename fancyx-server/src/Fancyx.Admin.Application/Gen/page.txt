@@ -1,26 +1,25 @@
 import Permission from '@/components/Permission';
-import { delete${business_name}, get${business_name}List, add${business_name}, update${business_name}, get${business_name}, type ${class_name} } from '@/api/${module_name_api_prefix}/${dir}/${business_name_lower}.ts';
+import { delete${business_name}, get${business_name}List, add${business_name}, update${business_name}, get${business_name}, type ${class_name}, type Get${business_name}ListRequest } from '@/api/${module_name_api_prefix}/${dir}/${business_name_lower}.ts';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Modal, Popconfirm, Space } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
-import type { SmartTableRef, SmartTableColumnType } from '@/components/SmartTable/type.ts';
-import SmartTable from '@/components/SmartTable';
+import { ProTable, type ActionType, type ProColumnType } from '@ant-design/pro-components';
 import useApp from 'antd/es/app/useApp';
 import TextArea from 'antd/es/input/TextArea';
 
-const ${business_name}List: React.FC = () => {
-  const tableRef = useRef<SmartTableRef>(null);
+const ${business_name}Page: React.FC = () => {
+  const actionRef = useRef<ActionType>(null);
   const { message } = useApp();
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [rowId, setRowId] = useState<string>('');
-  const columns: SmartTableColumnType[] = [
+  const columns: ProColumnType<${class_name}>[] = [
 ${columns}
     {
       title: '操作',
       dataIndex: 'option',
       width: 210,
       fixed: 'right',
-      render: (_: any, record: ${business_name}) => (
+      render: (_: any, record: ${class_name}) => (
         <Space>
           <Permission permissions={'${module_name_prefix}.${business_name}.Update'}>
             <Button
@@ -43,7 +42,7 @@ ${columns}
               onConfirm={() => {
                 delete${business_name}(record.id!).then(() => {
                   message.success('删除成功');
-                  tableRef.current?.reload();
+                  actionRef.current?.reload();
                 });
               }}
             >
@@ -58,32 +57,33 @@ ${columns}
   ];
 
   return (
-    <>
-      <SmartTable
-        columns={columns}
-        ref={tableRef}
+    <div className='fancyx-table-wrapper'>
+      <ProTable<Warehouse, Get${business_name}ListRequest>
+        actionRef={actionRef}
         rowKey="id"
-        request={async (params) => {
-          const { data } = await get${business_name}List(params);
-          return data;
+        columns={columns}
+        request={async (
+          params: Get${business_name}ListRequest
+        ) => {
+          const res = await get${business_name}List(params);
+          return {
+            data: res.data.items,
+            success: true,
+            total: res.data.totalCount
+          };
         }}
-        searchItems={[
-          ${searchItems}
-        ]}
-        toolbar={
-          <Space size="middle">
-            <Permission permissions={'${module_name_prefix}.${business_name}.Add'}>
-              <Button
-                type="primary"
-                key="primary"
-                onClick={() => {
-                  setIsOpenModal(true);
-                }}
-              >
-                <PlusOutlined /> 新增
-              </Button>
-            </Permission>
-          </Space>
+        toolBarRender={
+          () => [<Permission permissions={'${module_name_prefix}.${business_name}.Add'}>
+            <Button
+              type="primary"
+              key="primary"
+              onClick={() => {
+                setIsOpenModal(true);
+              }}
+            >
+              <PlusOutlined /> 新增
+            </Button>
+          </Permission>]
         }
       />
       {/** 新增/编辑弹窗 */}
@@ -92,13 +92,13 @@ ${columns}
         onOk={() => {
           setRowId('');
           setIsOpenModal(false);
-          tableRef?.current?.reload();
+          actionRef?.current?.reload();
         }}
         onCancel={() => {
           setRowId('');
           setIsOpenModal(false);
         }} />
-    </>
+    </div>
   );
 };
 
@@ -168,4 +168,4 @@ const ${business_name}Modal: React.FC<{
   );
 }
 
-export default ${business_name}List;
+export default ${business_name}Page;
