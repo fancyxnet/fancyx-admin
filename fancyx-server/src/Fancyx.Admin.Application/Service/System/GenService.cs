@@ -350,7 +350,12 @@ namespace Fancyx.Admin.Application.Service.System
             sb.AppendLine("\t/// <summary>");
             sb.AppendLine($"\t/// {item.ColumnComment}");
             sb.AppendLine("\t/// </summary>");
-            sb.AppendLine($"\tpublic {item.CsharpType}{(isNullable.Value ? "?" : "")} {item.CsharpField}{(isArray ? "[]" : "")}" + " { get; set; } \r\n");
+            var defaultValue = !isNullable == true && item.CsharpType == "string" ? " = null!;" : "";
+            if (!isNullable == true)
+            {
+                sb.AppendLine("\t[Required]");
+            }
+            sb.AppendLine($"\tpublic {item.CsharpType}{(isNullable.Value ? "?" : "")} {item.CsharpField}{(isArray ? "[]" : "")}" + " { get; set; } " + $"{defaultValue} \r\n");
             return sb;
         }
 

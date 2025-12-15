@@ -1,5 +1,7 @@
-﻿using ${module_name}.${namespace_name}.Dtos;
+﻿using ${module_name}.Application.IService.${namespace_name}.Models;
 using Fancyx.Core.Interfaces;
+using ${module_name}.EfCore.Entities.${namespace_name};
+using Fancyx.Shared.Models;
 
 namespace ${module_name}.Application.IService.${namespace_name};
 
@@ -17,7 +19,7 @@ public interface I${business_name}Service : IScopedDependency
     /// </summary>
     /// <param name="req"></param>
     /// <returns></returns>
-    Task<PagedResult<${business_name}>> Get${business_name}Async(${class_name}QueryDto req);
+    Task<PagedResult<${business_name}>> Get${business_name}ListAsync(Get${business_name}ListRequest req);
 
     /// <summary>
     /// 修改${function_name}
