@@ -31,7 +31,7 @@ namespace Fancyx.Consul
 
             var registration = new AgentServiceRegistration
             {
-                ID = $"{nodeName}-{hostPort}-{Guid.NewGuid():N}",
+                ID = $"{nodeName}-{hostAddress.Replace('.','_')}-{hostPort}",
                 Name = nodeName,
                 Address = hostAddress,
                 Port = hostPort,
