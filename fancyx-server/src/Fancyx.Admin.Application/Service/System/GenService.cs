@@ -84,13 +84,14 @@ namespace Fancyx.Admin.Application.Service.System
             var pageInsertAndUpdateItems = new StringBuilder();
             foreach (var item in genTableColumns)
             {
+                var cameField = StringUtils.ToFirstLetterLowerCase(item.CsharpField!);
                 if (!exceptFields.Contains(item.ColumnName!)) this.AddProperties(entityPropStrBuilder, item);
-                this.AddTsProperties(tsFieldStrBuilder, item);
+                this.AddTsProperties(tsFieldStrBuilder, item, cameField);
                 if (item.IsQuery)
                 {
                     pageSearchItemsStrBuilder.Append(this.BuildAntdFormItem(item.ColumnComment!, item.ColumnName!, item.HtmlType!, item.ColumnName!));
                     this.AddProperties(queryPropStrBuilder, item, true, item.QueryType == "BETWEEN");
-                    this.AddTsProperties(tsFieldQueryStrBuilder, item, true, item.QueryType == "BETWEEN");
+                    this.AddTsProperties(tsFieldQueryStrBuilder, item, cameField, true, item.QueryType == "BETWEEN");
                     if (item.CsharpType == "string")
                     {
                         queryConditionPropStrBuilder.Append($".WhereIf(!string.IsNullOrEmpty(req.{item.CsharpField}), x => ");
@@ -125,10 +126,10 @@ namespace Fancyx.Admin.Application.Service.System
                 if (item.IsList)
                 {
                     listAssignPropStrBuilder.AppendLine($"\t\t{item.CsharpField} = x.{item.CsharpField},");
-                    pageColumnsStrBuilder.Append(this.BuildAntdColumnItem(item.ColumnComment!, item.ColumnName!));
+                    pageColumnsStrBuilder.Append(this.BuildAntdColumnItem(item.ColumnComment!, cameField));
                 }
                 bool isInsertAndUpdate = item.IsInsert && item.IsEdit;
-                var formItem = this.BuildAntdFormItem(item.ColumnComment!, item.ColumnName!, item.HtmlType!, item.ColumnName!, isRequired: item.IsRequired);
+                var formItem = this.BuildAntdFormItem(item.ColumnComment!, cameField, item.HtmlType!, item.ColumnName!, isRequired: item.IsRequired);
                 if (isInsertAndUpdate)
                 {
                     pageInsertAndUpdateItems.Append(formItem);
@@ -173,10 +174,10 @@ namespace Fancyx.Admin.Application.Service.System
             serviceTemplate.Set("queryConditions", queryConditionPropStrBuilder.ToString().TrimEnd('\r', '\n'));
             result.Service = new AppOption($"{genTable.BusinessName}Service.cs", serviceTemplate.Render());
 
-            // QueryDto
-            var queryDtoTemplate = this.LoadTemplate("QueryDto", genTable);
+            // ListRequest
+            var queryDtoTemplate = this.LoadTemplate("ListRequest", genTable);
             queryDtoTemplate.Set("properties", queryPropStrBuilder.ToString().TrimEnd('\r', '\n'));
-            result.QueryDto = new AppOption($"{genTable.BusinessName}QueryDto.cs", queryDtoTemplate.Render());
+            result.QueryDto = new AppOption($"Get{genTable.BusinessName}ListRequest.cs", queryDtoTemplate.Render());
 
             // Api
             var apiTemplate = this.LoadTemplate("api", genTable);
@@ -359,9 +360,9 @@ namespace Fancyx.Admin.Application.Service.System
             return sb;
         }
 
-        private StringBuilder AddTsProperties(StringBuilder sb, GenTableColumn item, bool? isNullable = null, bool isArray = false)
+        private StringBuilder AddTsProperties(StringBuilder sb, GenTableColumn item, string field, bool? isNullable = null, bool isArray = false)
         {
-            var field = StringUtils.ToFirstLetterLowerCase(item.CsharpField!);
+            if (this.IsDefaultFields(item.ColumnName!)) return sb;
 
             isNullable ??= item.IsRequired;
             sb.AppendLine($"  /** {item.ColumnComment} */");
@@ -483,13 +484,13 @@ namespace Fancyx.Admin.Application.Service.System
             return baseType switch
             {
                 // 整数类型
-                "bigint" or "int" or "integer" or "mediumint" or "smallint" or "tinyint" => "number",
+                "int" or "integer" or "mediumint" or "smallint" or "tinyint" => "number",
 
                 // 浮点类型
                 "decimal" or "dec" or "numeric" or "float" or "double" or "real" => "number",
 
                 // 字符串类型
-                "varchar" or "char" or "text" or "tinytext" or "mediumtext"
+                "bigint" or "varchar" or "char" or "text" or "tinytext" or "mediumtext"
                     or "longtext" or "json" or "enum" or "set" => "string",
 
                 // 二进制类型 - 在前端通常用string表示(base64)或忽略

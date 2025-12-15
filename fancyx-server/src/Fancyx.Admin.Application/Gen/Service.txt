@@ -33,7 +33,7 @@ ${addProperties}
         return _${business_name_inject}Repository.DeleteAsync(x => x.Id == id);
     }
 
-    public async Task<PagedResult<${business_name}>> Get${business_name}ListAsync(Get${business_name}ListRequest req);
+    public async Task<PagedResult<${business_name}>> Get${business_name}ListAsync(Get${business_name}ListRequest req)
     {
         var resp = await _${business_name_inject}Repository.GetQueryable()
             ${queryConditions}

@@ -12,7 +12,7 @@ public interface I${business_name}Service : IScopedDependency
     /// </summary>
     /// <param name="req"></param>
     /// <returns></returns>
-    Task<bool> Add${business_name}Async(${class_name} req);
+    Task Add${business_name}Async(${class_name} req);
 
     /// <summary>
     /// ${function_name}分页列表
@@ -26,14 +26,14 @@ public interface I${business_name}Service : IScopedDependency
     /// </summary>
     /// <param name="req"></param>
     /// <returns></returns>
-    Task<bool> Update${business_name}Async(${class_name} req);
+    Task Update${business_name}Async(${class_name} req);
 
     /// <summary>
     /// 删除${function_name}
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    Task<bool> Delete${business_name}Async(long id);
+    Task Delete${business_name}Async(long id);
 
     /// <summary>
     /// 查询${function_name}

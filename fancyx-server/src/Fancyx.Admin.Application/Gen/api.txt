@@ -13,8 +13,8 @@ export function add${business_name}(req: ${class_name}) {
  * ${function_name}分页列表
  * @param req
  */
-export function get${business_name}List(req: ${business_name}QueryDto) {
-  return httpClient.get<${business_name}QueryDto, AppResponse<PagedResult<${business_name}>>>('/${module_name_api_prefix}-api/${business_name}/List', { params: req });
+export function get${business_name}List(req: Get${business_name}ListRequest) {
+  return httpClient.get<Get${business_name}ListRequest, AppResponse<PagedResult<${business_name}>>>('/${module_name_api_prefix}-api/${business_name}/List', { params: req });
 }
 
 /**
@@ -45,6 +45,6 @@ export interface ${class_name} {
 ${ts_interface_fields}
 }
 
-export interface ${business_name}QueryDto extends PageSearch {
+export interface Get${business_name}ListRequest extends PageSearch {
 ${ts_interface_query_fields}
 }

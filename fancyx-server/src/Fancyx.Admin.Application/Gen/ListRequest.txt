@@ -1,8 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Fancyx.Core.Interfaces;
-using Fancyx.EfCore.BaseEntity;
 
-namespace ${module_name}.Application.IService.${namespace_name}.Dtos;
+namespace ${module_name}.Application.IService.${namespace_name}.Models;
 
 /// <summary>
 /// ${table_comment}查询
