@@ -13,10 +13,8 @@ export function addWarehouse(req: Warehouse) {
  * 仓库分页列表
  * @param req
  */
-export function getWarehouseList(req: WarehouseQueryDto) {
-  return httpClient.get<WarehouseQueryDto, AppResponse<PagedResult<Warehouse>>>('/erp-api/Warehouse/List', {
-    params: req,
-  });
+export function getWarehouseList(req: GetWarehouseListRequest) {
+  return httpClient.get<GetWarehouseListRequest, AppResponse<PagedResult<Warehouse>>>('/erp-api/Warehouse/List', { params: req });
 }
 
 /**
@@ -40,7 +38,7 @@ export function updateWarehouse(req: Warehouse) {
  * @param id
  */
 export function deleteWarehouse(id: string) {
-  return httpClient.delete<string, AppResponse<boolean>>('/erp-api/Warehouse/Delete/' + id);
+  return httpClient.delete<string, AppResponse<boolean>>('/erp-api/Warehouse/Delete/'+id);
 }
 
 export interface Warehouse {
@@ -54,18 +52,8 @@ export interface Warehouse {
   remark: string | null;
   /** 是否启用 */
   isEnabled: boolean;
-  /** 租户ID */
-  tenantId: string | null;
-  /**  */
-  creatorId: string | null;
-  /**  */
-  creationTime: Date;
-  /**  */
-  lastModificationTime: Date | null;
-  /**  */
-  lastModifierId: string | null;
 }
 
-export interface WarehouseQueryDto extends PageSearch {
-  name: string;
+export interface GetWarehouseListRequest extends PageSearch {
+  name?: string | null
 }
