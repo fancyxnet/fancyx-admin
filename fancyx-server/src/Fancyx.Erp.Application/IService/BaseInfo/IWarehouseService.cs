@@ -1,6 +1,6 @@
 ﻿using Fancyx.Core.Interfaces;
 using Fancyx.Erp.Application.IService.BaseInfo.Models;
-using Fancyx.Erp.EfCore.Entites;
+using Fancyx.Erp.EfCore.Entities;
 using Fancyx.Shared.Models;
 
 namespace Fancyx.Erp.Application.IService.BaseInfo

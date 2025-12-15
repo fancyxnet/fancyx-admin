@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Fancyx.Erp.Application.IService.BaseInfo.Models;
-using Fancyx.Erp.EfCore.Entites;
+using Fancyx.Erp.EfCore.Entities;
 
 namespace Fancyx.Erp.Application.Profiles
 {

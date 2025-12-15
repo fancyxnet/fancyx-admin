@@ -2,12 +2,13 @@
 using Fancyx.EfCore.BaseEntity;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Fancyx.Erp.EfCore.Entites
+namespace Fancyx.Erp.EfCore.Entities
 {
     /// <summary>
-    /// 产品分类
+    /// 产品属性
     /// </summary>
-    public class ProductCategory : AuditedEntity<long>, ITenant
+    [Table("product_attr")]
+    public class ProductAttr : AuditedEntity<long>, ITenant
     {
         /// <summary>
         /// 编码
@@ -32,6 +33,29 @@ namespace Fancyx.Erp.EfCore.Entites
         /// </summary>
         [Column("is_enabled")]
         public bool IsEnabled { get; set; }
+
+        /// <summary>
+        /// 是否必填
+        /// </summary>
+        [Column("is_required")]
+        public bool IsRequired { get; set; }
+
+        /// <summary>
+        /// 多选/单选/手动录入
+        /// </summary>
+        [Column("input_type")]
+        public string InputType { get; set; } = null!;
+
+        /// <summary>
+        /// 指定分类/所有分类
+        /// </summary>
+        [Column("attr_type")]
+        public int AttrType { get; set; }
+
+        /// <summary>
+        /// 分类ID
+        /// </summary>
+        public long? CategoryId { get; set; }
 
         /// <summary>
         /// 租户ID

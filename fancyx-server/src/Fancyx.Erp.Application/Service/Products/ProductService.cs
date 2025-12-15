@@ -3,7 +3,7 @@ using Fancyx.EfCore;
 using Fancyx.EfCore.Aop;
 using Fancyx.Erp.Application.IService.Products;
 using Fancyx.Erp.Application.IService.Products.Models;
-using Fancyx.Erp.EfCore.Entites;
+using Fancyx.Erp.EfCore.Entities;
 using Fancyx.Erp.EfCore.Models;
 using Fancyx.Erp.EfCore.Repositories;
 using Fancyx.Internal.Grpc.System;

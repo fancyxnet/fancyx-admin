@@ -1,4 +1,4 @@
-﻿using Fancyx.Erp.EfCore.Entites;
+﻿using Fancyx.Erp.EfCore.Entities;
 using Fancyx.Shared.EfCore;
 
 using Microsoft.EntityFrameworkCore;

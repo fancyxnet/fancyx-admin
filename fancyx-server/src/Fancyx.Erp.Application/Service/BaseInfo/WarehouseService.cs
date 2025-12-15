@@ -2,7 +2,7 @@
 using Fancyx.EfCore;
 using Fancyx.Erp.Application.IService.BaseInfo;
 using Fancyx.Erp.Application.IService.BaseInfo.Models;
-using Fancyx.Erp.EfCore.Entites;
+using Fancyx.Erp.EfCore.Entities;
 using Fancyx.Shared.Exceptions;
 using Fancyx.Shared.Models;
 

@@ -2,13 +2,13 @@
 using Fancyx.EfCore.BaseEntity;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Fancyx.Erp.EfCore.Entites
+namespace Fancyx.Erp.EfCore.Entities
 {
     /// <summary>
-    /// 供应商
+    /// 产品品牌
     /// </summary>
-    [Table("supplier")]
-    public class Supplier : AuditedEntity<long>, ITenant
+    [Table("product_brand")]
+    public class ProductBrand : AuditedEntity<long>, ITenant
     {
         /// <summary>
         /// 编码

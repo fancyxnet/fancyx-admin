@@ -3,7 +3,7 @@ using Fancyx.Core.AutoInject;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
 using Fancyx.EfCore.Models;
-using Fancyx.Erp.EfCore.Entites;
+using Fancyx.Erp.EfCore.Entities;
 using Fancyx.Erp.EfCore.Models;
 using Microsoft.EntityFrameworkCore;
 

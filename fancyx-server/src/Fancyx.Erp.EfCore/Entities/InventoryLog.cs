@@ -3,7 +3,7 @@ using Fancyx.EfCore.BaseEntity;
 using Fancyx.Erp.EfCore.Enums;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Fancyx.Erp.EfCore.Entites
+namespace Fancyx.Erp.EfCore.Entities
 {
     /// <summary>
     /// 库存日志

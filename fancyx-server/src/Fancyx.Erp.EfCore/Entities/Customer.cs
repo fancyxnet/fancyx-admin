@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Fancyx.Erp.EfCore.Entites
+namespace Fancyx.Erp.EfCore.Entities
 {
     /// <summary>
     /// 客户信息

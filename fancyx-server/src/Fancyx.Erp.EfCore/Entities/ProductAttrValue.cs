@@ -2,7 +2,7 @@
 using Fancyx.EfCore.BaseEntity;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Fancyx.Erp.EfCore.Entites
+namespace Fancyx.Erp.EfCore.Entities
 {
     /// <summary>
     /// 产品属性可选值
