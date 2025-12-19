@@ -43,6 +43,7 @@ if (isUseConsul)
 }
 
 app.UseCors();
+app.UseWebSockets();
 app.MapReverseProxy();
 
 app.Run();
