@@ -9,7 +9,6 @@ import { open } from '@/store/tabStore.ts';
 import { useMemo, useRef } from 'react';
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import SearchModal, { type SearchModalRef } from '@/layout/components/SearchModal.tsx';
-import { useApplication } from '@/components/Application';
 import { StaticRoutes } from '@/utils/globalValue.ts';
 import { useAuthProvider } from '@/components/AuthProvider';
 import { observer } from 'mobx-react-lite';

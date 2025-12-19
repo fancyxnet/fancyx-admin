@@ -24,6 +24,8 @@ namespace Fancyx.Admin.EfCore.Entities.System
         /// <summary>
         /// 通知内容
         /// </summary>
+        [NotNull]
+        [Required]
         [MaxLength(512)]
         [Column("content")]
         public string? Content { get; set; }

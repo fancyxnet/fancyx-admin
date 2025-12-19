@@ -1,7 +1,6 @@
 import { useRef } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import './index.scss';
-import { useApplication } from '../Application';
 import { uploadFile } from '@/api/oss';
 
 // 定义组件的Props接口

@@ -2,7 +2,7 @@
 
 using Fancyx.Admin.Application.Grpc;
 using Fancyx.Admin.Application.Jobs;
-using Fancyx.Admin.Application.SharedService;
+using Fancyx.Admin.Application.WebSockets;
 using Fancyx.Admin.EfCore;
 using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
@@ -11,10 +11,8 @@ using Fancyx.Redis;
 using Fancyx.Shared.Logger;
 
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
-
-using MQTTnet.AspNetCore;
+using System.Threading.Channels;
 
 namespace Fancyx.Admin.Application
 {
@@ -30,32 +28,24 @@ namespace Fancyx.Admin.Application
 
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            var services = context.Services;
-            var configuration = context.Configuration;
+            context.Services.AddScheduler();
 
-            services.Configure<KestrelServerOptions>(options =>
+            var channel = Channel.CreateUnbounded<NotificationMessage>();
+            context.Services.AddSingleton(sp =>
             {
-                options.ListenAnyIP(port: int.Parse(configuration["Mqtt:Port"]!), l => l.UseMqtt());
+                return channel.Writer;
             });
-            services.AddHostedMqttServer(optionsBuilder =>
+            context.Services.AddSingleton(sp =>
             {
-                optionsBuilder.WithDefaultEndpoint();
+                return channel.Reader;
             });
-            services.AddMqttConnectionHandler();
-            services.AddScheduler();
+            context.Services.AddSingleton<WebSocketConnectionManager>();
+            context.Services.AddHostedService<NotificationBgService>();
         }
 
         public override void Configure(ApplicationInitializationContext context)
         {
             var app = context.GetApplicationBuilder();
-
-            context.Endpoint.MapConnectionHandler<MqttConnectionHandler>("/mqtt", httpConnectionDispatcherOptions => httpConnectionDispatcherOptions.WebSockets.SubProtocolSelector =
-            protocolList => protocolList.FirstOrDefault() ?? string.Empty);
-            app.UseMqttServer(server =>
-            {
-                var mqttService = context.ServiceProvider.GetRequiredService<MqttSharedService>();
-                server.ValidatingConnectionAsync += mqttService.ValidatingConnectionAsync;
-            });
 
             app.ApplicationServices.UseScheduler(sch =>
             {
@@ -64,6 +54,9 @@ namespace Fancyx.Admin.Application
             context.Endpoint.MapGrpcService<TestGrpcServiceHandler>();
             context.Endpoint.MapGrpcService<DictGrpcServiceHandler>();
             context.Endpoint.MapGrpcService<AuthGrpcServiceHandler>();
+
+            app.UseWebSockets();
+            app.UseMiddleware<WebSocketMiddleware>();
         }
     }
 }

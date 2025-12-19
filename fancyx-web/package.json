@@ -23,7 +23,6 @@
     "lodash": "^4.17.21",
     "mobx": "^6.13.7",
     "mobx-react-lite": "^4.1.0",
-    "mqtt": "^5.13.3",
     "react": "^18.2.0",
     "react-activation": "^0.13.4",
     "react-contexify": "^6.0.0",

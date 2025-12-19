@@ -1,5 +1,6 @@
 ﻿using Coravel.Invocable;
 using Fancyx.Admin.Application.SharedService;
+using Fancyx.Admin.Application.WebSockets;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Core.AutoInject;
 using Fancyx.EfCore;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using RedLockNet.SERedis;
 
 using StackExchange.Redis;
+using System.Threading.Channels;
 
 namespace Fancyx.Admin.Application.Jobs
 {
@@ -17,18 +19,18 @@ namespace Fancyx.Admin.Application.Jobs
     {
         private readonly ILogger<NotificationJob> _logger;
         private readonly IRepository<Notification> _repository;
-        private readonly MqttSharedService _mqttService;
         private readonly IDatabase _database;
         private readonly RedLockFactory _redLockFactory;
+        private readonly ChannelWriter<NotificationMessage> _channelWriter;
 
-        public NotificationJob(ILogger<NotificationJob> logger, IRepository<Notification> repository, MqttSharedService mqttService, IDatabase database
-            , RedLockFactory redLockFactory)
+        public NotificationJob(ILogger<NotificationJob> logger, IRepository<Notification> repository, IDatabase database
+            , RedLockFactory redLockFactory, ChannelWriter<NotificationMessage> channelWriter)
         {
             _logger = logger;
             _repository = repository;
-            _mqttService = mqttService;
             _database = database;
             _redLockFactory = redLockFactory;
+            _channelWriter = channelWriter;
         }
 
         public async Task Invoke()
@@ -65,8 +67,7 @@ namespace Fancyx.Admin.Application.Jobs
                                     }
                                 }
                             }
-                            var isSuc = await _mqttService.PushAsync("Notification:" + item.UserId, new { title = item.Title, content = item.Content, NoReadedCount = g.Value });
-                            if (!isSuc) continue;
+                            await _channelWriter.WriteAsync(new NotificationMessage(item.UserId, item.Title, item.Content, g.Value));
                             //上条通知的ID
                             await _database.StringSetAsync("LastNotification" + item.UserId, item.Id.ToString(), TimeSpan.FromMinutes(1));
                         }

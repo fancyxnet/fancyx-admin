@@ -4,7 +4,6 @@ import { UserOutlined, CameraOutlined, LockOutlined } from '@ant-design/icons';
 import './style/profile.scss';
 import { type UpdateUserInfoRequest, updateInfo, updatePwd, type UpdateUserPwdRequest } from '@/api/auth.ts';
 import { ErrorCode, Patterns } from '@/utils/globalValue.ts';
-import { useApplication } from '@/components/Application';
 import { uploadFile } from '@/api/oss';
 import useApp from 'antd/es/app/useApp';
 import { useAuthProvider } from '@/components/AuthProvider';

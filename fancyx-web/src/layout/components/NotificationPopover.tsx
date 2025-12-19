@@ -11,8 +11,7 @@ import useApp from 'antd/es/app/useApp'; // 自定义样式
 import { useNavigate } from 'react-router-dom';
 import { CheckOutlined, EyeOutlined } from '@ant-design/icons';
 import { observer } from 'mobx-react-lite';
-import { useMqtt } from '@/hooks/useMqtt.ts';
-import UserStore from '@/store/userStore.ts';
+import { useWebSocket } from '@/hooks/useWebSocket';
 
 const NotificationPopover = observer(() => {
   const [visible, setVisible] = useState(false);
@@ -33,19 +32,16 @@ const NotificationPopover = observer(() => {
     fetchNotifications();
   }, []);
 
-  useMqtt('Notification:' + UserStore.userInfo?.userId, {
-    onMessage: (json: string) => {
-      const data = JSON.parse(json);
-      if (data instanceof Object) {
-        fetchNotifications();
-        api['info']({
-          message: data.title,
-          description: data.content,
-          duration: 3,
-          placement: 'bottomRight',
-        });
-      }
-    },
+  useWebSocket((data: any) => {
+    if (data instanceof Object) {
+      fetchNotifications();
+      api['info']({
+        message: data.title,
+        description: data.content,
+        duration: 3,
+        placement: 'bottomRight',
+      });
+    }
   });
 
   // 一键全部已读
