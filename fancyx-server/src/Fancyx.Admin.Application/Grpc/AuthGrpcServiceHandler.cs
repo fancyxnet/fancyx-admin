@@ -43,8 +43,7 @@ namespace Fancyx.Admin.Application.Grpc
                     IsExist = await _redisClient.HashExistsAsync(SystemCacheKey.AllTenant, tenantId)
                 };
             }
-            var tenants = await _tenantRepository.Where(x => x.IsEnabled).SelectToListAsync(x => new { TenantId = x.Id, x.Name });
-            var map = tenants.ToDictionary(k => k.TenantId, v => v.Name);
+            var map = await _tenantRepository.Where(x => x.IsEnabled).ToDictionaryAsync(k => k.Id, v => v.Name);
             if (map.Count == 0) return new ExistTenantRes { IsExist = false };
 
             await _redisClient.HashSetAsync(SystemCacheKey.AllTenant, map.Select(x => new HashEntry(x.Key, x.Value)).ToArray());
