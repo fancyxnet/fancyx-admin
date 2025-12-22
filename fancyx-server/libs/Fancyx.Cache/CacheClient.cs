@@ -7,7 +7,7 @@ namespace Fancyx.Cache
 {
     internal class CacheClient : ICacheClient
     {
-        private IDatabase _redis;
+        private readonly IDatabase _redis;
         private readonly IConnectionMultiplexer _connection;
         private readonly string _prefix;
 
