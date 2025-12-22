@@ -20,19 +20,19 @@ namespace Fancyx.Admin.Application.Service.System
     {
         private readonly IRepository<Tenant> _tenantRepository;
         private readonly IRepository<TenantMenu> _tenantMenuRepository;
-        private readonly ICacheClient _redis;
+        private readonly ICacheClient _cache;
         private readonly IdentitySharedService _identitySharedService;
         private readonly IRepository<User> _userRepository;
         private readonly ICurrentUser _currentUser;
         private readonly IRepository<RoleMenu> _roleMenuRepository;
         private readonly FancyxDbContext _dbContext;
 
-        public TenantService(IRepository<Tenant> tenantRepository, IRepository<TenantMenu> tenantMenuRepository, ICacheClient redis
+        public TenantService(IRepository<Tenant> tenantRepository, IRepository<TenantMenu> tenantMenuRepository, ICacheClient cache
             , IdentitySharedService identitySharedService, IRepository<User> userRepository, ICurrentUser currentUser, IRepository<RoleMenu> roleMenuRepository, FancyxDbContext dbContext)
         {
             _tenantRepository = tenantRepository;
             _tenantMenuRepository = tenantMenuRepository;
-            _redis = redis;
+            _cache = cache;
             _identitySharedService = identitySharedService;
             _userRepository = userRepository;
             _currentUser = currentUser;
@@ -60,16 +60,16 @@ namespace Fancyx.Admin.Application.Service.System
                 IsEnabled = req.IsEnabled
             };
             await _tenantRepository.InsertAsync(entity);
-            await _redis.KeyDeleteAsync(SystemCacheKey.AllTenant);
-            await _redis.KeyDeleteAsync(SystemCacheKey.TenantDomains);
+            await _cache.KeyDeleteAsync(SystemCacheKey.AllTenant);
+            await _cache.KeyDeleteAsync(SystemCacheKey.TenantDomains);
         }
 
         public async Task DeleteTenantAsync(string tenantId)
         {
             await _tenantRepository.DeleteAsync(x => x.Id == tenantId);
             await _tenantMenuRepository.DeleteAsync(x => x.TenantId == tenantId);
-            await _redis.KeyDeleteAsync(SystemCacheKey.AllTenant);
-            await _redis.KeyDeleteAsync(SystemCacheKey.TenantDomains);
+            await _cache.KeyDeleteAsync(SystemCacheKey.AllTenant);
+            await _cache.KeyDeleteAsync(SystemCacheKey.TenantDomains);
             await this.DisabledTenantSubUserAsync(tenantId);
         }
 
@@ -103,8 +103,8 @@ namespace Fancyx.Admin.Application.Service.System
             entity.IsEnabled = req.IsEnabled;
 
             await _tenantRepository.UpdateAsync(entity);
-            await _redis.KeyDeleteAsync(SystemCacheKey.AllTenant);
-            await _redis.KeyDeleteAsync(SystemCacheKey.TenantDomains);
+            await _cache.KeyDeleteAsync(SystemCacheKey.AllTenant);
+            await _cache.KeyDeleteAsync(SystemCacheKey.TenantDomains);
 
             if (!req.IsEnabled)
             {

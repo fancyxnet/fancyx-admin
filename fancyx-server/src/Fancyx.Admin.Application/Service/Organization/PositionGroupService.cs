@@ -55,6 +55,7 @@ namespace Fancyx.Admin.Application.Service.Organization
             {
                 return await _positionGroupRepository.GetQueryable()
                 .Where(x => x.GroupName.Contains(req.GroupName!))
+                .OrderBy(x => x.Sort).ThenByDescending(x => x.CreationTime)
                 .Select(x => new PositionGroupItem
                 {
                     Id = x.Id,
@@ -62,7 +63,7 @@ namespace Fancyx.Admin.Application.Service.Organization
                     Remark = x.Remark,
                     ParentId = x.ParentId,
                     Sort = x.Sort,
-                }).OrderBy(x => x.Sort).ToListAsync();
+                }).ToListAsync();
             }
 
             var all = await _positionGroupRepository.GetQueryable().ToListAsync();

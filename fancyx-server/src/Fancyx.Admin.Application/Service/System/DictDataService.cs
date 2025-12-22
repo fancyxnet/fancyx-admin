@@ -23,7 +23,7 @@ namespace Fancyx.Admin.Application.Service.System
 
         public async Task<bool> AddDictDataAsync(AddOrUpdateDictDataRequest req)
         {
-            var isExist = await _dictDataRepository.AnyAsync(x => x.Value.ToLower() == req.Value.ToLower());
+            var isExist = await _dictDataRepository.AnyAsync(x => x.DictType == req.DictType && x.Value.ToLower() == req.Value.ToLower());
             if (isExist)
             {
                 throw new BusinessException("字典值已存在");
@@ -49,7 +49,7 @@ namespace Fancyx.Admin.Application.Service.System
             var resp = await _dictDataRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(req.Label), x => x.Label != null && x.Label.Contains(req.Label!))
                 .WhereIf(!string.IsNullOrEmpty(req.DictType), x => x.DictType != null && x.DictType.Contains(req.DictType!))
-                .OrderBy(x => x.Sort).OrderByDescending(x => x.CreationTime)
+                .OrderBy(x => x.Sort).ThenByDescending(x => x.CreationTime)
                 .PagedAsync(req.Current, req.PageSize);
 
             return new PagedResult<DictDataItem>(resp.Total, _mapper.Map<List<DictData>, List<DictDataItem>>(resp.Items));

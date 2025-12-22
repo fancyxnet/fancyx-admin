@@ -81,7 +81,7 @@ namespace Fancyx.Admin.Application.Service.Organization
                 .WhereIf(req.Status > 0, x => x.Status == req.Status)
                 .WhereIf(req.GroupId.HasValue, x => x.GroupId == req.GroupId)
                 .OrderBy(x => x.Level)
-                .OrderBy(x => x.CreationTime)
+                .ThenByDescending(x => x.CreationTime)
                 .PagedAsync(req.Current, req.PageSize);
             var ids = pagedResp.Items.Select(x => x.Id).ToList();
             var list = _mapper.Map<List<Position>, List<PositionItem>>(pagedResp.Items);

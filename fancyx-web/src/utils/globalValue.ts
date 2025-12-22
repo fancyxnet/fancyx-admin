@@ -26,7 +26,7 @@ export const Patterns = {
  * 字典类型
  */
 export const DictType = {
-  PositionLevel: 'positionLevel',
+  PositionLevel: 'PositionLevel',
 };
 
 /**

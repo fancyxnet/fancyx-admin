@@ -49,6 +49,7 @@ namespace Fancyx.Admin.Application.Service.System
             var resp = await _configRepository.GetQueryable()
                 .WhereIf(!string.IsNullOrEmpty(req.Name), x => x.Name.ToLower().Contains(req.Name!.ToLower()))
                 .WhereIf(!string.IsNullOrEmpty(req.Key), x => x.Key.ToLower().Contains(req.Key!.ToLower()))
+                .OrderByDescending(x => x.CreationTime)
                 .PagedAsync(req.Current, req.PageSize);
 
             return new PagedResult<ConfigItem>(resp.Total, _mapper.Map<List<Config>, List<ConfigItem>>(resp.Items));
