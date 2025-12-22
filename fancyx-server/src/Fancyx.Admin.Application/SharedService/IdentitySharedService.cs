@@ -1,19 +1,20 @@
 ﻿using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
+using Fancyx.Cache;
 using Fancyx.Core;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
-using Fancyx.Redis;
 using Fancyx.Shared.Keys;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-
+using StackExchange.Redis;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Role = Fancyx.Admin.EfCore.Entities.System.Role;
 
 namespace Fancyx.Admin.Application.SharedService
 {
@@ -25,7 +26,7 @@ namespace Fancyx.Admin.Application.SharedService
         private readonly IRepository<Menu> _menuRepository;
         private readonly IConfiguration _configuration;
         private readonly IRepository<User> _userRepository;
-        private readonly IHybridCache _hybridCache;
+        private readonly ICacheClient _cache;
         private readonly ICurrentUser _currentUser;
         private readonly IRepository<RoleDept> _roleDeptRepository;
         private readonly IRepository<Dept> _deptRepository;
@@ -34,7 +35,7 @@ namespace Fancyx.Admin.Application.SharedService
         private readonly ICurrentTenant _currentTenant;
 
         public IdentitySharedService(IRepository<UserRole> userRoleRepository, IRepository<RoleMenu> roleMenuRepository, IRepository<Role> roleRepository,
-            IRepository<Menu> menuRepository, IConfiguration configuration, IRepository<User> userRepository, IHybridCache hybridCache, ICurrentUser currentUser
+            IRepository<Menu> menuRepository, IConfiguration configuration, IRepository<User> userRepository, ICacheClient cache, ICurrentUser currentUser
             , IRepository<RoleDept> roleDeptRepository, IRepository<Dept> deptRepository, IRepository<Tenant> tenantRepository, IRepository<TenantMenu> tenantMenuRepository
             , ICurrentTenant currentTenant)
         {
@@ -44,7 +45,7 @@ namespace Fancyx.Admin.Application.SharedService
             _menuRepository = menuRepository;
             _configuration = configuration;
             _userRepository = userRepository;
-            _hybridCache = hybridCache;
+            _cache = cache;
             _currentUser = currentUser;
             _roleDeptRepository = roleDeptRepository;
             _deptRepository = deptRepository;
@@ -61,9 +62,9 @@ namespace Fancyx.Admin.Application.SharedService
         public async Task<UserPermission> GetUserPermissionAsync(long userId)
         {
             var key = SystemCacheKey.UserPermission(userId);
-            if (await _hybridCache.ExistsAsync(key))
+            if (await _cache.KeyExistsAsync(key))
             {
-                var cacheValue = await _hybridCache.GetAsync<UserPermission>(key);
+                var cacheValue = await _cache.GetAsync<UserPermission>(key);
                 return cacheValue!;
             }
 
@@ -96,7 +97,7 @@ namespace Fancyx.Admin.Application.SharedService
                 RoleIds = roleIds,
                 MenuIds = [.. menus.Select(x => x.Id)]
             };
-            await _hybridCache.SetAsync(key, rs);
+            await _cache.SetAsync(key, rs);
             return rs;
         }
 
@@ -121,7 +122,7 @@ namespace Fancyx.Admin.Application.SharedService
         /// <returns></returns>
         public Task DelUserPermissionCacheByUserIdAsync(long userId)
         {
-            return _hybridCache.RemoveAsync(SystemCacheKey.UserPermission(userId));
+            return _cache.KeyDeleteAsync(SystemCacheKey.UserPermission(userId));
         }
 
         /// <summary>
@@ -138,8 +139,8 @@ namespace Fancyx.Admin.Application.SharedService
                 await DelUserPermissionCacheByUserIdAsync(userId);
                 if (clearToken)
                 {
-                    await _hybridCache.RemoveByPatternAsync(SystemCacheKey.AccessToken(userId, "*"));
-                    await _hybridCache.RemoveByPatternAsync(SystemCacheKey.RefreshToken(userId, "*"));
+                    await _cache.KeyDeleteByPatternAsync(SystemCacheKey.AccessToken(userId, "*"));
+                    await _cache.KeyDeleteByPatternAsync(SystemCacheKey.RefreshToken(userId, "*"));
                 }
             }
         }
@@ -201,7 +202,7 @@ namespace Fancyx.Admin.Application.SharedService
         public async Task<DeptPowerData?> GetUserDeptPowerAsync(long userId, long? curDeptId)
         {
             var key = SystemCacheKey.UserDeptPower(userId);
-            if (await _hybridCache.ExistsAsync(key)) return await _hybridCache.GetAsync<DeptPowerData>(key);
+            if (await _cache.KeyExistsAsync(key)) return await _cache.GetAsync<DeptPowerData>(key);
 
             var userPermission = await GetUserPermissionAsync(userId);
             if (userPermission.RoleIds == null || userPermission.RoleIds.Length == 0) return null;
@@ -258,7 +259,7 @@ namespace Fancyx.Admin.Application.SharedService
             }
 
             var result = new DeptPowerData { DeptIds = deptIds, UserIds = userIds };
-            await _hybridCache.SetAsync(key, result);
+            await _cache.SetAsync(key, result);
             return result;
         }
 
@@ -271,7 +272,7 @@ namespace Fancyx.Admin.Application.SharedService
             if (!_currentUser.Id.HasValue) return;
 
             var key = SystemCacheKey.UserDeptPower(_currentUser.Id.Value);
-            await _hybridCache.RemoveAsync(key);
+            await _cache.KeyExistsAsync(key);
         }
 
         /// <summary>

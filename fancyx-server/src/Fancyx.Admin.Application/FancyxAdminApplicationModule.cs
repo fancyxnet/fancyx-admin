@@ -4,10 +4,10 @@ using Fancyx.Admin.Application.Grpc;
 using Fancyx.Admin.Application.Jobs;
 using Fancyx.Admin.Application.WebSockets;
 using Fancyx.Admin.EfCore;
+using Fancyx.Cache;
 using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
 using Fancyx.EventBus;
-using Fancyx.Redis;
 using Fancyx.Shared.Logger;
 
 using Microsoft.AspNetCore.Builder;
@@ -17,7 +17,7 @@ using System.Threading.Channels;
 namespace Fancyx.Admin.Application
 {
     [DependsOn(
-         typeof(FancyxRedisModule),
+         typeof(FancyxCacheModule),
          typeof(FancyxEventBusModule),
          typeof(FancyxSharedLoggerModule),
          typeof(FancyxAdminEfCoreModule)

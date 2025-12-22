@@ -2,6 +2,7 @@
 using Fancyx.Admin.Application.SharedService;
 using Fancyx.Admin.Application.WebSockets;
 using Fancyx.Admin.EfCore.Entities.System;
+using Fancyx.Cache;
 using Fancyx.Core.AutoInject;
 using Fancyx.EfCore;
 
@@ -19,16 +20,16 @@ namespace Fancyx.Admin.Application.Jobs
     {
         private readonly ILogger<NotificationJob> _logger;
         private readonly IRepository<Notification> _repository;
-        private readonly IDatabase _database;
+        private readonly ICacheClient _cache;
         private readonly RedLockFactory _redLockFactory;
         private readonly ChannelWriter<NotificationMessage> _channelWriter;
 
-        public NotificationJob(ILogger<NotificationJob> logger, IRepository<Notification> repository, IDatabase database
+        public NotificationJob(ILogger<NotificationJob> logger, IRepository<Notification> repository, ICacheClient cache
             , RedLockFactory redLockFactory, ChannelWriter<NotificationMessage> channelWriter)
         {
             _logger = logger;
             _repository = repository;
-            _database = database;
+            _cache = cache;
             _redLockFactory = redLockFactory;
             _channelWriter = channelWriter;
         }
@@ -55,9 +56,9 @@ namespace Fancyx.Admin.Application.Jobs
                             var index = random.Next(0, curEmployeeNotis.Count);
                             var item = curEmployeeNotis[index];
                             var lastNotiKey = "LastNotification" + item.UserId;
-                            if (await _database.KeyExistsAsync(lastNotiKey))
+                            if (await _cache.KeyExistsAsync(lastNotiKey))
                             {
-                                var lastNotiId = await _database.StringGetAsync(lastNotiKey);
+                                var lastNotiId = await _cache.StringGetAsync(lastNotiKey);
                                 //随机取到了上条通知，就往后取一条
                                 if (lastNotiId == item.Id.ToString() && curEmployeeNotis.Count > 1)
                                 {
@@ -69,7 +70,7 @@ namespace Fancyx.Admin.Application.Jobs
                             }
                             await _channelWriter.WriteAsync(new NotificationMessage(item.UserId, item.Title, item.Content, g.Value));
                             //上条通知的ID
-                            await _database.StringSetAsync("LastNotification" + item.UserId, item.Id.ToString(), TimeSpan.FromMinutes(1));
+                            await _cache.StringSetAsync("LastNotification" + item.UserId, item.Id.ToString(), TimeSpan.FromMinutes(1));
                         }
                     }
                 }

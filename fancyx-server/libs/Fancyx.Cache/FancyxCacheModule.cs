@@ -1,6 +1,5 @@
 ﻿using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
-
 using Microsoft.Extensions.DependencyInjection;
 
 using RedLockNet.SERedis;
@@ -8,9 +7,9 @@ using RedLockNet.SERedis.Configuration;
 
 using StackExchange.Redis;
 
-namespace Fancyx.Redis
+namespace Fancyx.Cache
 {
-    public class FancyxRedisModule : ModuleBase
+    public class FancyxCacheModule : ModuleBase
     {
         public override void Configure(ApplicationInitializationContext context)
         {
@@ -20,20 +19,17 @@ namespace Fancyx.Redis
         {
             context.Services.AddMemoryCache();
 
-            //StackExchange.Redis
-            context.Services.AddSingleton<IDatabase>(r =>
+            context.Services.AddSingleton<IConnectionMultiplexer>(r =>
             {
-                var connection = ConnectionMultiplexer.Connect(context.Configuration["Redis:Connection"]!);
-                return connection.GetDatabase(0);
+                return ConnectionMultiplexer.Connect(context.Configuration["Redis:Connection"]!);
             });
-            context.Services.AddSingleton<IHybridCache, HybridCache>();
+            context.Services.AddScoped<ICacheClient, CacheClient>();
 
-            //RedLock
             var multiplexers = new List<RedLockMultiplexer>
             {
                 ConnectionMultiplexer.Connect(context.Configuration["Redis:Connection"]!)
             };
-            context.Services.AddSingleton<RedLockFactory>(RedLockFactory.Create(multiplexers));
+            context.Services.AddSingleton(RedLockFactory.Create(multiplexers));
         }
     }
 }

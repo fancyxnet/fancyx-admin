@@ -1,6 +1,7 @@
-﻿using Fancyx.Core.AutoInject;
+﻿using Fancyx.Cache;
+using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
-using Fancyx.Redis;
+using Fancyx.Core.Interfaces;
 using Fancyx.Shared.WebApi.Filters;
 using Fancyx.Shared.WebApi.Handlers;
 using Fancyx.SnowflakeId;
@@ -13,10 +14,12 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Fancyx.Shared.WebApi
 {
     [DependsOn(
-        typeof(FancyxRedisModule)
+        typeof(FancyxCacheModule)
         )]
     public class FancyxSharedWebApiModule : ModuleBase
     {
+        public override int Order => 99;
+
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
             var configuration = context.Configuration;
@@ -34,6 +37,16 @@ namespace Fancyx.Shared.WebApi
         public override void Configure(ApplicationInitializationContext context)
         {
             var app = (WebApplication)context.GetApplicationBuilder();
+            app.Use(async (ctx, next) =>
+            {
+                var cache = ctx.RequestServices.GetRequiredService<ICacheClient>();
+                var currentTenant = ctx.RequestServices.GetRequiredService<ICurrentTenant>();
+                if (!string.IsNullOrEmpty(currentTenant.TenantId))
+                {
+                    cache.WithKeyPrefix($"tenant:{currentTenant.TenantId}:");
+                }
+                await next();
+            });
         }
     }
 }

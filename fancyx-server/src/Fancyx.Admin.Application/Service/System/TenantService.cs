@@ -3,6 +3,7 @@ using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Admin.Application.SharedService;
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.System;
+using Fancyx.Cache;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
 using Fancyx.EfCore.Aop;
@@ -13,24 +14,20 @@ using Fancyx.Utils;
 
 using Microsoft.EntityFrameworkCore;
 
-using StackExchange.Redis;
-
-using Role = Fancyx.Admin.EfCore.Entities.System.Role;
-
 namespace Fancyx.Admin.Application.Service.System
 {
     public class TenantService : ITenantService
     {
         private readonly IRepository<Tenant> _tenantRepository;
         private readonly IRepository<TenantMenu> _tenantMenuRepository;
-        private readonly IDatabase _redis;
+        private readonly ICacheClient _redis;
         private readonly IdentitySharedService _identitySharedService;
         private readonly IRepository<User> _userRepository;
         private readonly ICurrentUser _currentUser;
         private readonly IRepository<RoleMenu> _roleMenuRepository;
         private readonly FancyxDbContext _dbContext;
 
-        public TenantService(IRepository<Tenant> tenantRepository, IRepository<TenantMenu> tenantMenuRepository, IDatabase redis
+        public TenantService(IRepository<Tenant> tenantRepository, IRepository<TenantMenu> tenantMenuRepository, ICacheClient redis
             , IdentitySharedService identitySharedService, IRepository<User> userRepository, ICurrentUser currentUser, IRepository<RoleMenu> roleMenuRepository, FancyxDbContext dbContext)
         {
             _tenantRepository = tenantRepository;

@@ -1,27 +1,28 @@
 ﻿using Fancyx.Admin.Application.IService.Monitor;
 using Fancyx.Admin.Application.IService.Monitor.Models;
 using Fancyx.Admin.EfCore.Entities.System;
+using Fancyx.Cache;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
-using Fancyx.Redis;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Keys;
 
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 namespace Fancyx.Admin.Application.Service.Monitor
 {
     public class OnlineUserService : IOnlineUserService
     {
         private readonly IRepository<LoginLog> _loginLogRepository;
-        private readonly IHybridCache _hybridCache;
+        private readonly ICacheClient _cache;
         private readonly IRepository<User> _userRepository;
         private readonly ICurrentUser _currentUser;
 
-        public OnlineUserService(IRepository<LoginLog> loginLogRepository, IHybridCache hybridCache, IRepository<User> userRepository, ICurrentUser currentUser)
+        public OnlineUserService(IRepository<LoginLog> loginLogRepository, ICacheClient cache, IRepository<User> userRepository, ICurrentUser currentUser)
         {
             _loginLogRepository = loginLogRepository;
-            _hybridCache = hybridCache;
+            _cache = cache;
             _userRepository = userRepository;
             _currentUser = currentUser;
         }
@@ -37,8 +38,8 @@ namespace Fancyx.Admin.Application.Service.Monitor
                     pattern = SystemCacheKey.AccessToken($"{queryUserId}:*");
                 }
             }
-            var tokenKeys = await _hybridCache.KeyPatternAsync(pattern);
-            if (tokenKeys.Count <= 0) return [];
+            var tokenKeys = await _cache.KeyPatternAsync(pattern);
+            if (tokenKeys == null || tokenKeys.Length <= 0) return [];
 
             var result = new List<OnlineUserItem>();
             var currentSessionId = _currentUser.FindClaim(AdminConsts.SessionId).Value;
@@ -97,9 +98,9 @@ namespace Fancyx.Admin.Application.Service.Monitor
         public async Task LogoutAsync(string key)
         {
             //移除访问token
-            await _hybridCache.RemoveAsync(SystemCacheKey.AccessToken(key));
+            await _cache.KeyDeleteAsync(SystemCacheKey.AccessToken(key));
             //移除刷新token
-            await _hybridCache.RemoveAsync(SystemCacheKey.RefreshToken(key));
+            await _cache.KeyDeleteAsync(SystemCacheKey.RefreshToken(key));
         }
     }
 }

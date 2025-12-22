@@ -1,14 +1,14 @@
-﻿using Fancyx.Core.AutoInject;
+﻿using Fancyx.Cache;
+using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
 using Fancyx.Erp.EfCore;
 using Fancyx.EventBus;
-using Fancyx.Redis;
 using Fancyx.Shared.Logger;
 
 namespace Fancyx.Erp.Application
 {
     [DependsOn(
-         typeof(FancyxRedisModule),
+         typeof(FancyxCacheModule),
          typeof(FancyxEventBusModule),
          typeof(FancyxSharedLoggerModule),
          typeof(FancyxErpEfCoreModule)

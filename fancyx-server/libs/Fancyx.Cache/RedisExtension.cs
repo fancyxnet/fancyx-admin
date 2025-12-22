@@ -1,12 +1,12 @@
 ﻿using StackExchange.Redis;
 
-namespace Fancyx.Redis
+namespace Fancyx.Cache
 {
-    public static class RedisExtension
+    public class RedisExtension
     {
-        public static async Task<string[]?> KeyPatternAsync(this IDatabase database, string pattern, int count = 100)
+        public static async Task<string[]?> KeyPatternAsync(ICacheClient cache, string pattern, int count = 100)
         {
-            var redisResult = await database.ScriptEvaluateAsync(@"
+            var redisResult = await cache.ScriptEvaluateAsync(@"
                 local pattern = ARGV[1]
                 local count = tonumber(ARGV[2])
                 local cursor = '0'
@@ -31,14 +31,14 @@ namespace Fancyx.Redis
             return (string[])redisResult!;
         }
 
-        public static async Task KeyDeleteByPatternAsync(this IDatabase database, string pattern)
+        public static async Task KeyDeleteByPatternAsync(ICacheClient cache, string pattern)
         {
-            var keys = await database.KeyPatternAsync(pattern);
+            var keys = await cache.KeyPatternAsync(pattern);
             if (keys != null)
             {
                 foreach (var key in keys)
                 {
-                    await database.KeyDeleteAsync(key);
+                    await cache.KeyDeleteAsync(key);
                 }
             }
         }

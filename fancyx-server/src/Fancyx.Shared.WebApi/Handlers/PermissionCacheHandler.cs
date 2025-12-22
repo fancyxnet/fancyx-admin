@@ -1,18 +1,19 @@
 ﻿using Fancyx.Internal.Grpc.System;
-using Fancyx.Redis;
+using Fancyx.Cache;
 using Fancyx.Shared.Keys;
+using StackExchange.Redis;
 
 namespace Fancyx.Shared.WebApi.Handlers
 {
     public class PermissionCacheHandler
     {
-        private readonly IHybridCache Cache;
+        private readonly ICacheClient Cache;
 
         public Auth.AuthClient AuthClient { get; }
 
-        public PermissionCacheHandler(IHybridCache hybridCache, Auth.AuthClient authClient)
+        public PermissionCacheHandler(ICacheClient cache, Auth.AuthClient authClient)
         {
-            Cache = hybridCache;
+            Cache = cache;
             AuthClient = authClient;
         }
 
@@ -26,7 +27,7 @@ namespace Fancyx.Shared.WebApi.Handlers
         public async Task<bool> CheckTokenAsync(string userId, string sessionId, string token)
         {
             string key = SystemCacheKey.AccessToken(userId, sessionId);
-            var existToken = await Cache.GetAsync<string>(key);
+            var existToken = await Cache.StringGetAsync(key);
             return existToken == token;
         }
 

@@ -8,9 +8,9 @@ namespace Fancyx.Core.Authorization
         private readonly string? _tenantId;
         public string? TenantId => _tenantId;
 
-        public CurrentTenant(string? name)
+        public CurrentTenant(string? id)
         {
-            _tenantId = name;
+            _tenantId = id;
         }
 
         public static ICurrentTenant Parse(HttpContext? context)

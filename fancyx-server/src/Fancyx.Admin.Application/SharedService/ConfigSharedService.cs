@@ -1,4 +1,5 @@
 ﻿using Fancyx.Admin.EfCore.Entities.System;
+using Fancyx.Cache;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
 using Fancyx.Shared.Keys;
@@ -10,25 +11,25 @@ namespace Fancyx.Admin.Application.SharedService
     public class ConfigSharedService : IScopedDependency
     {
         private readonly IRepository<Config> _configRepository;
-        private readonly IDatabase _redisClient;
+        private readonly ICacheClient _cache;
 
-        public ConfigSharedService(IRepository<Config> configRepository, IDatabase redisClient)
+        public ConfigSharedService(IRepository<Config> configRepository, ICacheClient cache)
         {
             _configRepository = configRepository;
-            _redisClient = redisClient;
+            _cache = cache;
         }
 
         public async Task<string?> GetAsync(string key)
         {
-            if (await _redisClient.HashExistsAsync(SystemCacheKey.SystemConfig, key))
+            if (await _cache.HashExistsAsync(SystemCacheKey.SystemConfig, key))
             {
-                return (string?)await _redisClient.HashGetAsync(SystemCacheKey.SystemConfig, key);
+                return (string?)await _cache.HashGetAsync(SystemCacheKey.SystemConfig, key);
             }
 
             string? value = await _configRepository.Where(x => x.Key.ToLower() == key.ToLower()).ToOneAsync(e => e.Value);
             if (value != null)
             {
-                await _redisClient.HashSetAsync(SystemCacheKey.SystemConfig, key, value);
+                await _cache.HashSetAsync(SystemCacheKey.SystemConfig, key, value);
             }
             return value;
         }
@@ -36,9 +37,9 @@ namespace Fancyx.Admin.Application.SharedService
         public async Task<Dictionary<string, string>> GetGroupAsync(string group)
         {
             string key = SystemCacheKey.SystemConfigGroup(group);
-            if (await _redisClient.KeyExistsAsync(key))
+            if (await _cache.KeyExistsAsync(key))
             {
-                var groups = await _redisClient.HashGetAllAsync(key);
+                var groups = await _cache.HashGetAllAsync(key);
                 var map = new Dictionary<string, string>();
                 foreach (var item in groups)
                 {
@@ -50,7 +51,7 @@ namespace Fancyx.Admin.Application.SharedService
                 .ToDictionary(k => k.Key, v => v.Value);
             if (groupKeys.Count > 0)
             {
-                await _redisClient.HashSetAsync(key, groupKeys.Select(x => new HashEntry(x.Key, x.Value)).ToArray());
+                await _cache.HashSetAsync(key, groupKeys.Select(x => new HashEntry(x.Key, x.Value)).ToArray());
                 return groupKeys;
             }
             return groupKeys;
@@ -58,13 +59,13 @@ namespace Fancyx.Admin.Application.SharedService
 
         public void ClearCache(string key)
         {
-            _redisClient.HashDelete(SystemCacheKey.SystemConfig, key);
+            _cache.HashDelete(SystemCacheKey.SystemConfig, key);
         }
 
         public void ClearGroupCache(string group)
         {
             string key = SystemCacheKey.SystemConfigGroup(group);
-            _redisClient.KeyDelete(key);
+            _cache.KeyDelete(key);
         }
     }
 }

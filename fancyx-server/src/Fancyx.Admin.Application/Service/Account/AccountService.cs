@@ -6,10 +6,10 @@ using Fancyx.Admin.Application.IService.Account.Models;
 using Fancyx.Admin.Application.SharedService;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
+using Fancyx.Cache;
 using Fancyx.Core;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
-using Fancyx.Redis;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.EfCore;
 using Fancyx.Shared.Keys;
@@ -18,6 +18,7 @@ using Fancyx.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using StackExchange.Redis;
 using System.Security.Claims;
 
 namespace Fancyx.Admin.Application.Service.Account
@@ -28,7 +29,7 @@ namespace Fancyx.Admin.Application.Service.Account
         private readonly ICurrentUser _currentUser;
         private readonly IRepository<Menu> _menuRepository;
         private readonly IConfiguration _configuration;
-        private readonly IHybridCache _hybridCache;
+        private readonly ICacheClient _cache;
         private readonly IdentitySharedService _identitySharedService;
         private readonly ICapPublisher _capPublisher;
         private readonly IMapper _mapper;
@@ -39,7 +40,7 @@ namespace Fancyx.Admin.Application.Service.Account
         private delegate Task<User> LoginHandler();
 
         public AccountService(IRepository<User> userRepository, ICurrentUser currentUser, IRepository<Menu> menuRepository
-            , IConfiguration configuration, IHybridCache hybridCache, IdentitySharedService identitySharedService
+            , IConfiguration configuration, ICacheClient cache, IdentitySharedService identitySharedService
             , ICapPublisher capPublisher, IHttpContextAccessor httpContextAccessor, IMapper mapper, ICurrentTenant currentTenant
             , IRepository<Tenant> tenantRepository)
         {
@@ -47,7 +48,7 @@ namespace Fancyx.Admin.Application.Service.Account
             _currentUser = currentUser;
             _menuRepository = menuRepository;
             _configuration = configuration;
-            _hybridCache = hybridCache;
+            _cache = cache;
             _identitySharedService = identitySharedService;
             _capPublisher = capPublisher;
             _mapper = mapper;
@@ -95,13 +96,13 @@ namespace Fancyx.Admin.Application.Service.Account
             if (!bool.Parse(_configuration["AccountManyLogin"]!))
             {
                 //移除其它记录token
-                await _hybridCache.RemoveByPatternAsync(SystemCacheKey.AccessToken(userId, "*"));
-                await _hybridCache.RemoveByPatternAsync(SystemCacheKey.RefreshToken(userId, "*"));
+                await _cache.KeyDeleteByPatternAsync(SystemCacheKey.AccessToken(userId, "*"));
+                await _cache.KeyDeleteByPatternAsync(SystemCacheKey.RefreshToken(userId, "*"));
             }
 
             var expired = TimeSpan.FromHours(AdminConsts.TokenExpiredHour);
-            await _hybridCache.SetAsync(SystemCacheKey.AccessToken(userId, sessionId), rs.AccessToken, expired);
-            await _hybridCache.SetAsync(SystemCacheKey.RefreshToken(userId, sessionId), refreshToken, TimeSpan.FromMinutes(AdminConsts.TokenExpiredHour * 60 + 20));
+            await _cache.StringSetAsync(SystemCacheKey.AccessToken(userId, sessionId), rs.AccessToken, expired);
+            await _cache.StringSetAsync(SystemCacheKey.RefreshToken(userId, sessionId), refreshToken, TimeSpan.FromMinutes(AdminConsts.TokenExpiredHour * 60 + 20));
 
             return (rs, sessionId);
         }
@@ -110,9 +111,9 @@ namespace Fancyx.Admin.Application.Service.Account
         {
             var sessionId = _currentUser.FindClaim(AdminConsts.SessionId)!.Value;
             var key = SystemCacheKey.RefreshToken(_currentUser.Id!.Value, sessionId);
-            if (!await _hybridCache.ExistsAsync(key)) throw new BusinessException(message: "刷新token已过期");
+            if (!await _cache.KeyExistsAsync(key)) throw new BusinessException(message: "刷新token已过期");
 
-            var existRefreshToken = await _hybridCache.GetAsync<string>(key);
+            var existRefreshToken = await _cache.StringGetAsync(key);
             if (!refreshToken.Equals(existRefreshToken)) throw new BusinessException(message: "刷新token不正确");
 
             var otherClaims = _currentUser.GetClaims();
@@ -161,13 +162,13 @@ namespace Fancyx.Admin.Application.Service.Account
             {
                 var user = await _userRepository.GetAsync(x => x.Phone == req.Phone && x.IsEnabled) ?? throw new BusinessException(message: "手机号不存在");
                 var codeKey = SystemCacheKey.LoginSmsCode(req.Phone);
-                var code = await _hybridCache.GetAsync<string>(codeKey);
+                var code = await _cache.StringGetAsync(codeKey);
                 if (string.IsNullOrEmpty(code)) throw new BusinessException("验证码已过期");
                 if (req.Code != code) throw new BusinessException("验证码错误");
 
                 await this.CheckTenantIsEnabledAsync(user.TenantId);
 
-                await _hybridCache.RemoveAsync(codeKey);
+                await _cache.KeyDeleteAsync(codeKey);
                 return user;
             });
         }
@@ -319,11 +320,11 @@ namespace Fancyx.Admin.Application.Service.Account
             if (!uid.HasValue) return false;
             var sessionId = _currentUser.FindClaim(AdminConsts.SessionId)!.Value;
             //移除访问token
-            await _hybridCache.RemoveAsync(SystemCacheKey.AccessToken(uid.Value, sessionId));
+            await _cache.KeyDeleteAsync(SystemCacheKey.AccessToken(uid.Value, sessionId));
             //移除刷新token
-            await _hybridCache.RemoveAsync(SystemCacheKey.RefreshToken(uid.Value, sessionId));
+            await _cache.KeyDeleteAsync(SystemCacheKey.RefreshToken(uid.Value, sessionId));
             //移除权限缓存
-            await _hybridCache.RemoveAsync(SystemCacheKey.UserPermission(uid.Value));
+            await _cache.KeyDeleteAsync(SystemCacheKey.UserPermission(uid.Value));
             await _identitySharedService.ClearCurrentUserDeptPower();
             return true;
         }
@@ -337,7 +338,7 @@ namespace Fancyx.Admin.Application.Service.Account
             }
 
             var code = StringUtils.RandomCode(6);
-            await _hybridCache.SetAsync(SystemCacheKey.LoginSmsCode(phone), code, TimeSpan.FromMinutes(5));
+            await _cache.StringSetAsync(SystemCacheKey.LoginSmsCode(phone), code, TimeSpan.FromMinutes(5));
             return code;
         }
     }
