@@ -1,4 +1,5 @@
-﻿using StackExchange.Redis;
+﻿using Microsoft.Extensions.Logging;
+using StackExchange.Redis;
 using StackExchange.Redis.KeyspaceIsolation;
 using System.Net;
 using System.Text.Json;
@@ -9,19 +10,23 @@ namespace Fancyx.Cache
     {
         private IDatabase _redis;
         private string? _prefix;
+        private readonly ILogger<CacheClient> _logger;
 
-        public CacheClient(IConnectionMultiplexer connection)
+        public CacheClient(IConnectionMultiplexer connection, ILogger<CacheClient> logger)
         {
             _redis = connection.GetDatabase();
+            _logger = logger;
         }
 
         #region custom
 
         public void WithKeyPrefix(string prefix)
         {
-            // TODO: need lock?
+            if (prefix != null) return;
+
             _prefix = prefix;
             _redis = _redis.WithKeyPrefix(prefix);
+            _logger.LogInformation("redis_prefix:{prefix}", prefix);
         }
 
         public async Task SetAsync<T>(string key, T value, TimeSpan? expire = null)
