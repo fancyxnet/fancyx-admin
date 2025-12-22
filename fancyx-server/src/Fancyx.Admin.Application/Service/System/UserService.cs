@@ -173,7 +173,7 @@ namespace Fancyx.Admin.Application.Service.System
 
         public Task<List<UserSimpleInfo>> GetUserSimpleInfosAsync(string? keyword)
         {
-            return _userRepository.Where(x => x.IsEnabled)
+            return _userRepository.Where(x => x.IsEnabled).PowerFilter(_currentUser)
                 .WhereIf(!string.IsNullOrEmpty(keyword), x => x.UserName.Contains(keyword!) || x.NickName.Contains(keyword!))
                 .OrderBy(x => x.NickName)
                 .Select(x => new UserSimpleInfo { Id = x.Id.ToString(), NickName = x.NickName, UserName = x.UserName })
@@ -182,7 +182,7 @@ namespace Fancyx.Admin.Application.Service.System
 
         public Task<List<UserItem>> ExportUserListAsync(GetUserListRequest req)
         {
-            return _userRepository.GetQueryable()
+            return _userRepository.GetQueryable().PowerFilter(_currentUser)
                 .WhereIf(!string.IsNullOrEmpty(req.UserName), x => x.UserName.Contains(req.UserName!))
                 .OrderByDescending(x => x.CreationTime)
                 .Select(x => new UserItem { Id = x.Id, UserName = x.UserName, Phone = x.Phone, Avatar = x.Avatar, IsEnabled = x.IsEnabled, NickName = x.NickName, Sex = x.Sex.GetHashCode() })
