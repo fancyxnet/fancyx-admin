@@ -6,7 +6,7 @@ namespace Fancyx.Cache
     {
         #region custom
 
-        void WithKeyPrefix(string prefix);
+        IDatabase CreateDatabase(int db = -1, string? prefix = null);
 
         Task SetAsync<T>(string key, T value, TimeSpan? expire = null);
 

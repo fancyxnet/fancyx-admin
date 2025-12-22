@@ -325,6 +325,7 @@ namespace Fancyx.Admin.Application.Service.Account
             await _cache.KeyDeleteAsync(SystemCacheKey.RefreshToken(uid.Value, sessionId));
             //移除权限缓存
             await _cache.KeyDeleteAsync(SystemCacheKey.UserPermission(uid.Value));
+            //清除当前用户部门数据权限
             await _identitySharedService.ClearCurrentUserDeptPower();
             return true;
         }

@@ -272,7 +272,7 @@ namespace Fancyx.Admin.Application.SharedService
             if (!_currentUser.Id.HasValue) return;
 
             var key = SystemCacheKey.UserDeptPower(_currentUser.Id.Value);
-            await _cache.KeyExistsAsync(key);
+            await _cache.KeyDeleteAsync(key);
         }
 
         /// <summary>

@@ -1,14 +1,11 @@
-﻿
-using System.Security.Claims;
-
-using Fancyx.Shared.Consts;
+﻿using Fancyx.Shared.Consts;
 using Fancyx.Shared.Models;
 using Fancyx.Shared.WebApi.Attributes;
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace Fancyx.Shared.WebApi.Handlers
 {

@@ -1,13 +1,11 @@
 ﻿using Fancyx.Cache;
 using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
-using Fancyx.Core.Interfaces;
 using Fancyx.Shared.WebApi.Filters;
 using Fancyx.Shared.WebApi.Handlers;
 using Fancyx.SnowflakeId;
 
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -36,17 +34,6 @@ namespace Fancyx.Shared.WebApi
 
         public override void Configure(ApplicationInitializationContext context)
         {
-            var app = (WebApplication)context.GetApplicationBuilder();
-            app.Use(async (ctx, next) =>
-            {
-                var cache = ctx.RequestServices.GetRequiredService<ICacheClient>();
-                var currentTenant = ctx.RequestServices.GetRequiredService<ICurrentTenant>();
-                if (!string.IsNullOrEmpty(currentTenant.TenantId))
-                {
-                    cache.WithKeyPrefix($"tenant:{currentTenant.TenantId}:");
-                }
-                await next();
-            });
         }
     }
 }

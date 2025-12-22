@@ -9,6 +9,7 @@ using Fancyx.EfCore;
 using Fancyx.Shared.EfCore;
 using Fancyx.Utils;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace Fancyx.Admin.Application.Service.Organization
 {
@@ -59,12 +60,11 @@ namespace Fancyx.Admin.Application.Service.Organization
 
         public async Task<List<DeptItem>> GetDeptListAsync(GetDeptListRequest req)
         {
-            bool hasFilter = !string.IsNullOrEmpty(req.Name) || !string.IsNullOrEmpty(req.Code) || req.Status > 0;
+            bool hasFilter = !string.IsNullOrEmpty(req.Keyword) || req.Status > 0;
             if (hasFilter)
             {
                 var filter = await _deptRepository.GetQueryable().PowerFilter(_currentUser)
-                    .WhereIf(!string.IsNullOrEmpty(req.Name), x => x.Name.Contains(req.Name!))
-                    .WhereIf(!string.IsNullOrEmpty(req.Code), x => x.Code.Contains(req.Code!))
+                    .WhereIf(!string.IsNullOrEmpty(req.Keyword), x => x.Name.Contains(req.Keyword!) || x.Code.Contains(req.Keyword!))
                     .WhereIf(req.Status > 0, x => x.Status == req.Status)
                     .OrderBy(x => x.Sort).ToListAsync();
                 var result = _mapper.Map<List<Dept>, List<DeptItem>>(filter);
@@ -85,7 +85,8 @@ namespace Fancyx.Admin.Application.Service.Organization
                                Status = d.Status,
                                CuratorId = d.CuratorId,
                                Email = d.Email,
-                               CuratorName = u3 != null ? u3.NickName : ""
+                               CuratorName = u3 != null ? u3.NickName : "",
+                               ParentId = d.ParentId
                            }).ToListAsync();
             return CollectionUtils.BuildTree(allNodes, g => g, g => g.Id, g => g.ParentId, (node, children) => node.Children = children, node => node.Sort);
         }

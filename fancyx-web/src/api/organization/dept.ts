@@ -66,8 +66,7 @@ export interface AddOrUpdateDeptRequest {
 
 export interface GetDeptListRequest {
   id?: string | null;
-  code?: string | null;
-  name?: string | null;
+  keyword?: string | null;
   status?: number;
 }
 

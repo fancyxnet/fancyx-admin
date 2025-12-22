@@ -1,5 +1,10 @@
 ﻿import Permission from '@/components/Permission';
-import { deletePositionGroup, getPositionGroupList, type GetPositionGroupListRequest, type PositionGroupItem } from '@/api/organization/positionGroup';
+import {
+  deletePositionGroup,
+  getPositionGroupList,
+  type GetPositionGroupListRequest,
+  type PositionGroupItem,
+} from '@/api/organization/positionGroup';
 import { DeleteOutlined, EditOutlined, ExclamationCircleFilled, PlusOutlined } from '@ant-design/icons';
 import { Button, Popconfirm, Space } from 'antd';
 import React, { useRef } from 'react';
@@ -15,16 +20,19 @@ const PositionGroup: React.FC = () => {
     {
       title: '分组名称',
       dataIndex: 'groupName',
+      fieldProps: {
+        placeholder: '请输入分组名称',
+      },
     },
     {
       title: '备注',
       dataIndex: 'remark',
-      search: false
+      search: false,
     },
     {
       title: '排序值',
       dataIndex: 'sort',
-      search: false
+      search: false,
     },
     {
       title: '操作',
@@ -84,33 +92,31 @@ const PositionGroup: React.FC = () => {
     modalRef.current?.openModal(record);
   };
 
-  return <div className='fancyx-table-wrapper'>
-    <ProTable<PositionGroupItem, GetPositionGroupListRequest>
-      actionRef={actionRef}
-      rowKey="id"
-      columns={columns}
-      request={async (
-        params: GetPositionGroupListRequest
-      ) => {
-        const res = await getPositionGroupList(params);
-        return {
-          data: res.data,
-          success: true,
-        };
-      }}
-      toolBarRender={
-        () => [
+  return (
+    <div className="fancyx-table-wrapper">
+      <ProTable<PositionGroupItem, GetPositionGroupListRequest>
+        actionRef={actionRef}
+        rowKey="id"
+        columns={columns}
+        request={async (params: GetPositionGroupListRequest) => {
+          const res = await getPositionGroupList(params);
+          return {
+            data: res.data,
+            success: true,
+          };
+        }}
+        toolBarRender={() => [
           <Permission permissions={'Org.PositionGroup.Add'}>
             <Button color="primary" variant="solid" icon={<PlusOutlined />} onClick={() => handleOpenModal()}>
               新增
             </Button>
-          </Permission>
-        ]
-      }
-    />
-    {/* 职位分组新增/编辑弹窗 */}
-    <PositionGroupForm ref={modalRef} refresh={() => actionRef?.current?.reload()} />
-  </div>
-}
+          </Permission>,
+        ]}
+      />
+      {/* 职位分组新增/编辑弹窗 */}
+      <PositionGroupForm ref={modalRef} refresh={() => actionRef?.current?.reload()} />
+    </div>
+  );
+};
 
 export default PositionGroup;

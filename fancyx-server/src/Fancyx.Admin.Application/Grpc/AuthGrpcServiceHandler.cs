@@ -17,13 +17,13 @@ namespace Fancyx.Admin.Application.Grpc
     {
         private readonly IdentitySharedService _identitySharedService;
         private readonly IRepository<Tenant> _tenantRepository;
-        private readonly ICacheClient _cache;
+        private readonly IDatabase _cache;
 
         public AuthGrpcServiceHandler(IdentitySharedService identitySharedService, IRepository<Tenant> tenantRepository, ICacheClient cache)
         {
             _identitySharedService = identitySharedService;
             _tenantRepository = tenantRepository;
-            _cache = cache;
+            _cache = cache.CreateDatabase();
         }
 
         public async override Task<GetUserPermissionRes> GetUserPermission(GetUserPermissionReq request, ServerCallContext context)

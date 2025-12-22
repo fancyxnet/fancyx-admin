@@ -13,12 +13,24 @@ const Department: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const columns: ProColumnType<DeptItem>[] = [
     {
+      title: '关键词',
+      key: 'keyword',
+      hideInTable: true,
+      hideInForm: false,
+      valueType: 'text',
+      fieldProps: {
+        placeholder: '请输入部门名称或编码',
+      },
+    },
+    {
       title: '部门名称',
       dataIndex: 'name',
+      search: false,
     },
     {
       title: '部门编号',
       dataIndex: 'code',
+      search: false,
     },
     {
       title: '部门邮箱',
@@ -100,33 +112,31 @@ const Department: React.FC = () => {
     }
   };
 
-  return (<div className='fancyx-table-wrapper'>
-    <ProTable<DeptItem, GetDeptListRequest>
-      actionRef={actionRef}
-      rowKey="id"
-      columns={columns}
-      request={async (
-        params: GetDeptListRequest
-      ) => {
-        const res = await getDeptList(params);
-        return {
-          data: res.data,
-          success: true,
-        };
-      }}
-      toolBarRender={
-        () => [
+  return (
+    <div className="fancyx-table-wrapper">
+      <ProTable<DeptItem, GetDeptListRequest>
+        actionRef={actionRef}
+        rowKey="id"
+        columns={columns}
+        request={async (params: GetDeptListRequest) => {
+          const res = await getDeptList(params);
+          return {
+            data: res.data,
+            success: true,
+          };
+        }}
+        toolBarRender={() => [
           <Permission permissions={'Org.Dept.Add'}>
             <Button color="primary" variant="solid" icon={<PlusOutlined />} onClick={() => handleOpenModal()}>
               新增
             </Button>
-          </Permission>
-        ]
-      }
-    />
-    {/* 部门新增/编辑弹窗 */}
-    <DeptForm ref={modalRef} refresh={() => actionRef?.current?.reload()} />
-  </div>)
-}
+          </Permission>,
+        ]}
+      />
+      {/* 部门新增/编辑弹窗 */}
+      <DeptForm ref={modalRef} refresh={() => actionRef?.current?.reload()} />
+    </div>
+  );
+};
 
 export default Department;
