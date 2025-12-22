@@ -19,6 +19,7 @@ namespace Fancyx.Cache
 
         public void WithKeyPrefix(string prefix)
         {
+            // TODO: need lock?
             _prefix = prefix;
             _redis = _redis.WithKeyPrefix(prefix);
         }
@@ -42,10 +43,7 @@ namespace Fancyx.Cache
 
         public async Task<string[]?> KeyPatternAsync(string pattern, int count = 100)
         {
-            if (_prefix != null && !pattern.StartsWith(_prefix))
-            {
-                pattern = $"{_prefix}{pattern}";
-            }
+            pattern = this.PadPrefix(pattern);
             var redisResult = await _redis.ScriptEvaluateAsync(@"
                 local pattern = ARGV[1]
                 local count = tonumber(ARGV[2])
@@ -62,11 +60,11 @@ namespace Fancyx.Cache
                 until cursor == '0'
                 
                 return allKeys",
-                values: new RedisValue[] { pattern, count }
+                values: [pattern, count]
             );
 
             if (redisResult.IsNull)
-                return Array.Empty<string>();
+                return [];
 
             return (string[])redisResult!;
         }
@@ -76,11 +74,20 @@ namespace Fancyx.Cache
             var keys = await this.KeyPatternAsync(pattern);
             if (keys != null)
             {
-                foreach (var key in keys)
-                {
-                    await this.KeyDeleteAsync(key);
-                }
+                if (_prefix != null)
+                    await this.KeyDeleteAsync([.. keys.Select(x => new RedisKey(x.Replace(_prefix, "")))]);
+                else
+                    await this.KeyDeleteAsync([.. keys.Select(x => new RedisKey(x))]);
             }
+        }
+
+        private string PadPrefix(string key)
+        {
+            if (_prefix != null && !key.StartsWith(_prefix))
+            {
+                return $"{_prefix}{key}";
+            }
+            return key;
         }
 
         #endregion
