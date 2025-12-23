@@ -1,4 +1,5 @@
 using Fancyx.Consul;
+using Fancyx.Serilog;
 using Yarp.ReverseProxy.Configuration;
 using Yarp.ReverseProxy.Configuration.ConfigProvider;
 
@@ -15,6 +16,8 @@ else
 {
     builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 }
+
+builder.Host.UseSerilogSetup("yarp-gateway");
 
 builder.Services.AddCors(options =>
 {

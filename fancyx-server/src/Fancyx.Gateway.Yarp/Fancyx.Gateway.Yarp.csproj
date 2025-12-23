@@ -9,6 +9,7 @@
   <ItemGroup>
 	<PackageReference Include="Yarp.ReverseProxy" Version="2.3.0" />
     <ProjectReference Include="..\..\libs\Fancyx.Consul\Fancyx.Consul.csproj" />
+    <ProjectReference Include="..\..\libs\Fancyx.Serilog\Fancyx.Serilog.csproj" />
   </ItemGroup>
 
 </Project>
