@@ -4,6 +4,9 @@ using System.Net.WebSockets;
 
 namespace Fancyx.Admin.Application.WebSockets;
 
+/// <summary>
+/// TODO: 多节点部署时，需要改为分布式存储或使用集中式WebSocket服务器
+/// </summary>
 public class WebSocketConnectionManager : IDisposable
 {
     private readonly ConcurrentDictionary<long, WebSocket> _connections = new();
