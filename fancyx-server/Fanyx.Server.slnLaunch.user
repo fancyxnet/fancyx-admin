@@ -13,6 +13,10 @@
       {
         "Path": "src\\Fancyx.Erp\\Fancyx.Erp.csproj",
         "Action": "Start"
+      },
+      {
+        "Path": "src\\Fancyx.Logger\\Fancyx.Logger.csproj",
+        "Action": "Start"
       }
     ]
   }

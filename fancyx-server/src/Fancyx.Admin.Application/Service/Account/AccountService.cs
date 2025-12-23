@@ -146,7 +146,7 @@ namespace Fancyx.Admin.Application.Service.Account
         {
             return await InternalLoginAsync(req.UserName, async () =>
             {
-                var user = await _userRepository.GetAsync(x => x.UserName.ToLower() == req.UserName.ToLower() && x.IsEnabled) ?? throw new BusinessException(message: "账号或密码不存在");
+                var user = await _userRepository.GetAsync(x => x.UserName.ToLower() == req.UserName.ToLower() && x.IsEnabled) ?? throw new BusinessException(message: "账号不存在");
                 var isOk = user.Password == EncryptionUtils.GenEncodingPassword(req.Password, user.PasswordSalt);
                 if (!isOk) throw new BusinessException(message: "密码错误");
 

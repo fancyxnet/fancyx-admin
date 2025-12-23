@@ -1,4 +1,5 @@
 ﻿using Fancyx.Cache;
+using Fancyx.Core;
 using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
 using Fancyx.Shared.WebApi.Filters;
@@ -8,6 +9,7 @@ using Fancyx.SnowflakeId;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics;
 
 namespace Fancyx.Shared.WebApi
 {
@@ -28,12 +30,15 @@ namespace Fancyx.Shared.WebApi
             });
             context.Services.AddSingleton<PermissionCacheHandler>();
             context.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CommonAuthorizationMiddlewareResultHandler>();
+            context.Services.AddJwt(configuration);
 
             IdGenerater.Init(short.Parse(context.Configuration["Snowflake:WorkerId"]!), short.Parse(context.Configuration["Snowflake:DataCenterId"]!));
         }
 
         public override void Configure(ApplicationInitializationContext context)
         {
+            Activity.DefaultIdFormat = ActivityIdFormat.W3C;
+            Activity.ForceDefaultIdFormat = true;
         }
     }
 }

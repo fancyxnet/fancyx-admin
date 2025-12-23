@@ -69,7 +69,6 @@ namespace Fancyx.Core
                 options.SuppressModelStateInvalidFilter = true;
             }); //关闭默认参数验证
 
-            services.AddJwt(configuration);
             services.AddScoped<ICurrentUser>(sp => CurrentUser.Parse(sp.GetRequiredService<IHttpContextAccessor>().HttpContext)); //当前用户
             services.AddScoped<ICurrentTenant>(sp => CurrentTenant.Parse(sp.GetRequiredService<IHttpContextAccessor>().HttpContext)); //当前租户
 
@@ -181,7 +180,7 @@ namespace Fancyx.Core
         /// </summary>
         /// <param name="services"></param>
         /// <param name="configuration"></param>
-        private static void AddJwt(this IServiceCollection services, IConfiguration configuration)
+        public static void AddJwt(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
