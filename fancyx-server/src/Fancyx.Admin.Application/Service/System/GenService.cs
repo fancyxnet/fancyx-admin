@@ -126,7 +126,7 @@ namespace Fancyx.Admin.Application.Service.System
                 if (item.IsList)
                 {
                     listAssignPropStrBuilder.AppendLine($"\t\t{item.CsharpField} = x.{item.CsharpField},");
-                    pageColumnsStrBuilder.Append(this.BuildAntdColumnItem(item.ColumnComment!, cameField));
+                    pageColumnsStrBuilder.Append(this.BuildAntdColumnItem(item.ColumnComment!, cameField, item.IsQuery));
                 }
                 bool isInsertAndUpdate = item.IsInsert && item.IsEdit;
                 var formItem = this.BuildAntdFormItem(item.ColumnComment!, cameField, item.HtmlType!, item.ColumnName!, isRequired: item.IsRequired);
@@ -630,11 +630,13 @@ namespace Fancyx.Admin.Application.Service.System
             return html.ToString();
         }
 
-        private string BuildAntdColumnItem(string title, string dataIndex)
+        private string BuildAntdColumnItem(string title, string dataIndex, bool isSearch)
         {
+            if (dataIndex.Equals("id", StringComparison.InvariantCultureIgnoreCase)) return string.Empty;
             var html = @"{
                   title: '" + title + @"',
-                  dataIndex: '" + dataIndex + @"',
+                  dataIndex: '" + dataIndex + @"',"+ 
+                  (!isSearch ? "\r\nsearch: false," : "") + @"
                 },";
             return html;
         }

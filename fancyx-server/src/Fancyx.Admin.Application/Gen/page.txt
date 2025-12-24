@@ -19,6 +19,7 @@ ${columns}
       dataIndex: 'option',
       width: 210,
       fixed: 'right',
+      search: false,
       render: (_: any, record: ${class_name}) => (
         <Space>
           <Permission permissions={'${module_name_prefix}.${business_name}.Update'}>
