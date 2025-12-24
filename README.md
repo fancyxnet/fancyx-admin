@@ -8,7 +8,7 @@
 
 ## 项目介绍
 
-风汐管理系统，适用微服务（Ocelot+Consul）和单体部署；项目使用.NET9+React18构建的RBAC通用权限管理系统（支持按钮级别权限），支持多租户功能，简单易上手，不使用任何三方Admin框架，完全由作者+AI独立开发；旨在为个人、企业提供高效、美观的后台管理解决方案，为.NET+React后台方案添砖加瓦， 系统采用最新最稳定的技术栈，具有良好的扩展性和可维护性，支持快速定制开发。
+风汐管理系统，适用微服务（Yarp/Ocelot+Consul）和单体部署；项目使用.NET9+React18构建的RBAC通用权限管理系统（支持按钮级别权限），支持多租户功能，简单易上手，不使用任何三方Admin框架，完全由作者+AI独立开发；旨在为个人、企业提供高效、美观的后台管理解决方案，为.NET+React后台方案添砖加瓦， 系统采用最新最稳定的技术栈，具有良好的扩展性和可维护性，支持快速定制开发。
 
 **核心特点**
 
@@ -58,7 +58,7 @@
 * Castle.Core
 * Serilog
 * Consul
-* Ocelot
+* Yarp
 * Orleans
 * GRPC
 * MQTT
@@ -122,7 +122,7 @@
 | Fancyx.Admin             | 模块入口，主机服务                                  |
 | Fancyx.Admin.Application | 模块业务层，用于写业务逻辑                              |
 | Fancyx.Admin.EfCore      | 模块数据层，包含实体、自定义仓储类                          |
-| Fancyx.Gateway.Ocelot    | Ocelot网关，支持直连和Consul服务注册发现                 |
+| Fancyx.Gateway.Yarp      | Yarp网关，支持直连和Consul服务注册发现                 |
 | Fancyx.Shared            | 业务共享的模型、常量                                 |
 | Fancyx.Shared.EfCore     | 业务共享的EfCore配置、扩展                           |
 | Fancyx.Shared.Logger     | 业务共享的日志层，含业务日志、异常日志、访问日志                   |
