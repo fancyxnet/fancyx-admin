@@ -39,7 +39,7 @@ const DeptForm = forwardRef<DeptModalRef, ModalProps>((props, ref) => {
   }, [isOpenModal]);
 
   const fetchTreeData = (deptName?: string) => {
-    getDeptList({ name: deptName }).then((res) => {
+    getDeptList({ keyword: deptName }).then((res) => {
       setTreeData(res.data!);
     });
   };
