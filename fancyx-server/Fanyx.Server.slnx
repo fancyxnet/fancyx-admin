@@ -1,0 +1,42 @@
+<Solution>
+  <Folder Name="/libs/">
+    <Project Path="libs/Fancyx.Cache/Fancyx.Cache.csproj" />
+    <Project Path="libs/Fancyx.Consul/Fancyx.Consul.csproj" />
+    <Project Path="libs/Fancyx.Core/Fancyx.Core.csproj" />
+    <Project Path="libs/Fancyx.EfCore/Fancyx.EfCore.csproj" />
+    <Project Path="libs/Fancyx.EventBus/Fancyx.EventBus.csproj" />
+    <Project Path="libs/Fancyx.Orleans/Fancyx.Orleans.csproj" />
+    <Project Path="libs/Fancyx.Serilog/Fancyx.Serilog.csproj" />
+    <Project Path="libs/Fancyx.SnowflakeId/Fancyx.SnowflakeId.csproj" />
+    <Project Path="libs/Fancyx.Storage/Fancyx.Storage.csproj" />
+    <Project Path="libs/Fancyx.Swagger/Fancyx.Swagger.csproj" />
+    <Project Path="libs/Fancyx.Utils/Fancyx.Utils.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
+  <Folder Name="/src/" />
+  <Folder Name="/src/admin/">
+    <Project Path="src/Fancyx.Admin.Application/Fancyx.Admin.Application.csproj" />
+    <Project Path="src/Fancyx.Admin.EfCore/Fancyx.Admin.EfCore.csproj" />
+    <Project Path="src/Fancyx.Admin/Fancyx.Admin.csproj" />
+  </Folder>
+  <Folder Name="/src/erp/">
+    <Project Path="src/Fancyx.Erp.Application/Fancyx.Erp.Application.csproj" />
+    <Project Path="src/Fancyx.Erp.EfCore/Fancyx.Erp.EfCore.csproj" />
+    <Project Path="src/Fancyx.Erp/Fancyx.Erp.csproj" />
+  </Folder>
+  <Folder Name="/src/gateway/">
+    <Project Path="src/Fancyx.Gateway.Yarp/Fancyx.Gateway.Yarp.csproj" />
+  </Folder>
+  <Folder Name="/src/logger/">
+    <Project Path="src/Fancyx.Logger/Fancyx.Logger.csproj" />
+  </Folder>
+  <Folder Name="/src/shared/">
+    <Project Path="src/Fancyx.Shared.EfCore/Fancyx.Shared.EfCore.csproj" />
+    <Project Path="src/Fancyx.Shared.Logger/Fancyx.Shared.Logger.csproj" />
+    <Project Path="src/Fancyx.Shared.Proto/Fancyx.Shared.Proto.csproj" />
+    <Project Path="src/Fancyx.Shared.WebApi/Fancyx.Shared.WebApi.csproj" />
+    <Project Path="src/Fancyx.Shared/Fancyx.Shared.csproj" />
+  </Folder>
+</Solution>
