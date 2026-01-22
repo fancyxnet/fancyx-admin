@@ -131,7 +131,6 @@ namespace Fancyx.Admin.Application.Service.Feedback
                 Content = req.Content
             };
             await _ticketReplyRepository.InsertAsync(ticketReply, false);
-            await _unitOfWorkManager.SaveChangeAsync();
             await uow.CommitAsync();
         }
     }

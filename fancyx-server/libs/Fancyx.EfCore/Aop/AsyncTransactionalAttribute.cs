@@ -1,5 +1,4 @@
 ﻿using Fancyx.Core.AutoInject;
-using Fancyx.EfCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fancyx.EfCore.Aop
