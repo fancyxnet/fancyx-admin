@@ -9,7 +9,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Fancyx.Admin.EfCore.Repositories
 {
-    [DenpendencyInject(AsSelf = true)]
+    [DependencyInject(AsSelf = true)]
     public class GenRepository
     {
         private readonly DbContext _context;

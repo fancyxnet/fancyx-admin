@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Erp.EfCore.Repositories
 {
-    [DenpendencyInject(AsSelf = true)]
+    [DependencyInject(AsSelf = true)]
     public class ProductRepository : BaseRepository<Product>
     {
         public ProductRepository(DbContext context, ICurrentUser currentUser) : base(context, currentUser)

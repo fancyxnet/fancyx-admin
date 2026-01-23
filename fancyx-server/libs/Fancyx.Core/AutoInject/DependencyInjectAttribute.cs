@@ -7,7 +7,7 @@ namespace Fancyx.Core.AutoInject
     /// 如果AsSelf为false且Interfaces为空，则不会注册
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public sealed class DenpendencyInjectAttribute : Attribute
+    public sealed class DependencyInjectAttribute : Attribute
     {
         /// <summary>
         /// 注册方式

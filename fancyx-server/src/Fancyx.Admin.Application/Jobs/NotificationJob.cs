@@ -15,7 +15,7 @@ using System.Threading.Channels;
 
 namespace Fancyx.Admin.Application.Jobs
 {
-    [DenpendencyInject(AsSelf = true)]
+    [DependencyInject(AsSelf = true)]
     public class NotificationJob : IInvocable
     {
         private readonly ILogger<NotificationJob> _logger;

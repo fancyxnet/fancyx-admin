@@ -125,20 +125,23 @@ namespace Fancyx.Core
         private static void InjectModule(ServiceConfigurationContext context, ModuleBase module)
         {
             var curModuleType = module.GetType();
+
+            if (_modules.ContainsKey(curModuleType)) return;
+
             var dependsOnAttribute = curModuleType.GetCustomAttribute<DependsOnAttribute>();
             if (dependsOnAttribute != null)
             {
                 foreach (var moduleType in dependsOnAttribute.DependedModuleTypes)
                 {
                     if (moduleType == curModuleType) continue; //避免循环依赖
-                    var subModule = (ModuleBase?)Activator.CreateInstance(moduleType);
+
+                    var subModule = _modules.TryGetValue(moduleType, out var subModuleValue) ? subModuleValue.instance : (ModuleBase?)Activator.CreateInstance(moduleType);
                     if (subModule == null) continue;
 
                     InjectModule(context, subModule);
                 }
             }
 
-            if (_modules.ContainsKey(curModuleType)) return;
             if (module.Order >= 0)
             {
                 _modules.TryAdd(curModuleType, (module, module.Order));
@@ -148,7 +151,11 @@ namespace Fancyx.Core
                 Interlocked.Increment(ref _sort);
                 _modules.TryAdd(curModuleType, (module, _sort));
             }
-            module.ConfigureServices(context);
+
+            if (_modules[curModuleType].instance.Equals(module))
+            {
+                module.ConfigureServices(context);
+            }
         }
 
         /// <summary>
@@ -184,18 +191,17 @@ namespace Fancyx.Core
             var singletonServiceType = typeof(ISingletonDependency);
             var scopedServiceType = typeof(IScopedDependency);
             var transientServiceType = typeof(ITransientDependency);
-            var denpendencyInjectType = typeof(DenpendencyInjectAttribute);
+            var denpendencyInjectType = typeof(DependencyInjectAttribute);
             var baseTypeMap = new Dictionary<ServiceLifetime, Type>
             {
                 [ServiceLifetime.Singleton] = singletonServiceType,
                 [ServiceLifetime.Scoped] = scopedServiceType,
                 [ServiceLifetime.Transient] = transientServiceType
             };
-            var autowireType = typeof(AutowiredAttribute);
             foreach (var assembly in LoadAssemblies)
             {
                 //实现注册接口类注册
-                var curClassTypes = assembly.DefinedTypes.Where(x => !x.IsAbstract && x.IsClass && !x.IsSealed).ToList();
+                var curClassTypes = assembly.DefinedTypes.Where(x => !x.IsAbstract && x.IsClass && !x.IsSealed);
                 foreach (var baseType in baseTypeMap)
                 {
                     var curBaseTypes = curClassTypes.Where(x => x != baseType.Value && x.IsAssignableTo(baseType.Value) && !x.IsDefined(denpendencyInjectType)).ToList();
@@ -208,7 +214,7 @@ namespace Fancyx.Core
                 //标记注册特性类注册
                 foreach (var attrType in curAttrTypes)
                 {
-                    var attr = attrType.GetCustomAttribute<DenpendencyInjectAttribute>();
+                    var attr = attrType.GetCustomAttribute<DependencyInjectAttribute>();
                     if (attr == null) continue;
                     if (!attr.AsSelf && (attr.Interfaces == null || attr.Interfaces.Length <= 0)) continue;
                     RegisterType(attrType, attr.Way, attr.AsSelf, attr.Interfaces);

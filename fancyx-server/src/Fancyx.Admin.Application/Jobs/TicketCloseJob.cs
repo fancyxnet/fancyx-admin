@@ -7,7 +7,7 @@ using RedLockNet.SERedis;
 
 namespace Fancyx.Admin.Application.Jobs
 {
-    [DenpendencyInject(AsSelf = true)]
+    [DependencyInject(AsSelf = true)]
     public class TicketCloseJob : IInvocable
     {
         private readonly TicketRepository _ticketRepository;

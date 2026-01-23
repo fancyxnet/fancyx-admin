@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.EfCore.Repositories
 {
-    [DenpendencyInject(AsSelf = true)]
+    [DependencyInject(AsSelf = true)]
     public class TicketRepository : BaseRepository<Ticket>
     {
         public TicketRepository(DbContext context, ICurrentUser currentUser) : base(context, currentUser)
