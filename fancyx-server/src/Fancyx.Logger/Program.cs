@@ -6,7 +6,6 @@ using Fancyx.Shared.Consts;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilogSetup(MicroServiceConsts.Logger);
-builder.Host.UseAutofac();
 
 builder.AddApplication<FancyxLoggerModule>();
 

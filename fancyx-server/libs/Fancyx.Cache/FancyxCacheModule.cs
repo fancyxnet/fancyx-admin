@@ -21,24 +21,21 @@ namespace Fancyx.Cache
         {
             context.Services.AddMemoryCache();
 
-            context.Services.AddSingleton<IConnectionMultiplexer>(r =>
-            {
-                return ConnectionMultiplexer.Connect(context.Configuration["Redis:Connection"]!);
-            });
+            var conn = ConnectionMultiplexer.Connect(context.Configuration["Redis:Connection"]!);
+            CacheFactory.Instance.Initialize(conn);
+            context.Services.AddSingleton<IConnectionMultiplexer>(r => conn);
             context.Services.AddScoped<ICacheClient, CacheClient>(p =>
             {
-                var conn = p.GetRequiredService<IConnectionMultiplexer>();
-
                 var ctx = p.GetRequiredService<IHttpContextAccessor>()?.HttpContext;
                 if (ctx != null)
                 {
                     var tenant = ctx.RequestServices.GetRequiredService<ICurrentTenant>();
                     if (tenant != null && !string.IsNullOrEmpty(tenant.TenantId))
                     {
-                        return new CacheClient(conn, $"tenant:{tenant.TenantId}:");
+                        return new CacheClient($"tenant:{tenant.TenantId}:");
                     }
                 }
-                return new CacheClient(conn, "");
+                return new CacheClient("");
             });
 
             var multiplexers = new List<RedLockMultiplexer>

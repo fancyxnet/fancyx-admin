@@ -1,9 +1,4 @@
-﻿using Autofac;
-using Autofac.Builder;
-using Autofac.Extensions.DependencyInjection;
-using Autofac.Extras.DynamicProxy;
-using Castle.DynamicProxy;
-using Fancyx.Core.Authorization;
+﻿using Fancyx.Core.Authorization;
 using Fancyx.Core.AutoInject;
 using Fancyx.Core.Context;
 using Fancyx.Core.Interfaces;
@@ -14,7 +9,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.Concurrent;
 using System.Reflection;
@@ -84,8 +78,8 @@ namespace Fancyx.Core
             {
                 LoadAssemblies.Add(item.Assembly);
             }
-            //3. Autofac动态注册
-            builder.Host.ConfigureContainer<ContainerBuilder>(ConfigureAutofacContainer);
+            //3. 原生动态注册
+            ConfigureNativeDIContainer(services);
             //4. 注册AutoMapper
             services.AddAutoMapper(LoadAssemblies);
         }
@@ -126,24 +120,6 @@ namespace Fancyx.Core
             }
 
             _modules = null!;
-        }
-
-        /// <summary>
-        /// 使用Autofac作为DI容器
-        /// </summary>
-        /// <param name="host"></param>
-        /// <returns></returns>
-        public static ConfigureHostBuilder UseAutofac(this ConfigureHostBuilder host)
-        {
-            host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
-               .ConfigureContainer<ContainerBuilder>(builder =>
-               {
-                   //拦截器
-                   builder.RegisterType<AopAttributeInterceptor>().AsSelf();
-                   builder.RegisterType<AsyncAopAttributeInterceptor>().As<IAsyncInterceptor>();
-                   builder.RegisterType<AsyncInterceptorAdaper>().AsSelf();
-               });
-            return host;
         }
 
         private static void InjectModule(ServiceConfigurationContext context, ModuleBase module)
@@ -200,20 +176,20 @@ namespace Fancyx.Core
         }
 
         /// <summary>
-        /// 按照依赖模块类型注册到Autofac容器中
+        /// 按照依赖模块类型注册到容器中
         /// </summary>
         /// <param name="builder"></param>
-        private static void ConfigureAutofacContainer(ContainerBuilder builder)
+        private static void ConfigureNativeDIContainer(IServiceCollection services)
         {
             var singletonServiceType = typeof(ISingletonDependency);
             var scopedServiceType = typeof(IScopedDependency);
             var transientServiceType = typeof(ITransientDependency);
             var denpendencyInjectType = typeof(DenpendencyInjectAttribute);
-            var baseTypeMap = new Dictionary<DenpendencyType, Type>
+            var baseTypeMap = new Dictionary<ServiceLifetime, Type>
             {
-                [DenpendencyType.Singleton] = singletonServiceType,
-                [DenpendencyType.Scoped] = scopedServiceType,
-                [DenpendencyType.Transient] = transientServiceType
+                [ServiceLifetime.Singleton] = singletonServiceType,
+                [ServiceLifetime.Scoped] = scopedServiceType,
+                [ServiceLifetime.Transient] = transientServiceType
             };
             var autowireType = typeof(AutowiredAttribute);
             foreach (var assembly in LoadAssemblies)
@@ -239,35 +215,19 @@ namespace Fancyx.Core
                 }
             }
 
-            void RegisterType(TypeInfo classType, DenpendencyType dependencyType, bool asSelf = false, Type[]? interfaces = null)
+            void RegisterType(TypeInfo classType, ServiceLifetime lifetime, bool asSelf = false, Type[]? interfaces = null)
             {
-                IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> registrationBuilder;
-                var implementedInterfaces = interfaces != null && interfaces.Length > 0 ? interfaces : classType.ImplementedInterfaces.Where(x => x != singletonServiceType && x != scopedServiceType && x != transientServiceType).ToArray();
+                var implementedInterfaces = interfaces != null && interfaces.Length > 0 ? interfaces : [.. classType.ImplementedInterfaces.Where(x => x != singletonServiceType && x != scopedServiceType && x != transientServiceType)];
                 if (implementedInterfaces.Length > 0 && !asSelf)
                 {
-                    registrationBuilder = builder.RegisterType(classType).As(implementedInterfaces).EnableInterfaceInterceptors().InterceptedBy(typeof(AopAttributeInterceptor), typeof(AsyncInterceptorAdaper));
+                    foreach (var interfaceType in implementedInterfaces)
+                    {
+                        services.Add(new ServiceDescriptor(interfaceType, classType, lifetime));
+                    }
                 }
                 else
                 {
-                    registrationBuilder = builder.RegisterType(classType).AsSelf();
-                }
-
-                //标记AutowiredAttribute的属性注入
-                registrationBuilder.PropertiesAutowired((propInfo, _) => propInfo.IsDefined(autowireType));
-
-                switch (dependencyType)
-                {
-                    case DenpendencyType.Singleton:
-                        registrationBuilder.SingleInstance();
-                        break;
-
-                    case DenpendencyType.Transient:
-                        registrationBuilder.InstancePerLifetimeScope();
-                        break;
-
-                    default:
-                        registrationBuilder.InstancePerDependency();
-                        break;
+                    services.Add(new ServiceDescriptor(classType, classType, lifetime));
                 }
             }
         }

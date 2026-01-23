@@ -1,5 +1,6 @@
 ﻿using StackExchange.Redis;
 using StackExchange.Redis.KeyspaceIsolation;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text.Json;
 
@@ -8,27 +9,15 @@ namespace Fancyx.Cache
     internal class CacheClient : ICacheClient
     {
         private readonly IDatabase _redis;
-        private readonly IConnectionMultiplexer _connection;
         private readonly string _prefix;
 
-        public CacheClient(IConnectionMultiplexer connection, string prefix)
+        public CacheClient(string prefix)
         {
             _prefix = prefix;
-            _redis = connection.GetDatabase().WithKeyPrefix(prefix);
-            _connection = connection;
+            _redis = CacheFactory.Instance.CreateDatabase(0, prefix);
         }
 
         #region custom
-
-        public IDatabase CreateDatabase(int db = -1, string? prefix = null)
-        {
-            IDatabase redis;
-
-            if (db >= 0) redis = _connection.GetDatabase(db);
-            else redis = _connection.GetDatabase();
-
-            return !string.IsNullOrEmpty(prefix) ? redis.WithKeyPrefix(prefix) : redis;
-        }
 
         public async Task SetAsync<T>(string key, T value, TimeSpan? expire = null)
         {
@@ -1645,5 +1634,31 @@ namespace Fancyx.Cache
 
         public Task<long> StringLongestCommonSubsequenceLengthAsync(RedisKey first, RedisKey second, CommandFlags flags = CommandFlags.None)
             => _redis.StringLongestCommonSubsequenceLengthAsync(first, second, flags);
+    }
+
+    public class CacheFactory 
+    {
+        private readonly static Lazy<CacheFactory> _lazy = new(() => new CacheFactory());
+        public static CacheFactory Instance => _lazy.Value;
+
+        private CacheFactory() { }
+
+        [NotNull]
+        public IConnectionMultiplexer Connection { get; private set; } = null!;
+
+        public void Initialize(IConnectionMultiplexer connectionMultiplexer)
+        {
+            Connection = connectionMultiplexer;
+        }
+
+        public IDatabase CreateDatabase(int db = -1, string? prefix = null)
+        {
+            IDatabase redis;
+
+            if (db >= 0) redis = Connection.GetDatabase(db);
+            else redis = Connection.GetDatabase();
+
+            return !string.IsNullOrEmpty(prefix) ? redis.WithKeyPrefix(prefix) : redis;
+        }
     }
 }

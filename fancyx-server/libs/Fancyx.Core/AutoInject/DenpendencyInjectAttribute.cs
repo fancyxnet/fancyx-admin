@@ -1,4 +1,6 @@
-﻿namespace Fancyx.Core.AutoInject
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace Fancyx.Core.AutoInject
 {
     /// <summary>
     /// 自动注入，标记此特性的类会被自动注册到依赖注入容器中 <br/>
@@ -10,7 +12,7 @@
         /// <summary>
         /// 注册方式
         /// </summary>
-        public DenpendencyType Way { get; init; } = DenpendencyType.Scoped;
+        public ServiceLifetime Way { get; init; } = ServiceLifetime.Scoped;
 
         /// <summary>
         /// 是否将当前类作为自身类型注入

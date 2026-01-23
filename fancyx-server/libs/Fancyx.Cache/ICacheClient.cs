@@ -5,9 +5,6 @@ namespace Fancyx.Cache
     public interface ICacheClient : IDatabase
     {
         #region custom
-
-        IDatabase CreateDatabase(int db = -1, string? prefix = null);
-
         Task SetAsync<T>(string key, T value, TimeSpan? expire = null);
 
         Task<T?> GetAsync<T>(string key);
