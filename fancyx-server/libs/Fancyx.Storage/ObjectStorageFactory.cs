@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Fancyx.Storage
 {
-    internal class ObjectStorageFactory : IObjectStorageFactory
+    public class ObjectStorageFactory : IObjectStorageFactory
     {
         private readonly IConfiguration _configuration;
 

@@ -10,7 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Scrutor;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 
@@ -71,7 +73,11 @@ namespace Fancyx.Core
             var mainType = typeof(T);
             var mainModule = (ModuleBase?)Activator.CreateInstance(mainType);
             if (mainModule == null) return;
+
+            var stopWatch = Stopwatch.StartNew();
             InjectModule(context, mainModule);
+            Console.WriteLine("加载依赖模块耗时{0}ms", stopWatch.ElapsedMilliseconds);
+            stopWatch.Stop();
 
             //2. 获取加载程序集
             foreach (var item in _modules.Keys)
@@ -188,54 +194,83 @@ namespace Fancyx.Core
         /// <param name="builder"></param>
         private static void ConfigureNativeDIContainer(IServiceCollection services)
         {
+            var stopWatch = Stopwatch.StartNew();
+
             var singletonServiceType = typeof(ISingletonDependency);
             var scopedServiceType = typeof(IScopedDependency);
             var transientServiceType = typeof(ITransientDependency);
             var denpendencyInjectType = typeof(DependencyInjectAttribute);
-            var baseTypeMap = new Dictionary<ServiceLifetime, Type>
-            {
-                [ServiceLifetime.Singleton] = singletonServiceType,
-                [ServiceLifetime.Scoped] = scopedServiceType,
-                [ServiceLifetime.Transient] = transientServiceType
-            };
+
+            // 1. 先处理带 DenpendencyInjectAttribute 的类型
             foreach (var assembly in LoadAssemblies)
             {
-                //实现注册接口类注册
-                var curClassTypes = assembly.DefinedTypes.Where(x => !x.IsAbstract && x.IsClass && !x.IsSealed);
-                foreach (var baseType in baseTypeMap)
+                var attrTypes = assembly.DefinedTypes
+                    .Where(t => t.IsDefined(denpendencyInjectType));
+
+                foreach (var type in attrTypes)
                 {
-                    var curBaseTypes = curClassTypes.Where(x => x != baseType.Value && x.IsAssignableTo(baseType.Value) && !x.IsDefined(denpendencyInjectType)).ToList();
-                    curBaseTypes.ForEach(c =>
-                    {
-                        RegisterType(c, baseType.Key);
-                    });
-                }
-                var curAttrTypes = curClassTypes.Where(x => x.IsDefined(denpendencyInjectType)).ToList();
-                //标记注册特性类注册
-                foreach (var attrType in curAttrTypes)
-                {
-                    var attr = attrType.GetCustomAttribute<DependencyInjectAttribute>();
+                    var attr = type.GetCustomAttribute<DependencyInjectAttribute>();
                     if (attr == null) continue;
                     if (!attr.AsSelf && (attr.Interfaces == null || attr.Interfaces.Length <= 0)) continue;
-                    RegisterType(attrType, attr.Way, attr.AsSelf, attr.Interfaces);
+
+                    if (attr.AsSelf)
+                    {
+                        services.Add(new ServiceDescriptor(type, type, attr.Way));
+                    }
+                    else
+                    {
+                        foreach (var iface in attr.Interfaces!)
+                        {
+                            services.Add(new ServiceDescriptor(iface, type, attr.Way));
+                        }
+                    }
                 }
             }
 
-            void RegisterType(TypeInfo classType, ServiceLifetime lifetime, bool asSelf = false, Type[]? interfaces = null)
-            {
-                var implementedInterfaces = interfaces != null && interfaces.Length > 0 ? interfaces : [.. classType.ImplementedInterfaces.Where(x => x != singletonServiceType && x != scopedServiceType && x != transientServiceType)];
-                if (implementedInterfaces.Length > 0 && !asSelf)
-                {
-                    foreach (var interfaceType in implementedInterfaces)
-                    {
-                        services.Add(new ServiceDescriptor(interfaceType, classType, lifetime));
-                    }
-                }
-                else
-                {
-                    services.Add(new ServiceDescriptor(classType, classType, lifetime));
-                }
-            }
+            // 2. 使用 Scrutor 批量注册实现生命周期接口的类（排除标记接口）
+            var markerInterfaces = new[] { singletonServiceType, scopedServiceType, transientServiceType };
+
+            // Singleton
+            services.Scan(scan => scan
+                .FromAssemblies(LoadAssemblies)
+                .AddClasses(classes => classes
+                    .AssignableTo(singletonServiceType)
+                    .Where(t => !t.IsDefined(denpendencyInjectType))
+                    .Where(t => t != singletonServiceType)
+                )
+                .UsingRegistrationStrategy(RegistrationStrategy.Skip)
+                .As(type => type.GetInterfaces().Where(i => !markerInterfaces.Contains(i)))
+                .WithSingletonLifetime()
+            );
+
+            // Scoped
+            services.Scan(scan => scan
+                .FromAssemblies(LoadAssemblies)
+                .AddClasses(classes => classes
+                    .AssignableTo(scopedServiceType)
+                    .Where(t => !t.IsDefined(denpendencyInjectType))
+                    .Where(t => t != scopedServiceType)
+                )
+                .UsingRegistrationStrategy(RegistrationStrategy.Skip)
+                .As(type => type.GetInterfaces().Where(i => !markerInterfaces.Contains(i)))
+                .WithScopedLifetime()
+            );
+
+            // Transient
+            services.Scan(scan => scan
+                .FromAssemblies(LoadAssemblies)
+                .AddClasses(classes => classes
+                    .AssignableTo(transientServiceType)
+                    .Where(t => !t.IsDefined(denpendencyInjectType))
+                    .Where(t => t != transientServiceType)
+                )
+                .UsingRegistrationStrategy(RegistrationStrategy.Skip)
+                .As(type => type.GetInterfaces().Where(i => !markerInterfaces.Contains(i)))
+                .WithTransientLifetime()
+            );
+
+            Console.WriteLine("服务注册扫描耗费{0}ms", stopWatch.ElapsedMilliseconds);
+            stopWatch.Stop();
         }
     }
 }

@@ -3,6 +3,7 @@ using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
 using Fancyx.Cache;
 using Fancyx.Core;
+using Fancyx.Core.AutoInject;
 using Fancyx.Core.Interfaces;
 using Fancyx.EfCore;
 using Fancyx.Shared.Keys;
@@ -10,7 +11,6 @@ using Fancyx.Shared.Keys;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using StackExchange.Redis;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -18,7 +18,8 @@ using Role = Fancyx.Admin.EfCore.Entities.System.Role;
 
 namespace Fancyx.Admin.Application.SharedService
 {
-    public class IdentitySharedService : IScopedDependency
+    [DependencyInject(AsSelf = true)]
+    public class IdentitySharedService
     {
         private readonly IRepository<UserRole> _userRoleRepository;
         private readonly IRepository<RoleMenu> _roleMenuRepository;

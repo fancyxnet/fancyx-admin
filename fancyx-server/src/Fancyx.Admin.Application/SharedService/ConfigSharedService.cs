@@ -1,6 +1,6 @@
 ﻿using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Cache;
-using Fancyx.Core.Interfaces;
+using Fancyx.Core.AutoInject;
 using Fancyx.EfCore;
 using Fancyx.Shared.Keys;
 
@@ -8,7 +8,8 @@ using StackExchange.Redis;
 
 namespace Fancyx.Admin.Application.SharedService
 {
-    public class ConfigSharedService : IScopedDependency
+    [DependencyInject(AsSelf = true)]
+    public class ConfigSharedService
     {
         private readonly IRepository<Config> _configRepository;
         private readonly ICacheClient _cache;
