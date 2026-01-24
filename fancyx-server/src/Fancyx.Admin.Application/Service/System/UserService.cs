@@ -154,7 +154,7 @@ namespace Fancyx.Admin.Application.Service.System
             return true;
         }
 
-        [LogRecord(LogRecordConsts.User, LogRecordConsts.UserResetPwdSubType, "{{id}}", LogRecordConsts.UserResetPwdContent)]
+        [LogRecord(LogRecordConsts.User, LogRecordConsts.UserResetPwdSubType, "{{Id}}", LogRecordConsts.UserResetPwdContent)]
         public async Task ResetUserPasswordAsync(ResetUserPwdRequest req)
         {
             var user = await _userRepository.FindAsync(req.UserId) ?? throw new EntityNotFoundException();
@@ -167,8 +167,8 @@ namespace Fancyx.Admin.Application.Service.System
             user.Password = EncryptionUtils.GenEncodingPassword(req.Password!, user.PasswordSalt);
             await _userRepository.UpdateAsync(user);
 
-            LogRecordContext.PutVariable("id", user.Id);
-            LogRecordContext.PutVariable("userName", user.UserName);
+            LogRecordContext.PutVariable("Id", user.Id.ToString());
+            LogRecordContext.PutVariable("UserName", user.UserName);
         }
 
         public Task<List<UserSimpleInfo>> GetUserSimpleInfosAsync(string? keyword)

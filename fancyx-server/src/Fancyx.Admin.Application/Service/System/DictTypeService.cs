@@ -9,6 +9,7 @@ using Fancyx.Admin.Application.IService.System;
 using Fancyx.Shared.Logger;
 using Fancyx.Admin.Application.IService.System.Models;
 using AutoMapper;
+using Fancyx.SnowflakeId;
 
 namespace Fancyx.Admin.Application.Service.System;
 
@@ -27,7 +28,7 @@ public class DictTypeService : IDictTypeService
         _mapper = mapper;
     }
 
-    [LogRecord(LogRecordConsts.DictType, LogRecordConsts.DictAddSubType, "{{dict.Id}}", LogRecordConsts.DictAddContent)]
+    [LogRecord(LogRecordConsts.DictType, LogRecordConsts.DictAddSubType, "{{Id}}", LogRecordConsts.DictAddContent)]
     public async Task AddDictTypeAsync(AddOrUpdateDictTypeRequest req)
     {
         if (await _dictTypeRepository.AnyAsync(x => x.Type.ToLower() == req.DictType.ToLower()))
@@ -37,26 +38,30 @@ public class DictTypeService : IDictTypeService
 
         var entity = new DictType
         {
+            Id = IdGenerater.Instance.NextId(),
             Name = req.Name,
             IsEnabled = req.IsEnabled,
             Type = req.DictType,
             Remark = req.Remark
         };
 
-        LogRecordContext.PutVariable("dict", entity);
+        LogRecordContext.PutVariable("Id", entity.Id.ToString());
+        LogRecordContext.PutVariable("Name", entity.Name!);
 
         await _dictTypeRepository.InsertAsync(entity);
     }
 
     [Transactional]
-    [LogRecord(LogRecordConsts.DictType, LogRecordConsts.DictDeleteSubType, "{{dict.Id}}", LogRecordConsts.DictDeleteContent)]
+    [LogRecord(LogRecordConsts.DictType, LogRecordConsts.DictDeleteSubType, "{{Id}}", LogRecordConsts.DictDeleteContent)]
     public async Task DeleteDictTypeAsync(string dictType)
     {
         var dict = await _dictTypeRepository.GetAsync(x => x.Type.ToLower() == dictType.ToLower()) ?? throw new EntityNotFoundException();
         await _dictDataRepository.DeleteAsync(x => x.DictType == dictType);
         await _dictTypeRepository.DeleteAsync(x => x.Type == dictType);
 
-        LogRecordContext.PutVariable("dict", dict);
+        LogRecordContext.PutVariable("Id", dict.Id.ToString());
+        LogRecordContext.PutVariable("Name", dict.Name);
+        LogRecordContext.PutVariable("DictType", dict.Type);
     }
 
     public async Task<PagedResult<DictTypeItem>> GetDictTypeListAsync(GetDictTypeListRequest req)
@@ -116,14 +121,14 @@ public class DictTypeService : IDictTypeService
     }
 
     [Transactional]
-    [LogRecord(LogRecordConsts.DictType, LogRecordConsts.DictBatchDeleteSubType, "{{ids}}", LogRecordConsts.DictBatchDeleteContent)]
+    [LogRecord(LogRecordConsts.DictType, LogRecordConsts.DictBatchDeleteSubType, "{{Ids}}", LogRecordConsts.DictBatchDeleteContent)]
     public async Task DeleteDictTypesAsync(long[] ids)
     {
         var dictTypes = await _dictTypeRepository.Where(x => ids.Contains(x.Id)).SelectToListAsync(x => x.Type);
         await _dictDataRepository.DeleteAsync(x => dictTypes.Contains(x.DictType));
         await _dictTypeRepository.DeleteAsync(x => ids.Contains(x.Id));
 
-        LogRecordContext.PutVariable("ids", string.Join(',', ids));
+        LogRecordContext.PutVariable("Ids", string.Join(',', ids));
     }
 
     public async Task<DictTypeItem> GetDictTypeAsync(long id)

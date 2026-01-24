@@ -34,12 +34,12 @@ namespace Fancyx.Admin.Application.Service.System
             return true;
         }
 
-        [LogRecord(LogRecordConsts.DictData, LogRecordConsts.DictDataDeleteSubType, "{{ids}}", LogRecordConsts.DictDataDeleteContent)]
+        [LogRecord(LogRecordConsts.DictData, LogRecordConsts.DictDataDeleteSubType, "{{Ids}}", LogRecordConsts.DictDataDeleteContent)]
         public async Task<bool> DeleteDictDataAsync(long[] ids)
         {
             await _dictDataRepository.DeleteAsync(x => ids.Contains(x.Id));
 
-            LogRecordContext.PutVariable("ids", string.Join(',', ids));
+            LogRecordContext.PutVariable("Ids", string.Join(',', ids));
 
             return true;
         }
@@ -55,7 +55,7 @@ namespace Fancyx.Admin.Application.Service.System
             return new PagedResult<DictDataItem>(resp.Total, _mapper.Map<List<DictData>, List<DictDataItem>>(resp.Items));
         }
 
-        [LogRecord(LogRecordConsts.DictData, LogRecordConsts.DictDataUpdateSubType, "{{id}}", LogRecordConsts.DictDataUpdateContent)]
+        [LogRecord(LogRecordConsts.DictData, LogRecordConsts.DictDataUpdateSubType, "{{Id}}", LogRecordConsts.DictDataUpdateContent)]
         public async Task<bool> UpdateDictDataAsync(AddOrUpdateDictDataRequest req)
         {
             if (!req.Id.HasValue) throw new ArgumentNullException(nameof(req.Id));
@@ -74,8 +74,9 @@ namespace Fancyx.Admin.Application.Service.System
             entity.IsEnabled = req.IsEnabled;
             await _dictDataRepository.UpdateAsync(entity);
 
-            LogRecordContext.PutVariable("id", entity.Id);
-            LogRecordContext.PutVariable("after", entity);
+            LogRecordContext.PutVariable("Id", entity.Id.ToString());
+            LogRecordContext.PutVariable("Value", entity.Value);
+            LogRecordContext.PutVariable("IsEnabled", entity.IsEnabled.ToString());
             return true;
         }
 

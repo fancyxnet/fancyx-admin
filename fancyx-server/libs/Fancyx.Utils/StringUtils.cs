@@ -206,5 +206,17 @@ namespace Fancyx.Utils
 
         [GeneratedRegex(@"src[\s]*=[\s]*['""]?javascript:", RegexOptions.IgnoreCase, "zh-CN")]
         private static partial Regex SrcRegex();
+
+        public static string ReplacePlaceholders(string input, IDictionary<string, string> map)
+        {
+            if (string.IsNullOrEmpty(input) || !input.Contains("{{")) return input;
+
+            var result = input;
+            foreach (var kvp in map)
+            {
+                result = result.Replace("{{" + kvp.Key + "}}", kvp.Value);
+            }
+            return result;
+        }
     }
 }

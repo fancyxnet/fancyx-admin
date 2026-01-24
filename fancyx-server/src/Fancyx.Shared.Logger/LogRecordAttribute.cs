@@ -15,9 +15,9 @@ using System.Diagnostics;
 namespace Fancyx.Shared.Logger
 {
     /// <summary>
-    /// 操作日志记录，加在业务方法上（只适合异步方法）
+    /// 操作日志记录，加在业务方法上
     /// </summary>
-    public sealed class LogRecordAttribute : AopAttributeBase
+    public sealed partial class LogRecordAttribute : AopAttributeBase
     {
         public string Type { get; init; }
         public string SubType { get; init; }
@@ -39,11 +39,13 @@ namespace Fancyx.Shared.Logger
             var msg = new LogRecordMessage();
             try
             {
-                var map = LogRecordContext.GetVariables().ToDictionary();
-                msg.Type = TemplateUtils.Render(Type!, map);
-                msg.SubType = TemplateUtils.Render(SubType!, map);
-                msg.BizNo = TemplateUtils.Render(BizNo!, map);
-                msg.Content = TemplateUtils.Render(Content!, map);
+                var map = LogRecordContext.GetVariables();
+
+                msg.Type = StringUtils.ReplacePlaceholders(Type, map);
+                msg.SubType = StringUtils.ReplacePlaceholders(SubType, map);
+                msg.BizNo = StringUtils.ReplacePlaceholders(BizNo, map);
+                msg.Content = StringUtils.ReplacePlaceholders(Content, map);
+
                 msg.CreationTime = DateTime.Now;
                 var httpContext = ServiceProvider.GetService<IHttpContextAccessor>()?.HttpContext;
                 if (httpContext != null)
@@ -62,8 +64,8 @@ namespace Fancyx.Shared.Logger
             }
             catch (Exception ex)
             {
-                var logger = ServiceProvider.GetService<ILogger<LogRecordAttribute>>();
-                logger?.LogError(ex, "操作日志[{type}]发布异常", msg.Type);
+                var loggerFactory = ServiceProvider.GetRequiredService<ILoggerFactory>();
+                loggerFactory.CreateLogger(nameof(LogRecordAttribute))?.LogError(ex, "操作日志[{type}]发布异常", msg.Type);
             }
         }
 

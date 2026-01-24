@@ -72,7 +72,7 @@ namespace Fancyx.Admin.Application.Service.System
             }
         }
 
-        [LogRecord(LogRecordConsts.Config, LogRecordConsts.ConfigUpdateSubType, "{{id}}", LogRecordConsts.ConfigUpdateContent)]
+        [LogRecord(LogRecordConsts.Config, LogRecordConsts.ConfigUpdateSubType, "{{Id}}", LogRecordConsts.ConfigUpdateContent)]
         public async Task UpdateConfigAsync(AddOrUpdateConfigRequest req)
         {
             var entity = await _configRepository.FindAsync(req.Id) ?? throw new EntityNotFoundException();
@@ -97,8 +97,10 @@ namespace Fancyx.Admin.Application.Service.System
                 _configSharedService.ClearGroupCache(entity.GroupKey);
             }
 
-            LogRecordContext.PutVariable("id", entity.Id);
-            LogRecordContext.PutVariable("after", entity);
+            LogRecordContext.PutVariable("Id", entity.Id.ToString());
+            LogRecordContext.PutVariable("Key", entity.Key);
+            LogRecordContext.PutVariable("Value", entity.Value);
+            LogRecordContext.PutVariable("GroupKey", entity.GroupKey ?? "");
         }
 
         public async Task<ConfigItem> GetConfigAsync(long id)

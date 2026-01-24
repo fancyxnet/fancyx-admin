@@ -5,8 +5,7 @@ namespace Fancyx.Shared.Logger
 {
     public class LogRecordContext
     {
-        private static readonly ConcurrentDictionary<string, ConcurrentDictionary<string, object>> KeyValues = [];
-        private static readonly Lock _lockObj = new();
+        private static readonly ConcurrentDictionary<string, ConcurrentDictionary<string, string>> KeyValues = [];
 
         private static string? TraceId
         {
@@ -18,22 +17,19 @@ namespace Fancyx.Shared.Logger
         {
             if (!string.IsNullOrEmpty(TraceId))
             {
-                KeyValues.AddOrUpdate(TraceId, new ConcurrentDictionary<string, object>(), (key, oldValue) => []);
+                KeyValues.AddOrUpdate(TraceId, new ConcurrentDictionary<string, string>(), (key, oldValue) => []);
             }
         }
 
-        public static void PutVariable(string name, object value)
+        public static void PutVariable(string name, string value)
         {
             if (string.IsNullOrEmpty(TraceId)) return;
 
-            lock (_lockObj)
-            {
-                if (!KeyValues.TryGetValue(TraceId, out ConcurrentDictionary<string, object>? value1)) return;
-                value1.AddOrUpdate(name, value, (key, oldValue) => value);
-            }
+            if (!KeyValues.TryGetValue(TraceId, out ConcurrentDictionary<string, string>? single)) return;
+            single.AddOrUpdate(name, value, (key, oldValue) => value);
         }
 
-        public static ConcurrentDictionary<string, object> GetVariables()
+        public static ConcurrentDictionary<string, string> GetVariables()
         {
             if (string.IsNullOrEmpty(TraceId)) return [];
 
