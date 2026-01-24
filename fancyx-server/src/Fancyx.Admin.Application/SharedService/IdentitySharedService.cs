@@ -69,13 +69,13 @@ namespace Fancyx.Admin.Application.SharedService
                 return cacheValue!;
             }
 
-            var roles = (from r in _roleRepository.GetQueryable()
+            var roles = await (from r in _roleRepository.GetQueryable()
                          join ur in _userRoleRepository.GetQueryable() on r.Id equals ur.RoleId
                          where ur.UserId == userId && r.IsEnabled
                          group r by new { r.Id, r.RoleName } into g
-                         select new { g.Key.Id, g.Key.RoleName }).ToList();
-            var roleIds = roles.Select(x => x.Id).ToArray();
-            var menus = (from m in _menuRepository.GetQueryable()
+                         select new { g.Key.Id, g.Key.RoleName }).ToListAsync();
+            var roleIds = roles.Select(x => x.Id).ToList();
+            var menus = await (from m in _menuRepository.GetQueryable()
                          join rm in _roleMenuRepository.GetQueryable() on m.Id equals rm.MenuId
                          where roleIds.Contains(rm.RoleId)
                          select new
@@ -84,7 +84,7 @@ namespace Fancyx.Admin.Application.SharedService
                              m.Permission,
                              m.MenuType,
                              m.Display,
-                         }).ToList();
+                         }).ToListAsync();
             if (MultiTenancyConsts.IsEnabled)
             {
                 var tenantMenuIds = await this.GetTenantMenusAsync(_currentTenant.TenantId!);
@@ -95,7 +95,7 @@ namespace Fancyx.Admin.Application.SharedService
                 UserId = userId,
                 Roles = [.. roles.Select(c => c.RoleName)],
                 Auths = menus.Where(c => !string.IsNullOrEmpty(c.Permission) && c.MenuType == MenuType.Button && c.Display).Select(c => c.Permission!).Distinct().ToArray(),
-                RoleIds = roleIds,
+                RoleIds = [..roleIds],
                 MenuIds = [.. menus.Select(x => x.Id)]
             };
             await _cache.SetAsync(key, rs);

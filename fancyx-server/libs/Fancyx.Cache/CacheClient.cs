@@ -33,7 +33,7 @@ namespace Fancyx.Cache
                 return default;
             }
 
-            return JsonSerializer.Deserialize<T>(value!);
+            return JsonSerializer.Deserialize<T>(value!.ToString());
         }
 
         public async Task<string[]?> KeyPatternAsync(string pattern, int count = 100)
