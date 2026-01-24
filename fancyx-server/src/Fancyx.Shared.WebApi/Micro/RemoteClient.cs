@@ -1,6 +1,4 @@
-﻿using Autofac.Core;
-
-using Fancyx.Consul.Discover;
+﻿using Fancyx.Consul.Discover;
 using Fancyx.Shared.Models;
 using Fancyx.Shared.WebApi.Filters;
 using Grpc.Core;

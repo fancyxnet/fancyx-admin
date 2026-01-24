@@ -4,14 +4,14 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Fancyx.EfCore.Aop
 {
     /// <summary>
-    /// 自动将代码块放在事务中执行，异常自动回滚（只适合异步方法）
+    /// 自动将代码块放在事务中执行，异常自动回滚
     /// 如果方法内部使用了Dapper API，使用此注解引发报错，参见 https://mysqlconnector.net/troubleshooting/transaction-usage/
     /// </summary>
-    public class AsyncTransactionalAttribute : AsyncAopAttributeBase
+    public class TransactionalAttribute : AopAttributeBase
     {
         private IUnitOfWork? _uow;
 
-        public AsyncTransactionalAttribute() : base(true)
+        public TransactionalAttribute() : base(true)
         {
         }
 
@@ -26,7 +26,7 @@ namespace Fancyx.EfCore.Aop
 
         public override async Task OnBeforeAsync()
         {
-            var unitOfWorkManager = ServiceProvider.GetService<IUnitOfWorkManager>();
+            var unitOfWorkManager = ServiceScopeAccessor.Current.GetService<IUnitOfWorkManager>();
             if (unitOfWorkManager != null)
             {
                 _uow = await unitOfWorkManager.BeginAsync();
@@ -35,7 +35,7 @@ namespace Fancyx.EfCore.Aop
 
         public override async Task OnExceptionAsync()
         {
-            if(_uow != null)
+            if (_uow != null)
             {
                 await _uow.RollbackAsync();
                 await _uow.DisposeAsync();

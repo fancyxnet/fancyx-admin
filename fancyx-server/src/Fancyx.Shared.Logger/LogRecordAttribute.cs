@@ -17,14 +17,14 @@ namespace Fancyx.Shared.Logger
     /// <summary>
     /// 操作日志记录，加在业务方法上（只适合异步方法）
     /// </summary>
-    public sealed class AsyncLogRecordAttribute : AsyncAopAttributeBase
+    public sealed class LogRecordAttribute : AopAttributeBase
     {
         public string Type { get; init; }
         public string SubType { get; init; }
         public string BizNo { get; init; }
         public string Content { get; init; }
 
-        public AsyncLogRecordAttribute(string type, string subType, string bizNo, string content) : base(true)
+        public LogRecordAttribute(string type, string subType, string bizNo, string content) : base(true)
         {
             Type = type;
             SubType = subType;
@@ -62,7 +62,7 @@ namespace Fancyx.Shared.Logger
             }
             catch (Exception ex)
             {
-                var logger = ServiceProvider.GetService<ILogger<AsyncLogRecordAttribute>>();
+                var logger = ServiceProvider.GetService<ILogger<LogRecordAttribute>>();
                 logger?.LogError(ex, "操作日志[{type}]发布异常", msg.Type);
             }
         }

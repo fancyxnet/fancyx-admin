@@ -249,7 +249,7 @@ namespace Fancyx.Admin.Application.Service.System
             await this.InsertGenTableColumnsFromDb(genTable.TableId, tableInfo.TableName);
         }
 
-        [AsyncTransactional]
+        [Transactional]
         public async Task DeleteGenTableAsync(long tableId)
         {
             await _genTableColumnRepository.DeleteAsync(x => x.TableId == tableId);
@@ -273,7 +273,7 @@ namespace Fancyx.Admin.Application.Service.System
             await _genTableRepository.UpdateAsync(genTable);
         }
 
-        [AsyncTransactional]
+        [Transactional]
         public async Task SaveGenColumnInfoAsync(List<SaveGenColumnInfoItem> dtos)
         {
             var columnIds = dtos.Select(x => x.ColumnId).ToList();

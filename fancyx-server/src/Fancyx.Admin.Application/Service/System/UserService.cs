@@ -76,7 +76,7 @@ namespace Fancyx.Admin.Application.Service.System
             return user.Id;
         }
 
-        [AsyncTransactional]
+        [Transactional]
         public async Task<bool> AssignRoleAsync(AssignRoleRequest req)
         {
             await _userRoleRepository.DeleteAsync(x => x.UserId == req.UserId);
@@ -154,7 +154,7 @@ namespace Fancyx.Admin.Application.Service.System
             return true;
         }
 
-        [AsyncLogRecord(LogRecordConsts.User, LogRecordConsts.UserResetPwdSubType, "{{id}}", LogRecordConsts.UserResetPwdContent)]
+        [LogRecord(LogRecordConsts.User, LogRecordConsts.UserResetPwdSubType, "{{id}}", LogRecordConsts.UserResetPwdContent)]
         public async Task ResetUserPasswordAsync(ResetUserPwdRequest req)
         {
             var user = await _userRepository.FindAsync(req.UserId) ?? throw new EntityNotFoundException();

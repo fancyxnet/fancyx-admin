@@ -196,7 +196,7 @@ namespace Fancyx.Admin.Application.Service.System
             }
         }
 
-        [AsyncTransactional]
+        [Transactional]
         public async Task AssignDataScopeAsync(AssignDataScopeRequest req)
         {
             var role = await _roleRepository.FindAsync(req.RoleId);

@@ -2,32 +2,109 @@
 
 namespace Fancyx.Core.AutoInject
 {
-    public class AopAttributeInterceptor : IInterceptor
+    public class AopAttributeInterceptor : AsyncInterceptorBase, IAsyncInterceptor
     {
-        public void Intercept(IInvocation invocation)
+        private readonly IServiceProvider _serviceProvider;
+
+        public AopAttributeInterceptor(IServiceProvider serviceProvider)
         {
-            if (invocation.MethodInvocationTarget?.GetCustomAttributes(typeof(AopAttributeBase), false)
-                .FirstOrDefault() is AopAttributeBase aopAttribute)
+            _serviceProvider = serviceProvider;
+        }
+
+        protected override async Task InterceptAsync(IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task> proceed)
+        {
+            var attrs = invocation.MethodInvocationTarget?.GetCustomAttributes(typeof(AopAttributeBase), false);
+            if (attrs != null)
             {
-                aopAttribute.OnBefore();
-                try
+                var realAttrs = new List<AopAttributeBase>();
+                foreach (var item in attrs)
                 {
-                    invocation.Proceed();
-                }
-                catch (Exception)
-                {
-                    aopAttribute.OnException();
-                    if (aopAttribute.ThrowException)
+                    if (item is AopAttributeBase asyncAopAttribute)
                     {
-                        throw;
+                        realAttrs.Add(asyncAopAttribute);
                     }
                 }
 
-                aopAttribute.OnAfter();
+                var beforeTasks = realAttrs.Select(x =>
+                {
+                    x.SetServiceProvider(_serviceProvider);
+                    return x.OnBeforeAsync();
+                });
+                await Task.WhenAll(beforeTasks);
+
+                try
+                {
+                    await proceed(invocation, proceedInfo);
+                }
+                catch (Exception)
+                {
+                    var isThrow = false;
+                    var exceptionTasks = realAttrs.Select(x =>
+                    {
+                        if (!isThrow && x.ThrowException)
+                        {
+                            isThrow = true;
+                        }
+                        return x.OnExceptionAsync();
+                    });
+                    await Task.WhenAll(exceptionTasks);
+                    if (isThrow) throw;
+                }
+                await Task.WhenAll(realAttrs.Select(x => x.OnAfterAsync()));
             }
             else
             {
-                invocation.Proceed();
+                await proceed(invocation, proceedInfo);
+            }
+        }
+
+        protected override async Task<TResult> InterceptAsync<TResult>(IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task<TResult>> proceed)
+        {
+            var attrs = invocation.MethodInvocationTarget?.GetCustomAttributes(typeof(AopAttributeBase), false);
+            if (attrs != null)
+            {
+                var realAttrs = new List<AopAttributeBase>();
+                foreach (var item in attrs)
+                {
+                    if (item is AopAttributeBase asyncAopAttribute)
+                    {
+                        realAttrs.Add(asyncAopAttribute);
+                    }
+                }
+
+                var beforeTasks = realAttrs.Select(x =>
+                {
+                    x.SetServiceProvider(_serviceProvider);
+                    return x.OnBeforeAsync();
+                });
+                await Task.WhenAll(beforeTasks);
+
+                TResult? result = default;
+                try
+                {
+                    result = await proceed(invocation, proceedInfo);
+                }
+                catch (Exception)
+                {
+                    var isThrow = false;
+                    var exceptionTasks = realAttrs.Select(x =>
+                    {
+                        if (!isThrow && x.ThrowException)
+                        {
+                            isThrow = true;
+                        }
+                        return x.OnExceptionAsync();
+                    });
+                    await Task.WhenAll(exceptionTasks);
+                    if (isThrow) throw;
+                }
+
+                await Task.WhenAll(realAttrs.Select(x => x.OnAfterAsync()));
+                return result!;
+            }
+            else
+            {
+                return await proceed(invocation, proceedInfo);
             }
         }
     }

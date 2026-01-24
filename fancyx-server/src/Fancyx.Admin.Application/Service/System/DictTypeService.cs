@@ -27,7 +27,7 @@ public class DictTypeService : IDictTypeService
         _mapper = mapper;
     }
 
-    [AsyncLogRecord(LogRecordConsts.DictType, LogRecordConsts.DictAddSubType, "{{dict.Id}}", LogRecordConsts.DictAddContent)]
+    [LogRecord(LogRecordConsts.DictType, LogRecordConsts.DictAddSubType, "{{dict.Id}}", LogRecordConsts.DictAddContent)]
     public async Task AddDictTypeAsync(AddOrUpdateDictTypeRequest req)
     {
         if (await _dictTypeRepository.AnyAsync(x => x.Type.ToLower() == req.DictType.ToLower()))
@@ -48,8 +48,8 @@ public class DictTypeService : IDictTypeService
         await _dictTypeRepository.InsertAsync(entity);
     }
 
-    [AsyncTransactional]
-    [AsyncLogRecord(LogRecordConsts.DictType, LogRecordConsts.DictDeleteSubType, "{{dict.Id}}", LogRecordConsts.DictDeleteContent)]
+    [Transactional]
+    [LogRecord(LogRecordConsts.DictType, LogRecordConsts.DictDeleteSubType, "{{dict.Id}}", LogRecordConsts.DictDeleteContent)]
     public async Task DeleteDictTypeAsync(string dictType)
     {
         var dict = await _dictTypeRepository.GetAsync(x => x.Type.ToLower() == dictType.ToLower()) ?? throw new EntityNotFoundException();
@@ -82,7 +82,7 @@ public class DictTypeService : IDictTypeService
         };
     }
 
-    [AsyncTransactional]
+    [Transactional]
     public async Task UpdateDictTypeAsync(AddOrUpdateDictTypeRequest req)
     {
         var entity = await _dictTypeRepository.FindAsync(req.Id) ?? throw new EntityNotFoundException();
@@ -115,8 +115,8 @@ public class DictTypeService : IDictTypeService
             .SelectToListAsync(x => new AppOption(x.Label, x.Value));
     }
 
-    [AsyncTransactional]
-    [AsyncLogRecord(LogRecordConsts.DictType, LogRecordConsts.DictBatchDeleteSubType, "{{ids}}", LogRecordConsts.DictBatchDeleteContent)]
+    [Transactional]
+    [LogRecord(LogRecordConsts.DictType, LogRecordConsts.DictBatchDeleteSubType, "{{ids}}", LogRecordConsts.DictBatchDeleteContent)]
     public async Task DeleteDictTypesAsync(long[] ids)
     {
         var dictTypes = await _dictTypeRepository.Where(x => ids.Contains(x.Id)).SelectToListAsync(x => x.Type);

@@ -32,7 +32,7 @@ namespace Fancyx.Erp.Application.Service.Products
             _dictClient = dictClient;
         }
 
-        [AsyncTransactional]
+        [Transactional]
         public async Task AddProductAsync(AddOrUpdateProductRequest req)
         {
             var codeIsExist = await _productRepository.AnyAsync(x => x.Code == req.Code);
@@ -56,7 +56,7 @@ namespace Fancyx.Erp.Application.Service.Products
             }
         }
 
-        [AsyncTransactional]
+        [Transactional]
         public async Task DeleteProductAsync(long id)
         {
             var hasStock = await _inventoryRepository.AnyAsync(x => x.ProductId == id);
@@ -83,7 +83,7 @@ namespace Fancyx.Erp.Application.Service.Products
             return res;
         }
 
-        [AsyncTransactional]
+        [Transactional]
         public async Task UpdateProductAsync(UpdateProductRequest req)
         {
             var product = await _productRepository.FindAsync(req.Id) ?? throw new EntityNotFoundException();

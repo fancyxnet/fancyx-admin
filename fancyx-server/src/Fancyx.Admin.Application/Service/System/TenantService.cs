@@ -112,7 +112,7 @@ namespace Fancyx.Admin.Application.Service.System
             }
         }
 
-        [AsyncTransactional]
+        [Transactional]
         public async Task AssignTenantMenuAsync(AssignTenantMenuRequest req)
         {
             await _tenantMenuRepository.DeleteAsync(x => x.TenantId == req.TenantId);
@@ -138,7 +138,7 @@ namespace Fancyx.Admin.Application.Service.System
             return _tenantMenuRepository.Where(x => x.TenantId == id).SelectToListAsync(x => x.MenuId);
         }
 
-        [AsyncTransactional]
+        [Transactional]
         public async Task<TenantAccountInfo> CreateTenantAccountAsync(CreateTenantAccountRequest req)
         {
             if (req.ErrCount > 3) throw new BusinessException("创建失败，请联系管理员");

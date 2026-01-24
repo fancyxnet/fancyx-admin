@@ -129,7 +129,7 @@ const Tenant: React.FC = () => {
   return (<div className='fancyx-table-wrapper'>
     <ProTable<TenantItem, GetTenantListRequest>
       actionRef={actionRef}
-      rowKey="id"
+      rowKey="tenantId"
       columns={columns}
       request={async (
         params: GetTenantListRequest

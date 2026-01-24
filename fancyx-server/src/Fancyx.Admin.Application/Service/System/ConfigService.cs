@@ -72,7 +72,7 @@ namespace Fancyx.Admin.Application.Service.System
             }
         }
 
-        [AsyncLogRecord(LogRecordConsts.Config, LogRecordConsts.ConfigUpdateSubType, "{{id}}", LogRecordConsts.ConfigUpdateContent)]
+        [LogRecord(LogRecordConsts.Config, LogRecordConsts.ConfigUpdateSubType, "{{id}}", LogRecordConsts.ConfigUpdateContent)]
         public async Task UpdateConfigAsync(AddOrUpdateConfigRequest req)
         {
             var entity = await _configRepository.FindAsync(req.Id) ?? throw new EntityNotFoundException();
