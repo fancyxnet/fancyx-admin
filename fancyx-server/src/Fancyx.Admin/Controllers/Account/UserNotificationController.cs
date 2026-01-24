@@ -25,7 +25,7 @@ namespace Fancyx.Admin.Controllers.Account
         }
 
         [HttpPut("Readed")]
-        public async Task<AppResponse<bool>> ReadedAsync([FromBody] long[] ids)
+        public async Task<AppResponse<bool>> ReadedAsync([FromBody] List<long> ids)
         {
             await _userNotificationService.ReadedAsync(ids);
             return Result.Ok();

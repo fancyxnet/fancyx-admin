@@ -62,7 +62,7 @@ namespace Fancyx.Admin.Application.Service.System
             return true;
         }
 
-        public async Task<bool> DeleteMenusAsync(long[] ids)
+        public async Task<bool> DeleteMenusAsync(List<long> ids)
         {
             var childIds = await _menuRepository.Where(x => x.ParentId.HasValue && ids.Contains(x.ParentId.Value)).Select(x => x.Id).ToListAsync();
             var isCheckAllChildren = childIds.All(c => ids.Contains(c));

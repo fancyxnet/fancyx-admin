@@ -31,7 +31,7 @@ namespace Fancyx.Admin.Application.IService.System
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        Task<bool> DeleteMenusAsync(long[] ids);
+        Task<bool> DeleteMenusAsync(List<long> ids);
 
         /// <summary>
         /// 获取菜单组成的选项树

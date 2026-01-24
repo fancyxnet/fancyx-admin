@@ -122,7 +122,7 @@ public class DictTypeService : IDictTypeService
 
     [Transactional]
     [LogRecord(LogRecordConsts.DictType, LogRecordConsts.DictBatchDeleteSubType, "{{Ids}}", LogRecordConsts.DictBatchDeleteContent)]
-    public async Task DeleteDictTypesAsync(long[] ids)
+    public async Task DeleteDictTypesAsync(List<long> ids)
     {
         var dictTypes = await _dictTypeRepository.Where(x => ids.Contains(x.Id)).SelectToListAsync(x => x.Type);
         await _dictDataRepository.DeleteAsync(x => dictTypes.Contains(x.DictType));

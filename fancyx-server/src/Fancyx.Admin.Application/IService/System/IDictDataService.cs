@@ -1,5 +1,6 @@
 using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Core.Interfaces;
+using System.Collections.Generic;
 
 namespace Fancyx.Admin.Application.IService.System
 {
@@ -31,7 +32,7 @@ namespace Fancyx.Admin.Application.IService.System
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        Task<bool> DeleteDictDataAsync(long[] ids);
+        Task<bool> DeleteDictDataAsync(List<long> ids);
 
         /// <summary>
         /// 字典详情

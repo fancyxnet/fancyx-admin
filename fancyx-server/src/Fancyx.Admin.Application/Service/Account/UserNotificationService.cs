@@ -56,7 +56,7 @@ namespace Fancyx.Admin.Application.Service.Account
             return result;
         }
 
-        public async Task ReadedAsync(long[] ids)
+        public async Task ReadedAsync(List<long> ids)
         {
             var now = DateTime.Now;
             await _repository.Where(x => x.UserId == _currentUser.Id && ids.Contains(x.Id))

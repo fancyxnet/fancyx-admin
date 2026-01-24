@@ -31,7 +31,7 @@ namespace Fancyx.Admin.Application.IService.System
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        Task DeleteNotificationAsync(long[] ids);
+        Task DeleteNotificationAsync(List<long> ids);
 
         /// <summary>
         /// 通知详情

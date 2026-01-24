@@ -16,7 +16,7 @@ namespace Fancyx.Admin.Application.IService.Account
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        Task ReadedAsync(long[] ids);
+        Task ReadedAsync(List<long> ids);
 
         /// <summary>
         /// 我的通知导航栏信息

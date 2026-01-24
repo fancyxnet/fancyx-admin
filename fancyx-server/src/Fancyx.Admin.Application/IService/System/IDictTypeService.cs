@@ -45,7 +45,7 @@ namespace Fancyx.Admin.Application.IService.System
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        Task DeleteDictTypesAsync(long[] ids);
+        Task DeleteDictTypesAsync(List<long> ids);
 
         /// <summary>
         /// 字典详情
