@@ -17,11 +17,11 @@
         /// <summary>
         /// 角色ID
         /// </summary>
-        public long[]? RoleIds { get; set; }
+        public List<long>? RoleIds { get; set; }
 
         /// <summary>
         /// 菜单ID
         /// </summary>
-        public long[]? MenuIds { get; set; }
+        public List<long>? MenuIds { get; set; }
     }
 }

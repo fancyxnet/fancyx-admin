@@ -245,7 +245,7 @@ namespace Fancyx.Admin.Application.Service.Account
         {
             var uid = _currentUser.Id!.Value;
             var permission = await _identitySharedService.GetUserPermissionAsync(uid);
-            if (permission.MenuIds == null || permission.MenuIds.Length <= 0) return [];
+            if (permission.MenuIds == null || permission.MenuIds.Count <= 0) return [];
 
             var all = await _menuRepository
                 .Where(x => permission.MenuIds.Contains(x.Id) && (x.MenuType == MenuType.Menu || x.MenuType == MenuType.Folder)).ToListAsync();

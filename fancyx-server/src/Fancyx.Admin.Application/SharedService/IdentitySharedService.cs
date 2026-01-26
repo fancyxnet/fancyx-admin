@@ -95,7 +95,7 @@ namespace Fancyx.Admin.Application.SharedService
                 UserId = userId,
                 Roles = [.. roles.Select(c => c.RoleName)],
                 Auths = menus.Where(c => !string.IsNullOrEmpty(c.Permission) && c.MenuType == MenuType.Button && c.Display).Select(c => c.Permission!).Distinct().ToArray(),
-                RoleIds = [..roleIds],
+                RoleIds = roleIds,
                 MenuIds = [.. menus.Select(x => x.Id)]
             };
             await _cache.SetAsync(key, rs);
@@ -206,7 +206,7 @@ namespace Fancyx.Admin.Application.SharedService
             if (await _cache.KeyExistsAsync(key)) return await _cache.GetAsync<DeptPowerData>(key);
 
             var userPermission = await GetUserPermissionAsync(userId);
-            if (userPermission.RoleIds == null || userPermission.RoleIds.Length == 0) return null;
+            if (userPermission.RoleIds == null || userPermission.RoleIds.Count == 0) return null;
             var powerTypes = await _roleRepository.Where(x => userPermission.RoleIds.Contains(x.Id)).Distinct().SelectToListAsync(x => x.DeptPowerType);
             if (powerTypes == null || powerTypes.Count == 0) return null;
 
