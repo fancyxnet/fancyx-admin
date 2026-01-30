@@ -7,7 +7,7 @@
   </PropertyGroup>
 	
   <ItemGroup>
-    <ProjectReference Include="..\..\libs\Fancyx.Core\Fancyx.Core.csproj" />
+	  <PackageReference Include="Fancyx.Core" Version="1.0.0" />
   </ItemGroup>
 
 </Project>

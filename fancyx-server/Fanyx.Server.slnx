@@ -1,17 +1,4 @@
 <Solution>
-  <Folder Name="/libs/">
-    <Project Path="libs/Fancyx.Cache/Fancyx.Cache.csproj" />
-    <Project Path="libs/Fancyx.Consul/Fancyx.Consul.csproj" />
-    <Project Path="libs/Fancyx.Core/Fancyx.Core.csproj" />
-    <Project Path="libs/Fancyx.EfCore/Fancyx.EfCore.csproj" />
-    <Project Path="libs/Fancyx.EventBus/Fancyx.EventBus.csproj" />
-    <Project Path="libs/Fancyx.Orleans/Fancyx.Orleans.csproj" />
-    <Project Path="libs/Fancyx.Serilog/Fancyx.Serilog.csproj" />
-    <Project Path="libs/Fancyx.SnowflakeId/Fancyx.SnowflakeId.csproj" />
-    <Project Path="libs/Fancyx.Storage/Fancyx.Storage.csproj" />
-    <Project Path="libs/Fancyx.Swagger/Fancyx.Swagger.csproj" />
-    <Project Path="libs/Fancyx.Utils/Fancyx.Utils.csproj" />
-  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
   </Folder>

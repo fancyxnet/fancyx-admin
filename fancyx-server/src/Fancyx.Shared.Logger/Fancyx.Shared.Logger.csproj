@@ -7,11 +7,11 @@
   </PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\libs\Fancyx.EfCore\Fancyx.EfCore.csproj" />
-	  <ProjectReference Include="..\..\libs\Fancyx.EventBus\Fancyx.EventBus.csproj" />
-	  <ProjectReference Include="..\..\libs\Fancyx.Core\Fancyx.Core.csproj" />
-	  <ProjectReference Include="..\..\libs\Fancyx.Serilog\Fancyx.Serilog.csproj" />
-	  <ProjectReference Include="..\..\libs\Fancyx.Utils\Fancyx.Utils.csproj" />
+      <PackageReference Include="Fancyx.EfCore" Version="1.0.0" />
+      <PackageReference Include="Fancyx.EventBus" Version="1.0.0" />
+      <PackageReference Include="Fancyx.Core" Version="1.0.0" />
+      <PackageReference Include="Fancyx.Serilog" Version="1.0.0" />
+      <PackageReference Include="Fancyx.Utils" Version="1.0.0" />
 	  <ProjectReference Include="..\Fancyx.Shared\Fancyx.Shared.csproj" />
 	</ItemGroup>
 </Project>
