@@ -12,7 +12,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="Fancyx.EventBus" Version="1.0.0" />
-		<PackageReference Include="Fancyx.Core" Version="1.0.0" />
 		<PackageReference Include="Fancyx.Cache" Version="1.0.0" />
 		<ProjectReference Include="..\Fancyx.Shared\Fancyx.Shared.csproj" />
 		<ProjectReference Include="..\Fancyx.Shared.Proto\Fancyx.Shared.Proto.csproj" />

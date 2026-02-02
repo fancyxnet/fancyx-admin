@@ -13,4 +13,6 @@ var app = builder.Build();
 
 app.InitializeApplication();
 
+MultiTenancyVars.SetIsEnabled(true);
+
 app.Run();

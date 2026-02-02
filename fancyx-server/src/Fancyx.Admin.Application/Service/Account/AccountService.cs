@@ -176,7 +176,7 @@ namespace Fancyx.Admin.Application.Service.Account
         private async Task CheckTenantIsEnabledAsync(string? tenantId)
         {
             var tenantIsEnabled = await _tenantRepository.AnyAsync(x => x.Id == tenantId && x.IsEnabled);
-            if (MultiTenancyConsts.IsEnabled && !tenantIsEnabled)
+            if (MultiTenancyVars.IsEnabled && !tenantIsEnabled)
             {
                 throw new BusinessException("租户已禁用");
             }

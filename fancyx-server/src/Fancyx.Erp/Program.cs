@@ -16,4 +16,6 @@ var app = builder.Build();
 app.UseMicroDiscovery();
 app.InitializeApplication();
 
+MultiTenancyVars.SetIsEnabled(true);
+
 app.Run();

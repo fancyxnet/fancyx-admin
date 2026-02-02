@@ -105,7 +105,7 @@ namespace Fancyx.Admin.Application.Service.System
             string? keyword, bool noTenantMenuFilter = false)
         {
             var query = _menuRepository.GetQueryable();
-            if (MultiTenancyConsts.IsEnabled && !noTenantMenuFilter)
+            if (MultiTenancyVars.IsEnabled && !noTenantMenuFilter)
             {
                 var tenantMenuIds = await _identitySharedService.GetTenantMenusAsync(_currentTenant.TenantId!);
                 query = query.Where(x => tenantMenuIds.Contains(x.Id));

@@ -57,7 +57,7 @@ namespace Fancyx.Admin.Application.Service.System
             if (req.MenuIds != null)
             {
                 //租户模式下，检查分配的菜单是否租户已有菜单
-                if (MultiTenancyConsts.IsEnabled)
+                if (MultiTenancyVars.IsEnabled)
                 {
                     var menuIds = await _identitySharedService.GetTenantMenusAsync(_currentTenant.TenantId ?? "");
                     if (req.MenuIds.Any(m => !menuIds.Contains(m)))

@@ -1,11 +1,11 @@
-﻿using Fancyx.Erp.EfCore.Entities;
-using Fancyx.Shared.EfCore;
+﻿using Fancyx.EfCore;
+using Fancyx.Erp.EfCore.Entities;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Erp.EfCore
 {
-    public class FancyxErpDbContext : AbstractEfCoreDbContext
+    public class FancyxErpDbContext : EfCoreDbContextBase
     {
         public FancyxErpDbContext(DbContextOptions<FancyxErpDbContext> options, IServiceProvider serviceProvider) : base(options, serviceProvider)
         {

@@ -2,13 +2,14 @@
 using Fancyx.Admin.EfCore.Entities.Gen;
 using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.Admin.EfCore.Entities.System;
+using Fancyx.EfCore;
 using Fancyx.Shared.EfCore;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.EfCore
 {
-    public class FancyxDbContext : AbstractEfCoreDbContext
+    public class FancyxDbContext : EfCoreDbContextBase
     {
         public FancyxDbContext(DbContextOptions<FancyxDbContext> options, IServiceProvider serviceProvider) : base(options, serviceProvider)
         {
