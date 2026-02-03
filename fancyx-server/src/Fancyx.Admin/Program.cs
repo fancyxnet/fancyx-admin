@@ -4,6 +4,8 @@ using Fancyx.Serilog;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.WebApi.Micro;
 
+MultiTenancyVars.SetIsEnabled(true);
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilogSetup(MicroServiceConsts.AdminApi);
@@ -15,7 +17,5 @@ var app = builder.Build();
 
 app.UseMicroDiscovery();
 app.InitializeApplication();
-
-MultiTenancyVars.SetIsEnabled(true);
 
 app.Run();

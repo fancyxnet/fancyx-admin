@@ -11,8 +11,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Fancyx.Core" Version="1.0.1" />
-		<PackageReference Include="Fancyx.Cache" Version="1.0.0" />
+		<PackageReference Include="Fancyx.Core" Version="1.0.4" />
+		<PackageReference Include="Fancyx.Cache" Version="1.0.4" />
 		<PackageReference Include="Fancyx.Consul" Version="1.0.0" />
 		<PackageReference Include="Fancyx.SnowflakeId" Version="1.0.0" />
 		<PackageReference Include="Fancyx.Utils" Version="1.0.0" />
