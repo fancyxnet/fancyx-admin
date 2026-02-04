@@ -1,8 +1,8 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
 
-using Fancyx.Core.Interfaces;
-using Fancyx.Utils.Expressions;
+using Cracker.AspNetCore.Interfaces;
+using Cracker.IdentityServer.Abstractions;
 
 namespace Fancyx.Shared.EfCore
 {

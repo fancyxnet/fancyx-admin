@@ -11,11 +11,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Fancyx.Core" Version="1.0.4" />
-		<PackageReference Include="Fancyx.Cache" Version="1.0.4" />
-		<PackageReference Include="Fancyx.Consul" Version="1.0.0" />
-		<PackageReference Include="Fancyx.SnowflakeId" Version="1.0.0" />
-		<PackageReference Include="Fancyx.Utils" Version="1.0.0" />
+		<PackageReference Include="Cracker.AspNetCore" Version="2.0.0" />
+		<PackageReference Include="Cracker.Caching" Version="2.0.0" />
+		<PackageReference Include="Cracker.Consul" Version="2.0.0" />
+		<PackageReference Include="Cracker.SnowflakeId" Version="2.0.0" />
+		<PackageReference Include="Cracker.Utils" Version="2.0.1" />
+		<PackageReference Include="Cracker.IdentityServer" Version="1.0.0" />
 		<ProjectReference Include="..\Fancyx.Shared.Proto\Fancyx.Shared.Proto.csproj" />
 		<ProjectReference Include="..\Fancyx.Shared\Fancyx.Shared.csproj" />
 	</ItemGroup>

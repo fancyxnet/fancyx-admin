@@ -6,16 +6,17 @@ using Fancyx.Admin.Application.SharedService;
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
-using Fancyx.Core.Interfaces;
-using Fancyx.EfCore;
-using Fancyx.EfCore.Aop;
+using Cracker.AspNetCore.Interfaces;
+using Cracker.EfCore;
+using Cracker.EfCore.Aop;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.EfCore;
 using Fancyx.Shared.Generated;
 using Fancyx.Shared.Logger;
-using Fancyx.Utils;
 
 using Microsoft.EntityFrameworkCore;
+using Cracker.IdentityServer.Abstractions;
+using Cracker.Utils;
 
 namespace Fancyx.Admin.Application.Service.System
 {

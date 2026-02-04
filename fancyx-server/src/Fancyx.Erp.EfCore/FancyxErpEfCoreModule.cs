@@ -1,7 +1,8 @@
-﻿using Fancyx.Core.AutoInject;
-using Fancyx.Core.Context;
-using Fancyx.EfCore;
+﻿using Cracker.AspNetCore.AutoInject;
+using Cracker.AspNetCore.Context;
+using Cracker.EfCore;
 using Fancyx.Shared.EfCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Fancyx.Erp.EfCore
 {
@@ -12,7 +13,10 @@ namespace Fancyx.Erp.EfCore
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            context.Services.AddEfCore<FancyxErpDbContext>(context.Configuration);
+            context.Services.AddEfCore<FancyxErpDbContext>(options =>
+            {
+                options.ConnectionString = context.Configuration.GetConnectionString("Default")!;
+            });
         }
 
         public override void Configure(ApplicationInitializationContext context)

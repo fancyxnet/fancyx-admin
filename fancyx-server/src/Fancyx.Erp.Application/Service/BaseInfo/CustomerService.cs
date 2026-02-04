@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Fancyx.EfCore;
+using Cracker.EfCore;
 using Fancyx.Erp.Application.IService.BaseInfo;
 using Fancyx.Erp.Application.IService.BaseInfo.Models;
 using Fancyx.Erp.EfCore.Entities;

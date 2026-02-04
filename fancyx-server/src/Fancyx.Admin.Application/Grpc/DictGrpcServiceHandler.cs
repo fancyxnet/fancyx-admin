@@ -1,5 +1,5 @@
 ﻿using Fancyx.Admin.EfCore.Entities.System;
-using Fancyx.EfCore;
+using Cracker.EfCore;
 using Fancyx.Internal.Grpc.System;
 using Grpc.Core;
 

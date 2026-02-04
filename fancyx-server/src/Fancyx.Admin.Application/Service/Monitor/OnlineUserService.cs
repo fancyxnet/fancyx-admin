@@ -1,14 +1,13 @@
 ﻿using Fancyx.Admin.Application.IService.Monitor;
 using Fancyx.Admin.Application.IService.Monitor.Models;
 using Fancyx.Admin.EfCore.Entities.System;
-using Fancyx.Cache;
-using Fancyx.Core.Interfaces;
-using Fancyx.EfCore;
+using Cracker.Caching;
+using Cracker.EfCore;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Keys;
 
 using Microsoft.EntityFrameworkCore;
-using StackExchange.Redis;
+using Cracker.IdentityServer.Abstractions;
 
 namespace Fancyx.Admin.Application.Service.Monitor
 {

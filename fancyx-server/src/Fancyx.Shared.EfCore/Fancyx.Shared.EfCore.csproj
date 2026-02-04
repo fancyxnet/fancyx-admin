@@ -7,7 +7,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Fancyx.EfCore" Version="1.0.4" />
-		<PackageReference Include="Fancyx.Utils" Version="1.0.0" />
+		<PackageReference Include="Cracker.EfCore" Version="2.0.0" />
+		<PackageReference Include="Cracker.Utils" Version="2.0.1" />
 	</ItemGroup>
 </Project>

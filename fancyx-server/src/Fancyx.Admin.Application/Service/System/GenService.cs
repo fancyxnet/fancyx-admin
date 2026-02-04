@@ -4,18 +4,19 @@ using Fancyx.Admin.Application.IService.System;
 using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Admin.EfCore.Entities.Gen;
 using Fancyx.Admin.EfCore.Repositories;
-using Fancyx.Core.Interfaces;
-using Fancyx.EfCore;
-using Fancyx.EfCore.Aop;
-using Fancyx.EfCore.BaseEntity;
+using Cracker.AspNetCore.Interfaces;
+using Cracker.EfCore;
+using Cracker.EfCore.Aop;
+using Cracker.EfCore.BaseEntity;
 using Fancyx.SnowflakeId;
-using Fancyx.Utils;
+using Cracker.Utils;
 
 using JinianNet.JNTemplate;
 
 using Microsoft.EntityFrameworkCore;
 
 using System.Text;
+using Cracker.IdentityServer.Abstractions;
 
 namespace Fancyx.Admin.Application.Service.System
 {

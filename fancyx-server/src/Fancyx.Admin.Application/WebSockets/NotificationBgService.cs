@@ -1,4 +1,4 @@
-﻿using Fancyx.Utils;
+﻿using Cracker.Utils;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Net.WebSockets;

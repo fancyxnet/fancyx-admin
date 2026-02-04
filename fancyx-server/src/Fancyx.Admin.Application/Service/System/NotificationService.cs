@@ -2,7 +2,7 @@
 using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.System;
-using Fancyx.EfCore;
+using Cracker.EfCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.Application.Service.System

@@ -1,7 +1,7 @@
 ﻿using Fancyx.Admin.Application.SharedService;
 using Fancyx.Admin.EfCore.Entities.System;
-using Fancyx.Cache;
-using Fancyx.EfCore;
+using Cracker.Caching;
+using Cracker.EfCore;
 using Fancyx.Internal.Grpc.System;
 using Fancyx.Shared.Keys;
 

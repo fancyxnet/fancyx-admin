@@ -1,4 +1,4 @@
-﻿using Fancyx.Core.Interfaces;
+﻿using Cracker.AspNetCore.Interfaces;
 using Fancyx.Erp.Application.IService.BaseInfo.Models;
 using Fancyx.Erp.EfCore.Entities;
 using Fancyx.Shared.Models;

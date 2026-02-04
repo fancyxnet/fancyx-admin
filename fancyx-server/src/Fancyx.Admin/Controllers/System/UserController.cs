@@ -1,7 +1,7 @@
 using Fancyx.Shared.WebApi.Attributes;
 using Fancyx.Shared.Logger;
 using Fancyx.Shared.Consts;
-using Fancyx.Utils;
+using Cracker.Utils;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

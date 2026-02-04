@@ -1,5 +1,5 @@
 using Fancyx.Admin.Application.IService.System.Models;
-using Fancyx.Core.Interfaces;
+using Cracker.AspNetCore.Interfaces;
 using System.Collections.Generic;
 
 namespace Fancyx.Admin.Application.IService.System

@@ -1,9 +1,10 @@
 ﻿using DotNetCore.CAP;
-using Fancyx.EfCore;
+using Cracker.EfCore;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Logger.Entities;
 using Fancyx.Shared.Logger.Message;
-using Fancyx.Utils;
+using Cracker.Utils;
+using Cracker.Utils;
 
 namespace Fancyx.Logger
 {

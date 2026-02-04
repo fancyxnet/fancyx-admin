@@ -1,11 +1,9 @@
 ﻿using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
-using Fancyx.Cache;
-using Fancyx.Core;
-using Fancyx.Core.AutoInject;
-using Fancyx.Core.Interfaces;
-using Fancyx.EfCore;
+using Cracker.Caching;
+using Cracker.AspNetCore.AutoInject;
+using Cracker.EfCore;
 using Fancyx.Shared.Keys;
 
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +13,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Role = Fancyx.Admin.EfCore.Entities.System.Role;
+using Cracker.IdentityServer.Abstractions;
+using Fancyx.Shared;
 
 namespace Fancyx.Admin.Application.SharedService
 {

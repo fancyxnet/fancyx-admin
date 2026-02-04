@@ -2,13 +2,12 @@
 using Fancyx.Admin.Application.SharedService;
 using Fancyx.Admin.Application.WebSockets;
 using Fancyx.Admin.EfCore.Entities.System;
-using Fancyx.Cache;
-using Fancyx.Core.AutoInject;
-using Fancyx.EfCore;
+using Cracker.Caching;
+using Cracker.AspNetCore.AutoInject;
+using Cracker.EfCore;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using RedLockNet.SERedis;
 
 using StackExchange.Redis;
 using System.Threading.Channels;
@@ -21,16 +20,14 @@ namespace Fancyx.Admin.Application.Jobs
         private readonly ILogger<NotificationJob> _logger;
         private readonly IRepository<Notification> _repository;
         private readonly ICacheClient _cache;
-        private readonly RedLockFactory _redLockFactory;
         private readonly ChannelWriter<NotificationMessage> _channelWriter;
 
         public NotificationJob(ILogger<NotificationJob> logger, IRepository<Notification> repository, ICacheClient cache
-            , RedLockFactory redLockFactory, ChannelWriter<NotificationMessage> channelWriter)
+            , ChannelWriter<NotificationMessage> channelWriter)
         {
             _logger = logger;
             _repository = repository;
             _cache = cache;
-            _redLockFactory = redLockFactory;
             _channelWriter = channelWriter;
         }
 
@@ -42,8 +39,9 @@ namespace Fancyx.Admin.Application.Jobs
                 var wait = TimeSpan.FromSeconds(10);
                 var retry = TimeSpan.FromSeconds(1);
 
-                using var redLock = await _redLockFactory.CreateLockAsync(nameof(NotificationJob), expiry, wait, retry);
-                if (redLock.IsAcquired)
+                //TODO:
+                //using var redLock = await _redLockFactory.CreateLockAsync(nameof(NotificationJob), expiry, wait, retry);
+                if (true)
                 {
                     var notis = await _repository.GetQueryable().IgnoreQueryFilters().Where(x => !x.IsReaded).ToListAsync();
                     var groupMap = notis.GroupBy(x => x.UserId).ToDictionary(k => k.Key, v => v.Count());

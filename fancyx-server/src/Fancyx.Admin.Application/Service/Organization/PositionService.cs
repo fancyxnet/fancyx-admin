@@ -5,7 +5,7 @@ using Fancyx.Admin.Application.Service.Organization.Models;
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.Admin.EfCore.Entities.System;
-using Fancyx.EfCore;
+using Cracker.EfCore;
 using System.Data;
 
 namespace Fancyx.Admin.Application.Service.Organization

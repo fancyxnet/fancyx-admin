@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using Fancyx.Admin.Application.IService.Account;
 using Fancyx.Admin.Application.IService.Account.Models;
-using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.System;
-using Fancyx.Core.Interfaces;
-using Fancyx.EfCore;
+using Cracker.AspNetCore.Interfaces;
+using Cracker.EfCore;
 using Microsoft.EntityFrameworkCore;
+using Cracker.IdentityServer.Abstractions;
 
 namespace Fancyx.Admin.Application.Service.Account
 {

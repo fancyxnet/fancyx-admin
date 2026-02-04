@@ -1,7 +1,7 @@
 ﻿using Fancyx.Admin.Application.IService.System;
 using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Shared.WebApi.Attributes;
-using Fancyx.Swagger;
+using Cracker.Swagger;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,8 +1,8 @@
-﻿using Fancyx.Internal.Grpc.System;
-using Fancyx.Cache;
+﻿using Cracker.Caching;
+using Cracker.IdentityServer.Abstractions;
+using Fancyx.Internal.Grpc.System;
 using Fancyx.Shared.Keys;
 using Microsoft.Extensions.DependencyInjection;
-using Fancyx.Core.Authorization;
 
 namespace Fancyx.Shared.WebApi.Handlers
 {
@@ -28,7 +28,7 @@ namespace Fancyx.Shared.WebApi.Handlers
         public async Task<bool> CheckTokenAsync(string userId, string sessionId, string token)
         {
             await using var scoped = _serviceProvider.CreateAsyncScope();
-            var cache = CacheFactory.Instance.CreateDatabase(prefix: $"tenant:{TenantManager.Current}:");
+            var cache = RedisHelper.Instance.CreateDatabase(prefix: $"tenant:{TenantManager.Current}:");
 
             string key = SystemCacheKey.AccessToken(userId, sessionId);
             var existToken = await cache.StringGetAsync(key);

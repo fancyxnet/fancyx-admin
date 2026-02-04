@@ -1,7 +1,8 @@
-﻿using Fancyx.Core.AutoInject;
-using Fancyx.Core.Context;
-using Fancyx.EfCore;
+﻿using Cracker.AspNetCore.AutoInject;
+using Cracker.AspNetCore.Context;
+using Cracker.EfCore;
 using Fancyx.Shared.EfCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Fancyx.Admin.EfCore
 {
@@ -12,7 +13,11 @@ namespace Fancyx.Admin.EfCore
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            context.Services.AddEfCore<FancyxDbContext>(context.Configuration);
+            context.Services.AddEfCore<FancyxDbContext>(options =>
+            {
+                options.ConnectionString = context.Configuration.GetConnectionString("Default")!;
+                options.EnabledMultiTenancy = true;
+            });
         }
 
         public override void Configure(ApplicationInitializationContext context)

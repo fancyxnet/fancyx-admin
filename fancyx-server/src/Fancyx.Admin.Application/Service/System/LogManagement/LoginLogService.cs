@@ -3,7 +3,7 @@ using Fancyx.Admin.Application.IService.System.LogManagement;
 using Fancyx.Admin.Application.IService.System.LogManagement.Models;
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.System;
-using Fancyx.EfCore;
+using Cracker.EfCore;
 
 namespace Fancyx.Admin.Application.Service.System.LogManagement
 {

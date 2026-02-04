@@ -6,20 +6,20 @@ using Fancyx.Admin.Application.IService.Account.Models;
 using Fancyx.Admin.Application.SharedService;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
-using Fancyx.Cache;
-using Fancyx.Core;
-using Fancyx.Core.Interfaces;
-using Fancyx.EfCore;
+using Cracker.Caching;
+using Cracker.EfCore;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.EfCore;
 using Fancyx.Shared.Keys;
 using Fancyx.SnowflakeId;
-using Fancyx.Utils;
+using Cracker.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using StackExchange.Redis;
 using System.Security.Claims;
+using Cracker.IdentityServer.Abstractions;
+using Cracker.Utils;
+using Fancyx.Shared;
 
 namespace Fancyx.Admin.Application.Service.Account
 {
@@ -187,7 +187,7 @@ namespace Fancyx.Admin.Application.Service.Account
             var loginLog = new LoginLog
             {
                 IsSuccess = true,
-                Ip = HttpUtils.GetIp(_httpContext),
+                Ip = "", //TODO:
                 OperationMsg = "登录成功",
                 UserName = userName,
                 TenantId = _currentTenant.TenantId

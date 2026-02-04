@@ -1,12 +1,11 @@
-﻿using Fancyx.Core.AutoInject;
-using Fancyx.Core.Context;
-using Fancyx.EfCore;
+﻿using Cracker.AspNetCore.AutoInject;
+using Cracker.AspNetCore.Context;
+using Cracker.EfCore;
 using Fancyx.Shared.Logger;
 
 namespace Fancyx.Logger
 {
     [DependsOn(
-        typeof(FancyxEfCoreModule),
         typeof(FancyxSharedLoggerModule)
     )]
     public class FancyxLoggerModule : ModuleBase
@@ -17,7 +16,10 @@ namespace Fancyx.Logger
 
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            context.Services.AddEfCore<LoggerDbContext>(context.Configuration);
+            context.Services.AddEfCore<LoggerDbContext>(options =>
+            {
+                options.ConnectionString = context.Configuration.GetConnectionString("Default")!;
+            });
         }
     }
 }

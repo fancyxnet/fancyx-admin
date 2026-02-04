@@ -1,5 +1,5 @@
-﻿using Fancyx.Core.Interfaces;
-using Fancyx.EfCore.BaseEntity;
+﻿using Cracker.IdentityServer.Abstractions;
+using Cracker.EfCore.BaseEntity;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fancyx.Erp.EfCore.Entities

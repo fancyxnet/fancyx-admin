@@ -4,7 +4,7 @@ using Fancyx.Admin.Application.IService.System;
 using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.System;
-using Fancyx.EfCore;
+using Cracker.EfCore;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Logger;
 

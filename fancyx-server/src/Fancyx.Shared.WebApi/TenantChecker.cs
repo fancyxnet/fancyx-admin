@@ -1,4 +1,5 @@
-﻿using Fancyx.Core.Interfaces;
+﻿using Cracker.AspNetCore.Interfaces;
+using Cracker.IdentityServer.Abstractions;
 using Fancyx.Internal.Grpc.System;
 
 namespace Fancyx.Shared.WebApi

@@ -1,4 +1,4 @@
-﻿using Fancyx.EfCore;
+﻿using Cracker.EfCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Logger

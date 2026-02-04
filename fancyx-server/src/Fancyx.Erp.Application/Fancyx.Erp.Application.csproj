@@ -11,8 +11,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Fancyx.EventBus" Version="1.0.4" />
-		<PackageReference Include="Fancyx.Cache" Version="1.0.4" />
+		<PackageReference Include="Cracker.EventBus" Version="1.0.4" />
+		<PackageReference Include="Cracker.Caching" Version="1.0.4" />
 		<ProjectReference Include="..\Fancyx.Shared\Fancyx.Shared.csproj" />
 		<ProjectReference Include="..\Fancyx.Shared.Proto\Fancyx.Shared.Proto.csproj" />
 		<ProjectReference Include="..\Fancyx.Shared.Logger\Fancyx.Shared.Logger.csproj" />

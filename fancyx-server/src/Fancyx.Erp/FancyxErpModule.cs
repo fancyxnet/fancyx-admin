@@ -1,5 +1,5 @@
-﻿using Fancyx.Core.AutoInject;
-using Fancyx.Core.Context;
+﻿using Cracker.AspNetCore.AutoInject;
+using Cracker.AspNetCore.Context;
 using Fancyx.Erp.Application;
 using Fancyx.Erp.Application.Remote;
 using Fancyx.Internal.Grpc;
@@ -8,7 +8,7 @@ using Fancyx.Shared.Consts;
 using Fancyx.Shared.WebApi;
 using Fancyx.Shared.WebApi.JsonConverters;
 using Fancyx.Shared.WebApi.Micro;
-using Fancyx.Swagger;
+using Cracker.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
@@ -85,9 +85,9 @@ namespace Fancyx.Erp
 
         public override void Configure(ApplicationInitializationContext context)
         {
-            var app = context.GetApplicationBuilder();
+            var app = context.Application;
 
-            if (context.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment())
             {
                 app.UseSwaggerPro();
             }

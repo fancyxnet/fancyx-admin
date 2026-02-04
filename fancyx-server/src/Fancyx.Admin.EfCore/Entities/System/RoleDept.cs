@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-using Fancyx.Core.Interfaces;
+using Cracker.IdentityServer.Abstractions;
 
 using Microsoft.EntityFrameworkCore;
 

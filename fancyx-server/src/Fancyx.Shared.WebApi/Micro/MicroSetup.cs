@@ -1,6 +1,6 @@
 ﻿using Calzolari.Grpc.AspNetCore.Validation;
 
-using Fancyx.Consul;
+using Cracker.Consul;
 using Fancyx.Internal.Grpc.System;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Models;
@@ -30,7 +30,8 @@ namespace Fancyx.Shared.WebApi.Micro
             services.Configure<MicroServiceOption>(configuration.GetSection("Services"));
             if (EnabledConsul)
             {
-                services.AddConsulSetup(configuration);
+                //TODO:
+                //services.AddConsulDiscovery(configuration);
             }
             services.AddGrpc(options =>
             {
@@ -46,7 +47,7 @@ namespace Fancyx.Shared.WebApi.Micro
         {
             if (EnabledConsul)
             {
-                ConsulRegistration.Register(app.Services);
+                app.RegisterNode();
                 app.Map(ConsulConstant.ConsulHealthUrl, () =>
                 {
                     // TODO:

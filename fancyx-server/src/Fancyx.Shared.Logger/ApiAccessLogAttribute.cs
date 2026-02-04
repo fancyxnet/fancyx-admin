@@ -1,9 +1,9 @@
-﻿using DotNetCore.CAP;
+﻿using Cracker.IdentityServer;
+using Cracker.Utils;
+using DotNetCore.CAP;
 
-using Fancyx.Core.Authorization;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Logger.Message;
-using Fancyx.Utils;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -46,7 +46,7 @@ namespace Fancyx.Shared.Logger
                     OperateType = OperateType,
                     OperateName = OperateName,
                     TraceId = Activity.Current?.TraceId.ToString(),
-                    Ip = HttpUtils.GetIp(context.HttpContext),
+                    Ip = "", // TODO:
                     UserAgent = context.HttpContext.Request.Headers.UserAgent,
                 };
                 if (RequestEnable)

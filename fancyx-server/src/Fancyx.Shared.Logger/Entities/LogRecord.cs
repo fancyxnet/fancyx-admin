@@ -1,7 +1,7 @@
-﻿using Fancyx.Core.Interfaces;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Fancyx.EfCore.BaseEntity;
+using Cracker.EfCore.BaseEntity;
+using Cracker.IdentityServer.Abstractions;
 
 namespace Fancyx.Shared.Logger.Entities
 {

@@ -1,14 +1,11 @@
-﻿using Fancyx.Core.AutoInject;
-using Fancyx.Core.Context;
-using Fancyx.EventBus;
+﻿using Cracker.AspNetCore.AutoInject;
+using Cracker.AspNetCore.Context;
+using Cracker.EventBus;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fancyx.Shared.Logger
 {
-    [DependsOn(
-        typeof(FancyxEventBusModule)
-    )]
     public class FancyxSharedLoggerModule : ModuleBase
     {
         public override void Configure(ApplicationInitializationContext context)
@@ -20,6 +17,10 @@ namespace Fancyx.Shared.Logger
             context.Services.Configure<MvcOptions>(options =>
             {
                 options.Filters.Add<ExceptionLogFilter>(99);
+            });
+            context.Services.AddEventBus(new EventBusOptions
+            {
+                RedisConnection = context.Configuration[""]
             });
         }
     }

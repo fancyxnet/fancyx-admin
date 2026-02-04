@@ -5,9 +5,9 @@ using Fancyx.Admin.EfCore.Entities.Feedback;
 using Fancyx.Admin.EfCore.Enums;
 using Fancyx.Admin.EfCore.Models;
 using Fancyx.Admin.EfCore.Repositories;
-using Fancyx.Core.Interfaces;
-using Fancyx.EfCore;
+using Cracker.EfCore;
 using Microsoft.EntityFrameworkCore;
+using Cracker.IdentityServer.Abstractions;
 
 namespace Fancyx.Admin.Application.Service.Feedback
 {

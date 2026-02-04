@@ -1,8 +1,9 @@
-using Fancyx.Core;
+using Cracker.AspNetCore;
 using Fancyx.Erp;
-using Fancyx.Serilog;
+using Cracker.Serilog;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.WebApi.Micro;
+using Fancyx.Shared;
 
 MultiTenancyVars.SetIsEnabled(true);
 

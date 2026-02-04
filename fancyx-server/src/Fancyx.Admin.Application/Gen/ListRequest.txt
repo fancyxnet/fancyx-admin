@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Fancyx.Core.Interfaces;
+using Cracker.AspNetCore.Interfaces;
 
 namespace ${module_name}.Application.IService.${namespace_name}.Models;
 

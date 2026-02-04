@@ -1,13 +1,12 @@
 ﻿using System.Reflection;
 using System.Threading.RateLimiting;
 using Fancyx.Admin.Application;
-using Fancyx.Core.AutoInject;
-using Fancyx.Core.Context;
+using Cracker.AspNetCore.AutoInject;
+using Cracker.AspNetCore.Context;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.WebApi;
 using Fancyx.Shared.WebApi.JsonConverters;
-using Fancyx.Storage;
-using Fancyx.Swagger;
+using Cracker.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -16,7 +15,6 @@ using Microsoft.OpenApi.Models;
 namespace Fancyx.Admin
 {
     [DependsOn(
-        typeof(FancyxStorageModule),
         typeof(FancyxSharedWebApiModule),
         typeof(FancyxAdminApplicationModule)
         )]
@@ -112,15 +110,13 @@ namespace Fancyx.Admin
 
         public override void Configure(ApplicationInitializationContext context)
         {
-            var app = context.GetApplicationBuilder();
-
-            if (context.Environment.IsDevelopment())
+            if (context.Application.Environment.IsDevelopment())
             {
-                app.UseSwaggerPro();
+                context.Application.UseSwaggerPro();
             }
 
-            app.UseStaticFiles();
-            app.UseRateLimiter(); // 启用限流中间件
+            context.Application.UseStaticFiles();
+            context.Application.UseRateLimiter(); // 启用限流中间件
         }
     }
 }

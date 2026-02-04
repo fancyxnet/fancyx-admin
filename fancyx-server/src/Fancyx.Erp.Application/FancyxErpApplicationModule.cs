@@ -1,15 +1,11 @@
-﻿using Fancyx.Cache;
-using Fancyx.Core.AutoInject;
-using Fancyx.Core.Context;
+﻿using Cracker.AspNetCore.AutoInject;
+using Cracker.AspNetCore.Context;
 using Fancyx.Erp.EfCore;
-using Fancyx.EventBus;
 using Fancyx.Shared.Logger;
 
 namespace Fancyx.Erp.Application
 {
     [DependsOn(
-         typeof(FancyxCacheModule),
-         typeof(FancyxEventBusModule),
          typeof(FancyxSharedLoggerModule),
          typeof(FancyxErpEfCoreModule)
         )]

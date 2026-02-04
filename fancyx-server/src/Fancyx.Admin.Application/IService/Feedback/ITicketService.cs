@@ -1,6 +1,6 @@
 ﻿using Fancyx.Admin.Application.IService.Feedback.Models;
 using Fancyx.Admin.EfCore.Models;
-using Fancyx.Core.Interfaces;
+using Cracker.AspNetCore.Interfaces;
 
 namespace Fancyx.Admin.Application.IService.Feedback
 {

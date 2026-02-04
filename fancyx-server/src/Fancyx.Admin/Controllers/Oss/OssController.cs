@@ -1,5 +1,5 @@
-using Fancyx.Storage;
-using Fancyx.Utils;
+using Cracker.Storage;
+using Cracker.Utils;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

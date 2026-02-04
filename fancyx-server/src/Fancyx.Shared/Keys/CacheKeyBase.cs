@@ -1,4 +1,4 @@
-﻿using Fancyx.Core.Authorization;
+﻿using Cracker.IdentityServer.Abstractions;
 
 namespace Fancyx.Shared.Keys
 {

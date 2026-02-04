@@ -1,8 +1,8 @@
 ﻿using Dapper;
 using Fancyx.Admin.EfCore.Models;
-using Fancyx.Core.AutoInject;
-using Fancyx.EfCore;
-using Fancyx.EfCore.Models;
+using Cracker.AspNetCore.AutoInject;
+using Cracker.EfCore;
+using Cracker.EfCore.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;

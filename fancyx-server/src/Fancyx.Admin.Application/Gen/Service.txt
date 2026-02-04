@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Fancyx.EfCore;
+using Cracker.EfCore;
 using ${module_name}.Application.IService.${namespace_name};
 using ${module_name}.Application.IService.${namespace_name}.Models;
 using ${module_name}.EfCore.Entities.${namespace_name};

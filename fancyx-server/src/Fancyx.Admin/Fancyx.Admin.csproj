@@ -14,8 +14,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Fancyx.Storage" Version="1.0.4" />
-		<PackageReference Include="Fancyx.Swagger" Version="1.0.0" />
+		<PackageReference Include="Cracker.Storage" Version="2.0.0" />
+		<PackageReference Include="Cracker.Swagger" Version="2.0.0" />
 		<ProjectReference Include="..\Fancyx.Admin.Application\Fancyx.Admin.Application.csproj" />
 		<ProjectReference Include="..\Fancyx.Shared.WebApi\Fancyx.Shared.WebApi.csproj" />
 	</ItemGroup>

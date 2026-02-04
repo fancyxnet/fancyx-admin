@@ -4,10 +4,8 @@ using Fancyx.Admin.Application.Grpc;
 using Fancyx.Admin.Application.Jobs;
 using Fancyx.Admin.Application.WebSockets;
 using Fancyx.Admin.EfCore;
-using Fancyx.Cache;
-using Fancyx.Core.AutoInject;
-using Fancyx.Core.Context;
-using Fancyx.EventBus;
+using Cracker.AspNetCore.AutoInject;
+using Cracker.AspNetCore.Context;
 using Fancyx.Shared.Logger;
 
 using Microsoft.AspNetCore.Builder;
@@ -17,8 +15,6 @@ using System.Threading.Channels;
 namespace Fancyx.Admin.Application
 {
     [DependsOn(
-         typeof(FancyxCacheModule),
-         typeof(FancyxEventBusModule),
          typeof(FancyxSharedLoggerModule),
          typeof(FancyxAdminEfCoreModule)
         )]
@@ -45,18 +41,16 @@ namespace Fancyx.Admin.Application
 
         public override void Configure(ApplicationInitializationContext context)
         {
-            var app = context.GetApplicationBuilder();
-
-            app.ApplicationServices.UseScheduler(sch =>
+            context.Application.Services.UseScheduler(sch =>
             {
                 sch.Schedule<NotificationJob>().EveryMinute().PreventOverlapping(nameof(NotificationJob));
             });
-            context.Endpoint.MapGrpcService<TestGrpcServiceHandler>();
-            context.Endpoint.MapGrpcService<DictGrpcServiceHandler>();
-            context.Endpoint.MapGrpcService<AuthGrpcServiceHandler>();
+            context.Application.MapGrpcService<TestGrpcServiceHandler>();
+            context.Application.MapGrpcService<DictGrpcServiceHandler>();
+            context.Application.MapGrpcService<AuthGrpcServiceHandler>();
 
-            app.UseWebSockets();
-            app.UseMiddleware<WebSocketMiddleware>();
+            context.Application.UseWebSockets();
+            context.Application.UseMiddleware<WebSocketMiddleware>();
         }
     }
 }

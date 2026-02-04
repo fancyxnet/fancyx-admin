@@ -1,15 +1,13 @@
 using AutoMapper;
-using Consul;
 using Fancyx.Admin.Application.IService.Organization;
 using Fancyx.Admin.Application.IService.Organization.Models;
 using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.Admin.EfCore.Entities.System;
-using Fancyx.Core.Interfaces;
-using Fancyx.EfCore;
+using Cracker.EfCore;
 using Fancyx.Shared.EfCore;
-using Fancyx.Utils;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
+using Cracker.IdentityServer.Abstractions;
+using Cracker.Utils;
 
 namespace Fancyx.Admin.Application.Service.Organization
 {

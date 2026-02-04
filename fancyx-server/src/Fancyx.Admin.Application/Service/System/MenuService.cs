@@ -5,12 +5,13 @@ using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Admin.Application.SharedService;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
-using Fancyx.Core;
-using Fancyx.Core.Interfaces;
-using Fancyx.EfCore;
-using Fancyx.Utils;
+using Cracker.EfCore;
+using Cracker.Utils;
 
 using Microsoft.EntityFrameworkCore;
+using Cracker.IdentityServer.Abstractions;
+using Cracker.Utils;
+using Fancyx.Shared;
 
 namespace Fancyx.Admin.Application.Service.System
 {

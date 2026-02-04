@@ -2,7 +2,7 @@
 using Fancyx.Admin.Application.IService.Feedback.Models;
 using Fancyx.Admin.EfCore.Models;
 using Fancyx.Shared.WebApi.Attributes;
-using Fancyx.Swagger;
+using Cracker.Swagger;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

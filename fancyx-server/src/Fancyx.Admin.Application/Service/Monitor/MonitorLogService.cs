@@ -2,10 +2,10 @@
 
 using Fancyx.Admin.Application.IService.Monitor;
 using Fancyx.Admin.Application.IService.Monitor.Models;
-using Fancyx.Admin.EfCore;
-using Fancyx.Core.Interfaces;
-using Fancyx.EfCore;
+using Cracker.AspNetCore.Interfaces;
+using Cracker.EfCore;
 using Fancyx.Shared.Logger.Entities;
+using Cracker.IdentityServer.Abstractions;
 
 namespace Fancyx.Admin.Application.Service.Monitor
 {

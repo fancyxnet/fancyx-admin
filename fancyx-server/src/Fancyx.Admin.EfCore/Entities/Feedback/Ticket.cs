@@ -1,6 +1,6 @@
 ﻿using Fancyx.Admin.EfCore.Enums;
-using Fancyx.Core.Interfaces;
-using Fancyx.EfCore.BaseEntity;
+using Cracker.EfCore.BaseEntity;
+using Cracker.IdentityServer.Abstractions;
 
 namespace Fancyx.Admin.EfCore.Entities.Feedback
 {

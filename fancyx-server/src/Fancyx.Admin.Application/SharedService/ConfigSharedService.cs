@@ -1,7 +1,7 @@
 ﻿using Fancyx.Admin.EfCore.Entities.System;
-using Fancyx.Cache;
-using Fancyx.Core.AutoInject;
-using Fancyx.EfCore;
+using Cracker.Caching;
+using Cracker.AspNetCore.AutoInject;
+using Cracker.EfCore;
 using Fancyx.Shared.Keys;
 
 using StackExchange.Redis;

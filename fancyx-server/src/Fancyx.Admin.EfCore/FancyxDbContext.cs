@@ -2,7 +2,7 @@
 using Fancyx.Admin.EfCore.Entities.Gen;
 using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.Admin.EfCore.Entities.System;
-using Fancyx.EfCore;
+using Cracker.EfCore;
 using Fancyx.Shared.EfCore;
 
 using Microsoft.EntityFrameworkCore;

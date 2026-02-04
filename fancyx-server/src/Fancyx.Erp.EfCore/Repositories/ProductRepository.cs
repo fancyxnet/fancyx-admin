@@ -1,8 +1,7 @@
 ﻿using Dapper;
-using Fancyx.Core.AutoInject;
-using Fancyx.Core.Interfaces;
-using Fancyx.EfCore;
-using Fancyx.EfCore.Models;
+using Cracker.AspNetCore.AutoInject;
+using Cracker.EfCore;
+using Cracker.EfCore.Models;
 using Fancyx.Erp.EfCore.Entities;
 using Fancyx.Erp.EfCore.Models;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +11,7 @@ namespace Fancyx.Erp.EfCore.Repositories
     [DependencyInject(AsSelf = true)]
     public class ProductRepository : BaseRepository<Product>
     {
-        public ProductRepository(DbContext context, ICurrentUser currentUser) : base(context, currentUser)
+        public ProductRepository(DbContext context) : base(context)
         {
         }
 

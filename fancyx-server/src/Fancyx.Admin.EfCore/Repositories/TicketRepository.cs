@@ -1,10 +1,9 @@
 ﻿using Dapper;
 using Fancyx.Admin.EfCore.Entities.Feedback;
 using Fancyx.Admin.EfCore.Models;
-using Fancyx.Core.AutoInject;
-using Fancyx.Core.Interfaces;
-using Fancyx.EfCore;
-using Fancyx.EfCore.Models;
+using Cracker.AspNetCore.AutoInject;
+using Cracker.EfCore;
+using Cracker.EfCore.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fancyx.Admin.EfCore.Repositories
@@ -12,7 +11,7 @@ namespace Fancyx.Admin.EfCore.Repositories
     [DependencyInject(AsSelf = true)]
     public class TicketRepository : BaseRepository<Ticket>
     {
-        public TicketRepository(DbContext context, ICurrentUser currentUser) : base(context, currentUser)
+        public TicketRepository(DbContext context) : base(context)
         {
         }
 

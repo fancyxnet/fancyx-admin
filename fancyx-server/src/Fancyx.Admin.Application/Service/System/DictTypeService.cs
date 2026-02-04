@@ -1,15 +1,14 @@
-﻿using Fancyx.Core.Interfaces;
-using Fancyx.EfCore.Aop;
-using Fancyx.EfCore;
+﻿using Cracker.EfCore.Aop;
+using Cracker.EfCore;
 using Fancyx.Shared.Consts;
 using Microsoft.EntityFrameworkCore;
 using Fancyx.Admin.EfCore.Entities.System;
-using Fancyx.Admin.EfCore;
 using Fancyx.Admin.Application.IService.System;
 using Fancyx.Shared.Logger;
 using Fancyx.Admin.Application.IService.System.Models;
 using AutoMapper;
 using Fancyx.SnowflakeId;
+using Cracker.IdentityServer.Abstractions;
 
 namespace Fancyx.Admin.Application.Service.System;
 

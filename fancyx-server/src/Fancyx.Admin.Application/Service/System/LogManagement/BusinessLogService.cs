@@ -3,7 +3,7 @@
 using Fancyx.Admin.Application.IService.System.LogManagement;
 using Fancyx.Admin.Application.IService.System.LogManagement.Models;
 using Fancyx.Admin.EfCore;
-using Fancyx.EfCore;
+using Cracker.EfCore;
 using Fancyx.Shared.Logger.Entities;
 
 using Microsoft.EntityFrameworkCore;

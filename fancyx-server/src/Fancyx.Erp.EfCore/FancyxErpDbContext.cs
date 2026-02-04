@@ -1,4 +1,4 @@
-﻿using Fancyx.EfCore;
+﻿using Cracker.EfCore;
 using Fancyx.Erp.EfCore.Entities;
 
 using Microsoft.EntityFrameworkCore;

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Fancyx.EfCore;
-using Fancyx.EfCore.Aop;
+using Cracker.EfCore;
+using Cracker.EfCore.Aop;
 using Fancyx.Erp.Application.IService.Products;
 using Fancyx.Erp.Application.IService.Products.Models;
 using Fancyx.Erp.EfCore.Entities;

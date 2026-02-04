@@ -1,5 +1,5 @@
 ﻿using ${module_name}.Application.IService.${namespace_name}.Models;
-using Fancyx.Core.Interfaces;
+using Cracker.AspNetCore.Interfaces;
 using ${module_name}.EfCore.Entities.${namespace_name};
 using Fancyx.Shared.Models;
 

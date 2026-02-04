@@ -2,9 +2,10 @@ using AutoMapper;
 using Fancyx.Admin.Application.IService.Organization;
 using Fancyx.Admin.Application.IService.Organization.Models;
 using Fancyx.Admin.EfCore.Entities.Organization;
-using Fancyx.EfCore;
-using Fancyx.Utils;
+using Cracker.EfCore;
+using Cracker.Utils;
 using Microsoft.EntityFrameworkCore;
+using Cracker.Utils;
 
 namespace Fancyx.Admin.Application.Service.Organization
 {

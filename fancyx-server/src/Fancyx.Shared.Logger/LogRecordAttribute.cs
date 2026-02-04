@@ -1,16 +1,15 @@
 using DotNetCore.CAP;
-
-using Fancyx.Core.Authorization;
-using Fancyx.Core.AutoInject;
+using Cracker.AspNetCore.AutoInject;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Logger.Message;
-using Fancyx.Utils;
+using Cracker.Utils;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using System.Diagnostics;
+using Cracker.IdentityServer;
 
 namespace Fancyx.Shared.Logger
 {
@@ -55,7 +54,7 @@ namespace Fancyx.Shared.Logger
                     msg.UserId = currentUser.Id;
                     msg.UserName = currentUser.UserName;
                     msg.TenantId = currentTenant.TenantId;
-                    msg.Ip = HttpUtils.GetIp(httpContext);
+                    msg.Ip = ""; // TODO:
                     msg.UserAgent = httpContext.Request.Headers.UserAgent;
                     msg.TraceId = Activity.Current?.TraceId.ToString();
                 }

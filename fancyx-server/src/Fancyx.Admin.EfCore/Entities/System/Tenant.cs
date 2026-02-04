@@ -1,4 +1,4 @@
-﻿using Fancyx.EfCore.BaseEntity;
+﻿using Cracker.EfCore.BaseEntity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
