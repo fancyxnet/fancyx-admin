@@ -8,8 +8,8 @@
 
   <ItemGroup>
 	<PackageReference Include="Yarp.ReverseProxy" Version="2.3.0" />
-	  <PackageReference Include="Fancyx.Consul" Version="1.0.0" />
-	  <PackageReference Include="Fancyx.Serilog" Version="1.0.0" />
+	  <PackageReference Include="Cracker.Consul" Version="2.0.0" />
+	  <PackageReference Include="Cracker.Serilog" Version="2.0.0" />
   </ItemGroup>
 
 </Project>

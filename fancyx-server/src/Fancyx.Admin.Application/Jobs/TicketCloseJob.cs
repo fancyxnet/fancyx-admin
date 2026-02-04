@@ -3,6 +3,7 @@ using Fancyx.Admin.EfCore.Enums;
 using Fancyx.Admin.EfCore.Repositories;
 using Cracker.AspNetCore.AutoInject;
 using Microsoft.EntityFrameworkCore;
+using Cracker.Caching;
 
 namespace Fancyx.Admin.Application.Jobs
 {
