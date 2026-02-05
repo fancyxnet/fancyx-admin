@@ -1,8 +1,8 @@
 using AutoMapper;
 using Cracker.Caching;
 using Cracker.EfCore;
+using Cracker.IdentityServer;
 using Cracker.IdentityServer.Abstractions;
-using Cracker.Utils;
 using Cracker.Utils;
 using DotNetCore.CAP;
 using Fancyx.Admin.Application.IService.Account;
@@ -15,7 +15,6 @@ using Fancyx.Shared.Consts;
 using Fancyx.Shared.EfCore;
 using Fancyx.Shared.Keys;
 using Fancyx.SnowflakeId;
-using JinianNet.JNTemplate;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -36,13 +35,14 @@ namespace Fancyx.Admin.Application.Service.Account
         private readonly ICurrentTenant _currentTenant;
         private readonly IRepository<Tenant> _tenantRepository;
         private readonly HttpContext _httpContext;
+        private readonly TokenManager _tokenManager;
 
         private delegate Task<User> LoginHandler();
 
         public AccountService(IRepository<User> userRepository, ICurrentUser currentUser, IRepository<Menu> menuRepository
             , IConfiguration configuration, ICacheClient cache, IdentitySharedService identitySharedService
             , ICapPublisher capPublisher, IHttpContextAccessor httpContextAccessor, IMapper mapper, ICurrentTenant currentTenant
-            , IRepository<Tenant> tenantRepository)
+            , IRepository<Tenant> tenantRepository, TokenManager tokenManager)
         {
             _userRepository = userRepository;
             _currentUser = currentUser;
@@ -55,6 +55,7 @@ namespace Fancyx.Admin.Application.Service.Account
             _currentTenant = currentTenant;
             _tenantRepository = tenantRepository;
             _httpContext = httpContextAccessor.HttpContext!;
+            _tokenManager = tokenManager;
         }
 
         /// <summary>
@@ -89,7 +90,7 @@ namespace Fancyx.Admin.Application.Service.Account
             {
                 UserName = userName,
                 ExpiredTime = tokenExpired,
-                AccessToken = _identitySharedService.GenerateToken(claims, tokenExpired),
+                AccessToken = _tokenManager.GenerateToken(claims, tokenExpired),
                 RefreshToken = refreshToken
             };
 

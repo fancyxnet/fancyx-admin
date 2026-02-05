@@ -7,11 +7,6 @@ using Cracker.EfCore;
 using Fancyx.Shared.Keys;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using Role = Fancyx.Admin.EfCore.Entities.System.Role;
 using Cracker.IdentityServer.Abstractions;
 using Fancyx.Shared;
@@ -25,7 +20,6 @@ namespace Fancyx.Admin.Application.SharedService
         private readonly IRepository<RoleMenu> _roleMenuRepository;
         private readonly IRepository<Role> _roleRepository;
         private readonly IRepository<Menu> _menuRepository;
-        private readonly IConfiguration _configuration;
         private readonly IRepository<User> _userRepository;
         private readonly ICacheClient _cache;
         private readonly ICurrentUser _currentUser;
@@ -36,7 +30,7 @@ namespace Fancyx.Admin.Application.SharedService
         private readonly ICurrentTenant _currentTenant;
 
         public IdentitySharedService(IRepository<UserRole> userRoleRepository, IRepository<RoleMenu> roleMenuRepository, IRepository<Role> roleRepository,
-            IRepository<Menu> menuRepository, IConfiguration configuration, IRepository<User> userRepository, ICacheClient cache, ICurrentUser currentUser
+            IRepository<Menu> menuRepository, IRepository<User> userRepository, ICacheClient cache, ICurrentUser currentUser
             , IRepository<RoleDept> roleDeptRepository, IRepository<Dept> deptRepository, IRepository<Tenant> tenantRepository, IRepository<TenantMenu> tenantMenuRepository
             , ICurrentTenant currentTenant)
         {
@@ -44,7 +38,6 @@ namespace Fancyx.Admin.Application.SharedService
             _roleMenuRepository = roleMenuRepository;
             _roleRepository = roleRepository;
             _menuRepository = menuRepository;
-            _configuration = configuration;
             _userRepository = userRepository;
             _cache = cache;
             _currentUser = currentUser;
@@ -143,56 +136,6 @@ namespace Fancyx.Admin.Application.SharedService
                     await _cache.KeyDeleteByPatternAsync(SystemCacheKey.AccessToken(userId, "*"));
                     await _cache.KeyDeleteByPatternAsync(SystemCacheKey.RefreshToken(userId, "*"));
                 }
-            }
-        }
-
-        /// <summary>
-        /// 生成Token
-        /// </summary>
-        /// <param name="claims"></param>
-        /// <param name="expireTime"></param>
-        /// <returns></returns>
-        public string GenerateToken(IEnumerable<Claim> claims, DateTime expireTime)
-        {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt")["IssuerSigningKey"]!));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var securityToken = new JwtSecurityToken(
-                issuer: _configuration.GetSection("Jwt")["ValidIssuer"],
-                audience: _configuration.GetSection("Jwt")["ValidAudience"],
-                claims: claims,
-                expires: expireTime,
-                signingCredentials: creds);
-
-            var token = new JwtSecurityTokenHandler().WriteToken(securityToken);
-
-            return token;
-        }
-
-        /// <summary>
-        /// 从Token中获取用户身份
-        /// </summary>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        public ClaimsPrincipal? GetPrincipalFromAccessToken(string token)
-        {
-            var handler = new JwtSecurityTokenHandler();
-
-            try
-            {
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt")["IssuerSigningKey"]!));
-                return handler.ValidateToken(token, new TokenValidationParameters
-                {
-                    ValidateAudience = false,
-                    ValidateIssuer = false,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = key,
-                    ValidateLifetime = false
-                }, out SecurityToken validatedToken);
-            }
-            catch (Exception)
-            {
-                return null;
             }
         }
 

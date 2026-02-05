@@ -1,4 +1,4 @@
-﻿using Fancyx.Admin.Application.SharedService;
+﻿using Cracker.IdentityServer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -38,8 +38,8 @@ public class WebSocketMiddleware
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             return;
         }
-        var identityService = context.RequestServices.GetRequiredService<IdentitySharedService>();
-        var claimsPrincipal = identityService.GetPrincipalFromAccessToken(requestToken);
+        var _tokenManager = context.RequestServices.GetRequiredService<TokenManager>();
+        var claimsPrincipal = _tokenManager.GetPrincipalFromAccessToken(requestToken);
         if (claimsPrincipal == null)
         {
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
