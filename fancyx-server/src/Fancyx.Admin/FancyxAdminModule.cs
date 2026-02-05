@@ -1,16 +1,22 @@
-﻿using System.Reflection;
-using System.Threading.RateLimiting;
-using Fancyx.Admin.Application;
-using Cracker.AspNetCore.AutoInject;
+﻿using Cracker.AspNetCore.AutoInject;
 using Cracker.AspNetCore.Context;
+using Cracker.Caching;
+using Cracker.IdentityServer;
+using Cracker.IdentityServer.Abstractions;
+using Cracker.Storage;
+using Cracker.Swagger;
+using Fancyx.Admin.Application;
+using Fancyx.Shared;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.WebApi;
 using Fancyx.Shared.WebApi.JsonConverters;
-using Cracker.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
+using System.Reflection;
+using System.Threading.RateLimiting;
 
 namespace Fancyx.Admin
 {
@@ -106,6 +112,35 @@ namespace Fancyx.Admin
                     await context.HttpContext.Response.WriteAsJsonAsync(new AppResponse<bool>(ErrorCode.ApiLimit, "操作频繁，请稍后再试").SetData(false), cancellationToken);
                 };
             });
+            var conn = ConnectionMultiplexer.Connect(context.Configuration["Redis:Connection"]!);
+            RedisHelper.Instance.Initialize(conn);
+            services.AddCacheClient(options =>
+            {
+                options.GetCachingPrefix = (sp) =>
+                {
+                    var ctx = sp.GetRequiredService<IHttpContextAccessor>()?.HttpContext;
+                    if (ctx != null)
+                    {
+                        var tenant = ctx.RequestServices.GetRequiredService<ICurrentTenant>();
+                        if (tenant != null && !string.IsNullOrEmpty(tenant.TenantId))
+                        {
+                            return $"tenant:{tenant.TenantId}:";
+                        }
+                    }
+                    return string.Empty;
+                };
+            });
+            services.AddIdentityServer(options =>
+            {
+                options.Jwt = new JwtOptions
+                {
+                    ClockSkew = Convert.ToInt32(configuration.GetSection("Jwt")["ClockSkew"]),
+                    ValidAudience = configuration.GetSection("Jwt")["ValidAudience"]!,
+                    ValidIssuer = configuration.GetSection("Jwt")["ValidIssuer"]!,
+                    IssuerSigningKey = configuration.GetSection("Jwt")["IssuerSigningKey"]!
+                };
+            });
+            services.AddStorage();
         }
 
         public override void Configure(ApplicationInitializationContext context)
@@ -117,6 +152,13 @@ namespace Fancyx.Admin
 
             context.Application.UseStaticFiles();
             context.Application.UseRateLimiter(); // 启用限流中间件
+            context.Application.UseAuthentication();
+            context.Application.UseAuthorization();
+            context.Application.UseCurrentUser();
+            if (MultiTenancyVars.IsEnabled)
+            {
+                context.Application.UseMultiTenancy();
+            }
         }
     }
 }

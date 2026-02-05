@@ -7,7 +7,8 @@
   </PropertyGroup>
 	
   <ItemGroup>
-	  <PackageReference Include="Cracker.IdentityServer.Abstractions" Version="1.0.0" />
+	  <PackageReference Include="Cracker.IdentityServer.Abstractions" />
+	  <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />
   </ItemGroup>
 
 </Project>

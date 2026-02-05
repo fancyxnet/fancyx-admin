@@ -11,23 +11,23 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Cracker.AspNetCore" Version="2.0.0" />
-		<PackageReference Include="Cracker.Caching" Version="2.0.0" />
-		<PackageReference Include="Cracker.Consul" Version="2.0.0" />
-		<PackageReference Include="Cracker.SnowflakeId" Version="2.0.0" />
-		<PackageReference Include="Cracker.Utils" Version="2.0.1" />
-		<PackageReference Include="Cracker.IdentityServer" Version="1.0.0" />
+		<PackageReference Include="Cracker.AspNetCore" />
+		<PackageReference Include="Cracker.Caching" />
+		<PackageReference Include="Cracker.Consul" />
+		<PackageReference Include="Cracker.SnowflakeId" />
+		<PackageReference Include="Cracker.Utils" />
+		<PackageReference Include="Cracker.IdentityServer" />
 		<ProjectReference Include="..\Fancyx.Shared.Proto\Fancyx.Shared.Proto.csproj" />
 		<ProjectReference Include="..\Fancyx.Shared\Fancyx.Shared.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
-		<PackageReference Include="Grpc.AspNetCore" Version="2.64.0" />
-		<PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.64.0" />
-		<PackageReference Include="Grpc.Net.ClientFactory" Version="2.64.0" />
-		<PackageReference Include="Google.Protobuf" Version="3.32.0" />
-		<PackageReference Include="Calzolari.Grpc.AspNetCore.Validation" Version="8.1.0" />
-		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
+		<PackageReference Include="Refit.HttpClientFactory" />
+		<PackageReference Include="Grpc.AspNetCore" />
+		<PackageReference Include="Grpc.AspNetCore.Server.Reflection" />
+		<PackageReference Include="Grpc.Net.ClientFactory" />
+		<PackageReference Include="Google.Protobuf" />
+		<PackageReference Include="Calzolari.Grpc.AspNetCore.Validation" />
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
 	</ItemGroup>
 </Project>

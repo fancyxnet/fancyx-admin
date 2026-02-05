@@ -44,7 +44,7 @@ namespace Fancyx.Shared.Logger
                     RequestPath = context.HttpContext.Request.Path,
                     RequestMethod = context.HttpContext.Request.Method,
                     TraceId = Activity.Current?.TraceId.ToString(),
-                    Ip = "", //TODO:
+                    Ip = HttpContextUtils.GetIp(context.HttpContext),
                     UserAgent = context.HttpContext.Request.Headers.UserAgent
                 };
                 var currentUser = CurrentUser.Parse(context.HttpContext);

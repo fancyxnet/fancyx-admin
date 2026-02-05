@@ -16,6 +16,7 @@ namespace Fancyx.Erp.EfCore
             context.Services.AddEfCore<FancyxErpDbContext>(options =>
             {
                 options.ConnectionString = context.Configuration.GetConnectionString("Default")!;
+                options.EnabledMultiTenancy = true;
             });
         }
 

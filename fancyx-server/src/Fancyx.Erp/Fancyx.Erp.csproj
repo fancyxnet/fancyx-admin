@@ -8,7 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Cracker.Swagger" Version="1.0.0" />
+		<PackageReference Include="Cracker.Swagger" />
 		<ProjectReference Include="..\Fancyx.Erp.Application\Fancyx.Erp.Application.csproj" />
 		<ProjectReference Include="..\Fancyx.Shared.WebApi\Fancyx.Shared.WebApi.csproj" />
 	</ItemGroup>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <!-- 启用中央包管理 -->
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <!-- 在此定义所有包的版本 -->
+  <ItemGroup>
+    <PackageVersion Include="Cracker.AspNetCore" Version="2.0.1" />
+    <PackageVersion Include="Cracker.Storage" Version="2.0.1" />
+	<PackageVersion Include="Cracker.Swagger" Version="2.0.0" />
+	<PackageVersion Include="Cracker.Caching" Version="2.0.0" />
+	<PackageVersion Include="Cracker.Consul" Version="2.0.0" />
+	<PackageVersion Include="Cracker.Serilog" Version="2.0.0" />
+	<PackageVersion Include="Cracker.EfCore" Version="2.0.2" />
+    <PackageVersion Include="Cracker.EventBus" Version="8.4.0" />
+	<PackageVersion Include="Cracker.Utils" Version="2.0.1" />
+	<PackageVersion Include="Cracker.IdentityServer" Version="1.0.0" />
+	<PackageVersion Include="Cracker.IdentityServer.Abstractions" Version="1.0.0" />
+	<PackageVersion Include="Cracker.SnowflakeId" Version="2.0.0" />
+	<PackageVersion Include="FluentValidation" Version="12.0.0" />
+	<PackageVersion Include="MiniExcel" Version="1.41.3" />
+	<PackageVersion Include="IP2Region.Net" Version="2.0.2" />
+	<PackageVersion Include="Coravel" Version="6.0.2" />
+	<PackageVersion Include="JinianNet.JNTemplate" Version="2.4.3" />
+	<PackageVersion Include="Refit.HttpClientFactory" Version="8.0.0" />
+	<PackageVersion Include="Yarp.ReverseProxy" Version="2.3.0" />
+	<PackageVersion Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.9" />
+	<PackageVersion Include="Grpc.AspNetCore" Version="2.64.0" />
+	<PackageVersion Include="Grpc.Tools" Version="2.64.0" />
+	<PackageVersion Include="Grpc.AspNetCore.Server.Reflection" Version="2.64.0" />
+	<PackageVersion Include="Grpc.Net.ClientFactory" Version="2.64.0" />
+	<PackageVersion Include="Google.Protobuf" Version="3.32.0" />
+	<PackageVersion Include="Calzolari.Grpc.AspNetCore.Validation" Version="8.1.0" />
+	<PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
+  </ItemGroup>
+</Project>

@@ -13,8 +13,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Cracker.EventBus" Version="8.4.0" />
-		<PackageReference Include="Cracker.Caching" Version="2.0.0" />
+		<PackageReference Include="Cracker.Caching" />
 		<ProjectReference Include="..\Fancyx.Shared\Fancyx.Shared.csproj" />
 		<ProjectReference Include="..\Fancyx.Shared.Proto\Fancyx.Shared.Proto.csproj" />
 		<ProjectReference Include="..\Fancyx.Shared.Logger\Fancyx.Shared.Logger.csproj" />
@@ -22,10 +21,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FluentValidation" Version="12.0.0" />
-		<PackageReference Include="MiniExcel" Version="1.41.3" />
-		<PackageReference Include="IP2Region.Net" Version="2.0.2" />
-		<PackageReference Include="Coravel" Version="6.0.2" />
-		<PackageReference Include="JinianNet.JNTemplate" Version="2.4.3" />
+		<PackageReference Include="FluentValidation" />
+		<PackageReference Include="MiniExcel" />
+		<PackageReference Include="IP2Region.Net" />
+		<PackageReference Include="Coravel" />
+		<PackageReference Include="JinianNet.JNTemplate" />
 	</ItemGroup>
 </Project>

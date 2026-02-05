@@ -1,5 +1,7 @@
-using Fancyx.Consul;
-using Fancyx.Serilog;
+using Consul;
+using Cracker.Consul;
+using Cracker.Serilog;
+using Elastic.CommonSchema;
 using Yarp.ReverseProxy.Configuration;
 using Yarp.ReverseProxy.Configuration.ConfigProvider;
 
@@ -8,7 +10,24 @@ var builder = WebApplication.CreateBuilder(args);
 var isUseConsul = builder.Configuration["ServiceMode"] == "Consul";
 if (isUseConsul)
 {
-    builder.Services.AddConsulSetup(builder.Configuration);
+    var consulConfigurationOptions = new ConsulConfigurationOptions
+    {
+        Address = builder.Configuration["Consul:Host"]!,
+        Token = builder.Configuration["Consul:Token"]!,
+    };
+    builder.Configuration.AddConsulConfiguration($"{builder.Configuration["Consul:NodeName"]}/appsettings.json", consulConfigurationOptions);
+    builder.Services.AddConsulDiscovery(new ConsulDiscoveryOptions
+    {
+        Address = consulConfigurationOptions.Address,
+        Token = consulConfigurationOptions.Token,
+        SetupNodeAction = o =>
+        {
+            o.Name = builder.Configuration["Consul:NodeName"]!;
+            o.Server = builder.Configuration["Consul:NodeAddress"]!;
+            o.HttpPort = int.Parse(builder.Configuration["Consul:HttpPort"]!);
+            o.HttpPort = int.Parse(builder.Configuration["Consul:GrpcPort"]!);
+        }
+    });
     builder.Services.AddSingleton<IProxyConfigProvider, ConsulConfigurationConfigProvider>();
     builder.Services.AddReverseProxy();
 }
@@ -38,7 +57,7 @@ var app = builder.Build();
 
 if (isUseConsul)
 {
-    ConsulRegistration.Register(app.Services);
+    app.RegisterNode();
     app.Map(ConsulConstant.ConsulHealthUrl, () =>
     {
         return Results.Ok("yarp is ok");

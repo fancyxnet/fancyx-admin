@@ -20,7 +20,10 @@ namespace Fancyx.Shared.Logger
             });
             context.Services.AddEventBus(new EventBusOptions
             {
-                RedisConnection = context.Configuration[""]
+                RedisConnection = context.Configuration["Cap:RedisConnection"]!,
+                DbConnection = context.Configuration["Cap:DbConnection"]!,
+                DashboardPathBase = context.Configuration["Cap:PathBase"],
+                TablePrefix = context.Configuration["Cap:TableSchema"]!
             });
         }
     }

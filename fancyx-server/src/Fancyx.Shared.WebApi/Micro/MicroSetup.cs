@@ -18,7 +18,7 @@ namespace Fancyx.Shared.WebApi.Micro
     {
         public static bool EnabledConsul { get; private set; }
 
-        public static void AddMicroService(this IServiceCollection services, IConfiguration configuration)
+        public static void AddMicroService(this IServiceCollection services, ConfigurationManager configuration)
         {
             int grpcPort = int.Parse(configuration["Consul:GrpcPort"]!);
             EnabledConsul = configuration["Services:Mode"] == "Consul";
@@ -30,8 +30,24 @@ namespace Fancyx.Shared.WebApi.Micro
             services.Configure<MicroServiceOption>(configuration.GetSection("Services"));
             if (EnabledConsul)
             {
-                //TODO:
-                //services.AddConsulDiscovery(configuration);
+                var consulConfigurationOptions = new ConsulConfigurationOptions
+                {
+                    Address = configuration["Consul:Host"]!,
+                    Token = configuration["Consul:Token"]!,
+                };
+                configuration.AddConsulConfiguration($"{configuration["Consul:NodeName"]}/appsettings.json", consulConfigurationOptions);
+                services.AddConsulDiscovery(new ConsulDiscoveryOptions
+                {
+                    Address = consulConfigurationOptions.Address,
+                    Token = consulConfigurationOptions.Token,
+                    SetupNodeAction = o =>
+                    {
+                        o.Name = configuration["Consul:NodeName"]!;
+                        o.Server = configuration["Consul:NodeAddress"]!;
+                        o.HttpPort = int.Parse(configuration["Consul:HttpPort"]!);
+                        o.HttpPort = int.Parse(configuration["Consul:GrpcPort"]!);
+                    }
+                });
             }
             services.AddGrpc(options =>
             {

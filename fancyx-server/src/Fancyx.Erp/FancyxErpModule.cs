@@ -1,17 +1,22 @@
 ﻿using Cracker.AspNetCore.AutoInject;
 using Cracker.AspNetCore.Context;
+using Cracker.Caching;
+using Cracker.IdentityServer;
+using Cracker.IdentityServer.Abstractions;
+using Cracker.Swagger;
 using Fancyx.Erp.Application;
 using Fancyx.Erp.Application.Remote;
 using Fancyx.Internal.Grpc;
 using Fancyx.Internal.Grpc.System;
+using Fancyx.Shared;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.WebApi;
 using Fancyx.Shared.WebApi.JsonConverters;
 using Fancyx.Shared.WebApi.Micro;
-using Cracker.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 using System.Reflection;
 
 namespace Fancyx.Erp
@@ -81,15 +86,48 @@ namespace Fancyx.Erp
                       .AddGrpc<Test.TestClient>(MicroServiceConsts.AdminApi)
                       .AddGrpc<Dict.DictClient>(MicroServiceConsts.AdminApi);
             });
+            var conn = ConnectionMultiplexer.Connect(context.Configuration["Redis:Connection"]!);
+            RedisHelper.Instance.Initialize(conn);
+            context.Services.AddCacheClient(options =>
+            {
+                options.GetCachingPrefix = (sp) =>
+                {
+                    var ctx = sp.GetRequiredService<IHttpContextAccessor>()?.HttpContext;
+                    if (ctx != null)
+                    {
+                        var tenant = ctx.RequestServices.GetRequiredService<ICurrentTenant>();
+                        if (tenant != null && !string.IsNullOrEmpty(tenant.TenantId))
+                        {
+                            return $"tenant:{tenant.TenantId}:";
+                        }
+                    }
+                    return string.Empty;
+                };
+            });
+            context.Services.AddIdentityServer(options =>
+            {
+                options.Jwt = new JwtOptions
+                {
+                    ClockSkew = Convert.ToInt32(context.Configuration.GetSection("Jwt")["ClockSkew"]),
+                    ValidAudience = context.Configuration.GetSection("Jwt")["ValidAudience"]!,
+                    ValidIssuer = context.Configuration.GetSection("Jwt")["ValidIssuer"]!,
+                    IssuerSigningKey = context.Configuration.GetSection("Jwt")["IssuerSigningKey"]!
+                };
+            });
         }
 
         public override void Configure(ApplicationInitializationContext context)
         {
-            var app = context.Application;
-
-            if (app.Environment.IsDevelopment())
+            if (context.Application.Environment.IsDevelopment())
             {
-                app.UseSwaggerPro();
+                context.Application.UseSwaggerPro();
+            }
+            context.Application.UseAuthentication();
+            context.Application.UseAuthorization();
+            context.Application.UseCurrentUser();
+            if (MultiTenancyVars.IsEnabled)
+            {
+                context.Application.UseMultiTenancy();
             }
         }
     }

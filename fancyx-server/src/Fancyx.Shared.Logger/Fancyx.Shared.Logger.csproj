@@ -7,11 +7,11 @@
   </PropertyGroup>
 
 	<ItemGroup>
-      <PackageReference Include="Cracker.EfCore" Version="2.0.0" />
-      <PackageReference Include="Cracker.EventBus" Version="8.4.0" />
-      <PackageReference Include="Cracker.Serilog" Version="2.0.0" />
-      <PackageReference Include="Cracker.Utils" Version="2.0.1" />
-      <PackageReference Include="Cracker.IdentityServer" Version="1.0.0" />
+      <PackageReference Include="Cracker.EfCore" />
+      <PackageReference Include="Cracker.EventBus" />
+      <PackageReference Include="Cracker.Serilog" />
+      <PackageReference Include="Cracker.Utils" />
+      <PackageReference Include="Cracker.IdentityServer" />
 	  <ProjectReference Include="..\Fancyx.Shared\Fancyx.Shared.csproj" />
 	</ItemGroup>
 </Project>

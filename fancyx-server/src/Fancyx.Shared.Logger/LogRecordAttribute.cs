@@ -54,7 +54,7 @@ namespace Fancyx.Shared.Logger
                     msg.UserId = currentUser.Id;
                     msg.UserName = currentUser.UserName;
                     msg.TenantId = currentTenant.TenantId;
-                    msg.Ip = ""; // TODO:
+                    msg.Ip = HttpContextUtils.GetIp(httpContext);
                     msg.UserAgent = httpContext.Request.Headers.UserAgent;
                     msg.TraceId = Activity.Current?.TraceId.ToString();
                 }
