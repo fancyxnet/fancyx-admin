@@ -1,5 +1,6 @@
 ﻿using Cracker.AspNetCore.AutoInject;
 using Cracker.AspNetCore.Context;
+using Cracker.AssemblyScanner;
 using Cracker.EventBus;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;

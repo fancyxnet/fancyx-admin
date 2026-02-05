@@ -10,7 +10,7 @@ using Fancyx.Internal.Grpc.System;
 using Fancyx.Shared.Exceptions;
 using Fancyx.Shared.Keys;
 using Fancyx.Shared.Models;
-using Fancyx.SnowflakeId;
+using Cracker.SnowflakeId;
 
 namespace Fancyx.Erp.Application.Service.Products
 {

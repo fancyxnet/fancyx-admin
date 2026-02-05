@@ -1,10 +1,12 @@
 using Cracker.AspNetCore;
-using Fancyx.Logger;
+using Cracker.AssemblyScanner;
 using Cracker.Serilog;
-using Fancyx.Shared.Consts;
+using Fancyx.Logger;
 using Fancyx.Shared;
+using Fancyx.Shared.Consts;
 
 MultiTenancyVars.SetIsEnabled(true);
+AssemblyManager.Instance.Initialize(options => { options.AssemblyPrefixes = ["Fancyx"]; });
 
 var builder = WebApplication.CreateBuilder(args);
 

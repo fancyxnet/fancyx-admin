@@ -8,7 +8,7 @@ using Cracker.EfCore;
 using Cracker.EfCore.Aop;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Keys;
-using Fancyx.SnowflakeId;
+using Cracker.SnowflakeId;
 using Cracker.Utils;
 
 using Microsoft.EntityFrameworkCore;

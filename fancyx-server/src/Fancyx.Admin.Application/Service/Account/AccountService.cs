@@ -14,7 +14,7 @@ using Fancyx.Shared;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.EfCore;
 using Fancyx.Shared.Keys;
-using Fancyx.SnowflakeId;
+using Cracker.SnowflakeId;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

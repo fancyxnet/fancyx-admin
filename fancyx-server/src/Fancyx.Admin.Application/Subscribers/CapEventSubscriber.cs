@@ -2,7 +2,7 @@
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Shared.Consts;
-using Fancyx.SnowflakeId;
+using Cracker.SnowflakeId;
 
 namespace Fancyx.Admin.Application.Subscribers
 {

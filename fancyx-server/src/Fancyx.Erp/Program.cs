@@ -1,11 +1,13 @@
 using Cracker.AspNetCore;
-using Fancyx.Erp;
+using Cracker.AssemblyScanner;
 using Cracker.Serilog;
+using Fancyx.Erp;
+using Fancyx.Shared;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.WebApi.Micro;
-using Fancyx.Shared;
 
 MultiTenancyVars.SetIsEnabled(true);
+AssemblyManager.Instance.Initialize(options => { options.AssemblyPrefixes = ["Fancyx"]; });
 
 var builder = WebApplication.CreateBuilder(args);
 

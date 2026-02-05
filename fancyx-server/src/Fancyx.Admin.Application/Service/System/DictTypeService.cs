@@ -7,7 +7,7 @@ using Fancyx.Admin.Application.IService.System;
 using Fancyx.Shared.Logger;
 using Fancyx.Admin.Application.IService.System.Models;
 using AutoMapper;
-using Fancyx.SnowflakeId;
+using Cracker.SnowflakeId;
 using Cracker.IdentityServer.Abstractions;
 
 namespace Fancyx.Admin.Application.Service.System;

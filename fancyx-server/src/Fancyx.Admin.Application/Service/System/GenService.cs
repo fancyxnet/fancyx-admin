@@ -8,7 +8,7 @@ using Cracker.AspNetCore.Interfaces;
 using Cracker.EfCore;
 using Cracker.EfCore.Aop;
 using Cracker.EfCore.BaseEntity;
-using Fancyx.SnowflakeId;
+using Cracker.SnowflakeId;
 using Cracker.Utils;
 
 using JinianNet.JNTemplate;

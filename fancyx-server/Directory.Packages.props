@@ -8,12 +8,12 @@
   <ItemGroup>
     <PackageVersion Include="Cracker.AspNetCore" Version="2.0.1" />
     <PackageVersion Include="Cracker.Storage" Version="2.0.1" />
-	<PackageVersion Include="Cracker.Swagger" Version="2.0.0" />
+	<PackageVersion Include="Cracker.Swagger" Version="2.0.1" />
 	<PackageVersion Include="Cracker.Caching" Version="2.0.0" />
 	<PackageVersion Include="Cracker.Consul" Version="2.0.0" />
 	<PackageVersion Include="Cracker.Serilog" Version="2.0.0" />
-	<PackageVersion Include="Cracker.EfCore" Version="2.0.2" />
-    <PackageVersion Include="Cracker.EventBus" Version="8.4.0" />
+	<PackageVersion Include="Cracker.EfCore" Version="2.0.3" />
+    <PackageVersion Include="Cracker.EventBus" Version="8.4.0.1" />
 	<PackageVersion Include="Cracker.Utils" Version="2.0.1" />
 	<PackageVersion Include="Cracker.IdentityServer" Version="1.0.0" />
 	<PackageVersion Include="Cracker.IdentityServer.Abstractions" Version="1.0.0" />
