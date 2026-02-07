@@ -1,6 +1,4 @@
-﻿using Coravel;
-
-using Fancyx.Admin.Application.Grpc;
+﻿using Fancyx.Admin.Application.Grpc;
 using Fancyx.Admin.Application.Jobs;
 using Fancyx.Admin.Application.WebSockets;
 using Fancyx.Admin.EfCore;
@@ -11,6 +9,8 @@ using Fancyx.Shared.Logger;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Channels;
+using Cracker.Scheduler;
+using Microsoft.Extensions.Configuration;
 
 namespace Fancyx.Admin.Application
 {
@@ -24,7 +24,15 @@ namespace Fancyx.Admin.Application
 
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            context.Services.AddScheduler();
+            context.Services.AddScheduler(o =>
+            {
+                o.AutoCreatedTable = true;
+                o.ConnectionString = context.Configuration.GetConnectionString("Default")!;
+                o.Configure = s =>
+                {
+                    s.AddJob<NotificationJob>(nameof(NotificationJob), "0 0/1 * * * ?");
+                };
+            });
 
             var channel = Channel.CreateUnbounded<NotificationMessage>();
             context.Services.AddSingleton(sp =>
@@ -41,16 +49,13 @@ namespace Fancyx.Admin.Application
 
         public override void Configure(ApplicationInitializationContext context)
         {
-            context.Application.Services.UseScheduler(sch =>
-            {
-                sch.Schedule<NotificationJob>().EveryMinute().PreventOverlapping(nameof(NotificationJob));
-            });
             context.Application.MapGrpcService<TestGrpcServiceHandler>();
             context.Application.MapGrpcService<DictGrpcServiceHandler>();
             context.Application.MapGrpcService<AuthGrpcServiceHandler>();
 
             context.Application.UseWebSockets();
             context.Application.UseMiddleware<WebSocketMiddleware>();
+            context.Application.UseSchedulerDashboard();
         }
     }
 }

@@ -14,6 +14,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Cracker.Caching" />
+		<PackageReference Include="Cracker.Scheduler" />
 		<ProjectReference Include="..\Fancyx.Shared\Fancyx.Shared.csproj" />
 		<ProjectReference Include="..\Fancyx.Shared.Proto\Fancyx.Shared.Proto.csproj" />
 		<ProjectReference Include="..\Fancyx.Shared.Logger\Fancyx.Shared.Logger.csproj" />
@@ -24,7 +25,6 @@
 		<PackageReference Include="FluentValidation" />
 		<PackageReference Include="MiniExcel" />
 		<PackageReference Include="IP2Region.Net" />
-		<PackageReference Include="Coravel" />
 		<PackageReference Include="JinianNet.JNTemplate" />
 	</ItemGroup>
 </Project>

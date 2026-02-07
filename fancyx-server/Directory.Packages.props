@@ -18,10 +18,10 @@
 	<PackageVersion Include="Cracker.IdentityServer" Version="1.0.0" />
 	<PackageVersion Include="Cracker.IdentityServer.Abstractions" Version="1.0.0" />
 	<PackageVersion Include="Cracker.SnowflakeId" Version="2.0.0" />
+	<PackageVersion Include="Cracker.Scheduler" Version="1.0.0" />
 	<PackageVersion Include="FluentValidation" Version="12.0.0" />
 	<PackageVersion Include="MiniExcel" Version="1.41.3" />
 	<PackageVersion Include="IP2Region.Net" Version="2.0.2" />
-	<PackageVersion Include="Coravel" Version="6.0.2" />
 	<PackageVersion Include="JinianNet.JNTemplate" Version="2.4.3" />
 	<PackageVersion Include="Refit.HttpClientFactory" Version="8.0.0" />
 	<PackageVersion Include="Yarp.ReverseProxy" Version="2.3.0" />
