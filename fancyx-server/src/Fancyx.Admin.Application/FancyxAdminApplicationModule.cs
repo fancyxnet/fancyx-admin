@@ -30,7 +30,7 @@ namespace Fancyx.Admin.Application
                 o.ConnectionString = context.Configuration.GetConnectionString("Default")!;
                 o.Configure = s =>
                 {
-                    s.AddJob<NotificationJob>(nameof(NotificationJob), "0 0/1 * * * ?");
+                    s.AddJob<NotificationJob>("0 0/1 * * * ?", nameof(NotificationJob));
                 };
             });
 

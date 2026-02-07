@@ -46,7 +46,7 @@ namespace Fancyx.Admin.Application.Jobs
                         var curEmployeeNotis = notis.Where(x => x.UserId == g.Key).ToList();
                         var index = random.Next(0, curEmployeeNotis.Count);
                         var item = curEmployeeNotis[index];
-                        var lastNotiKey = "LastNotification" + item.UserId;
+                        var lastNotiKey = $"LastNotification:{item.UserId}";
                         if (await _cache.KeyExistsAsync(lastNotiKey))
                         {
                             var lastNotiId = await _cache.StringGetAsync(lastNotiKey);
@@ -61,7 +61,7 @@ namespace Fancyx.Admin.Application.Jobs
                         }
                         await _channelWriter.WriteAsync(new NotificationMessage(item.UserId, item.Title, item.Content, g.Value));
                         //上条通知的ID
-                        await _cache.StringSetAsync("LastNotification" + item.UserId, item.Id.ToString(), TimeSpan.FromMinutes(1));
+                        await _cache.StringSetAsync(lastNotiKey, item.Id.ToString(), TimeSpan.FromMinutes(1));
                     }
                 }
             }

@@ -152,13 +152,13 @@ namespace Fancyx.Admin
 
             context.Application.UseStaticFiles();
             context.Application.UseRateLimiter(); // 启用限流中间件
-            context.Application.UseAuthentication();
-            context.Application.UseAuthorization();
-            context.Application.UseCurrentUser();
             if (MultiTenancyVars.IsEnabled)
             {
                 context.Application.UseMultiTenancy();
             }
+            context.Application.UseAuthentication();
+            context.Application.UseAuthorization();
+            context.Application.UseCurrentUser();
         }
     }
 }

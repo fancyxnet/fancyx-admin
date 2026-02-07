@@ -122,13 +122,13 @@ namespace Fancyx.Erp
             {
                 context.Application.UseSwaggerPro();
             }
-            context.Application.UseAuthentication();
-            context.Application.UseAuthorization();
-            context.Application.UseCurrentUser();
             if (MultiTenancyVars.IsEnabled)
             {
                 context.Application.UseMultiTenancy();
             }
+            context.Application.UseAuthentication();
+            context.Application.UseAuthorization();
+            context.Application.UseCurrentUser();
         }
     }
 }
