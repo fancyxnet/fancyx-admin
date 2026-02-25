@@ -5,7 +5,6 @@ using Fancyx.Admin.EfCore.Entities.Organization;
 using Cracker.EfCore;
 using Cracker.Utils;
 using Microsoft.EntityFrameworkCore;
-using Cracker.Utils;
 
 namespace Fancyx.Admin.Application.Service.Organization
 {

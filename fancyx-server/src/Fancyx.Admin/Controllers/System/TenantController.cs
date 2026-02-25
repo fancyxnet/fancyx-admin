@@ -5,7 +5,6 @@ using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Shared.Consts;
 using Fancyx.Shared.Logger;
 using Fancyx.Shared.WebApi.Attributes;
-using Cracker.Utils;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

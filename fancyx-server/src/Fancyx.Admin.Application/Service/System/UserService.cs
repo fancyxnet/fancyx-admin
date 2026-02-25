@@ -6,7 +6,6 @@ using Fancyx.Admin.Application.SharedService;
 using Fancyx.Admin.EfCore;
 using Fancyx.Admin.EfCore.Entities.System;
 using Fancyx.Admin.EfCore.Enums;
-using Cracker.AspNetCore.Interfaces;
 using Cracker.EfCore;
 using Cracker.EfCore.Aop;
 using Fancyx.Shared.Consts;

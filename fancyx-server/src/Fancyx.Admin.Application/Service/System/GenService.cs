@@ -4,7 +4,6 @@ using Fancyx.Admin.Application.IService.System;
 using Fancyx.Admin.Application.IService.System.Models;
 using Fancyx.Admin.EfCore.Entities.Gen;
 using Fancyx.Admin.EfCore.Repositories;
-using Cracker.AspNetCore.Interfaces;
 using Cracker.EfCore;
 using Cracker.EfCore.Aop;
 using Cracker.EfCore.BaseEntity;

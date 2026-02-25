@@ -13,7 +13,6 @@ using Cracker.Utils;
 
 using Microsoft.EntityFrameworkCore;
 using Cracker.IdentityServer.Abstractions;
-using Cracker.Utils;
 
 namespace Fancyx.Admin.Application.Service.System
 {

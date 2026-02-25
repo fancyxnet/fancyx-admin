@@ -4,7 +4,6 @@ using Fancyx.Shared.Consts;
 using Fancyx.Shared.Logger.Entities;
 using Fancyx.Shared.Logger.Message;
 using Cracker.Utils;
-using Cracker.Utils;
 
 namespace Fancyx.Logger
 {
