@@ -11,7 +11,6 @@ using Fancyx.Shared.Consts;
 using Fancyx.Shared.WebApi;
 using Fancyx.Shared.WebApi.JsonConverters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
@@ -31,12 +30,12 @@ namespace Fancyx.Admin
             var services = context.Services;
             var configuration = context.Configuration;
 
-            services.Configure<MvcNewtonsoftJsonOptions>(options =>
+            services.AddControllers().AddJsonOptions(options =>
             {
-                options.SerializerSettings.Converters.Add(new LongToStringConverter());
-                options.SerializerSettings.Converters.Add(new NullableLongToStringConverter());
-                options.SerializerSettings.Converters.Add(new DateTimeToStringConverter());
-                options.SerializerSettings.Converters.Add(new NullableDateTimeToStringConverter());
+                options.JsonSerializerOptions.Converters.Add(new LongToStringConverter());
+                options.JsonSerializerOptions.Converters.Add(new NullableLongToStringConverter());
+                options.JsonSerializerOptions.Converters.Add(new DateTimeToStringConverter());
+                options.JsonSerializerOptions.Converters.Add(new NullableDateTimeToStringConverter());
             });
 
             //Swagger

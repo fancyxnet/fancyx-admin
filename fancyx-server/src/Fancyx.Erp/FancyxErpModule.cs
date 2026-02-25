@@ -14,7 +14,6 @@ using Fancyx.Shared.WebApi;
 using Fancyx.Shared.WebApi.JsonConverters;
 using Fancyx.Shared.WebApi.Micro;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
 using System.Reflection;
@@ -29,12 +28,12 @@ namespace Fancyx.Erp
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            context.Services.Configure<MvcNewtonsoftJsonOptions>(options =>
+            context.Services.AddControllers().AddJsonOptions(options =>
             {
-                options.SerializerSettings.Converters.Add(new LongToStringConverter());
-                options.SerializerSettings.Converters.Add(new NullableLongToStringConverter());
-                options.SerializerSettings.Converters.Add(new DateTimeToStringConverter());
-                options.SerializerSettings.Converters.Add(new NullableDateTimeToStringConverter());
+                options.JsonSerializerOptions.Converters.Add(new LongToStringConverter());
+                options.JsonSerializerOptions.Converters.Add(new NullableLongToStringConverter());
+                options.JsonSerializerOptions.Converters.Add(new DateTimeToStringConverter());
+                options.JsonSerializerOptions.Converters.Add(new NullableDateTimeToStringConverter());
             });
 
             context.Services.AddSwaggerGenPro("Fancyx Erp Api", c =>

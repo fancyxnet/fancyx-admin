@@ -17,7 +17,6 @@
 		<PackageReference Include="Cracker.Scheduler" />
 		<ProjectReference Include="..\Fancyx.Shared\Fancyx.Shared.csproj" />
 		<ProjectReference Include="..\Fancyx.Shared.Proto\Fancyx.Shared.Proto.csproj" />
-		<ProjectReference Include="..\Fancyx.Shared.Logger\Fancyx.Shared.Logger.csproj" />
 		<ProjectReference Include="..\Fancyx.Admin.EfCore\Fancyx.Admin.EfCore.csproj" />
 	</ItemGroup>
 

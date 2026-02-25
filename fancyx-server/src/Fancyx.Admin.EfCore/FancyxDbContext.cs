@@ -3,9 +3,9 @@ using Fancyx.Admin.EfCore.Entities.Gen;
 using Fancyx.Admin.EfCore.Entities.Organization;
 using Fancyx.Admin.EfCore.Entities.System;
 using Cracker.EfCore;
-using Fancyx.Shared.EfCore;
 
 using Microsoft.EntityFrameworkCore;
+using Fancyx.Shared.Logger;
 
 namespace Fancyx.Admin.EfCore
 {
@@ -35,5 +35,11 @@ namespace Fancyx.Admin.EfCore
         public DbSet<TicketReply> TicketReply { get; set; }
         public DbSet<GenTable> GenTable { get; set; }
         public DbSet<GenTableColumn> GenTableColumn { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            new LoggerOnModelCreating().OnModelCreating(modelBuilder);
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

@@ -8,5 +8,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Fancyx.Shared.EfCore\Fancyx.Shared.EfCore.csproj" />
+		<ProjectReference Include="..\Fancyx.Shared.Logger\Fancyx.Shared.Logger.csproj" />
 	</ItemGroup>
 </Project>

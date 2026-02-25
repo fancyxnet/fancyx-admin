@@ -16,6 +16,8 @@ namespace Fancyx.Logger
 
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
+            context.Services.AddControllers();
+
             context.Services.AddEfCore<LoggerDbContext>(options =>
             {
                 options.ConnectionString = context.Configuration.GetConnectionString("Default")!;
