@@ -54,7 +54,7 @@
 * Redis
 * EventBus
 * AutoMapper
-* Autofac
+* Scrutor
 * Castle.Core
 * Serilog
 * Consul
@@ -106,19 +106,10 @@
 
 **后端**
 
+公共库参见账号下**CommonLibs**仓库
+
 | 库                        | 描述                                         |
 | ------------------------ | ------------------------------------------ |
-| Fancyx.Consul            | Consul服务注册与发现,配置中心                         |
-| Fancyx.Core              | 最核心层，该层有服务自动注册、模块化加载、静态帮助类、当前用户/租户接口及中间件   |
-| Fancyx.EfCore            | EFCore公共层，基础仓储类，工作单元等                      |
-| Fancyx.EventBus          | 事件总线类，封装了DotNetCAP包，使用MySql确保正确消费          |
-| Fancyx.Orleans           | Orleans配置,Redis集群,Redis存储                  |
-| Fancyx.Redis             | Redis配置，混合缓存类                              |
-| Fancyx.Serilog           | Serilog公共配置                                |
-| Fancyx.SnowflakeId       | 雪花ID生成                                     |
-| Fancyx.Storage           | 对象存储层，目前支持本地服务器存储和阿里云OSS存储两种               |
-| Fancyx.Swagger           | SwaggerPro配置，增加了SwaggerGroup特性，支持Swagger分组 |
-| Fancyx.Utils             | 工具、帮助类所在                                   |
 | Fancyx.Admin             | 模块入口，主机服务                                  |
 | Fancyx.Admin.Application | 模块业务层，用于写业务逻辑                              |
 | Fancyx.Admin.EfCore      | 模块数据层，包含实体、自定义仓储类                          |
@@ -239,14 +230,6 @@
     //雪花ID数据中心ID
     "DataCenterId": 4
   },
-  "Mqtt": {
-    //MQTT服务器暴露端口
-    "Port": 1883,
-    //MQTT连接账号
-    "UserName": "admin",
-    //MQTT连接密码
-    "Password": "123qwe*"
-  }
 }
 ```
 
