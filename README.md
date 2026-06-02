@@ -2,9 +2,9 @@
 
 <!-- PROJECT SHIELDS -->
 
-[![GitHub stars](https://img.shields.io/github/stars/fancyxnet/fancyx-admin?style=social)](https://github.com/fancyxnet/fancyx-admin)
-[![GitHub forks](https://img.shields.io/github/forks/fancyxnet/fancyx-admin?style=social)](https://github.com/fancyxnet/fancyx-admin)
-[![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](https://github.com/fancyxnet/fancyx-admin)
+[![GitHub stars](https://img.shields.io/github/stars/hdonghua/fancyx-admin?style=social)](https://github.com/hdonghua/fancyx-admin)
+[![GitHub forks](https://img.shields.io/github/forks/hdonghua/fancyx-admin?style=social)](https://github.com/hdonghua/fancyx-admin)
+[![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](https://github.com/hdonghua/fancyx-admin)
 
 ## 项目介绍
 
@@ -29,8 +29,8 @@
 
 ## 代码仓库
 
-* GitHub: https://github.com/fancyxnet/fancyx-admin
-* Gitee: https://gitee.com/fancyxnet/fancyx-admin
+* GitHub: https://github.com/hdonghua/fancyx-admin
+* Gitee: https://gitee.com/hdonghua/fancyx-admin
 
 ## 在线预览
 
